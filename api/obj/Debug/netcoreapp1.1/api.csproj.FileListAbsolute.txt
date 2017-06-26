@@ -1,8 +1,0 @@
-/home/dario/dev/bitprim-cs/api/bin/Debug/netcoreapp1.1/api.deps.json
-/home/dario/dev/bitprim-cs/api/bin/Debug/netcoreapp1.1/api.runtimeconfig.json
-/home/dario/dev/bitprim-cs/api/bin/Debug/netcoreapp1.1/api.runtimeconfig.dev.json
-/home/dario/dev/bitprim-cs/api/bin/Debug/netcoreapp1.1/api.dll
-/home/dario/dev/bitprim-cs/api/bin/Debug/netcoreapp1.1/api.pdb
-/home/dario/dev/bitprim-cs/api/obj/Debug/netcoreapp1.1/api.AssemblyInfo.cs
-/home/dario/dev/bitprim-cs/api/obj/Debug/netcoreapp1.1/api.dll
-/home/dario/dev/bitprim-cs/api/obj/Debug/netcoreapp1.1/api.pdb
