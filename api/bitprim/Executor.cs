@@ -4,9 +4,9 @@ public class Executor : IDisposable
 {
     private IntPtr nativeInstance_;
 
-    public Executor()
+    public Executor(string configFile)
     {
-        nativeInstance_ = ExecutorNative.executor_construct_fd(Constants.CONFIG_FILE, new IntPtr(0), new IntPtr(0), new IntPtr(0));
+        nativeInstance_ = ExecutorNative.executor_construct_fd(configFile, new IntPtr(0), new IntPtr(0), new IntPtr(0));
     }
 
     ~Executor()
