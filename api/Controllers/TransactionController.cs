@@ -44,7 +44,7 @@ namespace api.Controllers
         [HttpGet("Validate")]
         public bool Validate(string tx)
         {
-            //Executor e = new Executor("/home/fernando/exec/btc-mainnet.cfg");
+            IntPtr e = ExecutorNative.executor_construct_fd("test.cfg", new IntPtr(0), new IntPtr(0), new IntPtr(0));
             return true;
         }
     }
