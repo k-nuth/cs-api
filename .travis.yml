@@ -1,6 +1,5 @@
 
 language: csharp
-solution: bitprim-cs.sln
 
 matrix:
    include:
@@ -8,4 +7,6 @@ matrix:
       mono: none
       dist: trusty
       env: DOTNETCORE=1  # optional, can be used to take different code paths in your script
+      solution: bitprim-cs.sln
     - mono: latest
+      solution: bitprim-cs.sln
