@@ -11,7 +11,12 @@ fi
 
 cd api
 
-# dotnet restore
+echo "Started build on "
+echo $PWD
+
+echo "Restoring..."
+
+dotnet restore
 
 # Ideally we would use the 'dotnet test' command to test netcoreapp and net451 so restrict for now 
 # but this currently doesn't work due to https://github.com/dotnet/cli/issues/3073 so restrict to netcoreapp
@@ -21,7 +26,9 @@ cd api
 # Instead, run directly with mono for the full .net version 
 #dotnet build api.csproj -c Release -f net451
 
-dotnet build
+echo "Building..."
+
+dotnet build api.csproj
 
 # TODO Run tests
 #mono \  
