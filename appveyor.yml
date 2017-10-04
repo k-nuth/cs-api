@@ -16,7 +16,9 @@ environment:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
 before_build:
-  - appveyor-retry dotnet restore -v Minimal
+  - cd api
+  - dotnet restore
+  - cd ..
 
 build_script:
   - cd api
