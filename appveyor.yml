@@ -17,6 +17,7 @@ environment:
 before_build:
   - cd webtest
   - dotnet restore
+  - cd ..
 
 build_script:
   - cd webtest
