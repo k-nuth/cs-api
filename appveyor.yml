@@ -15,10 +15,10 @@ environment:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
 before_build:
-  - cd api
+  - cd bitprim-cs
   - dotnet restore
   - cd ..
 
 build_script:
-  - cd api
-  - dotnet build api.csproj
+  - cd bitprim-cs
+  - dotnet build bitprim-cs.csproj
