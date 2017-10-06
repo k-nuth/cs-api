@@ -22,7 +22,7 @@ before_build:
   - cd ..\webtest
   - echo "After cdtowb"
   - cd
-  - dotnet restore
+  - dotnet restore webtest.csproj
   - cd ..
 
 build_script:
