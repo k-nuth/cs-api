@@ -9,7 +9,7 @@ if [ -d $artifactsFolder ]; then
   rm -R $artifactsFolder
 fi
 
-cd api
+cd bitprim-cs
 
 echo "Started build on "
 echo $PWD
@@ -28,7 +28,7 @@ dotnet restore
 
 echo "Building..."
 
-dotnet build api.csproj
+dotnet build bitprim-cs.csproj
 
 # TODO Run tests
 #mono \  
