@@ -17,7 +17,11 @@ environment:
 before_build:
   - cd bitprim-cs
   - dotnet restore
+  - echo "Before cdtowb"
+  - echo $PWD
   - cd ..\webtest
+  - echo "After cdtowb"
+  - echo $PWD
   - dotnet restore
   - cd ..
 
