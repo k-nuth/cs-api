@@ -17,8 +17,12 @@ environment:
 before_build:
   - cd bitprim-cs
   - dotnet restore
+  - cd ..\webtest
+  - dotnet restore
   - cd ..
 
 build_script:
   - cd bitprim-cs
   - dotnet build bitprim-cs.csproj
+  - cd ..\webtest
+  - dotnet build webtest.csproj
