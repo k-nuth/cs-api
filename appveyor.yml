@@ -18,10 +18,10 @@ before_build:
   - cd bitprim-cs
   - dotnet restore
   - echo "Before cdtowb"
-  - echo $PWD
+  - echo %cd%
   - cd ..\webtest
   - echo "After cdtowb"
-  - echo $PWD
+  - cd
   - dotnet restore
   - cd ..
 
