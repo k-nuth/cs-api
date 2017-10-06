@@ -15,18 +15,9 @@ environment:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
 before_build:
-  - cd bitprim-cs
+  - cd webtest
   - dotnet restore
-  - echo "Before cdtowb"
-  - echo %cd%
-  - cd ..\webtest
-  - echo "After cdtowb"
-  - cd
-  - dotnet restore webtest.csproj
-  - cd ..
 
 build_script:
-  - cd bitprim-cs
-  - dotnet build bitprim-cs.csproj
-  - cd ..\webtest
-  - dotnet build webtest.csproj
+  - cd webtest
+  - dotnet build webtest.csproj -c Release
