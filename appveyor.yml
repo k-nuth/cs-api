@@ -26,5 +26,6 @@ build_script:
   - cd ..
   - cd bitprim-cs.tests
   - dotnet restore
+  - dotnet build
   - dotnet test
   
