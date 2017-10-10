@@ -3526,6 +3526,19 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
+      },
+      "bitprim-cs/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v1.4",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1"
+        },
+        "compile": {
+          "bin/placeholder/netstandard1.4/bitprim-cs.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/netstandard1.4/bitprim-cs.dll": {}
+        }
       }
     }
   },
@@ -9534,6 +9547,11 @@
         "system.xml.xpath.xdocument.4.0.1.nupkg.sha512",
         "system.xml.xpath.xdocument.nuspec"
       ]
+    },
+    "bitprim-cs/1.0.0": {
+      "type": "project",
+      "path": "../bitprim-cs/bitprim-cs.csproj",
+      "msbuildProject": "../bitprim-cs/bitprim-cs.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -9543,7 +9561,8 @@
       "Microsoft.Extensions.Configuration >= 1.1.2",
       "Microsoft.Extensions.Configuration.Json >= 1.1.2",
       "Microsoft.Extensions.Logging.Debug >= 1.1.2",
-      "Microsoft.NETCore.App >= 1.1.2"
+      "Microsoft.NETCore.App >= 1.1.2",
+      "bitprim-cs >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -9552,20 +9571,24 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/dario/dev/bitprim/dario-ramos/bitprim-cs/api/api.csproj",
-      "projectName": "api",
-      "projectPath": "/home/dario/dev/bitprim/dario-ramos/bitprim-cs/api/api.csproj",
-      "outputPath": "/home/dario/dev/bitprim/dario-ramos/bitprim-cs/api/obj/",
+      "projectUniqueName": "/home/dario/dev/bitprim/dario-ramos/bitprim-cs/webtest/webtest.csproj",
+      "projectName": "webtest",
+      "projectPath": "/home/dario/dev/bitprim/dario-ramos/bitprim-cs/webtest/webtest.csproj",
+      "outputPath": "/home/dario/dev/bitprim/dario-ramos/bitprim-cs/webtest/obj/",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"
       ],
       "files": {
-        "lib/netcoreapp1.1/api.dll": "/home/dario/dev/bitprim/dario-ramos/bitprim-cs/api/bin/placeholder/netcoreapp1.1/api.dll"
+        "lib/netcoreapp1.1/webtest.dll": "/home/dario/dev/bitprim/dario-ramos/bitprim-cs/webtest/bin/placeholder/netcoreapp1.1/webtest.dll"
       },
       "frameworks": {
         "netcoreapp1.1": {
-          "projectReferences": {}
+          "projectReferences": {
+            "/home/dario/dev/bitprim/dario-ramos/bitprim-cs/bitprim-cs/bitprim-cs.csproj": {
+              "projectPath": "/home/dario/dev/bitprim/dario-ramos/bitprim-cs/bitprim-cs/bitprim-cs.csproj"
+            }
+          }
         }
       }
     },

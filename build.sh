@@ -3,16 +3,12 @@
 #Exit if any command fails
 set -e
 
-#Build bitprim-cs class library
-cd bitprim-cs
-dotnet restore
-dotnet build bitprim-cs.csproj
-#TODO: Publish library to nuget.org
-
-#Build webtest project
-cd ..
+#Build webtest project (this build bitprim-cs class library as a dependency)
 cd webtest
-dotnet restore
-dotnet build webtest.csproj
+dotnet restore webtest.csproj
+dotnet build webtest.csproj -c Release
 
-#TODO Run tests
+#Run tests
+cd ..
+cd bitprim-cs.tests
+dotnet tests

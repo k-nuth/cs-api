@@ -22,3 +22,6 @@ before_build:
 build_script:
   - cd webtest
   - dotnet build webtest.csproj -c Release
+  - cd ..
+  - cd bitprim-cs.tests
+  - dotnet test
