@@ -24,4 +24,5 @@ build_script:
   - dotnet build webtest.csproj -c Release
   - cd ..
   - cd bitprim-cs.tests
+  - dotnet restore
   - dotnet test
