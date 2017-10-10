@@ -1,7 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
 
-public static class TransactionNative{
+namespace BitprimCs.Native
+{
+
+public static class TransactionNative
+{
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern byte[] transaction_hash(IntPtr transaction);
@@ -80,5 +84,7 @@ public static class TransactionNative{
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void transaction_set_version(IntPtr transaction, UInt32 version);
+
+}
 
 }

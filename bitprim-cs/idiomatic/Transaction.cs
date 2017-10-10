@@ -1,4 +1,7 @@
 using System;
+using BitprimCs.Native;
+
+namespace BitprimCs{
 
 public class Transaction : IDisposable
 {
@@ -28,5 +31,7 @@ public class Transaction : IDisposable
         //Release unmanaged resources
         TransactionNative.transaction_destruct(nativeInstance_);
     }
+
+}
 
 }

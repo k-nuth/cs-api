@@ -1,7 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
 
-public static class BinaryNative{
+namespace BitprimCs.Native
+{
+
+public static class BinaryNative
+{
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern byte[] binary_blocks(IntPtr binary, ref UIntPtr /*size_t*/ out_n);
@@ -22,4 +26,6 @@ public static class BinaryNative{
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void binary_destruct(IntPtr binary ); //TODO Implement in C API
+}
+
 }

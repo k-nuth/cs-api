@@ -1,4 +1,7 @@
 using System;
+using BitprimCs.Native;
+
+namespace BitprimCs{
 
 public class Executor : IDisposable
 {
@@ -28,5 +31,7 @@ public class Executor : IDisposable
         //Release unmanaged resources
         ExecutorNative.executor_destruct(nativeInstance_);
     }
+
+}
 
 }

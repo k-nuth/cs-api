@@ -1,2 +1,8 @@
-public static class OutputNative{
+namespace BitprimCs.Native
+{
+    
+public static class OutputNative
+{
+}
+
 }

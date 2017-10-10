@@ -1,7 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
 
-public static class HeaderNative{
+namespace BitprimCs.Native
+{
+
+public static class HeaderNative
+{
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     static extern byte[] header_hash(IntPtr header);
@@ -41,5 +45,7 @@ public static class HeaderNative{
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     static extern void header_set_version(IntPtr header, UInt32 version);
+
+}
 
 }

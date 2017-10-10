@@ -1,4 +1,7 @@
 using System;
+using BitprimCs.Native;
+
+namespace BitprimCs{
 
 public class Binary : IDisposable{
 
@@ -16,15 +19,15 @@ public class Binary : IDisposable{
         nativeInstance_ = BinaryNative.binary_construct_blocks(bitsSize, blocks, n);
     }
 
+    ~Binary()
+    {
+        Dispose(false);
+    }
+
     public string Encoded{
         get{
             return BinaryNative.binary_encoded(nativeInstance_);
         }
-    }
-
-    ~Binary()
-    {
-        Dispose(false);
     }
 
     public void Dispose()
@@ -41,4 +44,6 @@ public class Binary : IDisposable{
         //Release unmanaged resources
         BinaryNative.binary_destruct(nativeInstance_);
     }
+}
+
 }

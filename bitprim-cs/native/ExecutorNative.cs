@@ -1,7 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
 
-public static class ExecutorNative{
+namespace BitprimCs.Native
+{
+
+public static class ExecutorNative
+{
 
     //Delegates for callbacks
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -89,5 +93,7 @@ public static class ExecutorNative{
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void fetch_transaction(IntPtr exec, byte[] hash, int require_confirmed, [MarshalAs(UnmanagedType.FunctionPtr)]TransactionFetchHandler handler);
+
+}
 
 }

@@ -1,7 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
 
-public static class BlockNative{
+namespace BitprimCs.Native
+{
+
+public static class BlockNative
+{
 
     //Note: The user is responsible for the resource release
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
@@ -70,5 +74,7 @@ public static class BlockNative{
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     static extern void block_destruct(IntPtr block);
+
+}
 
 }
