@@ -15,6 +15,7 @@ environment:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
 before_build:
+  - nuget install xunit.runners -prerelease -excludeversion
   - cd webtest
   - dotnet restore
   - cd ..
@@ -26,3 +27,4 @@ build_script:
   - cd bitprim-cs.tests
   - dotnet restore
   - dotnet test
+  
