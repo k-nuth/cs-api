@@ -11,4 +11,5 @@ dotnet build webtest.csproj -c Release
 #Run tests
 cd ..
 cd bitprim-cs.tests
+dotnet restore
 dotnet test
