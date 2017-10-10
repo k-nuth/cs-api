@@ -23,10 +23,6 @@ build_script:
   - cd webtest
   - dotnet build webtest.csproj -c Release
   - cd ..
-#  - cd bitprim-cs.tests
-#  - dotnet restore
-#  - dotnet build
-#  - dotnet test
 
 test_script:
   - cd bitprim-cs.tests
