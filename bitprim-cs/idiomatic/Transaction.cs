@@ -20,6 +20,11 @@ public class Transaction : IDisposable
         );
     }
 
+    internal Transaction(IntPtr nativeInstance)
+    {
+        nativeInstance_ = nativeInstance;
+    }
+
     ~Transaction()
     {
         Dispose(false);
@@ -38,6 +43,14 @@ public class Transaction : IDisposable
         }   
         //Release unmanaged resources
         TransactionNative.chain_transaction_destruct(nativeInstance_);
+    }
+
+    internal IntPtr NativeInstance
+    {
+        get
+        {
+            return nativeInstance_;
+        }
     }
 
 }
