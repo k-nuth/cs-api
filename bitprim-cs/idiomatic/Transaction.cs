@@ -7,9 +7,17 @@ public class Transaction : IDisposable
 {
     private IntPtr nativeInstance_;
 
-    public Transaction(IntPtr nativeInstance)
+    public Transaction()
     {
-        nativeInstance_ = nativeInstance;
+        nativeInstance_ = TransactionNative.chain_transaction_construct_default();
+    }
+
+    public Transaction(UInt32 version, UInt32 locktime, InputList inputs, OutputList outputs)
+    {
+        nativeInstance_ = TransactionNative.chain_transaction_construct
+        (
+            version, locktime, inputs.NativeInstance, outputs.NativeInstance
+        );
     }
 
     ~Transaction()
@@ -29,7 +37,7 @@ public class Transaction : IDisposable
             //Release managed resources and call Dispose for member variables
         }   
         //Release unmanaged resources
-        TransactionNative.transaction_destruct(nativeInstance_);
+        TransactionNative.chain_transaction_destruct(nativeInstance_);
     }
 
 }

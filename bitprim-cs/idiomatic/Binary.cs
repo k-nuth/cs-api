@@ -1,21 +1,26 @@
 using System;
 using BitprimCs.Native;
 
-namespace BitprimCs{
+namespace BitprimCs
+{
 
-public class Binary : IDisposable{
+public class Binary : IDisposable
+{
 
     private IntPtr nativeInstance_;
 
-    public Binary(){
+    public Binary()
+    {
         nativeInstance_ = BinaryNative.binary_construct();
     }
 
-    public Binary(string hexString){
+    public Binary(string hexString)
+    {
         nativeInstance_ = BinaryNative.binary_construct_string(hexString);
     }
 
-    public Binary(UIntPtr bitsSize, byte[] blocks, UIntPtr n){
+    public Binary(UIntPtr bitsSize, byte[] blocks, UIntPtr n)
+    {
         nativeInstance_ = BinaryNative.binary_construct_blocks(bitsSize, blocks, n);
     }
 
@@ -24,8 +29,10 @@ public class Binary : IDisposable{
         Dispose(false);
     }
 
-    public string Encoded{
-        get{
+    public string Encoded
+    {
+        get
+        {
             return BinaryNative.binary_encoded(nativeInstance_);
         }
     }
@@ -38,7 +45,8 @@ public class Binary : IDisposable{
 
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing){
+        if (disposing)
+        {
             //Release managed resources and call Dispose for member variables
         }   
         //Release unmanaged resources
