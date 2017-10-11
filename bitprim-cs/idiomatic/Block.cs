@@ -109,7 +109,21 @@ public class Block : IDisposable
         }
     }
 
-    //public UIntPtr
+    public UIntPtr SignatureOperationsCount
+    {
+        get
+        {
+            return BlockNative.block_signature_operations(nativeInstance_);
+        }
+    }
+
+    public UIntPtr TransactionCount
+    {
+        get
+        {
+            return BlockNative.block_transaction_count(nativeInstance_);
+        }
+    }
 
     public bool IsFinal(UIntPtr height)
     {
@@ -144,6 +158,22 @@ public class Block : IDisposable
     public UIntPtr GetSerializedSize(UInt32 version)
     {
         return BlockNative.block_serialized_size(nativeInstance_, version);
+    }
+
+    public UIntPtr GetSignatureOperationsCount(bool bip16Active)
+    {
+        return BlockNative.block_signature_operations_bip16_active
+        (
+            nativeInstance_, bip16Active? 1:0
+        ) != 0;
+    }
+
+    public UIntPtr GetTotalInputs(bool withCoinbase)
+    {
+        return BlockNative.block_total_inputs
+        (
+            nativeInstance_, withCoinbase? 1:0
+        ) != 0;
     }
 
 }
