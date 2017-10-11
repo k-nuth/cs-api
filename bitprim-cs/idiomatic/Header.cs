@@ -17,7 +17,7 @@ public class Header : IDisposable
     {
         get
         {
-            return HeaderNative.header_is_valid(nativeInstance_);
+            return HeaderNative.header_is_valid(nativeInstance_) != 0; 
         }
     }
 
