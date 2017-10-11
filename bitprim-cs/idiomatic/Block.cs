@@ -85,7 +85,7 @@ public class Block : IDisposable
         }
     }
 
-    public HeaderNative Header
+    public Header Header
     {
         get
         {
