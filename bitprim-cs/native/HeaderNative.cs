@@ -8,43 +8,43 @@ public static class HeaderNative
 {
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern byte[] header_hash(IntPtr header);
+    public static extern byte[] header_hash(IntPtr header);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern byte[] header_merkle(IntPtr header);
+    public static extern byte[] header_merkle(IntPtr header);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern byte[] header_previous_block_hash(IntPtr header);
+    public static extern byte[] header_previous_block_hash(IntPtr header);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern int header_is_valid(IntPtr header);
+    public static extern int header_is_valid(IntPtr header);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern UInt32 header_bits(IntPtr header);
+    public static extern UInt32 header_bits(IntPtr header);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern UInt32 header_nonce(IntPtr header);
+    public static extern UInt32 header_nonce(IntPtr header);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern UInt32 header_timestamp(IntPtr header);
+    public static extern UInt32 header_timestamp(IntPtr header);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern UInt32 header_version(IntPtr header);
+    public static extern UInt32 header_version(IntPtr header);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern void header_destruct(IntPtr header);
+    public static extern void header_destruct(IntPtr header);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern void header_set_bits(IntPtr header, UInt32 bits);
+    public static extern void header_set_bits(IntPtr header, UInt32 bits);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern void header_set_nonce(IntPtr header, UInt32 nonce);
+    public static extern void header_set_nonce(IntPtr header, UInt32 nonce);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern void header_set_timestamp(IntPtr header, UInt32 timestamp);
+    public static extern void header_set_timestamp(IntPtr header, UInt32 timestamp);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    static extern void header_set_version(IntPtr header, UInt32 version);
+    public static extern void header_set_version(IntPtr header, UInt32 version);
 
 }
 
