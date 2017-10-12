@@ -181,6 +181,14 @@ public class Block : IDisposable
         nativeInstance_ = nativeInstance;
     }
 
+    internal IntPtr NativeInstance
+    {
+        get
+        {
+            return nativeInstance_;
+        }
+    }
+
 }
 
 }
