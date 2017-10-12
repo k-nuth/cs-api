@@ -165,7 +165,7 @@ public class Block : IDisposable
         return BlockNative.block_signature_operations_bip16_active
         (
             nativeInstance_, bip16Active? 1:0
-        ) != 0;
+        );
     }
 
     public UIntPtr GetTotalInputs(bool withCoinbase)
@@ -173,7 +173,12 @@ public class Block : IDisposable
         return BlockNative.block_total_inputs
         (
             nativeInstance_, withCoinbase? 1:0
-        ) != 0;
+        );
+    }
+
+    internal Block(IntPtr nativeInstance)
+    {
+        nativeInstance_ = nativeInstance;
     }
 
 }

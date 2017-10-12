@@ -111,7 +111,7 @@ public class Header : IDisposable
 
     internal Header(IntPtr nativeInstance)
     {
-        nativeInstance_ = nativeInstance_;
+        nativeInstance_ = nativeInstance;
     }
 }
 
