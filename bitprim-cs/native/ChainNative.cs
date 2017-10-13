@@ -6,185 +6,213 @@ namespace BitprimCs.Native
 
 public static class ChainNative
 {
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_last_height(IntPtr chain, void* ctx, last_height_fetch_handler_t handler);
+    // Chain-----------------------------------------------------------------------------------
+
+    //typedef void (*block_height_fetch_handler_t)(chain_t, void*, int, UInt64 /*size_t*/ h);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void BlockHeightFetchHandler(IntPtr chain, IntPtr context, int error, UInt64 height);
+
+    //typedef void (*last_height_fetch_handler_t)(chain_t, void*, int, UInt64 /*size_t*/ h);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void LastHeightFetchHandler(IntPtr chain, IntPtr context, int error, UInt64 height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_last_height(IntPtr chain, uint64_t /*size_t*/* height);
+    public static extern void chain_fetch_block_height(IntPtr chain, IntPtr context, byte[] hash, BlockHeightFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_block_height(IntPtr chain, void* ctx, hash_t hash, block_height_fetch_handler_t handler);
+    public static extern void chain_fetch_last_height(IntPtr chain, IntPtr context, LastHeightFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_block_height(IntPtr chain, hash_t hash, uint64_t /*size_t*/* height);
-
-
-    // Block Header ---------------------------------------------------------------------
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_block_header_by_height(IntPtr chain, void* ctx, uint64_t /*size_t*/ height, block_header_fetch_handler_t handler);
+    public static extern int chain_get_block_height(IntPtr chain, byte[] hash, ref UInt64 height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_block_header_by_height(IntPtr chain, uint64_t /*size_t*/ height, header_t* out_header, uint64_t /*size_t*/* out_height);
+    public static extern int chain_get_last_height(IntPtr chain, ref UInt64 height);
+
+    // Block-----------------------------------------------------------------------------------
+
+    //typedef void (*block_fetch_handler_t)(chain_t, void*, int, block_t block, uint64_t /*size_t*/ h);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void BlockFetchHandler(IntPtr chain, IntPtr context, IntPtr block, int error, UInt64 height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_block_header_by_hash(IntPtr chain, void* ctx, hash_t hash, block_header_fetch_handler_t handler);
+    public static extern void chain_fetch_block_by_hash(IntPtr chain, IntPtr context, byte[] hash, BlockFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_block_header_by_hash(IntPtr chain, hash_t hash, header_t* out_header, uint64_t /*size_t*/* out_height);
-
-
-    // Block ---------------------------------------------------------------------
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_block_by_height(IntPtr chain, void* ctx, uint64_t /*size_t*/ height, block_fetch_handler_t handler);
+    public static extern void chain_fetch_block_by_height(IntPtr chain, IntPtr context, UInt64 height, BlockFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_block_by_height(IntPtr chain, uint64_t /*size_t*/ height, block_t* out_block, uint64_t /*size_t*/* out_height);
+    public static extern int chain_get_block_by_hash(IntPtr chain, byte[] hash, ref IntPtr out_block, ref UInt64 out_height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_block_by_hash(IntPtr chain, void* ctx, hash_t hash, block_fetch_handler_t handler);
+    public static extern int chain_get_block_by_height(IntPtr chain, UInt64 height, ref IntPtr out_block, ref UInt64 out_height);
+
+    // Block header------------------------------------------------------------------------------
+    //typedef void (*block_header_fetch_handler_t)(chain_t, void*, int, header_t header, UInt64 /*size_t*/ h);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void BlockHeaderFetchHandler(IntPtr chain, IntPtr context, int error, IntPtr header, UInt64 height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_block_by_hash(IntPtr chain, hash_t hash, block_t* out_block, uint64_t /*size_t*/* out_height);
-
-
-    // Merkle Block ---------------------------------------------------------------------
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_merkle_block_by_height(IntPtr chain, void* ctx, uint64_t /*size_t*/ height, merkle_block_fetch_handler_t handler);
+    public static extern void chain_fetch_block_header_by_hash(IntPtr chain, IntPtr context, byte[] hash, BlockHeaderFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_merkle_block_by_height(IntPtr chain, uint64_t /*size_t*/ height, merkle_block_t* out_block, uint64_t /*size_t*/* out_height);
+    public static extern void chain_fetch_block_header_by_height(IntPtr chain, IntPtr context, UInt64 height, BlockHeaderFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_merkle_block_by_hash(IntPtr chain, void* ctx, hash_t hash, merkle_block_fetch_handler_t handler);
+    public static extern int chain_get_block_header_by_hash(IntPtr chain, byte[] hash, ref IntPtr out_header, ref UInt64 out_height);
+    
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern int chain_get_block_header_by_height(IntPtr chain, UInt64 height, ref IntPtr out_header, ref UInt64 out_height);
+
+    // Merkle block-----------------------------------------------------------------------------
+
+    //typedef void (*merkle_block_fetch_handler_t)(chain_t, void*, int, merkle_block_t block, uint64_t /*size_t*/ h);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void MerkleBlockFetchHandler(IntPtr chain, IntPtr context, int error, IntPtr block, UInt64 h);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_merkle_block_by_hash(IntPtr chain, hash_t hash, merkle_block_t* out_block, uint64_t /*size_t*/* out_height);
-
-
-    // Compact Block ---------------------------------------------------------------------
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_compact_block_by_height(IntPtr chain, void* ctx, uint64_t /*size_t*/ height, compact_block_fetch_handler_t handler);
+    public static extern void chain_fetch_merkle_block_by_hash(IntPtr chain, IntPtr context, byte[] hash, MerkleBlockFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_compact_block_by_height(IntPtr chain, uint64_t /*size_t*/ height, compact_block_t* out_block, uint64_t /*size_t*/* out_height);
+    public static extern void chain_fetch_merkle_block_by_height(IntPtr chain, IntPtr context, UInt64 height, MerkleBlockFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_compact_block_by_hash(IntPtr chain, void* ctx, hash_t hash, compact_block_fetch_handler_t handler);
+    public static extern int chain_get_merkle_block_by_hash(IntPtr chain, byte[] hash, ref IntPtr out_block, ref UInt64 out_height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_compact_block_by_hash(IntPtr chain, hash_t hash, compact_block_t* out_block, uint64_t /*size_t*/* out_height);
+    public static extern int chain_get_merkle_block_by_height(IntPtr chain, UInt64 height, ref IntPtr out_block, ref UInt64 out_height);
 
-    // Transaction ---------------------------------------------------------------------
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_transaction(IntPtr chain, void* ctx, hash_t hash, int require_confirmed, transaction_fetch_handler_t handler);
+    // Compact block -------------------------------------------------------------------------
 
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_transaction(IntPtr chain, hash_t hash, int require_confirmed, transaction_t* out_transaction, uint64_t /*size_t*/* out_height, uint64_t /*size_t*/* out_index);
-
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_transaction_position(IntPtr chain, void* ctx, hash_t hash, int require_confirmed, transaction_index_fetch_handler_t handler);
+    //typedef void (*compact_block_fetch_handler_t)(chain_t, void*, int, compact_block_t block, uint64_t /*size_t*/ h);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void CompactBlockFetchHandler(IntPtr chain, IntPtr context, int error, IntPtr block, UInt64 height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_transaction_position(IntPtr chain, hash_t hash, int require_confirmed, uint64_t /*size_t*/* out_position, uint64_t /*size_t*/* out_height);
-
-
-    // Output  ---------------------------------------------------------------------
-    //Note: Removed on 3.3.0
-    // [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    // void chain_fetch_output(IntPtr chain, void* ctx, hash_t hash, uint32_t index, int require_confirmed, output_fetch_handler_t handler);
-
-    // [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    // int chain_get_output(IntPtr chain, hash_t hash, uint32_t index, int require_confirmed, output_t* out_output);
-
-    // Spend ---------------------------------------------------------------------
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_spend(IntPtr chain, void* ctx, output_point_t op, spend_fetch_handler_t handler);
-
-    // History ---------------------------------------------------------------------
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_history(IntPtr chain, void* ctx, payment_address_t address, uint64_t /*size_t*/ limit, uint64_t /*size_t*/ from_height, history_fetch_handler_t handler);
+    public static extern void chain_fetch_compact_block_by_hash(IntPtr chain, IntPtr context, byte[] hash, CompactBlockFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_history(IntPtr chain, payment_address_t address, uint64_t /*size_t*/ limit, uint64_t /*size_t*/ from_height, history_compact_list_t* out_history);
+    public static extern void chain_fetch_compact_block_by_height(IntPtr chain, IntPtr context, UInt64 height, CompactBlockFetchHandler handler);
 
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern int chain_get_compact_block_by_hash(IntPtr chain, byte[] hash, ref IntPtr out_block, ref UInt64 out_height);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern int chain_get_compact_block_by_height(IntPtr chain, UInt64 height, ref IntPtr out_block, ref UInt64 out_height);
+
+    // Transaction
+
+    //typedef void (*transaction_fetch_handler_t)(chain_t, void*, int, transaction_t transaction, uint64_t /*size_t*/ i, uint64_t /*size_t*/ h);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void TransactionFetchHandler(IntPtr chain, IntPtr context, int error, IntPtr transaction, UInt64 i, UInt64 h);
+
+    //typedef void (*transaction_index_fetch_handler_t)(chain_t, void*, int, uint64_t /*size_t*/ position, uint64_t /*size_t*/ height);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void TransactionIndexFetchHandler(IntPtr chain, IntPtr context, int error, UInt64 position, UInt64 height);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_fetch_transaction(IntPtr chain, IntPtr context, byte[] hash, int require_confirmed, TransactionFetchHandler handler);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_fetch_transaction_position(IntPtr chain, IntPtr context, byte[] hash, int require_confirmed, TransactionIndexFetchHandler handler);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern int chain_get_transaction(IntPtr chain, byte[] hash, int require_confirmed, ref IntPtr out_transaction, ref UInt64 out_height, ref UInt64 out_index);
+    
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern int chain_get_transaction_position(IntPtr chain, byte[] hash, int require_confirmed, ref UInt64 out_position, ref UInt64 out_height);
+
+    // Spend ---------------------------------------------------------------------------------------------
+
+    //typedef void (*spend_fetch_handler_t)(chain_t, void*, int, input_point_t input_point);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void SpendFetchHandler(IntPtr chain, IntPtr context, int error, IntPtr inputPoint);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_fetch_spend(IntPtr chain, IntPtr context, IntPtr op, SpendFetchHandler handler);
+
+    // History -------------------------------------------------------------------------------------------
+
+    //typedef void (*history_fetch_handler_t)(chain_t, void*, int, history_compact_list_t history);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void HistoryFetchHandler(IntPtr chain, IntPtr context, int error, IntPtr history);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_fetch_history(IntPtr chain, IntPtr context, IntPtr address, UInt64 limit, UInt64 from_height, HistoryFetchHandler handler);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern int chain_get_history(IntPtr chain, IntPtr address, UInt64 limit, UInt64 from_height, ref IntPtr out_history);
 
     // Stealth ---------------------------------------------------------------------
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_stealth(IntPtr chain, void* ctx, binary_t filter, uint64_t from_height, stealth_fetch_handler_t handler);
 
-    //[DllImport(Constants.BITPRIM_C_LIBRARY)]
-    //void chain_fetch_stealth(const binary& filter, uint64_t /*size_t*/ from_height, stealth_fetch_handler handler);
-
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_block_locator(IntPtr chain, void* ctx, block_indexes_t heights, block_locator_fetch_handler_t handler);
+    //typedef void (*stealth_fetch_handler_t)(chain_t chain, void*, int, stealth_compact_list_t stealth);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void StealthFetchHandler(IntPtr chain, IntPtr context, int error, IntPtr stealth);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_block_locator(IntPtr chain, block_indexes_t heights, get_headers_ptr_t* out_headers);
+    public static extern void chain_fetch_stealth(IntPtr chain, IntPtr context, IntPtr filter, UInt64 fromHeight, StealthFetchHandler handler);
 
+    // Block indexes ---------------------------------------------------------------
 
-    // ------------------------------------------------------------------
-    //virtual void fetch_block_locator(const chain::block::indexes& heights, block_locator_fetch_handler handler) const = 0;
-    //virtual void fetch_locator_block_hashes(get_blocks_const_ptr locator, const hash_digest& threshold, size_t limit, inventory_fetch_handler handler) const = 0;
-    //virtual void fetch_locator_block_headers(get_headers_const_ptr locator, const hash_digest& threshold, size_t limit, locator_block_headers_fetch_handler handler) const = 0;
-    //
-    // Transaction Pool.
-    //-------------------------------------------------------------------------
-    //
-    //virtual void fetch_template(merkle_block_fetch_handler handler) const = 0;
-    //virtual void fetch_mempool(size_t count_limit, uint64_t minimum_fee, inventory_fetch_handler handler) const = 0;
-    //
-    // Filters.
-    //-------------------------------------------------------------------------
-    //
-    //virtual void filter_blocks(get_data_ptr message, result_handler handler) const = 0;
-    //virtual void filter_transactions(get_data_ptr message, result_handler handler) const = 0;
-    // ------------------------------------------------------------------
+    //typedef void (*block_locator_fetch_handler_t)(chain_t, void*, int, get_headers_ptr_t);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void BlockLocatorFetchHandler(IntPtr chain, IntPtr context, int error, IntPtr getHeaders);
 
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_fetch_block_locator(IntPtr chain, IntPtr context, IntPtr heights, BlockLocatorFetchHandler handler);
 
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern int chain_get_block_locator(IntPtr chain, IntPtr heights, ref IntPtr outHeaders);
 
-    // Subscribers.
-    //-------------------------------------------------------------------------
+    // Subscribers -----------------------------------------------------------------
 
-    //virtual void subscribe_blockchain(reorganize_handler&& handler) = 0;
-    //virtual void subscribe_transaction(transaction_handler&& handler) = 0;
+    //typedef int (*reorganize_handler_t)(chain_t, void*, int, uint64_t /*size_t*/, block_list_t, block_list_t);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void ReorganizeHandler(IntPtr chain, IntPtr context, int error, UInt64 u, IntPtr blockList, IntPtr blockList2);
+
+    //typedef int (*transaction_handler_t)(chain_t, void*, int, transaction_t);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void TransactionHandler(IntPtr chain, IntPtr context, int error, IntPtr transaction);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_subscribe_blockchain(IntPtr chain, IntPtr context, ReorganizeHandler handler);
 
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_subscribe_blockchain(IntPtr chain, void* ctx, reorganize_handler_t handler);
-
-
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_subscribe_transaction(IntPtr chain, void* ctx, transaction_handler_t handler);
+    public static extern void chain_subscribe_transaction(IntPtr chain, IntPtr context, TransactionHandler handler);
 
 
     // Organizers.
     //-------------------------------------------------------------------------
 
-    //virtual void organize(block_const_ptr block, result_handler handler) = 0;
-    //virtual void organize(transaction_const_ptr tx, result_handler handler) = 0;
+    //typedef void (*result_handler_t)(chain_t, void*, int);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void ResultHandler(IntPtr chain, IntPtr context, int error);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_organize_block(IntPtr chain, void* ctx, block_t block, result_handler_t handler);
+    public static extern void chain_organize_block(IntPtr chain, IntPtr context, IntPtr block, ResultHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_organize_block_sync(IntPtr chain, block_t block);
+    public static extern int chain_organize_block_sync(IntPtr chain, IntPtr block);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_organize_transaction(IntPtr chain, void* ctx, transaction_t transaction, result_handler_t handler);
+    public static extern void chain_organize_transaction(IntPtr chain, IntPtr context, IntPtr transaction, ResultHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_organize_transaction_sync(IntPtr chain, transaction_t transaction);
+    public static extern int chain_organize_transaction_sync(IntPtr chain, IntPtr transaction);
 
 
-
-    // ------------------------------------------------
-
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern transaction_t hex_to_tx(char const* tx_hex);
-
+    // Misc ------------------------------------------------
+    //typedef void (*validate_tx_handler_t)(chain_t, void*, int, char const* message);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void ValidateTxHandler(IntPtr chain, IntPtr context, int error, [MarshalAs(UnmanagedType.LPStr)]string message);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_validate_tx(IntPtr chain, void* ctx, transaction_t tx, validate_tx_handler_t handler);
+    public static extern IntPtr hex_to_tx([MarshalAs(UnmanagedType.LPStr)]string txHex);
+
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_validate_tx(IntPtr chain, IntPtr context, IntPtr transaction, ValidateTxHandler handler);
+
 }
 
 }

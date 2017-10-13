@@ -4,29 +4,13 @@ using System.Runtime.InteropServices;
 namespace BitprimCs.Native
 {
 
-public class Chain : IDisposable
+public class Chain
 {
     private IntPtr nativeInstance_;
 
-    ~Chain()
+    internal Chain(IntPtr nativeInstance)
     {
-        Dispose(false);
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            //Release managed resources and call Dispose for member variables
-        }   
-        //Release unmanaged resources
-        ChainNative.chain_destruct(nativeInstance_);
+        nativeInstance_ = nativeInstance;
     }
 }
 

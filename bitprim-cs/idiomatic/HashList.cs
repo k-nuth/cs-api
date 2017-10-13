@@ -54,6 +54,11 @@ public class HashList : IDisposable
         HashListNative.chain_hash_list_destruct(nativeInstance_);
     }
 
+    internal HashList(IntPtr nativeInstance)
+    {
+        nativeInstance_ = nativeInstance;
+    }
+
     internal IntPtr NativeInstance
     {
         get

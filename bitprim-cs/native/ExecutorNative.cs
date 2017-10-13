@@ -10,6 +10,7 @@ public static class ExecutorNative
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void RunHandler(IntPtr ctx, int error);
 
+    //Functions
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int executor_initchain(IntPtr exec);
 
