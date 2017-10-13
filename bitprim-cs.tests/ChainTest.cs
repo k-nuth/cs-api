@@ -1,14 +1,33 @@
 using System;
+using System.Threading;
 using Xunit;
 
-namespace bitprim_cs.tests
+namespace BitprimCs.Tests
 {
-    public class ChainTest
+    public class ChainTest : IClassFixture<ExecutorFixture>
     {
-        [Fact]
-        public void Test1()
+        private ExecutorFixture executorFixture_;
+
+        public ChainTest(ExecutorFixture fixture)
         {
-            Assert.Equal(1, 1);
+            executorFixture_ = fixture;
         }
+
+        [Fact]
+        public void TestFetchLastHeight()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            UInt64 height = 0;
+            Action<int,UInt64> handler = delegate(int theError, UInt64 theHeight)
+            {
+                error = theError;
+                height = theHeight;
+            };
+            executorFixture_.Executor.Chain.FetchLastHeight(handler);
+            handlerDone.WaitOne();
+            Assert.Equal(error, 0);
+        }
+
     }
 }
