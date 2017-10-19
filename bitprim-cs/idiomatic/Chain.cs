@@ -9,6 +9,13 @@ public class Chain
 {
     private IntPtr nativeInstance_;
 
+    public void FetchBlockHeaderByHeight(UInt64 height, Action<int, Header> handler)
+    {
+        GCHandle handlerHandle = GCHandle.Alloc(handler);
+        IntPtr handlerPtr = (IntPtr) handlerHandle;
+        ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, BlockHeaderByHeightFetchHandler);
+    }
+    
     public void FetchLastHeight(Action<int, UInt64> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -21,7 +28,15 @@ public class Chain
         nativeInstance_ = nativeInstance;
     }
 
-    private void LastHeightFetchHandler(IntPtr chain, IntPtr context, int error, UInt64 height)
+    private static void BlockHeaderByHeightFetchHandler(IntPtr chain, IntPtr context, int error, IntPtr header, UInt64 height)
+    {
+        GCHandle handlerHandle = (GCHandle) context;
+        Action<int, Header> handler = (handlerHandle.Target as Action<int, Header>);
+        handler(error, new Header(header));
+        handlerHandle.Free();
+    }
+
+    private static void LastHeightFetchHandler(IntPtr chain, IntPtr context, int error, UInt64 height)
     {
         GCHandle handlerHandle = (GCHandle) context;
         Action<int, UInt64> handler = (handlerHandle.Target as Action<int, UInt64>);
