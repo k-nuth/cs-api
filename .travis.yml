@@ -55,6 +55,9 @@ install:
         pyenv activate conan
       fi
     fi
+  - pip install conan_package_tools --upgrade
+  - pip install conan --upgrade
+  - conan user
   - wget https://raw.githubusercontent.com/dario-ramos/bitprim-cs/dev/conanfile.txt
   - conan install .
   - export DOTNET_INSTALL_DIR="$PWD/.dotnetcli"
