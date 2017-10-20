@@ -96,6 +96,8 @@ install:
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
       export DCMAKE_CXX_COMPILER=g++-5.4
+      export CC=gcc-5.4
+      export CXX=g++-5.4
       conan install . -s compiler=gcc -s compiler.version=5.4
     else
       conan install .
