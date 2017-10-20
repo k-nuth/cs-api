@@ -34,13 +34,20 @@ osx: &osx
 matrix:
    include:
       - <<: *linux
-        env: CONAN_GCC_VERSIONS=5.4 CONAN_DOCKER_IMAGE=lasote/conangcc54
+        addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+        env:
+          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
       - <<: *osx
         osx_image: xcode8.3
-        env: CONAN_APPLE_CLANG_VERSIONS=8.1  
 
-before_install:  
+before_install:
+  - eval "${MATRIX_EVAL}"
   - |
     if test "$TRAVIS_OS_NAME" == "osx"; then
       ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/;
