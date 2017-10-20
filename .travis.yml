@@ -90,6 +90,7 @@ install:
     cd cmake-3.9.0-rc6
     ./bootstrap
     make -j2
+    sudo make install
     cd ..
     rm -r cmake-3.9.0-rc6.tar.gz
   - |
