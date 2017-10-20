@@ -95,7 +95,7 @@ install:
     rm -r cmake-3.9.0-rc6.tar.gz
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      export DCMAKE_CXX_COMPILER=g++-4.8
+      export DCMAKE_CXX_COMPILER=g++-5.4
       conan install . -s compiler=gcc -s compiler.version=5.4
     else
       conan install .
