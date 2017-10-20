@@ -58,6 +58,7 @@ install:
   - sudo -H pip install conan_package_tools --upgrade
   - sudo -H pip install conan --upgrade
   - conan user
+  - conan remote add bitprim_temp https://api.bintray.com/conan/bitprim/bitprim
   - wget https://raw.githubusercontent.com/dario-ramos/bitprim-cs/dev/conanfile.txt
   - conan install .
   - export DOTNET_INSTALL_DIR="$PWD/.dotnetcli"
