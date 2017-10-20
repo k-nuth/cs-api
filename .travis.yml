@@ -85,7 +85,7 @@ install:
   - conan remote add bitprim_temp https://api.bintray.com/conan/bitprim/bitprim
   - wget https://raw.githubusercontent.com/dario-ramos/bitprim-cs/dev/conanfile.txt
   - |
-    if [[ "${TRAVIS_OS_NAME}" != "linux" ]]; then
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
       conan install . -s compiler.version=5.4
     else
       conan install .
