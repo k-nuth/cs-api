@@ -86,7 +86,7 @@ install:
   - wget https://raw.githubusercontent.com/dario-ramos/bitprim-cs/dev/conanfile.txt
   - |
     wget https://cmake.org/files/v3.9/cmake-3.9.0-rc6.tar.gz
-    tar -xvzf cmake-3.9.0-rc6.tar.gz
+    tar -xzf cmake-3.9.0-rc6.tar.gz
     cd cmake-3.9.0-rc6
     ./bootstrap
     make -j2
