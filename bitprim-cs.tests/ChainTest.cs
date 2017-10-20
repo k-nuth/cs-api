@@ -8,7 +8,7 @@ namespace BitprimCs.Tests
 {
     public class ChainTest : IClassFixture<ExecutorFixture>
     {
-        private ExecutorFixture executorFixture_;
+        ExecutorFixture executorFixture_;
 
         public ChainTest(ExecutorFixture fixture)
         {
@@ -32,7 +32,7 @@ namespace BitprimCs.Tests
             Assert.Equal(error, 0);
         }
 
-        [Fact]
+        /*[Fact]
         public void TestFetchBlockHeaderByHeight()
         {
             var handlerDone = new AutoResetEvent(false);
@@ -60,7 +60,7 @@ namespace BitprimCs.Tests
             
             DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
             Assert.Equal(utcTime.ToString("%Y-%m-%d %H:%M:%S"), "2009-01-03 18:15:05");
-        }
+        }*/
 
         public static string ByteArrayToHexString(byte[] ba)
         {

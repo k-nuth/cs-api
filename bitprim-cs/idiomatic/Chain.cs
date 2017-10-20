@@ -1,8 +1,9 @@
+using BitprimCs.Native;
 using System;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
-namespace BitprimCs.Native
+namespace BitprimCs
 {
 
 public class Chain
@@ -36,11 +37,11 @@ public class Chain
         handlerHandle.Free();
     }
 
-    private static void LastHeightFetchHandler(IntPtr chain, IntPtr context, int error, UInt64 height)
+    private static void LastHeightFetchHandler(IntPtr chain, IntPtr context, int error, UIntPtr height)
     {
         GCHandle handlerHandle = (GCHandle) context;
         Action<int, UInt64> handler = (handlerHandle.Target as Action<int, UInt64>);
-        handler(error, height);
+        handler(error, (UInt64) height);
         handlerHandle.Free();
     }
 }

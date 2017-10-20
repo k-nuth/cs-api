@@ -11,10 +11,11 @@ public class ExecutorFixture : IDisposable
     {
         exec_ = new Executor("");
         int result = exec_.InitChain();
-        if(result != 0)
+        /*if(result != 0)
         {
             throw new InvalidOperationException("InitChain error: " + result);
-        }
+        }*/
+        result = exec_.RunWait();
     }
 
     public Executor Executor

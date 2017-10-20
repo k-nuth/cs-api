@@ -10,6 +10,8 @@ dotnet build webtest.csproj -c Release
 
 #Run tests
 cd ..
+#Copy native dependencies
+cp bitprim/* ./bitprim-cs.tests/bin/Release/netcoreapp1.1 
 cd bitprim-cs.tests
 dotnet restore
 dotnet test

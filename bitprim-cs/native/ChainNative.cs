@@ -14,7 +14,7 @@ public static class ChainNative
 
     //typedef void (*last_height_fetch_handler_t)(chain_t, void*, int, UInt64 /*size_t*/ h);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void LastHeightFetchHandler(IntPtr chain, IntPtr context, int error, UInt64 height);
+    public delegate void LastHeightFetchHandler(IntPtr chain, IntPtr context, int error, UIntPtr height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_fetch_block_height(IntPtr chain, IntPtr context, byte[] hash, BlockHeightFetchHandler handler);

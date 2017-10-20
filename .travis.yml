@@ -30,7 +30,33 @@ before_install:
       ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/;
     fi
 
-install:  
+install:
+  - set -e
+
+  - |
+    if [[ "${UPDATE_DOCS}" != "true" ]]; then
+      if [[ "${TRAVIS_OS_NAME}" != "linux" ]]; then
+        brew update || brew update
+        brew outdated pyenv || brew upgrade pyenv
+        brew install pyenv-virtualenv
+        brew install cmake || true
+        if which pyenv > /dev/null; then
+            eval "$(pyenv init -)"
+            eval "$(pyenv virtualenv-init -)" 
+        fi
+        if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+          pyenv install 2.7.10
+          pyenv virtualenv 2.7.10 conan
+        else
+          pyenv install 3.6.1
+          pyenv virtualenv 3.6.1 conan
+        fi
+        pyenv rehash
+        pyenv activate conan
+      fi
+    fi
+  - wget https://raw.githubusercontent.com/dario-ramos/bitprim-cs/dev/conanfile.txt
+  - conan install .
   - export DOTNET_INSTALL_DIR="$PWD/.dotnetcli"
   - curl -sSL https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
   - export PATH="$DOTNET_INSTALL_DIR:$PATH"  

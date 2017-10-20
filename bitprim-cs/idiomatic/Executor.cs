@@ -40,7 +40,8 @@ public class Executor : IDisposable
 
     public int RunWait()
     {
-        return ExecutorNative.executor_run_wait(nativeInstance_);
+        int result = ExecutorNative.executor_run_wait(nativeInstance_);
+        return result;
     }
 
     public void Dispose()
@@ -68,6 +69,7 @@ public class Executor : IDisposable
         GCHandle handlerHandle = (GCHandle) handlerPtr;
         Action<int> handler = (handlerHandle.Target as Action<int>);
         handler(error);
+        handlerHandle.Free();
     }
 
 }
