@@ -84,7 +84,12 @@ install:
   - conan user
   - conan remote add bitprim_temp https://api.bintray.com/conan/bitprim/bitprim
   - wget https://raw.githubusercontent.com/dario-ramos/bitprim-cs/dev/conanfile.txt
-  - conan install .
+  - |
+    if [[ "${TRAVIS_OS_NAME}" != "linux" ]]; then
+      conan install . -s compiler.version=5.4
+    else
+      conan install .
+    fi
   - export DOTNET_INSTALL_DIR="$PWD/.dotnetcli"
   - curl -sSL https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
   - export PATH="$DOTNET_INSTALL_DIR:$PATH"  
