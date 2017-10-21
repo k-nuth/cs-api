@@ -39,6 +39,7 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
+            - gcc-5
             - g++-5
         env:
           - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
@@ -107,5 +108,7 @@ install:
   - curl -sSL https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
   - export PATH="$DOTNET_INSTALL_DIR:$PATH"  
 script:
+  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc
+  - gcc --version
   - chmod +x build.sh  
   - ./build.sh
