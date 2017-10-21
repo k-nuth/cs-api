@@ -95,6 +95,7 @@ install:
     rm -r cmake-3.9.0-rc6.tar.gz
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      dpkg --list | grep compiler
       export DCMAKE_CXX_COMPILER=g++-5.4
       export CC=gcc-5.4
       export CXX=g++-5.4
