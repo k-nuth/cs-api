@@ -32,7 +32,7 @@ namespace BitprimCs.Tests
             Assert.Equal(error, 0);
         }
 
-        /*[Fact]
+        [Fact]
         public void TestFetchBlockHeaderByHeight()
         {
             var handlerDone = new AutoResetEvent(false);
@@ -41,6 +41,7 @@ namespace BitprimCs.Tests
 
             Action<int, Header> handler = delegate(int theError, Header theHeader)
             {
+                Console.WriteLine(header.Hash);
                 error = theError;
                 header = theHeader;
                 handlerDone.Set();
@@ -50,7 +51,6 @@ namespace BitprimCs.Tests
 
             Assert.Equal(error, 0);
             Assert.NotNull(header);
-            //Assert.Equal(header.Height, 0);
             Assert.Equal(ByteArrayToHexString(header.Hash), "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
             Assert.Equal(ByteArrayToHexString(header.Merkle), "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
             Assert.Equal(ByteArrayToHexString(header.PreviousBlockHash), "0000000000000000000000000000000000000000000000000000000000000000");
@@ -60,7 +60,7 @@ namespace BitprimCs.Tests
             
             DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
             Assert.Equal(utcTime.ToString("%Y-%m-%d %H:%M:%S"), "2009-01-03 18:15:05");
-        }*/
+        }
 
         public static string ByteArrayToHexString(byte[] ba)
         {

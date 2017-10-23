@@ -18,7 +18,7 @@ public class Header : IDisposable
     {
         get
         {
-            return HeaderNative.header_is_valid(nativeInstance_) != 0; 
+            return HeaderNative.chain_header_is_valid(nativeInstance_) != 0; 
         }
     }
 
@@ -26,7 +26,11 @@ public class Header : IDisposable
     {
         get
         {
-            return HeaderNative.header_hash(nativeInstance_);
+            //IntPtr nativeHash = HeaderNative.chain_header_hash(nativeInstance_);
+            //hash_t managedHash = (hash_t)Marshal.PtrToStructure(nativeHash, typeof(hash_t));
+            //return managedHash.hash;
+            var managedHash = HeaderNative.chain_header_hash(nativeInstance_);            
+            return managedHash.hash;
         }
     }
 
@@ -34,7 +38,7 @@ public class Header : IDisposable
     {
         get
         {
-            return HeaderNative.header_merkle(nativeInstance_);
+            return HeaderNative.chain_header_merkle(nativeInstance_);
         }
     }
 
@@ -42,7 +46,7 @@ public class Header : IDisposable
     {
         get
         {
-            return HeaderNative.header_previous_block_hash(nativeInstance_);
+            return HeaderNative.chain_header_previous_block_hash(nativeInstance_);
         }
     }
 
@@ -50,11 +54,11 @@ public class Header : IDisposable
     {
         get
         {
-            return HeaderNative.header_bits(nativeInstance_);
+            return HeaderNative.chain_header_bits(nativeInstance_);
         }
         set
         {
-            HeaderNative.header_set_bits(nativeInstance_, value);
+            HeaderNative.chain_header_set_bits(nativeInstance_, value);
         }
     }
 
@@ -62,11 +66,11 @@ public class Header : IDisposable
     {
         get
         {
-            return HeaderNative.header_nonce(nativeInstance_);
+            return HeaderNative.chain_header_nonce(nativeInstance_);
         }
         set
         {
-            HeaderNative.header_set_nonce(nativeInstance_, value);
+            HeaderNative.chain_header_set_nonce(nativeInstance_, value);
         }
     }
 
@@ -74,11 +78,11 @@ public class Header : IDisposable
     {
         get
         {
-            return HeaderNative.header_timestamp(nativeInstance_);
+            return HeaderNative.chain_header_timestamp(nativeInstance_);
         }
         set
         {
-            HeaderNative.header_set_timestamp(nativeInstance_, value);
+            HeaderNative.chain_header_set_timestamp(nativeInstance_, value);
         }
     }
 
@@ -86,11 +90,11 @@ public class Header : IDisposable
     {
         get
         {
-            return HeaderNative.header_version(nativeInstance_);
+            return HeaderNative.chain_header_version(nativeInstance_);
         }
         set
         {
-            HeaderNative.header_set_version(nativeInstance_, value);
+            HeaderNative.chain_header_set_version(nativeInstance_, value);
         }
     }
 
@@ -107,7 +111,7 @@ public class Header : IDisposable
             //Release managed resources and call Dispose for member variables
         }   
         //Release unmanaged resources
-        HeaderNative.header_destruct(nativeInstance_);
+        HeaderNative.chain_header_destruct(nativeInstance_);
     }
 
     internal Header(IntPtr nativeInstance)
