@@ -7,17 +7,6 @@ namespace BitprimCs.Native
 public static class HeaderNative
 {
 
-    //TODO Try marshaling as out param instead
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    [return:MarshalAs( UnmanagedType.Struct)]
-    public static extern hash_t chain_header_hash(IntPtr header);
-
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern byte[] chain_header_merkle(IntPtr header);
-
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern byte[] chain_header_previous_block_hash(IntPtr header);
-
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int chain_header_is_valid(IntPtr header);
 
@@ -35,6 +24,15 @@ public static class HeaderNative
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_header_destruct(IntPtr header);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_header_hash_out(IntPtr header, ref hash_t out_hash);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_header_merkle_out(IntPtr header, ref hash_t out_merkle);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_header_previous_block_hash(IntPtr header, ref hash_t out_previous_block_hash);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_header_set_bits(IntPtr header, UInt32 bits);

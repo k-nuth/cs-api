@@ -41,7 +41,6 @@ namespace BitprimCs.Tests
 
             Action<int, Header> handler = delegate(int theError, Header theHeader)
             {
-                Console.WriteLine(header.Hash);
                 error = theError;
                 header = theHeader;
                 handlerDone.Set();
@@ -51,23 +50,23 @@ namespace BitprimCs.Tests
 
             Assert.Equal(error, 0);
             Assert.NotNull(header);
-            Assert.Equal(ByteArrayToHexString(header.Hash), "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            Assert.Equal(ByteArrayToHexString(header.Merkle), "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
-            Assert.Equal(ByteArrayToHexString(header.PreviousBlockHash), "0000000000000000000000000000000000000000000000000000000000000000");
-            Assert.Equal<UInt32>(header.Version, 1);
-            Assert.Equal<UInt32>(header.Bits, 486604799);
-            Assert.Equal<UInt32>(header.Nonce, 2083236893);
+            Assert.Equal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", ByteArrayToHexString(header.Hash));
+            Assert.Equal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", ByteArrayToHexString(header.Merkle));
+            Assert.Equal("0000000000000000000000000000000000000000000000000000000000000000", ByteArrayToHexString(header.PreviousBlockHash));
+            Assert.Equal<UInt32>(1, header.Version);
+            Assert.Equal<UInt32>(486604799, header.Bits);
+            Assert.Equal<UInt32>(2083236893, header.Nonce);
             
             DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
-            Assert.Equal(utcTime.ToString("%Y-%m-%d %H:%M:%S"), "2009-01-03 18:15:05");
+            Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
         public static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);
-            foreach (byte b in ba)
+            for(int i=ba.Length-1; i>=0; i--)
             {
-                hexString.AppendFormat("{0:x2}", b);
+                hexString.AppendFormat("{0:x2}", ba[i]);
             }
             return hexString.ToString();
         }
