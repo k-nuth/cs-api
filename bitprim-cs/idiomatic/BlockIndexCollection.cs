@@ -53,6 +53,14 @@ public class BlockIndexCollection : IDisposable
         //Release unmanaged resources
         BlockIndexesNative.chain_block_indexes_destruct(nativeInstance_);
     }
+
+    internal IntPtr NativeInstance
+    {
+        get
+        {
+            return nativeInstance_;
+        }
+    }
 }
 
 public class BlockIndexCollectionEnumerator : IEnumerator

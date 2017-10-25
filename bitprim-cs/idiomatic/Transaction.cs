@@ -12,6 +12,11 @@ public class Transaction : IDisposable
         nativeInstance_ = TransactionNative.chain_transaction_construct_default();
     }
 
+    public Transaction(string hexString)
+    {
+        nativeInstance_ = ChainNative.hex_to_tx(hexString);
+    }
+
     public Transaction(UInt32 version, UInt32 locktime, InputList inputs, OutputList outputs)
     {
         nativeInstance_ = TransactionNative.chain_transaction_construct

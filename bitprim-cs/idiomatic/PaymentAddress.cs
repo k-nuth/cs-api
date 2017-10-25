@@ -49,6 +49,14 @@ public class PaymentAddress : IDisposable
         //Release unmanaged resources
         PaymentAddressNative.chain_payment_address_destruct(nativeInstance_);
     }
+
+    internal IntPtr NativeInstance
+    {
+        get
+        {
+            return nativeInstance_;
+        }
+    }
 }
 
 }

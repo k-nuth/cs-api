@@ -52,6 +52,14 @@ public class Binary : IDisposable
         //Release unmanaged resources
         BinaryNative.binary_destruct(nativeInstance_);
     }
+
+    internal IntPtr NativeInstance
+    {
+        get
+        {
+            return nativeInstance_;
+        }
+    }
 }
 
 }

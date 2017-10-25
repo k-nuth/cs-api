@@ -80,6 +80,11 @@ public class HeaderReader : IDisposable
         //Release unmanaged resources
         GetHeadersNative.chain_get_headers_destruct(nativeInstance_);
     }
+
+    internal HeaderReader(IntPtr nativeInstance)
+    {
+        nativeInstance_ = nativeInstance;
+    }
 }
 
 }

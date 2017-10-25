@@ -15,6 +15,11 @@ public class BlockList : IDisposable
         nativeInstance_ = BlockListNative.chain_block_list_construct_default();
     }
 
+    internal BlockList(IntPtr nativeInstance)
+    {
+        nativeInstance_ = nativeInstance;
+    }
+
     ~BlockList()
     {
         Dispose(false);
