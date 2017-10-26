@@ -8,9 +8,6 @@ public static class MerkleBlockNative
 {
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern byte[] chain_merkle_block_hash_nth(IntPtr block, UIntPtr /*size_t*/ n);
-
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int /*bool*/ chain_merkle_block_is_valid(IntPtr block);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
@@ -30,6 +27,9 @@ public static class MerkleBlockNative
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_merkle_block_reset(IntPtr block);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_merkle_block_hash_nth_out(IntPtr block, UIntPtr /*size_t*/ n, ref hash_t out_hash);
 
 }
 

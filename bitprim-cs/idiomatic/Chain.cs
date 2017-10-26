@@ -133,14 +133,14 @@ public class Chain
 
     #region Merkle Block
 
-    public void FetchMerkleBlockByHash(byte[] blockHash, Action<int, MerkleBlock> handler)
+    public void FetchMerkleBlockByHash(byte[] blockHash, Action<int, MerkleBlock, UInt64> handler)
     {
         var managedHash = new hash_t
         {
             hash = blockHash
         };
         IntPtr contextPtr = CreateContext(handler, managedHash);
-        ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchMerkleBlockHandler);
+        ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchMerkleBlockByHashHandler);
     }
 
     public Tuple<int, MerkleBlock, UInt64> GetMerkleBlockByHash(byte[] blockHash)
@@ -159,7 +159,7 @@ public class Chain
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
         IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, FetchMerkleBlockHandler);
+        ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, FetchMerkleBlockByHeightHandler);
     }
 
     public Tuple<int, MerkleBlock, UInt64> GetMerkleBlockByHeight(UInt64 height)
@@ -266,9 +266,8 @@ public class Chain
 
     public void FetchSpend(OutputPoint outputPoint, Action<int, Point> handler)
     {
-        GCHandle handlerHandle = GCHandle.Alloc(handler);
-        IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_spend(nativeInstance_, handlerPtr, outputPoint.NativeInstance, FetchSpendHandler);
+        IntPtr contextPtr = CreateContext(handler, outputPoint);
+        ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, FetchSpendHandler);
     }
 
     #endregion //Spend
@@ -466,7 +465,16 @@ public class Chain
         handlerHandle.Free();
     }
 
-    private static void FetchMerkleBlockHandler(IntPtr chain, IntPtr context, int error, IntPtr merkleBlock, UInt64 height)
+    private static void FetchMerkleBlockByHashHandler(IntPtr chain, IntPtr contextPtr, int error, IntPtr merkleBlock, UInt64 height)
+    {
+        GCHandle contextHandle = (GCHandle) contextPtr;
+        Tuple<Action<int, MerkleBlock, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<int, MerkleBlock, UInt64>, hash_t>);
+        Action<int, MerkleBlock, UInt64> handler = context.Item1;
+        handler(error, new MerkleBlock(merkleBlock), height);
+        contextHandle.Free();
+    }
+
+    private static void FetchMerkleBlockByHeightHandler(IntPtr chain, IntPtr context, int error, IntPtr merkleBlock, UInt64 height)
     {
         GCHandle handlerHandle = (GCHandle) context;
         Action<int, MerkleBlock> handler = (handlerHandle.Target as Action<int, MerkleBlock>);
@@ -474,12 +482,13 @@ public class Chain
         handlerHandle.Free();
     }
 
-    private static void FetchSpendHandler(IntPtr chain, IntPtr context, int error, IntPtr inputPoint)
+    private static void FetchSpendHandler(IntPtr chain, IntPtr contextPtr, int error, IntPtr inputPoint)
     {
-        GCHandle handlerHandle = (GCHandle) context;
-        Action<int, Point> handler = (handlerHandle.Target as Action<int, Point>);
+        GCHandle contextHandle = (GCHandle) contextPtr;
+        Tuple<Action<int, Point>, OutputPoint> context = (contextHandle.Target as Tuple<Action<int, Point>, OutputPoint>);
+        Action<int, Point> handler = context.Item1;
         handler(error, new Point(inputPoint));
-        handlerHandle.Free();
+        contextHandle.Free();
     }
 
     private static void FetchStealthHandler(IntPtr chain, IntPtr context, int error, IntPtr stealth)

@@ -26,9 +26,6 @@ public class Header : IDisposable
     {
         get
         {
-            //IntPtr nativeHash = HeaderNative.chain_header_hash(nativeInstance_);
-            //hash_t managedHash = (hash_t)Marshal.PtrToStructure(nativeHash, typeof(hash_t));
-            //return managedHash.hash;
             var managedHash = new hash_t();
             HeaderNative.chain_header_hash_out(nativeInstance_, ref managedHash);
             return managedHash.hash;

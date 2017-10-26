@@ -1,7 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
+using BitprimCs.Native;
 
-namespace BitprimCs.Native
+namespace BitprimCs
 {
 
 public class MerkleBlock : IDisposable
@@ -23,7 +24,9 @@ public class MerkleBlock : IDisposable
 
     public byte[] GetNthHash(int n)
     {
-        return MerkleBlockNative.chain_merkle_block_hash_nth(nativeInstance_, (UIntPtr) n);
+        var managedHash = new hash_t();
+        MerkleBlockNative.chain_merkle_block_hash_nth_out(nativeInstance_, (UIntPtr) n, ref managedHash);
+        return managedHash.hash;
     }
 
     public Header Header

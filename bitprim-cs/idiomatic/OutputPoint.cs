@@ -13,9 +13,13 @@ public class OutputPoint : IDisposable
         nativeInstance_ = OutputPointNative.output_point_construct();
     }
 
-    public OutputPoint(byte[] hash, UInt32 index)
+    public OutputPoint(byte[] pointHash, UInt32 index)
     {
-        nativeInstance_ = OutputPointNative.output_point_construct_from_hash_index(hash, index);
+        var managedHash = new hash_t
+        {
+            hash = pointHash
+        };
+        nativeInstance_ = OutputPointNative.output_point_construct_from_hash_index(managedHash, index);
     }
 
     ~OutputPoint()
@@ -27,7 +31,9 @@ public class OutputPoint : IDisposable
     {
         get
         {
-            return OutputPointNative.output_point_get_hash(nativeInstance_);
+            var managedHash = new hash_t();
+            OutputPointNative.output_point_get_hash_out(nativeInstance_, ref managedHash);
+            return managedHash.hash;
         }
     }
 

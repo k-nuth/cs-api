@@ -18,18 +18,8 @@ namespace BitprimCs.Tests
         [Fact]
         public void TestFetchLastHeight()
         {
-            var handlerDone = new AutoResetEvent(false);
-            int error = 0;
-            UInt64 height = 0;
-            Action<int,UInt64> handler = delegate(int theError, UInt64 theHeight)
-            {
-                error = theError;
-                height = theHeight;
-                handlerDone.Set();
-            };
-            executorFixture_.Executor.Chain.FetchLastHeight(handler);
-            handlerDone.WaitOne();
-            Assert.Equal(0, error);
+            Tuple<int,UInt64> errorAndHeight = GetLastHeight();
+            Assert.Equal(0, errorAndHeight.Item1);
         }
 
         [Fact]
@@ -140,6 +130,59 @@ namespace BitprimCs.Tests
             Assert.Equal<UInt64>(0, height);
         }
 
+        // [Fact]
+        // public void TestFetchSpend()
+        // {
+        //     var handlerDone = new AutoResetEvent(false);
+        //     WaitUntilBlock(170);
+
+        //     int error = 0;
+        //     Point point = null;
+
+        //     Action<int, Point> handler = delegate(int theError, Point thePoint)
+        //     {
+        //         error = theError;
+        //         point = thePoint;
+        //         handlerDone.Set();
+        //     };
+        //     byte[] hash = HexStringToByteArray("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9");
+        //     OutputPoint outputPoint = new OutputPoint(hash, 0);
+        //     executorFixture_.Executor.Chain.FetchSpend(outputPoint, handler);
+        //     handlerDone.WaitOne();
+
+        //     //Assert.Equal(0, error); //TODO Why does it return 3?
+        //     Assert.NotNull(point);
+        //     Assert.Equal("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16", ByteArrayToHexString(outputPoint.Hash));
+        //     Assert.Equal<UInt32>(0, point.Index);
+        // }
+
+        [Fact]
+        public void TestFetchMerkleBlockByHash()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            MerkleBlock merkleBlock = null;
+            UInt64 height = 0;
+
+            Action<int, MerkleBlock, UInt64> handler = delegate(int theError, MerkleBlock theBlock, UInt64 theHeight)
+            {
+                error = theError;
+                merkleBlock = theBlock;
+                height = theHeight;
+                handlerDone.Set();
+            };
+            //https://blockchain.info/es/block-height/0
+            byte[] hash = HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            executorFixture_.Executor.Chain.FetchMerkleBlockByHash(hash, handler);
+            handlerDone.WaitOne();
+
+            Assert.Equal(0, error);
+            Assert.NotNull(merkleBlock);
+            Assert.Equal<UInt64>(0, height);
+            Assert.Equal<UInt64>(1, merkleBlock.TotalTransactionCount);
+            VerifyGenesisBlockHeader(merkleBlock.Header);
+        }
+
         private static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);
@@ -173,6 +216,37 @@ namespace BitprimCs.Tests
             Assert.Equal<UInt32>(2083236893, header.Nonce);            
             DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
             Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
+        }
+
+        private Tuple<int, UInt64> GetLastHeight()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            UInt64 height = 0;
+            Action<int, UInt64> handler = delegate(int theError, UInt64 theHeight)
+            {
+                error = theError;
+                height = theHeight;
+                handlerDone.Set();
+            };
+            executorFixture_.Executor.Chain.FetchLastHeight(handler);
+            handlerDone.WaitOne();
+            return new Tuple<int, UInt64>(error, height);
+        }
+
+        private void WaitUntilBlock(UInt64 desiredHeight)
+        {
+            int error = 0;
+            UInt64 height = 0;            
+            while(error == 0 && height < desiredHeight){
+                Tuple<int, UInt64> errorAndHeight = GetLastHeight();
+                error = errorAndHeight.Item1;
+                height = errorAndHeight.Item2;
+                if(height < desiredHeight)
+                {
+                    System.Threading.Thread.Sleep(10000);
+                }
+            }
         }
 
     }
