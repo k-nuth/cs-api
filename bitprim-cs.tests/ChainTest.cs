@@ -183,6 +183,52 @@ namespace BitprimCs.Tests
             VerifyGenesisBlockHeader(merkleBlock.Header);
         }
 
+        [Fact]
+        public void TestFetchMerkleBlockByHeight()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            MerkleBlock merkleBlock = null;
+            UInt64 height = 0;
+
+            Action<int, MerkleBlock, UInt64> handler = delegate(int theError, MerkleBlock theBlock, UInt64 theHeight)
+            {
+                error = theError;
+                merkleBlock = theBlock;
+                height = theHeight;
+                handlerDone.Set();
+            };
+            //https://blockchain.info/es/block-height/0
+            executorFixture_.Executor.Chain.FetchMerkleBlockByHeight(0, handler);
+            handlerDone.WaitOne();
+
+            Assert.Equal(0, error);
+            Assert.NotNull(merkleBlock);
+            Assert.Equal<UInt64>(0, height);
+            Assert.Equal<UInt64>(1, merkleBlock.TotalTransactionCount);
+            VerifyGenesisBlockHeader(merkleBlock.Header);
+        }
+
+        [Fact]
+        public void TestFetchStealth()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            StealthCompactList list = null;
+
+            Action<int, StealthCompactList> handler = delegate(int theError, StealthCompactList theList)
+            {
+                error = theError;
+                list = theList;
+                handlerDone.Set();
+            };
+            executorFixture_.Executor.Chain.FetchStealth(new Binary("1111"), 0, handler);
+            handlerDone.WaitOne();
+            
+            Assert.Equal(0, error);
+            Assert.Equal<uint>(0, list.Count);
+        }
+
         private static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);

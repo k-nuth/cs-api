@@ -155,7 +155,7 @@ public class Chain
         return new Tuple<int, MerkleBlock, UInt64>(result, new MerkleBlock(merkleBlock), height);
     }
 
-    public void FetchMerkleBlockByHeight(UInt64 height, Action<int, MerkleBlock> handler)
+    public void FetchMerkleBlockByHeight(UInt64 height, Action<int, MerkleBlock, UInt64> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
         IntPtr handlerPtr = (IntPtr) handlerHandle;
@@ -294,9 +294,8 @@ public class Chain
 
     public void FetchStealth(Binary filter, UInt64 fromHeight, Action<int, StealthCompactList> handler)
     {
-        GCHandle handlerHandle = GCHandle.Alloc(handler);
-        IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_stealth(nativeInstance_, handlerPtr, filter.NativeInstance, fromHeight, FetchStealthHandler);
+        IntPtr contextPtr = CreateContext(handler, filter);
+        ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, FetchStealthHandler);
     }
 
     #endregion //Stealth
@@ -477,8 +476,8 @@ public class Chain
     private static void FetchMerkleBlockByHeightHandler(IntPtr chain, IntPtr context, int error, IntPtr merkleBlock, UInt64 height)
     {
         GCHandle handlerHandle = (GCHandle) context;
-        Action<int, MerkleBlock> handler = (handlerHandle.Target as Action<int, MerkleBlock>);
-        handler(error, new MerkleBlock(merkleBlock));
+        Action<int, MerkleBlock, UInt64> handler = (handlerHandle.Target as Action<int, MerkleBlock, UInt64>);
+        handler(error, new MerkleBlock(merkleBlock), height);
         handlerHandle.Free();
     }
 
@@ -491,12 +490,13 @@ public class Chain
         contextHandle.Free();
     }
 
-    private static void FetchStealthHandler(IntPtr chain, IntPtr context, int error, IntPtr stealth)
+    private static void FetchStealthHandler(IntPtr chain, IntPtr contextPtr, int error, IntPtr stealth)
     {
-        GCHandle handlerHandle = (GCHandle) context;
-        Action<int, StealthCompactList> handler = (handlerHandle.Target as Action<int, StealthCompactList>);
+        GCHandle contextHandle = (GCHandle) contextPtr;
+        Tuple<Action<int, StealthCompactList>, Binary> context = (contextHandle.Target as Tuple<Action<int, StealthCompactList>, Binary>);
+        Action<int, StealthCompactList> handler = context.Item1;
         handler(error, new StealthCompactList(stealth));
-        handlerHandle.Free();
+        contextHandle.Free();
     }
 
     private static void FetchTransactionByHashHandler(IntPtr chain, IntPtr contextPtr, int error, IntPtr transaction, UInt64 index, UInt64 height)
