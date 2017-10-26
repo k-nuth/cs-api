@@ -25,7 +25,9 @@ public class Point
     {
         get
         {
-            return PointNative.chain_point_get_hash(nativeInstance_);
+            var managedHash = new hash_t();
+            PointNative.chain_point_get_hash_out(nativeInstance_, ref managedHash);
+            return managedHash.hash;
         }
     }
 
