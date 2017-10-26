@@ -8,10 +8,10 @@ public static class TransactionNative
 {
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern byte[] chain_transaction_hash(IntPtr transaction);
+    public static extern void chain_transaction_hash_out(IntPtr transaction, ref hash_t hash);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern byte[] chain_transaction_hash_sighash_type(IntPtr transaction, UInt32 sighash_type);
+    public static extern void chain_transaction_hash_sighash_type_out(IntPtr transaction, UInt32 sighash_type, ref hash_t hash);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int /*bool*/ chain_transaction_is_coinbase(IntPtr transaction);
@@ -20,10 +20,10 @@ public static class TransactionNative
     public static extern int /*bool*/ chain_transaction_is_double_spend(IntPtr transaction, int /*bool*/ include_unconfirmed);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int /*bool*/ chain_transaction_is_final(IntPtr transaction, UIntPtr block_height, UInt32 block_time);
+    public static extern int /*bool*/ chain_transaction_is_final(IntPtr transaction, UInt64 block_height, UInt32 block_time);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int /*bool*/ chain_transaction_is_immature(IntPtr transaction, UIntPtr target_height);
+    public static extern int /*bool*/ chain_transaction_is_immature(IntPtr transaction, UInt64 target_height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int /*bool*/ chain_transaction_is_locktime_conflict(IntPtr transaction);
@@ -71,13 +71,13 @@ public static class TransactionNative
     public static extern UInt64 chain_transaction_total_output_value(IntPtr transaction);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern UIntPtr chain_transaction_serialized_size(IntPtr transaction, int wire /*= true*/);
+    public static extern UInt64 chain_transaction_serialized_size(IntPtr transaction, int wire /*= true*/);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern UIntPtr chain_transaction_signature_operations(IntPtr transaction);
+    public static extern UInt64 chain_transaction_signature_operations(IntPtr transaction);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern UIntPtr chain_transaction_signature_operations_bip16_active(IntPtr transaction, int /*bool*/ bip16_active);
+    public static extern UInt64 chain_transaction_signature_operations_bip16_active(IntPtr transaction, int /*bool*/ bip16_active);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_transaction_destruct(IntPtr transaction);    

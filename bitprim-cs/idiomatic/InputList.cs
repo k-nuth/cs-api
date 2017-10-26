@@ -15,6 +15,11 @@ public class InputList : IDisposable
         nativeInstance_ = InputListNative.chain_input_list_construct_default();
     }
 
+    internal InputList(IntPtr nativeInstance)
+    {
+        nativeInstance_ = nativeInstance;
+    }
+
     ~InputList()
     {
         Dispose(false);

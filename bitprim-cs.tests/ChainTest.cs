@@ -8,7 +8,8 @@ namespace BitprimCs.Tests
 {
     public class ChainTest : IClassFixture<ExecutorFixture>
     {
-        ExecutorFixture executorFixture_;
+        private const int FIRST_NON_COINBASE_BLOCK_HEIGHT = 170;
+        private ExecutorFixture executorFixture_;
 
         public ChainTest(ExecutorFixture fixture)
         {
@@ -134,7 +135,7 @@ namespace BitprimCs.Tests
         // public void TestFetchSpend()
         // {
         //     var handlerDone = new AutoResetEvent(false);
-        //     WaitUntilBlock(170);
+        //     WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT);
 
         //     int error = 0;
         //     Point point = null;
@@ -229,6 +230,36 @@ namespace BitprimCs.Tests
             Assert.Equal<uint>(0, list.Count);
         }
 
+        [Fact]
+        public void TestFetchTransaction()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            Transaction tx = null;
+            UInt64 height = 0;
+            UInt64 index = 0;
+
+            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT);
+
+            Action<int, Transaction, UInt64, UInt64> handler = delegate(int theError, Transaction theTx, UInt64 theIndex, UInt64 theHeight)
+            {
+                error = theError;
+                tx = theTx;
+                height = theHeight;
+                index = theIndex;
+                handlerDone.Set();
+            };
+            string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
+            byte[] hash = HexStringToByteArray(txHashHexStr);
+            executorFixture_.Executor.Chain.FetchTransaction(hash, true, handler);
+            handlerDone.WaitOne();
+
+            Assert.Equal(0, error);
+            Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, height);
+            Assert.Equal<UInt64>(1, index);
+            CheckFirstNonCoinbaseTxFromHeight170(tx, txHashHexStr);
+        }
+
         private static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);
@@ -278,6 +309,30 @@ namespace BitprimCs.Tests
             executorFixture_.Executor.Chain.FetchLastHeight(handler);
             handlerDone.WaitOne();
             return new Tuple<int, UInt64>(error, height);
+        }
+
+        private void CheckFirstNonCoinbaseTxFromHeight170(Transaction tx, string txHashHexStr)
+        {
+            Assert.Equal<UInt32>(1, tx.Version);
+            Assert.Equal(txHashHexStr, ByteArrayToHexString(tx.Hash));
+            Assert.Equal<UInt32>(0, tx.Locktime);
+            Assert.Equal<UInt64>(275, tx.GetSerializedSize(true));
+            Assert.Equal<UInt64>(275, tx.GetSerializedSize(false)); //TODO(dario) Does it make sense that it's the same value?
+            Assert.Equal<UInt64>(0, tx.Fees);
+            Assert.True(0 <= tx.SignatureOperations && tx.SignatureOperations <= Math.Pow(2, 64));
+            Assert.Equal<UInt64>(2, tx.GetSignatureOperationsBip16Active(true));
+            Assert.Equal<UInt64>(2, tx.GetSignatureOperationsBip16Active(false)); //TODO(dario) Does it make sense that it's the same value?
+            Assert.Equal<UInt64>(0, tx.TotalInputValue);
+            Assert.Equal<UInt64>(5000000000, tx.TotalOutputValue); //#50 BTC = 5 M Satoshi
+            Assert.False(tx.IsCoinbase);
+            Assert.False(tx.IsNullNonCoinbase);
+            Assert.False(tx.IsOversizeCoinbase);
+            Assert.True(tx.IsOverspent); //Because it's coinbase, inputs don't add up to outputs
+            Assert.False(tx.IsDoubleSpend(true));
+            Assert.False(tx.IsDoubleSpend(false));
+            Assert.True(tx.IsMissingPreviousOutputs); //Because it's coinbase
+            Assert.True(tx.IsFinal(FIRST_NON_COINBASE_BLOCK_HEIGHT, 0));
+            Assert.False(tx.IsLocktimeConflict);
         }
 
         private void WaitUntilBlock(UInt64 desiredHeight)

@@ -15,6 +15,11 @@ public class OutputList : IDisposable
         nativeInstance_ = OutputListNative.chain_output_list_construct_default();
     }
 
+    internal OutputList(IntPtr nativeInstance)
+    {
+        nativeInstance_ = nativeInstance;
+    }
+
     ~OutputList()
     {
         Dispose(false);
