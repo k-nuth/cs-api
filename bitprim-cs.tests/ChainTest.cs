@@ -75,6 +75,27 @@ namespace BitprimCs.Tests
             VerifyGenesisBlockHeader(header);
         }
 
+        [Fact]
+        public void TestFetchBlockByHeight()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            Block block = null;
+
+            Action<int, Block> handler = delegate(int theError, Block theBlock)
+            {
+                error = theError;
+                block = theBlock;
+                handlerDone.Set();
+            };
+            //https://blockchain.info/es/block-height/0
+            executorFixture_.Executor.Chain.FetchBlockByHeight(0, handler);
+            handlerDone.WaitOne();
+
+            Assert.Equal(error, 0);
+            VerifyGenesisBlockHeader(block.Header);
+        }
+
         private static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);
