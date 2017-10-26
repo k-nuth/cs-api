@@ -17,10 +17,10 @@ public static class ChainNative
     public delegate void FetchLastHeightHandler(IntPtr chain, IntPtr context, int error, UIntPtr height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_block_height(IntPtr chain, IntPtr context, byte[] hash, FetchBlockHeightHandler handler);
+    public static extern void chain_fetch_block_height(IntPtr chain, IntPtr context, hash_t hash, FetchBlockHeightHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_block_height(IntPtr chain, byte[] hash, ref UInt64 height);
+    public static extern int chain_get_block_height(IntPtr chain, hash_t hash, ref UInt64 height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_fetch_last_height(IntPtr chain, IntPtr context, FetchLastHeightHandler handler);
@@ -35,10 +35,10 @@ public static class ChainNative
     public delegate void FetchBlockHandler(IntPtr chain, IntPtr context, int error, IntPtr block, UInt64 height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_block_by_hash(IntPtr chain, IntPtr context, byte[] hash, FetchBlockHandler handler);
+    public static extern void chain_fetch_block_by_hash(IntPtr chain, IntPtr context, hash_t hash, FetchBlockHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_block_by_hash(IntPtr chain, byte[] hash, ref IntPtr out_block, ref UInt64 out_height);
+    public static extern int chain_get_block_by_hash(IntPtr chain, hash_t hash, ref IntPtr out_block, ref UInt64 out_height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_fetch_block_by_height(IntPtr chain, IntPtr context, UInt64 height, FetchBlockHandler handler);
@@ -55,7 +55,7 @@ public static class ChainNative
     public static extern void chain_fetch_block_header_by_hash(IntPtr chain, IntPtr context, hash_t hash, FetchBlockHeaderHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_block_header_by_hash(IntPtr chain, byte[] hash, ref IntPtr out_header, ref UInt64 out_height);
+    public static extern int chain_get_block_header_by_hash(IntPtr chain, hash_t hash, ref IntPtr out_header, ref UInt64 out_height);
     
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
@@ -71,13 +71,13 @@ public static class ChainNative
     public delegate void MerkleBlockFetchHandler(IntPtr chain, IntPtr context, int error, IntPtr block, UInt64 h);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_merkle_block_by_hash(IntPtr chain, IntPtr context, byte[] hash, MerkleBlockFetchHandler handler);
+    public static extern void chain_fetch_merkle_block_by_hash(IntPtr chain, IntPtr context, hash_t hash, MerkleBlockFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_fetch_merkle_block_by_height(IntPtr chain, IntPtr context, UInt64 height, MerkleBlockFetchHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_merkle_block_by_hash(IntPtr chain, byte[] hash, ref IntPtr out_block, ref UInt64 out_height);
+    public static extern int chain_get_merkle_block_by_hash(IntPtr chain, hash_t hash, ref IntPtr out_block, ref UInt64 out_height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int chain_get_merkle_block_by_height(IntPtr chain, UInt64 height, ref IntPtr out_block, ref UInt64 out_height);
@@ -89,10 +89,10 @@ public static class ChainNative
     public delegate void FetchCompactBlockHandler(IntPtr chain, IntPtr context, int error, IntPtr block, UInt64 height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_compact_block_by_hash(IntPtr chain, IntPtr context, byte[] hash, FetchCompactBlockHandler handler);
+    public static extern void chain_fetch_compact_block_by_hash(IntPtr chain, IntPtr context, hash_t hash, FetchCompactBlockHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_compact_block_by_hash(IntPtr chain, byte[] hash, ref IntPtr out_block, ref UInt64 out_height);
+    public static extern int chain_get_compact_block_by_hash(IntPtr chain, hash_t hash, ref IntPtr out_block, ref UInt64 out_height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_fetch_compact_block_by_height(IntPtr chain, IntPtr context, UInt64 height, FetchCompactBlockHandler handler);
@@ -111,16 +111,16 @@ public static class ChainNative
     public delegate void FetchTransactionPositionHandler(IntPtr chain, IntPtr context, int error, UInt64 position, UInt64 height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_transaction(IntPtr chain, IntPtr context, byte[] hash, int require_confirmed, FetchTransactionHandler handler);
+    public static extern void chain_fetch_transaction(IntPtr chain, IntPtr context, hash_t hash, int require_confirmed, FetchTransactionHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_transaction(IntPtr chain, byte[] hash, int require_confirmed, ref IntPtr out_transaction, ref UInt64 out_height, ref UInt64 out_index);
+    public static extern int chain_get_transaction(IntPtr chain, hash_t hash, int require_confirmed, ref IntPtr out_transaction, ref UInt64 out_height, ref UInt64 out_index);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_transaction_position(IntPtr chain, IntPtr context, byte[] hash, int require_confirmed, FetchTransactionPositionHandler handler);
+    public static extern void chain_fetch_transaction_position(IntPtr chain, IntPtr context, hash_t hash, int require_confirmed, FetchTransactionPositionHandler handler);
    
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int chain_get_transaction_position(IntPtr chain, byte[] hash, int require_confirmed, ref UInt64 out_position, ref UInt64 out_height);
+    public static extern int chain_get_transaction_position(IntPtr chain, hash_t hash, int require_confirmed, ref UInt64 out_position, ref UInt64 out_height);
 
     // Spend ---------------------------------------------------------------------------------------------
 

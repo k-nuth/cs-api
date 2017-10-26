@@ -14,15 +14,22 @@ public class Chain
 
     public void FetchBlockHeight(byte[] blockHash, Action<int, UInt64> handler)
     {
-        GCHandle handlerHandle = GCHandle.Alloc(handler);
-        IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_block_height(nativeInstance_, handlerPtr, blockHash, FetchBlockHeightHandler);
+        var managedHash = new hash_t
+        {
+            hash = blockHash
+        };
+        IntPtr contextPtr = CreateContext(handler, managedHash);
+        ChainNative.chain_fetch_block_height(nativeInstance_, contextPtr, managedHash, FetchBlockHeightHandler);
     }
 
     public Tuple<int, UInt64> GetBlockHeight(byte[] blockHash)
     {
         UInt64 height = 0;
-        int result = ChainNative.chain_get_block_height(nativeInstance_, blockHash, ref height);
+        var managedHash = new hash_t
+        {
+            hash = blockHash
+        };        
+        int result = ChainNative.chain_get_block_height(nativeInstance_, managedHash, ref height);
         return new Tuple<int, UInt64>(result, height);
     }
 
@@ -44,18 +51,25 @@ public class Chain
 
     #region Block
 
-    public void FetchBlockByHash(byte[] hash, Action<int, Block> handler)
+    public void FetchBlockByHash(byte[] blockHash, Action<int, Block> handler)
     {
-        GCHandle handlerHandle = GCHandle.Alloc(handler);
-        IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_block_by_hash(nativeInstance_, handlerPtr, hash, FetchBlockHandler);
+        var managedHash = new hash_t
+        {
+            hash = blockHash
+        };
+        IntPtr contextPtr = CreateContext(handler, managedHash);
+        ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockByHashHandler);
     }
 
-    public Tuple<int, Block, UInt64> GetBlockByHash(byte[] hash)
+    public Tuple<int, Block, UInt64> GetBlockByHash(byte[] blockHash)
     {
         IntPtr block = IntPtr.Zero;
         UInt64 height = 0;
-        int result = ChainNative.chain_get_block_by_hash(nativeInstance_, hash, ref block, ref height);
+        var managedHash = new hash_t
+        {
+            hash = blockHash
+        };
+        int result = ChainNative.chain_get_block_by_hash(nativeInstance_, managedHash, ref block, ref height);
         return new Tuple<int, Block, UInt64>(result, new Block(block), height);
     }
 
@@ -63,7 +77,7 @@ public class Chain
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
         IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, FetchBlockHandler);
+        ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, FetchBlockByHeightHandler);
     }
 
     public Tuple<int, Block, UInt64> GetBlockByHeight(UInt64 height)
@@ -78,25 +92,25 @@ public class Chain
 
     #region Block header
 
-    public void FetchBlockHeaderByHash(byte[] hashToSearch, Action<int, Header> handler)
+    public void FetchBlockHeaderByHash(byte[] blockHash, Action<int, Header> handler)
     {
         var managedHash = new hash_t
         {
-            hash = hashToSearch
+            hash = blockHash
         };
-        //Both the handler and the hash need to hold garbage collection off until
-        //the callback is called, so a GCHandle is taken for an object containing both of them
-        var context = new Tuple<Action<int,Header>, hash_t>(handler, managedHash);
-        GCHandle contextHandle = GCHandle.Alloc(context);
-        IntPtr contextPtr = (IntPtr) contextHandle;
+        IntPtr contextPtr = CreateContext(handler, managedHash);
         ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashHandler);
     }
 
-    public Tuple<int, Header, UInt64> GetBlockHeaderByHash(byte[] hash)
+    public Tuple<int, Header, UInt64> GetBlockHeaderByHash(byte[] blockHash)
     {
         IntPtr header = IntPtr.Zero;
         UInt64 height = 0;
-        int result = ChainNative.chain_get_block_header_by_hash(nativeInstance_, hash, ref header, ref height);
+        var managedHash = new hash_t
+        {
+            hash = blockHash
+        };
+        int result = ChainNative.chain_get_block_header_by_hash(nativeInstance_, managedHash, ref header, ref height);
         return new Tuple<int, Header, UInt64>(result, new Header(header), height);
     }
 
@@ -119,18 +133,25 @@ public class Chain
 
     #region Merkle Block
 
-    public void FetchMerkleBlockByHash(byte[] hash, Action<int, MerkleBlock> handler)
+    public void FetchMerkleBlockByHash(byte[] blockHash, Action<int, MerkleBlock> handler)
     {
-        GCHandle handlerHandle = GCHandle.Alloc(handler);
-        IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, handlerPtr, hash, FetchMerkleBlockHandler);
+        var managedHash = new hash_t
+        {
+            hash = blockHash
+        };
+        IntPtr contextPtr = CreateContext(handler, managedHash);
+        ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchMerkleBlockHandler);
     }
 
-    public Tuple<int, MerkleBlock, UInt64> GetMerkleBlockByHash(byte[] hash)
+    public Tuple<int, MerkleBlock, UInt64> GetMerkleBlockByHash(byte[] blockHash)
     {
         IntPtr merkleBlock = IntPtr.Zero;
         UInt64 height = 0;
-        int result = ChainNative.chain_get_merkle_block_by_hash(nativeInstance_, hash, ref merkleBlock, ref height);
+        var managedHash = new hash_t
+        {
+            hash = blockHash
+        };
+        int result = ChainNative.chain_get_merkle_block_by_hash(nativeInstance_, managedHash, ref merkleBlock, ref height);
         return new Tuple<int, MerkleBlock, UInt64>(result, new MerkleBlock(merkleBlock), height);
     }
 
@@ -153,18 +174,25 @@ public class Chain
 
     #region Compact block
 
-    public void FetchCompactBlockByHash(byte[] hash, Action<int, CompactBlock> handler)
+    public void FetchCompactBlockByHash(byte[] blockHash, Action<int, CompactBlock> handler)
     {
-        GCHandle handlerHandle = GCHandle.Alloc(handler);
-        IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, handlerPtr, hash, FetchCompactBlockHandler);
+        var managedHash = new hash_t
+        {
+            hash = blockHash
+        };
+        IntPtr contextPtr = CreateContext(handler, managedHash);
+        ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchCompactBlockByHashHandler);
     }
 
-    public Tuple<int, CompactBlock, UInt64> GetCompactBlockByHash(byte[] hash)
+    public Tuple<int, CompactBlock, UInt64> GetCompactBlockByHash(byte[] blockHash)
     {
         IntPtr compactBlock = IntPtr.Zero;
         UInt64 height = 0;
-        int result = ChainNative.chain_get_compact_block_by_hash(nativeInstance_, hash, ref compactBlock, ref height);
+        var managedHash = new hash_t
+        {
+            hash = blockHash
+        };
+        int result = ChainNative.chain_get_compact_block_by_hash(nativeInstance_, managedHash, ref compactBlock, ref height);
         return new Tuple<int, CompactBlock, UInt64>(result, new CompactBlock(compactBlock), height);
     }
 
@@ -172,7 +200,7 @@ public class Chain
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
         IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, FetchCompactBlockHandler);
+        ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, FetchCompactBlockByHeightHandler);
     }
 
     public Tuple<int, CompactBlock, UInt64> GetCompactBlockByHeight(UInt64 height)
@@ -187,34 +215,48 @@ public class Chain
 
     #region Transaction
 
-    public void FetchTransaction(byte[] hash, bool requireConfirmed, Action<int, Transaction, UInt64, UInt64> handler)
+    public void FetchTransaction(byte[] txHash, bool requireConfirmed, Action<int, Transaction, UInt64, UInt64> handler)
     {
-        GCHandle handlerHandle = GCHandle.Alloc(handler);
-        IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_transaction(nativeInstance_, handlerPtr, hash, requireConfirmed? 1:0, FetchTransactionHandler);
+        var managedHash = new hash_t
+        {
+            hash = txHash
+        };
+        IntPtr contextPtr = CreateContext(handler, managedHash);
+        ChainNative.chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed? 1:0, FetchTransactionByHashHandler);
     }
 
-    public Tuple<int, Transaction, UInt64, UInt64> GetTransaction(byte[] hash, bool requireConfirmed)
+    public Tuple<int, Transaction, UInt64, UInt64> GetTransaction(byte[] txHash, bool requireConfirmed)
     {
         IntPtr transaction = IntPtr.Zero;
         UInt64 index = 0;
         UInt64 height = 0;
-        int result = ChainNative.chain_get_transaction(nativeInstance_, hash, requireConfirmed? 1:0, ref transaction, ref index, ref height);
+        var managedHash = new hash_t
+        {
+            hash = txHash
+        };
+        int result = ChainNative.chain_get_transaction(nativeInstance_, managedHash, requireConfirmed? 1:0, ref transaction, ref index, ref height);
         return new Tuple<int, Transaction, UInt64, UInt64>(result, new Transaction(transaction), index, height);
     }
 
-    public void FetchTransactionPosition(byte[] hash, bool requireConfirmed, Action<int, UInt64, UInt64> handler)
+    public void FetchTransactionPosition(byte[] txHash, bool requireConfirmed, Action<int, UInt64, UInt64> handler)
     {
-        GCHandle handlerHandle = GCHandle.Alloc(handler);
-        IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_transaction_position(nativeInstance_, handlerPtr, hash, requireConfirmed? 1:0, FetchTransactionPositionHandler);
+        var managedHash = new hash_t
+        {
+            hash = txHash
+        };
+        IntPtr contextPtr = CreateContext(handler, managedHash);
+        ChainNative.chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed? 1:0, FetchTransactionPositionHandler);
     }
 
-    public Tuple<int, UInt64, UInt64> GetTransactionPosition(byte[] hash, bool requireConfirmed)
+    public Tuple<int, UInt64, UInt64> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
     {
         UInt64 index = 0;
         UInt64 height = 0;
-        int result = ChainNative.chain_get_transaction_position(nativeInstance_, hash, requireConfirmed? 1:0, ref index, ref height);
+        var managedHash = new hash_t
+        {
+            hash = txHash
+        };
+        int result = ChainNative.chain_get_transaction_position(nativeInstance_, managedHash, requireConfirmed? 1:0, ref index, ref height);
         return new Tuple<int, UInt64, UInt64>(result, index, height);
     }
 
@@ -357,7 +399,16 @@ public class Chain
         handlerHandle.Free();
     }
 
-    private static void FetchBlockHandler(IntPtr chain, IntPtr context, int error, IntPtr block, UInt64 height)
+    private static void FetchBlockByHashHandler(IntPtr chain, IntPtr contextPtr, int error, IntPtr block, UInt64 height)
+    {
+        GCHandle contextHandle = (GCHandle) contextPtr;
+        Tuple<Action<int, Block>, hash_t> context = (contextHandle.Target as Tuple<Action<int, Block>, hash_t>);
+        Action<int, Block> handler = context.Item1;
+        handler(error, new Block(block));
+        contextHandle.Free();
+    }
+
+    private static void FetchBlockByHeightHandler(IntPtr chain, IntPtr context, int error, IntPtr block, UInt64 height)
     {
         GCHandle handlerHandle = (GCHandle) context;
         Action<int, Block> handler = (handlerHandle.Target as Action<int, Block>);
@@ -365,12 +416,13 @@ public class Chain
         handlerHandle.Free();
     }
 
-    private static void FetchBlockHeightHandler(IntPtr chain, IntPtr context, int error, UInt64 height)
+    private static void FetchBlockHeightHandler(IntPtr chain, IntPtr contextPtr, int error, UInt64 height)
     {
-        GCHandle handlerHandle = (GCHandle) context;
-        Action<int, UInt64> handler = (handlerHandle.Target as Action<int, UInt64>);
+        GCHandle contextHandle = (GCHandle) contextPtr;
+        Tuple<Action<int, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<int, UInt64>, hash_t>);
+        Action<int, UInt64> handler = context.Item1;
         handler(error, height);
-        handlerHandle.Free();
+        contextHandle.Free();
     }
 
     private static void FetchBlockLocatorHandler(IntPtr chain, IntPtr context, int error, IntPtr headerReader)
@@ -381,7 +433,16 @@ public class Chain
         handlerHandle.Free();
     }
 
-    private static void FetchCompactBlockHandler(IntPtr chain, IntPtr context, int error, IntPtr compactBlock, UInt64 height)
+    private static void FetchCompactBlockByHashHandler(IntPtr chain, IntPtr contextPtr, int error, IntPtr compactBlock, UInt64 height)
+    {
+        GCHandle contextHandle = (GCHandle) contextPtr;
+        Tuple<Action<int, CompactBlock>, hash_t> context = (contextHandle.Target as Tuple<Action<int, CompactBlock>, hash_t>);
+        Action<int, CompactBlock> handler = context.Item1;
+        handler(error, new CompactBlock(compactBlock));
+        contextHandle.Free();
+    }
+
+    private static void FetchCompactBlockByHeightHandler(IntPtr chain, IntPtr context, int error, IntPtr compactBlock, UInt64 height)
     {
         GCHandle handlerHandle = (GCHandle) context;
         Action<int, CompactBlock> handler = (handlerHandle.Target as Action<int, CompactBlock>);
@@ -429,7 +490,16 @@ public class Chain
         handlerHandle.Free();
     }
 
-    private static void FetchTransactionHandler(IntPtr chain, IntPtr context, int error, IntPtr transaction, UInt64 index, UInt64 height)
+    private static void FetchTransactionByHashHandler(IntPtr chain, IntPtr contextPtr, int error, IntPtr transaction, UInt64 index, UInt64 height)
+    {
+        GCHandle contextHandle = (GCHandle) contextPtr;
+        Tuple<Action<int, Transaction, UInt64, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<int, Transaction, UInt64, UInt64>, hash_t>);
+        Action<int, Transaction, UInt64, UInt64> handler = context.Item1;
+        handler(error, new Transaction(transaction), index, height);
+        contextHandle.Free();
+    }
+
+    private static void FetchTransactionByHeightHandler(IntPtr chain, IntPtr context, int error, IntPtr transaction, UInt64 index, UInt64 height)
     {
         GCHandle handlerHandle = (GCHandle) context;
         Action<int, Transaction, UInt64, UInt64> handler = (handlerHandle.Target as Action<int, Transaction, UInt64, UInt64>);
@@ -437,12 +507,13 @@ public class Chain
         handlerHandle.Free();
     }
 
-    private static void FetchTransactionPositionHandler(IntPtr chain, IntPtr context, int error, UInt64 index, UInt64 height)
+    private static void FetchTransactionPositionHandler(IntPtr chain, IntPtr contextPtr, int error, UInt64 index, UInt64 height)
     {
-        GCHandle handlerHandle = (GCHandle) context;
-        Action<int, UInt64, UInt64> handler = (handlerHandle.Target as Action<int, UInt64, UInt64>);
+        GCHandle contextHandle = (GCHandle) contextPtr;
+        Tuple<Action<int, UInt64, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<int, UInt64, UInt64>, hash_t>);
+        Action<int, UInt64, UInt64> handler = context.Item1;
         handler(error, index, height);
-        handlerHandle.Free();
+        contextHandle.Free();
     }
 
     private static void ReorganizeHandler(IntPtr chain, IntPtr context, int error, UInt64 u, IntPtr blockList, IntPtr blockList2)
@@ -475,6 +546,16 @@ public class Chain
         Action<int, string> handler = (handlerHandle.Target as Action<int, string>);
         handler(error, message);
         handlerHandle.Free();
+    }
+
+    private IntPtr CreateContext<C, P>(C callback, P parameters)
+    {
+        // Both the callback and its parameters need to hold garbage collection off until
+        // the callback is called, so a GCHandle is taken for an object containing both of them:
+        // that is the context
+        var context = new Tuple<C, P>(callback, parameters);
+        GCHandle contextHandle = GCHandle.Alloc(context);
+        return (IntPtr) contextHandle;
     }
 }
 
