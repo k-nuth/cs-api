@@ -29,7 +29,7 @@ namespace BitprimCs.Tests
             };
             executorFixture_.Executor.Chain.FetchLastHeight(handler);
             handlerDone.WaitOne();
-            Assert.Equal(error, 0);
+            Assert.Equal(0, error);
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace BitprimCs.Tests
             executorFixture_.Executor.Chain.FetchBlockHeaderByHeight(0, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(error, 0);
+            Assert.Equal(0, error);
             VerifyGenesisBlockHeader(header);
         }
 
@@ -71,7 +71,7 @@ namespace BitprimCs.Tests
             executorFixture_.Executor.Chain.FetchBlockHeaderByHash(hash, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(error, 0);
+            Assert.Equal(0, error);
             VerifyGenesisBlockHeader(header);
         }
 
@@ -92,8 +92,52 @@ namespace BitprimCs.Tests
             executorFixture_.Executor.Chain.FetchBlockByHeight(0, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(error, 0);
+            Assert.Equal(0, error);
             VerifyGenesisBlockHeader(block.Header);
+        }
+
+        [Fact]
+        public void TestFetchBlockByHash()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            Block block = null;
+
+            Action<int, Block> handler = delegate(int theError, Block theBlock)
+            {
+                error = theError;
+                block = theBlock;
+                handlerDone.Set();
+            };
+            //https://blockchain.info/es/block-height/0
+            byte[] hash = HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            executorFixture_.Executor.Chain.FetchBlockByHash(hash, handler);
+            handlerDone.WaitOne();
+
+            Assert.Equal(0, error);
+            VerifyGenesisBlockHeader(block.Header);
+        }
+
+        [Fact]
+        public void TestFetchBlockHeight()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            UInt64 height = 0;
+
+            Action<int, UInt64> handler = delegate(int theError, UInt64 theHeight)
+            {
+                error = theError;
+                height = theHeight;
+                handlerDone.Set();
+            };
+            //https://blockchain.info/es/block-height/0
+            byte[] hash = HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            executorFixture_.Executor.Chain.FetchBlockHeight(hash, handler);
+            handlerDone.WaitOne();
+
+            Assert.Equal(0, error);
+            Assert.Equal<UInt64>(0, height);
         }
 
         private static string ByteArrayToHexString(byte[] ba)
