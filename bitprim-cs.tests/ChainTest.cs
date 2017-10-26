@@ -260,6 +260,33 @@ namespace BitprimCs.Tests
             CheckFirstNonCoinbaseTxFromHeight170(tx, txHashHexStr);
         }
 
+        [Fact]
+        public void TestFetchTransactionPosition()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            UInt64 height = 0;
+            UInt64 index = 0;
+
+            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT);
+
+            Action<int, UInt64, UInt64> handler = delegate(int theError, UInt64 theIndex, UInt64 theHeight)
+            {
+                error = theError;
+                index = theIndex;
+                height = theHeight;
+                handlerDone.Set();
+            };
+            string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
+            byte[] hash = HexStringToByteArray(txHashHexStr);
+            executorFixture_.Executor.Chain.FetchTransactionPosition(hash, true, handler);
+            handlerDone.WaitOne();
+
+            Assert.Equal(0, error);
+            Assert.Equal<UInt64>(1, index);
+            Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, height);
+        }
+
         private static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);
