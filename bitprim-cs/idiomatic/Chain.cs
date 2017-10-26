@@ -78,11 +78,18 @@ public class Chain
 
     #region Block header
 
-    public void FetchBlockHeaderByHash(byte[] hash, Action<int, Header> handler)
+    public void FetchBlockHeaderByHash(byte[] hashToSearch, Action<int, Header> handler)
     {
-        GCHandle handlerHandle = GCHandle.Alloc(handler);
-        IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, handlerPtr, hash, FetchBlockHeaderHandler);
+        var managedHash = new hash_t
+        {
+            hash = hashToSearch
+        };
+        //Both the handler and the hash need to hold garbage collection off until
+        //the callback is called, so a GCHandle is taken for an object containing both of them
+        var context = new Tuple<Action<int,Header>, hash_t>(handler, managedHash);
+        GCHandle contextHandle = GCHandle.Alloc(context);
+        IntPtr contextPtr = (IntPtr) contextHandle;
+        ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashHandler);
     }
 
     public Tuple<int, Header, UInt64> GetBlockHeaderByHash(byte[] hash)
@@ -97,7 +104,7 @@ public class Chain
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
         IntPtr handlerPtr = (IntPtr) handlerHandle;
-        ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, FetchBlockHeaderHandler);
+        ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, FetchBlockHeaderbyHeightHandler);
     }
 
     public Tuple<int, Header, UInt64> GetBlockHeaderByHeight(UInt64 height)
@@ -333,7 +340,16 @@ public class Chain
         nativeInstance_ = nativeInstance;
     }
 
-    private static void FetchBlockHeaderHandler(IntPtr chain, IntPtr context, int error, IntPtr header, UInt64 height)
+    private static void FetchBlockHeaderByHashHandler(IntPtr chain, IntPtr contextPtr, int error, IntPtr header, UInt64 height)
+    {
+        GCHandle contextHandle = (GCHandle) contextPtr;
+        Tuple<Action<int, Header>, hash_t> context = (contextHandle.Target as Tuple<Action<int, Header>, hash_t>);
+        Action<int, Header> handler = context.Item1;
+        handler(error, new Header(header));
+        contextHandle.Free();
+    }
+
+    private static void FetchBlockHeaderbyHeightHandler(IntPtr chain, IntPtr context, int error, IntPtr header, UInt64 height)
     {
         GCHandle handlerHandle = (GCHandle) context;
         Action<int, Header> handler = (handlerHandle.Target as Action<int, Header>);
@@ -346,14 +362,6 @@ public class Chain
         GCHandle handlerHandle = (GCHandle) context;
         Action<int, Block> handler = (handlerHandle.Target as Action<int, Block>);
         handler(error, new Block(block));
-        handlerHandle.Free();
-    }
-
-    private static void FetchBlockHeaderByHeightHandler(IntPtr chain, IntPtr context, int error, IntPtr header, UInt64 height)
-    {
-        GCHandle handlerHandle = (GCHandle) context;
-        Action<int, Header> handler = (handlerHandle.Target as Action<int, Header>);
-        handler(error, new Header(header));
         handlerHandle.Free();
     }
 

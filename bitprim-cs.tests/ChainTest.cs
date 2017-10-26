@@ -50,22 +50,12 @@ namespace BitprimCs.Tests
             handlerDone.WaitOne();
 
             Assert.Equal(error, 0);
-            Assert.NotNull(header);
-            Assert.Equal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", ByteArrayToHexString(header.Hash));
-            Assert.Equal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", ByteArrayToHexString(header.Merkle));
-            Assert.Equal("0000000000000000000000000000000000000000000000000000000000000000", ByteArrayToHexString(header.PreviousBlockHash));
-            Assert.Equal<UInt32>(1, header.Version);
-            Assert.Equal<UInt32>(486604799, header.Bits);
-            Assert.Equal<UInt32>(2083236893, header.Nonce);
-            
-            DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
-            Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            VerifyGenesisBlockHeader(header);
         }
 
         [Fact]
         public void TestFetchBlockHeaderByHash()
         {
-            //https://blockchain.info/es/block-height/0
             var handlerDone = new AutoResetEvent(false);
             int error = 0;
             Header header = null;
@@ -76,21 +66,13 @@ namespace BitprimCs.Tests
                 header = theHeader;
                 handlerDone.Set();
             };
+            //https://blockchain.info/es/block-height/0
             byte[] hash = HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
             executorFixture_.Executor.Chain.FetchBlockHeaderByHash(hash, handler);
             handlerDone.WaitOne();
 
             Assert.Equal(error, 0);
-            Assert.NotNull(header);
-            Assert.Equal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", ByteArrayToHexString(header.Hash));
-            Assert.Equal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", ByteArrayToHexString(header.Merkle));
-            Assert.Equal("0000000000000000000000000000000000000000000000000000000000000000", ByteArrayToHexString(header.PreviousBlockHash));
-            Assert.Equal<UInt32>(1, header.Version);
-            Assert.Equal<UInt32>(486604799, header.Bits);
-            Assert.Equal<UInt32>(2083236893, header.Nonce);
-            
-            DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
-            Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            VerifyGenesisBlockHeader(header);
         }
 
         private static string ByteArrayToHexString(byte[] ba)
@@ -111,7 +93,21 @@ namespace BitprimCs.Tests
             {
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
             }
+            Array.Reverse(bytes);
             return bytes;
+        }
+
+        private static void VerifyGenesisBlockHeader(Header header)
+        {
+            Assert.NotNull(header);
+            Assert.Equal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", ByteArrayToHexString(header.Hash));
+            Assert.Equal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", ByteArrayToHexString(header.Merkle));
+            Assert.Equal("0000000000000000000000000000000000000000000000000000000000000000", ByteArrayToHexString(header.PreviousBlockHash));
+            Assert.Equal<UInt32>(1, header.Version);
+            Assert.Equal<UInt32>(486604799, header.Bits);
+            Assert.Equal<UInt32>(2083236893, header.Nonce);            
+            DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
+            Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
     }

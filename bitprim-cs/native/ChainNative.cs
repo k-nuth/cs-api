@@ -52,7 +52,7 @@ public static class ChainNative
     public delegate void FetchBlockHeaderHandler(IntPtr chain, IntPtr context, int error, IntPtr header, UInt64 height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_fetch_block_header_by_hash(IntPtr chain, IntPtr context, byte[] hash, FetchBlockHeaderHandler handler);
+    public static extern void chain_fetch_block_header_by_hash(IntPtr chain, IntPtr context, hash_t hash, FetchBlockHeaderHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int chain_get_block_header_by_hash(IntPtr chain, byte[] hash, ref IntPtr out_header, ref UInt64 out_height);
