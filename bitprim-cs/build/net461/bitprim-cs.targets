@@ -1,0 +1,5 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="CustomScriptTest" AfterTargets="ResolveReferences" BeforeTargets="FindReferenceAssembliesForReferences">
+		<Message Text="Custom build step called for .NET 4.6.1!" />
+	</Target>
+</Project>
