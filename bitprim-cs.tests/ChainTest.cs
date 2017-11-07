@@ -131,31 +131,31 @@ namespace BitprimCs.Tests
             Assert.Equal<UInt64>(0, height);
         }
 
-        // [Fact]
-        // public void TestFetchSpend()
-        // {
-        //     var handlerDone = new AutoResetEvent(false);
-        //     WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT);
+        [Fact]
+        public void TestFetchSpend()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchSpend");
 
-        //     int error = 0;
-        //     Point point = null;
+            int error = 0;
+            Point point = null;
 
-        //     Action<int, Point> handler = delegate(int theError, Point thePoint)
-        //     {
-        //         error = theError;
-        //         point = thePoint;
-        //         handlerDone.Set();
-        //     };
-        //     byte[] hash = HexStringToByteArray("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9");
-        //     OutputPoint outputPoint = new OutputPoint(hash, 0);
-        //     executorFixture_.Executor.Chain.FetchSpend(outputPoint, handler);
-        //     handlerDone.WaitOne();
+            Action<int, Point> handler = delegate(int theError, Point thePoint)
+            {
+                error = theError;
+                point = thePoint;
+                handlerDone.Set();
+            };
+            byte[] hash = HexStringToByteArray("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9");
+            OutputPoint outputPoint = new OutputPoint(hash, 0);
+            executorFixture_.Executor.Chain.FetchSpend(outputPoint, handler);
+            handlerDone.WaitOne();
 
-        //     //Assert.Equal(0, error); //TODO Why does it return 3?
-        //     Assert.NotNull(point);
-        //     Assert.Equal("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16", ByteArrayToHexString(outputPoint.Hash));
-        //     Assert.Equal<UInt32>(0, point.Index);
-        // }
+            Assert.Equal(0, error);
+            Assert.NotNull(point);
+            Assert.Equal("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16", ByteArrayToHexString(point.Hash));
+            Assert.Equal<UInt32>(0, point.Index);
+        }
 
         [Fact]
         public void TestFetchMerkleBlockByHash()
@@ -239,7 +239,7 @@ namespace BitprimCs.Tests
             UInt64 height = 0;
             UInt64 index = 0;
 
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT);
+            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransaction");
 
             Action<int, Transaction, UInt64, UInt64> handler = delegate(int theError, Transaction theTx, UInt64 theIndex, UInt64 theHeight)
             {
@@ -268,7 +268,7 @@ namespace BitprimCs.Tests
             UInt64 height = 0;
             UInt64 index = 0;
 
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT);
+            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransactionPosition");
 
             Action<int, UInt64, UInt64> handler = delegate(int theError, UInt64 theIndex, UInt64 theHeight)
             {
@@ -294,7 +294,7 @@ namespace BitprimCs.Tests
             int error = 0;
             Block block = null;
 
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT);
+            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchBlockByHash170");
 
             Action<int, Block> handler = delegate(int theError, Block theBlock)
             {
@@ -357,7 +357,7 @@ namespace BitprimCs.Tests
             Assert.Equal<UInt32>(486604799, header.Bits);
             Assert.Equal<UInt32>(1889418792, header.Nonce);
             DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
-            Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            Assert.Equal("2009-01-12 03:30:25", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
         private Tuple<int, UInt64> GetLastHeight()
@@ -400,11 +400,12 @@ namespace BitprimCs.Tests
             Assert.False(tx.IsLocktimeConflict);
         }
 
-        private void WaitUntilBlock(UInt64 desiredHeight)
+        private void WaitUntilBlock(UInt64 desiredHeight, string callerName)
         {
             int error = 0;
             UInt64 height = 0;            
             while(error == 0 && height < desiredHeight){
+                Console.WriteLine("--->" + callerName + " checking height: " + height);
                 Tuple<int, UInt64> errorAndHeight = GetLastHeight();
                 error = errorAndHeight.Item1;
                 height = errorAndHeight.Item2;

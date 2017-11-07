@@ -47,7 +47,7 @@ public class Header : IDisposable
         get
         {
             var managedHash = new hash_t();
-            HeaderNative.chain_header_previous_block_hash(nativeInstance_, ref managedHash);
+            HeaderNative.chain_header_previous_block_hash_out(nativeInstance_, ref managedHash);
             return managedHash.hash;
         }
     }
