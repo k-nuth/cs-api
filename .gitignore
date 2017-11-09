@@ -13,3 +13,9 @@
 /webtest/obj
 /webtest/webtest.csproj.user
 /.vs/config
+/bitprim-cs.tests/bin/Release/netcoreapp2.0
+/bitprim-node-cint.dll
+/conanbuildinfo.cmake
+/conanbuildinfo.txt
+/conaninfo.txt
+/conan_imports_manifest.txt
