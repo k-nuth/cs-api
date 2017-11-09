@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
 
-    <Version>0.1.1</Version>
+    <Version>0.1.4</Version>
     <Authors>Bitprim</Authors>
     <Company>Bitprim</Company>
     <Description>C# binding for Bitprim Bitcoin platform</Description>
@@ -26,6 +26,8 @@
     <!-- pack the target files -->
     <Content Include="build\net461\bitprim-cs.targets" PackagePath="build\net461\bitprim-cs.targets" />
     <Content Include="build\netcoreapp2.0\bitprim-cs.targets" PackagePath="build\netcoreapp2.0\bitprim-cs.targets" />
+    <!-- pack the conan file -->
+    <Content Include="..\conanfile.txt" PackagePath="content\conanfile.txt" />
   </ItemGroup>
 
 </Project>

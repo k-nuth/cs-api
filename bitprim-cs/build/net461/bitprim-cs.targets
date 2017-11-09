@@ -1,8 +1,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Target Name="CustomScriptTest" AfterTargets="ResolveReferences" BeforeTargets="FindReferenceAssembliesForReferences">
-		<Message Text="Custom build step called for .NET 4.6.1!" />
-    <Exec Command="python --version"/>
-    <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim"/>
+	<!--<Target Name="CustomScriptTest" AfterTargets="ResolveReferences" BeforeTargets="FindReferenceAssembliesForReferences">-->
+  <Target Name="CustomScriptTest" BeforeTargets="CoreCompile" DependsOnTargets="PrepareForBuild">
+    <Message Text="Custom Bitprim build step invoked for .NET 4.6.1 build" />
+    <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" IgnoreExitCode="true"/>
     <Exec Command="conan install bitprim-node-cint/0.3@bitprim/testing -o shared=True"/>
 	</Target>
 </Project>
