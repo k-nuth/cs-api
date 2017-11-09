@@ -2968,7 +2968,7 @@
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "bitprim-cs/0.1.4": {
+      "bitprim/0.2.1": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.0",
         "compile": {
@@ -8357,7 +8357,7 @@
         "system.xml.xpath.xdocument.nuspec"
       ]
     },
-    "bitprim-cs/0.1.9": {
+    "bitprim/0.2.1": {
       "type": "project",
       "path": "../bitprim-cs/bitprim.csproj",
       "msbuildProject": "../bitprim-cs/bitprim.csproj"
@@ -8371,7 +8371,7 @@
       "Microsoft.Extensions.Configuration.Json >= 1.1.2",
       "Microsoft.Extensions.Logging.Debug >= 1.1.2",
       "Microsoft.NETCore.App >= 2.0.0",
-      "bitprim-cs >= 0.1.9"
+      "bitprim >= 0.2.1"
     ]
   },
   "packageFolders": {
@@ -8407,8 +8407,8 @@
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "C:\\dev\\bitprim\\github\\dario-ramos\\bitprim-cs\\bitprim-cs\\bitprim-cs.csproj": {
-              "projectPath": "C:\\dev\\bitprim\\github\\dario-ramos\\bitprim-cs\\bitprim-cs\\bitprim-cs.csproj"
+            "C:\\dev\\bitprim\\github\\dario-ramos\\bitprim-cs\\bitprim-cs\\bitprim.csproj": {
+              "projectPath": "C:\\dev\\bitprim\\github\\dario-ramos\\bitprim-cs\\bitprim-cs\\bitprim.csproj"
             }
           }
         }

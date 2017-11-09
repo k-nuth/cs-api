@@ -21,7 +21,10 @@ public static class ExecutorNative
     public static extern int executor_run_wait(IntPtr exec);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern IntPtr executor_construct_fd([MarshalAs(UnmanagedType.LPStr)]string path, IntPtr sout, IntPtr serr);
+    public static extern IntPtr executor_construct_fd([MarshalAs(UnmanagedType.LPStr)]string path, int sout, int serr);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern IntPtr executor_construct_handles([MarshalAs(UnmanagedType.LPStr)]string path, IntPtr sout, IntPtr serr);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void executor_destruct(IntPtr exec);
