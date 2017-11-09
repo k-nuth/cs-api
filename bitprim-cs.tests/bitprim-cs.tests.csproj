@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\bitprim-cs\bitprim-cs.csproj" />
+    <ProjectReference Include="..\bitprim-cs\bitprim.csproj" />
   </ItemGroup>
 
 </Project>
