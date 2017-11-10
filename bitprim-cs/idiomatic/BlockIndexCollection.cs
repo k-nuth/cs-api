@@ -26,11 +26,10 @@ public class BlockIndexCollection : IDisposable
         Dispose(false);
     }
 
-
     /// <summary>
-    /// Needed to iterate collection using foreach
+    /// Needed to iterate collection using foreach.
     /// </summary>
-    /// <returns></returns>
+    /// <returns> Collection enumerator. </returns>
     public IEnumerator GetEnumerator()
     {
         return new BlockIndexCollectionEnumerator(nativeInstance_);
@@ -39,7 +38,7 @@ public class BlockIndexCollection : IDisposable
     /// <summary>
     /// Indexes count
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Count</returns>
     public uint Count
     {
         get
@@ -47,7 +46,6 @@ public class BlockIndexCollection : IDisposable
             return (uint) BlockIndexesNative.chain_block_indexes_count(nativeInstance_);
         }
     }
-
 
     /// <summary>
     /// Add a block index to collection
@@ -97,7 +95,7 @@ public class BlockIndexCollectionEnumerator : IEnumerator
     /// <summary>
     /// Create object from reference to native instance
     /// </summary>
-    /// <param name="nativeCollection"></param>
+    /// <param name="nativeCollection">Pointer to the native object</param>
     public BlockIndexCollectionEnumerator(IntPtr nativeCollection)
     {
         nativeCollection_ = nativeCollection;
@@ -117,7 +115,7 @@ public class BlockIndexCollectionEnumerator : IEnumerator
     /// <summary>
     /// Return current element
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Reference to current element, as object</returns>
     public object Current
     {
         get
