@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim", "bitprim-cs\bitpr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.tests", "bitprim-cs.tests\bitprim.tests.csproj", "{BD6F2467-6EFF-4342-AB23-48A316F6C58C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webtest", "webtest\webtest.csproj", "{6E11C043-55A1-43A6-A7FC-E45A59AE3660}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.restapi", "webtest\bitprim.restapi.csproj", "{6E11C043-55A1-43A6-A7FC-E45A59AE3660}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
