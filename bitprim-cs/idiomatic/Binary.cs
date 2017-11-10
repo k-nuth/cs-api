@@ -4,21 +4,37 @@ using BitprimCs.Native;
 namespace BitprimCs
 {
 
+/// <summary>
+/// Represents a binary filter.
+/// </summary>
 public class Binary : IDisposable
 {
 
     private IntPtr nativeInstance_;
 
+    /// <summary>
+    /// Create an empty binary object.
+    /// </summary>
     public Binary()
     {
         nativeInstance_ = BinaryNative.binary_construct();
     }
 
+    /// <summary>
+    /// Creates a binary filter from a binary string.
+    /// </summary>
+    /// <param name="hexString">  Binary string. Example: '10111010101011011111000000001101' </param>
     public Binary(string hexString)
     {
         nativeInstance_ = BinaryNative.binary_construct_string(hexString);
     }
 
+    /// <summary>
+    /// Creates a binary filter from an int array.
+    /// </summary>
+    /// <param name="bitsSize"> Elements size </param>
+    /// <param name="blocks"> Filter representation. Example: '[186,173,240,13]'. </param>
+    /// <param name="n"> Array length in amount of elements. </param>
     public Binary(UIntPtr bitsSize, byte[] blocks, UIntPtr n)
     {
         nativeInstance_ = BinaryNative.binary_construct_blocks(bitsSize, blocks, n);
@@ -29,6 +45,9 @@ public class Binary : IDisposable
         Dispose(false);
     }
 
+    /// <summary>
+    /// Filter representation as binary string.
+    /// </summary>
     public string Encoded
     {
         get
