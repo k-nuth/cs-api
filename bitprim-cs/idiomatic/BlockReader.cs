@@ -4,6 +4,9 @@ using BitprimCs.Native;
 namespace BitprimCs
 {
 
+/// <summary>
+/// Allows user to read a specific set of blocks from the blockchain.
+/// </summary>
 public class BlockReader : IDisposable
 {
     private IntPtr nativeInstance_;
@@ -23,6 +26,9 @@ public class BlockReader : IDisposable
         Dispose(false);
     }
 
+    /// <summary>
+    /// Return true iif all blocks in the specified set are valid
+    /// </summary>
     public bool IsValid
     {
         get
@@ -31,6 +37,9 @@ public class BlockReader : IDisposable
         }
     }
 
+    /// <summary>
+    /// Get or set on which block to stop reading.
+    /// </summary>
     public byte[] StopHash
     {
         get
@@ -42,7 +51,10 @@ public class BlockReader : IDisposable
             GetBlocksNative.chain_get_blocks_set_stop_hash(nativeInstance_, value);
         }
     }
-
+    
+    /// <summary>
+    /// Get or set the hashes that have to be read in order to start reading.
+    /// </summary>
     public HashList StartHashes
     {
         get
@@ -55,6 +67,11 @@ public class BlockReader : IDisposable
         }
     }
 
+    /// <summary>
+    /// The sum of the sizes of the read blocks.
+    /// </summary>
+    /// <param name="version"> Protocol version to consider when calculating block size. </param>
+    /// <returns> UInt64 representation of the sum </returns>
     public UInt64 GetSerializedSize(UInt32 version)
     {
         return GetBlocksNative.chain_get_blocks_serialized_size(nativeInstance_, version);
@@ -66,6 +83,9 @@ public class BlockReader : IDisposable
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Go back to the beginning of the block set.
+    /// </summary>
     public void Reset()
     {
         GetBlocksNative.chain_get_blocks_reset(nativeInstance_);
