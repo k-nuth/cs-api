@@ -8,9 +8,14 @@ public class Executor : IDisposable
 {
     private IntPtr nativeInstance_;
 
-    public Executor(string configFile)
+    public Executor(string configFile, int stdOut = 0, int stdErr = 0)
     {
-        nativeInstance_ = ExecutorNative.executor_construct_fd(configFile, new IntPtr(0), new IntPtr(0));
+        nativeInstance_ = ExecutorNative.executor_construct_fd(configFile, stdOut, stdErr);
+    }
+
+    public Executor(string configFile, IntPtr stdOut = default(IntPtr), IntPtr stdErr = default(IntPtr))
+    {
+        nativeInstance_ = ExecutorNative.executor_construct_handles(configFile, stdOut, stdErr);
     }
 
     ~Executor()

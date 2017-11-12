@@ -11,6 +11,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
-    <ProjectReference Include="..\bitprim-cs\bitprim-cs.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\bitprim-cs\bitprim.csproj" />
   </ItemGroup>
 </Project>

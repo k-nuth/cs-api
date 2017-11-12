@@ -32,7 +32,7 @@ public static class HeaderNative
     public static extern void chain_header_merkle_out(IntPtr header, ref hash_t out_merkle);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_header_previous_block_hash(IntPtr header, ref hash_t out_previous_block_hash);
+    public static extern void chain_header_previous_block_hash_out(IntPtr header, ref hash_t out_previous_block_hash);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_header_set_bits(IntPtr header, UInt32 bits);

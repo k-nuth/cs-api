@@ -1,0 +1,22 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/bitprim-cs/v15
+/bitprim-cs/bin
+/bitprim-cs/obj
+/bitprim-cs.tests/bin/Debug/netcoreapp2.0
+/bitprim-cs.tests/obj
+/webtest/bin/Debug/netcoreapp2.0
+/webtest/obj/Debug/netcoreapp2.0
+/webtest/obj/Release/netcoreapp2.0
+/webtest/obj
+/webtest/webtest.csproj.user
+/.vs/config
+/bitprim-cs.tests/bin/Release/netcoreapp2.0
+/bitprim-node-cint.dll
+/conanbuildinfo.cmake
+/conanbuildinfo.txt
+/conaninfo.txt
+/conan_imports_manifest.txt
+/webtest/bitprim.restapi.csproj.user
