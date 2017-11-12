@@ -6,12 +6,23 @@ using System.Runtime.InteropServices;
 namespace BitprimCs
 {
 
+/// <summary>
+/// Represents the Bitcoin blockchain; meant to offer its different interfaces (query, mining, network)
+/// </summary>
 public class Chain
 {
     private IntPtr nativeInstance_;
 
     #region Chain
 
+    /// <summary>
+    /// Given a block hash, it queries the chain asynchronously for the block's height.
+    /// Return right away and uses a callback to return the result.
+    /// </summary>
+    /// <param name="blockHash"> 32-byte array representation of the block hash.
+    ///    Identifies it univocally.
+    /// </param>
+    /// <param name="handler"> Callback which will be invoked when the block height is found. </param>
     public void FetchBlockHeight(byte[] blockHash, Action<int, UInt64> handler)
     {
         var managedHash = new hash_t
@@ -22,6 +33,13 @@ public class Chain
         ChainNative.chain_fetch_block_height(nativeInstance_, contextPtr, managedHash, FetchBlockHeightHandler);
     }
 
+    /// <summary>
+    /// Given a block hash, it queries the chain asynchronously for the block's height.
+    /// Blocks until block height is retrieved.
+    /// </summary>
+    /// <param name="blockHash">  32-byte array representation of the block hash.
+    ///    Identifies it univocally. </param>
+    /// <returns> The block height </returns>
     public Tuple<int, UInt64> GetBlockHeight(byte[] blockHash)
     {
         UInt64 height = 0;
@@ -33,6 +51,10 @@ public class Chain
         return new Tuple<int, UInt64>(result, height);
     }
 
+    /// <summary>
+    /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
+    /// </summary>
+    /// <param name="handler"> Callback which will be called once the last height is retrieved. </param>
     public void FetchLastHeight(Action<int, UInt64> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -40,6 +62,11 @@ public class Chain
         ChainNative.chain_fetch_last_height(nativeInstance_, handlerPtr, FetchLastHeightHandler);
     }
 
+    /// <summary>
+    /// Gets the height of the highest block in the local copy of the blockchain, synchronously.
+    /// It blocks until height is retrieved.
+    /// </summary>
+    /// <returns> Error code (0 = success) and height </returns>
     public Tuple<int, UInt64> GetLastHeight()
     {
         UInt64 height = 0;
@@ -51,6 +78,11 @@ public class Chain
 
     #region Block
 
+    /// <summary>
+    /// Given a block hash, retrieve the full block it identifies, asynchronously.
+    /// </summary>
+    /// <param name="blockHash"> 32 bytes of the block hash </param>
+    /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
     public void FetchBlockByHash(byte[] blockHash, Action<int, Block> handler)
     {
         var managedHash = new hash_t
@@ -61,6 +93,11 @@ public class Chain
         ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockByHashHandler);
     }
 
+    /// <summary>
+    /// Given a block hash, get the full block it identifies, synchronously.
+    /// </summary>
+    /// <param name="blockHash"> 32 bytes of the block hash </param>
+    /// <returns> Error code (0 = success) and full block </returns>
     public Tuple<int, Block, UInt64> GetBlockByHash(byte[] blockHash)
     {
         IntPtr block = IntPtr.Zero;
@@ -73,6 +110,11 @@ public class Chain
         return new Tuple<int, Block, UInt64>(result, new Block(block), height);
     }
 
+    /// <summary>
+    /// Given a block height, retrieve the full block it identifies, asynchronously.
+    /// </summary>
+    /// <param name="height"> Block height </param>
+    /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
     public void FetchBlockByHeight(UInt64 height, Action<int, Block> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -80,6 +122,11 @@ public class Chain
         ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, FetchBlockByHeightHandler);
     }
 
+    /// <summary>
+    /// Given a block height, get the full block it identifies, synchronously.
+    /// </summary>
+    /// <param name="height"> Block height </param>
+    /// <returns> Error code (0 = success) and full block </returns>
     public Tuple<int, Block, UInt64> GetBlockByHeight(UInt64 height)
     {
         IntPtr block = IntPtr.Zero;
@@ -88,10 +135,15 @@ public class Chain
         return new Tuple<int, Block, UInt64>(result, new Block(block), actualHeight);
     }
 
-    #endregion //Block
+        #endregion //Block
 
-    #region Block header
+        #region Block header
 
+    /// <summary>
+    /// Given a block hash, get the header from the block it identifies, asynchronously.
+    /// </summary>
+    /// <param name="blockHash"> 32 bytes of the block hash </param>
+    /// <param name="handler"> Callback which will be called when the header is retrieved </param>
     public void FetchBlockHeaderByHash(byte[] blockHash, Action<int, Header> handler)
     {
         var managedHash = new hash_t
@@ -102,6 +154,11 @@ public class Chain
         ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashHandler);
     }
 
+    /// <summary>
+    /// Given a block hash, get the header from the block it identifies, synchronously.
+    /// </summary>
+    /// <param name="blockHash"> 32 bytes of the block hash </param>
+    /// <returns> Error code (0 = success), full block header and block height </returns>
     public Tuple<int, Header, UInt64> GetBlockHeaderByHash(byte[] blockHash)
     {
         IntPtr header = IntPtr.Zero;
@@ -114,6 +171,11 @@ public class Chain
         return new Tuple<int, Header, UInt64>(result, new Header(header), height);
     }
 
+    /// <summary>
+    /// Given a block height, get the header from the block it identifies, asynchronously.
+    /// </summary>
+    /// <param name="height"> Block height </param>
+    /// <param name="handler"> Callback which will be invoked when the block header is retrieved </param>
     public void FetchBlockHeaderByHeight(UInt64 height, Action<int, Header> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -121,6 +183,11 @@ public class Chain
         ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, FetchBlockHeaderbyHeightHandler);
     }
 
+    /// <summary>
+    /// Given a block height, get the header from the block it identifies, synchronously.
+    /// </summary>
+    /// <param name="height"> Block height </param>
+    /// <returns> Error code (0 = success), full block header, and height </returns>
     public Tuple<int, Header, UInt64> GetBlockHeaderByHeight(UInt64 height)
     {
         IntPtr header = IntPtr.Zero;
@@ -133,6 +200,11 @@ public class Chain
 
     #region Merkle Block
 
+    /// <summary>
+    /// Given a block hash, get the merkle block from the block it identifies, asynchronously.
+    /// </summary>
+    /// <param name="blockHash"> 32 bytes of the block hash </param>
+    /// <param name="handler"> Callback which will be invoked when the Merkle block is retrieved </param>
     public void FetchMerkleBlockByHash(byte[] blockHash, Action<int, MerkleBlock, UInt64> handler)
     {
         var managedHash = new hash_t
@@ -143,6 +215,11 @@ public class Chain
         ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchMerkleBlockByHashHandler);
     }
 
+    /// <summary>
+    /// Given a block hash, get the merkle block from the block it identifies, synchronously.
+    /// </summary>
+    /// <param name="blockHash"> 32 bytes of the block hash </param>
+    /// <returns> Error code (0 = success), full Merkle block and height </returns>
     public Tuple<int, MerkleBlock, UInt64> GetMerkleBlockByHash(byte[] blockHash)
     {
         IntPtr merkleBlock = IntPtr.Zero;
@@ -155,6 +232,11 @@ public class Chain
         return new Tuple<int, MerkleBlock, UInt64>(result, new MerkleBlock(merkleBlock), height);
     }
 
+    /// <summary>
+    /// Given a block height, get the merkle block from the block it identifies, asynchronously.
+    /// </summary>
+    /// <param name="height"> Desired block height </param>
+    /// <param name="handler"> Callback which will be invoked when the Merkle block is retrieved </param>
     public void FetchMerkleBlockByHeight(UInt64 height, Action<int, MerkleBlock, UInt64> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -162,6 +244,11 @@ public class Chain
         ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, FetchMerkleBlockByHeightHandler);
     }
 
+    /// <summary>
+    /// Given a block height, get the merkle block from the block it identifies, synchronously.
+    /// </summary>
+    /// <param name="height"> Desired block height </param>
+    /// <returns> Error code (0 = success), full Merkle block and height </returns>
     public Tuple<int, MerkleBlock, UInt64> GetMerkleBlockByHeight(UInt64 height)
     {
         IntPtr merkleBlock = IntPtr.Zero;
@@ -174,6 +261,11 @@ public class Chain
 
     #region Compact block
 
+    /// <summary>
+    /// Given a block hash, get the compact block from the block it identifies, asynchronously.
+    /// </summary>
+    /// <param name="blockHash"> 32 bytes of the block hash </param>
+    /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
     public void FetchCompactBlockByHash(byte[] blockHash, Action<int, CompactBlock> handler)
     {
         var managedHash = new hash_t
@@ -184,6 +276,11 @@ public class Chain
         ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchCompactBlockByHashHandler);
     }
 
+    /// <summary>
+    /// Given a block hash, get the compact block from the block it identifies, synchronously.
+    /// </summary>
+    /// <param name="blockHash"> 32 bytes of the block hash </param>
+    /// <returns> Error code (0 = success), full compact block and height </returns>
     public Tuple<int, CompactBlock, UInt64> GetCompactBlockByHash(byte[] blockHash)
     {
         IntPtr compactBlock = IntPtr.Zero;
@@ -196,6 +293,11 @@ public class Chain
         return new Tuple<int, CompactBlock, UInt64>(result, new CompactBlock(compactBlock), height);
     }
 
+    /// <summary>
+    /// Given a block height, get the compact block from the block it identifies, asynchronously.
+    /// </summary>
+    /// <param name="height"> Desired block height </param>
+    /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
     public void FetchCompactBlockByHeight(UInt64 height, Action<int, CompactBlock> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -203,6 +305,11 @@ public class Chain
         ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, FetchCompactBlockByHeightHandler);
     }
 
+    /// <summary>
+    /// Given a block height, get the compact block from the block it identifies, synchronously.
+    /// </summary>
+    /// <param name="height"> Desired block height </param>
+    /// <returns> Error code (0 = success), full compact block and height </returns>
     public Tuple<int, CompactBlock, UInt64> GetCompactBlockByHeight(UInt64 height)
     {
         IntPtr compactBlock = IntPtr.Zero;
@@ -215,6 +322,12 @@ public class Chain
 
     #region Transaction
 
+    /// <summary>
+    /// Get a transaction by its hash, asynchronously.
+    /// </summary>
+    /// <param name="txHash"> 32 bytes of transaction hash </param>
+    /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
+    /// <param name="handler"> Callback which will be invoked when the transaction is retrieved </param>
     public void FetchTransaction(byte[] txHash, bool requireConfirmed, Action<int, Transaction, UInt64, UInt64> handler)
     {
         var managedHash = new hash_t
@@ -225,6 +338,12 @@ public class Chain
         ChainNative.chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed? 1:0, FetchTransactionByHashHandler);
     }
 
+    /// <summary>
+    /// Get a transaction by its hash, synchronously.
+    /// </summary>
+    /// <param name="txHash"> 32 bytes of transaction hash </param>
+    /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
+    /// <returns> Error code (0 = success), full transaction, index inside block and height </returns>
     public Tuple<int, Transaction, UInt64, UInt64> GetTransaction(byte[] txHash, bool requireConfirmed)
     {
         IntPtr transaction = IntPtr.Zero;
@@ -238,6 +357,12 @@ public class Chain
         return new Tuple<int, Transaction, UInt64, UInt64>(result, new Transaction(transaction), index, height);
     }
 
+    /// <summary>
+    /// Given a transaction hash, it fetches the height and position inside the block, asynchronously.
+    /// </summary>
+    /// <param name="txHash"> 32 bytes of transaction hash </param>
+    /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
+    /// <param name="handler"> Callback which will be invoked when the transaction position is retrieved </param>
     public void FetchTransactionPosition(byte[] txHash, bool requireConfirmed, Action<int, UInt64, UInt64> handler)
     {
         var managedHash = new hash_t
@@ -248,6 +373,12 @@ public class Chain
         ChainNative.chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed? 1:0, FetchTransactionPositionHandler);
     }
 
+    /// <summary>
+    /// Given a transaction hash, it fetches the height and position inside the block, synchronously.
+    /// </summary>
+    /// <param name="txHash"> 32 bytes of transaction hash </param>
+    /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
+    /// <returns> Error code (0 = success), index in block (zero based) and block height </returns>
     public Tuple<int, UInt64, UInt64> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
     {
         UInt64 index = 0;
@@ -264,16 +395,28 @@ public class Chain
 
     #region Spend
 
+    /// <summary>
+    /// Fetch the transaction input which spends the indicated output.
+    /// </summary>
+    /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
+    /// <param name="handler"> Callback which will be called when spend is retrieved </param>
     public void FetchSpend(OutputPoint outputPoint, Action<int, Point> handler)
     {
         IntPtr contextPtr = CreateContext(handler, outputPoint);
         ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, FetchSpendHandler);
     }
 
-    #endregion //Spend
+        #endregion //Spend
 
-    #region History
+        #region History
 
+    /// <summary>
+    /// Get a list of output points, values, and spends for a given payment address (asynchronously)
+    /// </summary>
+    /// <param name="address"> Bitcoin payment address to search </param>
+    /// <param name="limit"> Maximum amount of results to fetch </param>
+    /// <param name="fromHeight"> Starting point to search for transactions </param>
+    /// <param name="handler"> Callback which will be called when the history is retrieved </param>
     public void FetchHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<int, HistoryCompactList> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -281,6 +424,13 @@ public class Chain
         ChainNative.chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, FetchHistoryHandler);
     }
 
+    /// <summary>
+    /// Get a list of output points, values, and spends for a given payment address (synchronously)
+    /// </summary>
+    /// <param name="address"> Bitcoin payment address to search </param>
+    /// <param name="limit"> Maximum amount of results to fetch </param>
+    /// <param name="fromHeight"> Starting point to search for transactions </param>
+    /// <returns> Error code (0 = success), HistoryCompactList </returns>
     public Tuple<int, HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
     {
         IntPtr history = IntPtr.Zero;
@@ -292,6 +442,13 @@ public class Chain
 
     #region Stealth
 
+    /// <summary>
+    /// Get metadata on potential payment transactions by stealth filter. Given a filter and a
+    /// height in the chain, it queries the chain for transactions matching the given filter.
+    /// </summary>
+    /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
+    /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
+    /// <param name="handler"> Callback which will be called when the stealth list is retrieved </param>
     public void FetchStealth(Binary filter, UInt64 fromHeight, Action<int, StealthCompactList> handler)
     {
         IntPtr contextPtr = CreateContext(handler, filter);
@@ -302,6 +459,11 @@ public class Chain
 
     #region Block indexes
 
+    /// <summary>
+    /// Given a list of indexes, fetch a header reader for them, asynchronously
+    /// </summary>
+    /// <param name="indexes"> Block indexes </param>
+    /// <param name="handler"> Callback which will called when the reader is retrieved </param>
     public void FetchBlockLocator(BlockIndexCollection indexes, Action<int, HeaderReader> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -309,6 +471,11 @@ public class Chain
         ChainNative.chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, FetchBlockLocatorHandler);
     }
 
+    /// <summary>
+    /// Given a list of indexes, fetch a header reader for them, synchronously
+    /// </summary>
+    /// <param name="indexes"> Block indexes </param>
+    /// <returns> Error code (0 = success), HeaderReader </returns>
     public Tuple<int, HeaderReader> GetBlockLocator(BlockIndexCollection indexes)
     {
         IntPtr headerReader = IntPtr.Zero;
@@ -320,6 +487,10 @@ public class Chain
 
     #region Subscribers
 
+    /// <summary>
+    /// Be notified (called back) when the local copy of the blockchain is updated at the block level.
+    /// </summary>
+    /// <param name="handler"> Callback which will be called when blocks are added. </param>
     public void SubscribeToBlockChain(Action<UInt64, BlockList, BlockList> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -327,6 +498,10 @@ public class Chain
         ChainNative.chain_subscribe_blockchain(nativeInstance_, handlerPtr, ReorganizeHandler);
     }
 
+    /// <summary>
+    /// Be notified (called back) when the local copy of the blockchain is updated at the transaction level.
+    /// </summary>
+    /// <param name="handler"> Callback which will be called when a transaction is added. </param>
     public void SubscribeToTransaction(Action<UInt64, BlockList, BlockList> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -338,6 +513,11 @@ public class Chain
 
     #region Organizers
 
+    /// <summary>
+    /// Given a block, organize it (async).
+    /// </summary>
+    /// <param name="block"> The block to organize </param>
+    /// <param name="handler"> Callback which will be called when organization is complete. </param>
     public void OrganizeBlock(Block block, Action<int> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -345,11 +525,21 @@ public class Chain
         ChainNative.chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, ResultHandler);
     }
 
+    /// <summary>
+    /// Given a block, organize it (sync).
+    /// </summary>
+    /// <param name="block"> The block to organize. </param>
+    /// <returns> Error code (0 = success) </returns>
     public int OrganizeBlockSync(Block block)
     {
         return ChainNative.chain_organize_block_sync(nativeInstance_, block.NativeInstance);
     }
 
+    /// <summary>
+    /// Given a transaction, organize it (async).
+    /// </summary>
+    /// <param name="transaction"> The transaction to organize. </param>
+    /// <param name="handler"> Callback which will be called when organization is complete. </param>
     public void OrganizeTransaction(Transaction transaction, Action<int> handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -357,15 +547,25 @@ public class Chain
         ChainNative.chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance, ResultHandler);
     }
 
+    /// <summary>
+    /// Given a transaction, organize it (sync)
+    /// </summary>
+    /// <param name="transaction"> The transaction to organize </param>
+    /// <returns> Error code (0 = success) </returns>
     public int OrganizeTransactionSync(Transaction transaction)
     {
         return ChainNative.chain_organize_transaction_sync(nativeInstance_, transaction.NativeInstance);
     }
 
-    #endregion //Organizers
+        #endregion //Organizers
 
-    #region Misc
+        #region Misc
 
+    /// <summary>
+    /// Determine if a transaction is valid for submission to the blockchain.
+    /// </summary>
+    /// <param name="transaction"> Transaction to validate </param>
+    /// <param name="handler"> Callback which will be called when validation is complete. </param>
     public void ValidateTransaction(Transaction transaction, Action handler)
     {
         GCHandle handlerHandle = GCHandle.Alloc(handler);
