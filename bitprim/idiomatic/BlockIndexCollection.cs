@@ -5,17 +5,11 @@ using System.Collections;
 namespace Bitprim
 {
 
-    /// <summary>
-    /// Represents a set of block indexes
-    /// </summary>
     public class BlockIndexCollection : IDisposable
     {
 
         private IntPtr nativeInstance_;
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
         public BlockIndexCollection()
         {
             nativeInstance_ = BlockIndexesNative.chain_block_indexes_construct_default();
@@ -26,19 +20,11 @@ namespace Bitprim
             Dispose(false);
         }
 
-        /// <summary>
-        /// Needed to iterate collection using foreach.
-        /// </summary>
-        /// <returns> Collection enumerator. </returns>
         public IEnumerator GetEnumerator()
         {
             return new BlockIndexCollectionEnumerator(nativeInstance_);
         }
 
-        /// <summary>
-        /// Indexes count
-        /// </summary>
-        /// <returns>Count</returns>
         public uint Count
         {
             get
@@ -47,18 +33,11 @@ namespace Bitprim
             }
         }
 
-        /// <summary>
-        /// Add a block index to collection
-        /// </summary>
-        /// <param name="blockIndex">Block index to add</param>
         public void Add(uint blockIndex)
         {
             BlockIndexesNative.chain_block_indexes_push_back(nativeInstance_, (UIntPtr)blockIndex);
         }
 
-        /// <summary>
-        /// Release object resources
-        /// </summary>
         public void Dispose()
         {
             Dispose(true);
@@ -86,38 +65,23 @@ namespace Bitprim
         
     }
 
-    /// <summary>
-    /// For enumerator pattern
-    /// </summary>
     public class BlockIndexCollectionEnumerator : IEnumerator
     {
         private uint counter_;
         private IntPtr nativeCollection_;
 
-        /// <summary>
-        /// Create object from reference to native instance
-        /// </summary>
-        /// <param name="nativeCollection">Pointer to the native object</param>
         public BlockIndexCollectionEnumerator(IntPtr nativeCollection)
         {
             nativeCollection_ = nativeCollection;
             counter_ = 0;
         }
 
-        /// <summary>
-        /// Advance enumerator to next element
-        /// </summary>
-        /// <returns>True if and only if enumerator moved to next element</returns>
         public bool MoveNext()
         {
             counter_++;
             return counter_ != (uint)BlockIndexesNative.chain_block_indexes_count(nativeCollection_);
         }
 
-        /// <summary>
-        /// Return current element
-        /// </summary>
-        /// <returns>Reference to current element, as object</returns>
         public object Current
         {
             get
@@ -126,9 +90,6 @@ namespace Bitprim
             }
         }
 
-        /// <summary>
-        /// Go back to collection's first element
-        /// </summary>
         public void Reset()
         {
             counter_ = 0;
