@@ -23,3 +23,5 @@
 /.vs/bitprim/v15
 /bitprim/bin
 /bitprim/obj
+/bitprim.tests/bin/Debug/netcoreapp2.0
+/bitprim.tests/obj
