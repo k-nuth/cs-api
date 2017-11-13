@@ -54,21 +54,6 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        internal Transaction(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            TransactionNative.chain_transaction_destruct(nativeInstance_);
-        }
-
         /// <summary>
         /// Returns true if and only if this is a coinbase transaction (i.e. generates new coins).
         /// </summary>
@@ -330,6 +315,21 @@ namespace Bitprim
             {
                 return nativeInstance_;
             }
+        }
+
+        internal Transaction(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+            }
+            //Release unmanaged resources
+            TransactionNative.chain_transaction_destruct(nativeInstance_);
         }
 
     }

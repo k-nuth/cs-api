@@ -116,16 +116,6 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            InputNative.chain_input_destruct(nativeInstance_);
-        }
-
         internal Input(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
@@ -137,6 +127,16 @@ namespace Bitprim
             {
                 return nativeInstance_;
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+            }
+            //Release unmanaged resources
+            InputNative.chain_input_destruct(nativeInstance_);
         }
     }
 

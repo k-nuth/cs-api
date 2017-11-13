@@ -85,6 +85,11 @@ namespace Bitprim
             CompactBlockNative.compact_block_reset(nativeInstance_);
         }
 
+        internal CompactBlock(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -95,10 +100,6 @@ namespace Bitprim
             CompactBlockNative.compact_block_destruct(nativeInstance_);
         }
 
-        internal CompactBlock(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
-        }
     }
 
 }

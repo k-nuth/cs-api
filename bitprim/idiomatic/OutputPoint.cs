@@ -68,6 +68,14 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
+        internal IntPtr NativeInstance
+        {
+            get
+            {
+                return nativeInstance_;
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -76,14 +84,6 @@ namespace Bitprim
             }
             //Release unmanaged resources
             OutputPointNative.output_point_destruct(nativeInstance_);
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
         }
     }
 

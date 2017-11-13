@@ -55,6 +55,11 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
+        internal StealthCompact(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -63,11 +68,6 @@ namespace Bitprim
             }
             //Release unmanaged resources
             StealthCompactNative.stealth_compact_destruct(nativeInstance_);
-        }
-
-        internal StealthCompact(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
         }
     }
 

@@ -102,6 +102,11 @@ namespace Bitprim
             GetHeadersNative.chain_get_headers_reset(nativeInstance_);
         }
 
+        internal HeaderReader(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -112,10 +117,6 @@ namespace Bitprim
             GetHeadersNative.chain_get_headers_destruct(nativeInstance_);
         }
 
-        internal HeaderReader(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
-        }
     }
 
 }

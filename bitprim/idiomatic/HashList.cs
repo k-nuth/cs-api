@@ -62,16 +62,6 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            HashListNative.chain_hash_list_destruct(nativeInstance_);
-        }
-
         internal HashList(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
@@ -83,6 +73,16 @@ namespace Bitprim
             {
                 return nativeInstance_;
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+            }
+            //Release unmanaged resources
+            HashListNative.chain_hash_list_destruct(nativeInstance_);
         }
     }
 

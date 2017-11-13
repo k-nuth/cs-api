@@ -73,6 +73,11 @@ namespace Bitprim.Native
             GC.SuppressFinalize(this);
         }
 
+        internal HistoryCompact(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -81,11 +86,6 @@ namespace Bitprim.Native
             }
             //Release unmanaged resources
             HistoryCompactNative.chain_history_compact_destruct(nativeInstance_);
-        }
-
-        internal HistoryCompact(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
         }
     }
 

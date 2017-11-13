@@ -97,6 +97,11 @@ namespace Bitprim
             MerkleBlockNative.chain_merkle_block_reset(nativeInstance_);
         }
 
+        internal MerkleBlock(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -105,11 +110,6 @@ namespace Bitprim
             }
             //Release unmanaged resources
             MerkleBlockNative.chain_merkle_block_destruct(nativeInstance_);
-        }
-
-        internal MerkleBlock(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
         }
     }
 

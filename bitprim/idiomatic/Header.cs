@@ -134,6 +134,11 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
+        internal Header(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -144,10 +149,6 @@ namespace Bitprim
             HeaderNative.chain_header_destruct(nativeInstance_);
         }
 
-        internal Header(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
-        }
     }
 
 }

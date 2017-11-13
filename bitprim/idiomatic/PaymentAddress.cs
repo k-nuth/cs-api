@@ -53,6 +53,14 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
+        internal IntPtr NativeInstance
+        {
+            get
+            {
+                return nativeInstance_;
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -61,14 +69,6 @@ namespace Bitprim
             }
             //Release unmanaged resources
             PaymentAddressNative.chain_payment_address_destruct(nativeInstance_);
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
         }
     }
 

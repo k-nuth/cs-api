@@ -23,16 +23,6 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            BlockNative.chain_block_destruct(nativeInstance_);
-        }
-
         /// <summary>
         /// Returns true iif all transactions in the block have a unique hash (i.e. no duplicates)
         /// </summary>
@@ -272,6 +262,16 @@ namespace Bitprim
             {
                 return nativeInstance_;
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+            }
+            //Release unmanaged resources
+            BlockNative.chain_block_destruct(nativeInstance_);
         }
 
     }

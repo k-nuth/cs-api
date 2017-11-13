@@ -86,16 +86,6 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            ScriptNative.chain_script_destruct(nativeInstance_);
-        }
-
         internal Script(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
@@ -107,6 +97,16 @@ namespace Bitprim
             {
                 return nativeInstance_;
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+            }
+            //Release unmanaged resources
+            ScriptNative.chain_script_destruct(nativeInstance_);
         }
     }
 

@@ -21,11 +21,6 @@ namespace Bitprim
             nativeInstance_ = BlockListNative.chain_block_list_construct_default();
         }
 
-        internal BlockList(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
-        }
-
         ~BlockList()
         {
             Dispose(false);
@@ -70,6 +65,19 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
+        internal BlockList(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+        }
+
+        internal IntPtr NativeInstance
+        {
+            get
+            {
+                return nativeInstance_;
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -80,13 +88,6 @@ namespace Bitprim
             BlockListNative.chain_block_list_destruct(nativeInstance_);
         }
 
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
     }
 
     /// <summary>
