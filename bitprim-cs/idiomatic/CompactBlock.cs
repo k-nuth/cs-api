@@ -5,6 +5,9 @@ using System.Collections;
 namespace BitprimCs
 {
 
+/// <summary>
+/// BIP 512 representation of a block for reduced propagation bandwidth.
+/// </summary>
 public class CompactBlock : IDisposable
 {
     private IntPtr nativeInstance_;
@@ -13,7 +16,10 @@ public class CompactBlock : IDisposable
     {
         Dispose(false);
     }
-
+    
+    /// <summary>
+    /// Returns true iif this is a valid compact representation of a block (as per BIP 512).
+    /// </summary>
     public bool IsValid
     {
         get
@@ -22,6 +28,9 @@ public class CompactBlock : IDisposable
         }
     }
 
+    /// <summary>
+    /// Block nonce (i.e. value which makes hash start with leading zeroes), as a 64-bit unsigned integer.
+    /// </summary>
     public UInt64 Nonce
     {
         get
@@ -30,6 +39,9 @@ public class CompactBlock : IDisposable
         }
     }
 
+    /// <summary>
+    /// Amount of transactions that belong to the block.
+    /// </summary>
     public UInt64 TransactionCount
     {
         get
@@ -38,11 +50,21 @@ public class CompactBlock : IDisposable
         }
     }
 
+    /// <summary>
+    /// Get the block's nth transaction, synchronously.
+    /// </summary>
+    /// <param name="n"> Zero-based index </param>
+    /// <returns> Full transaction object </returns>
     public Transaction GetNthTransaction(UInt64 n)
     {
         return new Transaction(CompactBlockNative.compact_block_transaction_nth(nativeInstance_, n));
     }
 
+    /// <summary>
+    /// Get the compact block's serialized size.
+    /// </summary>
+    /// <param name="version"> Protocol version to consider when calculating size. </param>
+    /// <returns> Size in bytes. </returns>
     public UInt64 GetSerializedSize(UInt32 version)
     {
         return CompactBlockNative.compact_block_serialized_size(nativeInstance_, version);
@@ -54,6 +76,9 @@ public class CompactBlock : IDisposable
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Reset this compact block.
+    /// </summary>
     public void Reset()
     {
         CompactBlockNative.compact_block_reset(nativeInstance_);
