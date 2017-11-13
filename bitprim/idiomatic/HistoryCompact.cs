@@ -4,71 +4,89 @@ using System.Runtime.InteropServices;
 namespace Bitprim.Native
 {
 
-public class HistoryCompact : IDisposable
-{
-    private IntPtr nativeInstance_;
-
-   ~HistoryCompact()
+    /// <summary>
+    /// Output points, values, and spends for a payment address.
+    /// </summary>
+    public class HistoryCompact : IDisposable
     {
-        Dispose(false);
-    }
+        private IntPtr nativeInstance_;
 
-    public Point Point
-    {
-        get
+        ~HistoryCompact()
         {
-            return new Point(HistoryCompactNative.chain_history_compact_get_point(nativeInstance_));
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// The point that identifies the History instance.
+        /// </summary>
+        public Point Point
+        {
+            get
+            {
+                return new Point(HistoryCompactNative.chain_history_compact_get_point(nativeInstance_));
+            }
+        }
+
+        /// <summary>
+        /// Used for distinguishing between values and spends.
+        /// </summary>
+        public PointKind PointKind
+        {
+            get
+            {
+                return (PointKind)Enum.ToObject
+                (
+                    typeof(PointKind),
+                    HistoryCompactNative.chain_history_compact_get_point_kind(nativeInstance_)
+                );
+            }
+        }
+
+        /// <summary>
+        /// Height of the block containing the Point.
+        /// </summary>
+        public UInt32 Height
+        {
+            get
+            {
+                return HistoryCompactNative.chain_history_compact_get_height(nativeInstance_);
+            }
+        }
+
+        /// <summary>
+        /// Varies depending on point_kind.
+        /// </summary>
+        public UInt64 ValueOrChecksum
+        {
+            get
+            {
+                return HistoryCompactNative.chain_history_compact_get_value_or_previous_checksum(nativeInstance_);
+            }
+        }
+
+        /// <summary>
+        /// Release resources
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+            }
+            //Release unmanaged resources
+            HistoryCompactNative.chain_history_compact_destruct(nativeInstance_);
+        }
+
+        internal HistoryCompact(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
         }
     }
-
-    public PointKind PointKind
-    {
-        get
-        {
-            return (PointKind) Enum.ToObject
-            (
-                typeof(PointKind),
-                HistoryCompactNative.chain_history_compact_get_point_kind(nativeInstance_)
-            );
-        }
-    }
-
-    public UInt32 Height
-    {
-        get
-        {
-            return HistoryCompactNative.chain_history_compact_get_height(nativeInstance_);
-        }
-    }
-
-    public UInt64 ValueOrChecksum
-    {
-        get
-        {
-            return HistoryCompactNative.chain_history_compact_get_value_or_previous_checksum(nativeInstance_);
-        }
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            //Release managed resources and call Dispose for member variables
-        }   
-        //Release unmanaged resources
-        HistoryCompactNative.chain_history_compact_destruct(nativeInstance_);
-    }
-
-    internal HistoryCompact(IntPtr nativeInstance)
-    {
-        nativeInstance_ = nativeInstance;
-    }
-}
 
 }
