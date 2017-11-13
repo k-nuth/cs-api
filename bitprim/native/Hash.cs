@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace BitprimCs.Native
+namespace Bitprim.Native
 {
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size=32), Serializable]

@@ -1,8 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
-using BitprimCs.Native;
+using Bitprim.Native;
 
-namespace BitprimCs
+namespace Bitprim
 {
 
 public class Header : IDisposable

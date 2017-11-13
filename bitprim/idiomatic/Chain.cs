@@ -1,9 +1,9 @@
-using BitprimCs.Native;
+using Bitprim.Native;
 using System;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
-namespace BitprimCs
+namespace Bitprim
 {
 
 /// <summary>

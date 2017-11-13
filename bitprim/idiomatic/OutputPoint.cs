@@ -1,7 +1,7 @@
 using System;
-using BitprimCs.Native;
+using Bitprim.Native;
 
-namespace BitprimCs
+namespace Bitprim
 {
 
 public class OutputPoint : IDisposable

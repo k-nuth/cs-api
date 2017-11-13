@@ -1,8 +1,8 @@
 using System;
-using BitprimCs.Native;
+using Bitprim.Native;
 using System.Collections;
 
-namespace BitprimCs
+namespace Bitprim
 {
 
 public class InputList : IDisposable

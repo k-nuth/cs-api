@@ -1,10 +1,10 @@
-using BitprimCs;
+using Bitprim;
 using System;
 using System.Text;
 using System.Threading;
 using Xunit;
 
-namespace BitprimCs.Tests
+namespace Bitprim.Tests
 {
     public class ChainTest : IClassFixture<ExecutorFixture>
     {

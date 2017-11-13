@@ -1,4 +1,4 @@
-namespace BitprimCs
+namespace Bitprim
 {
     public enum PointKind
     {

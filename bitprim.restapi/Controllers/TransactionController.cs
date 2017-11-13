@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using BitprimCs;
+using Bitprim;
 
 namespace api.Controllers
 {
@@ -53,7 +53,7 @@ namespace api.Controllers
         [HttpGet("Validate")]
         public bool Validate(string tx)
         {
-            var exec = new Executor(config_.Value.NodeConfigFile);
+            var exec = new Executor(config_.Value.NodeConfigFile, 0, 0);
             //var s = config_.Value;
             return true;
         }

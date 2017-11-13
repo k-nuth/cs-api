@@ -1,6 +1,6 @@
 using System;
 
-namespace BitprimCs.Tests
+namespace Bitprim.Tests
 {
 
 public class ExecutorFixture : IDisposable
@@ -9,7 +9,7 @@ public class ExecutorFixture : IDisposable
 
     public ExecutorFixture()
     {
-        exec_ = new Executor("");
+        exec_ = new Executor("", 0, 0);
         int result = exec_.InitChain();
         /*if(result != 0)
         {
