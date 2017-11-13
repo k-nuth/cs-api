@@ -5,11 +5,17 @@ using System.Collections;
 namespace Bitprim
 {
 
+/// <summary>
+/// A collection of Bitcoin hashes (for blocks or transactions).
+/// </summary>
 public class HashList : IDisposable
 {
 
     private IntPtr nativeInstance_;
 
+    /// <summary>
+    /// Create an empty list.
+    /// </summary>
     public HashList()
     {
         nativeInstance_ = HashListNative.chain_hash_list_construct_default();
@@ -20,11 +26,19 @@ public class HashList : IDisposable
         Dispose(false);
     }
 
+    /// <summary>
+    /// Needed to iterate collection using foreach
+    /// </summary>
+    /// <returns> Collection enumerator. </returns>
     public IEnumerator GetEnumerator()
     {
         return new HashListEnumerator(nativeInstance_);
     }
 
+    /// <summary>
+    /// Hash count
+    /// </summary>
+    /// <returns>Count</returns>
     public uint Count
     {
         get
@@ -33,6 +47,10 @@ public class HashList : IDisposable
         }
     }
 
+    /// <summary>
+    /// Add a hash to collection
+    /// </summary>
+    /// <param name="hash">Hash to add</param>
     public void Add(byte[] hash)
     {
         HashListNative.chain_hash_list_push_back(nativeInstance_, hash);
@@ -68,23 +86,28 @@ public class HashList : IDisposable
     }
 }
 
+/// <summary>
+/// For enumerator pattern
+/// </summary>
 public class HashListEnumerator : IEnumerator
 {
     private uint counter_;
     private IntPtr nativeCollection_;
 
-    public HashListEnumerator(IntPtr nativeCollection)
-    {
-        nativeCollection_ = nativeCollection;
-        counter_ = 0;
-    }
-
+    /// <summary>
+    /// Advance enumerator to next element
+    /// </summary>
+    /// <returns>True if and only if enumerator moved to next element</returns>
     public bool MoveNext()
     {
         counter_++;
         return counter_ != (uint) HashListNative.chain_hash_list_count(nativeCollection_);
     }
 
+    /// <summary>
+    /// Return current element
+    /// </summary>
+    /// <returns>Reference to current element, as object</returns>
     public object Current
     {
         get
@@ -93,8 +116,17 @@ public class HashListEnumerator : IEnumerator
         }
     }
 
+    /// <summary>
+    /// Go back to collection's first element
+    /// </summary>
     public void Reset()
     {
+        counter_ = 0;
+    }
+
+    internal HashListEnumerator(IntPtr nativeCollection)
+    {
+        nativeCollection_ = nativeCollection;
         counter_ = 0;
     }
 }

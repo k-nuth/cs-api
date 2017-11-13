@@ -98,16 +98,6 @@ public class BlockListEnumerator : IEnumerator
     private IntPtr nativeCollection_;
 
     /// <summary>
-    /// Create object from reference to native instance
-    /// </summary>
-    /// <param name="nativeCollection">Pointer to the native object</param>
-    public BlockListEnumerator(IntPtr nativeCollection)
-    {
-        nativeCollection_ = nativeCollection;
-        counter_ = 0;
-    }
-
-    /// <summary>
     /// Advance enumerator to next element
     /// </summary>
     /// <returns>True if and only if enumerator moved to next element</returns>
@@ -136,6 +126,12 @@ public class BlockListEnumerator : IEnumerator
     {
         counter_ = 0;
     }
-}
+
+    internal BlockListEnumerator(IntPtr nativeCollection)
+    {
+        nativeCollection_ = nativeCollection;
+        counter_ = 0;
+    }
+    }
 
 }
