@@ -25,3 +25,6 @@
 /bitprim/obj
 /bitprim.tests/bin/Debug/netcoreapp2.0
 /bitprim.tests/obj
+/bitprim.restapi/.vscode
+/bitprim.restapi/bin/Debug
+/bitprim.restapi/obj
