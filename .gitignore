@@ -28,3 +28,5 @@
 /bitprim.restapi/.vscode
 /bitprim.restapi/bin/Debug
 /bitprim.restapi/obj
+/bitprim/docs/xml
+/bitprim/docs/api.md
