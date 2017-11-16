@@ -16,7 +16,7 @@ environment:
 
 build_script:
   - SET PATH=%PATH%;%PYTHON%/Scripts/
-  - dotnet build bitprim.sln
+  - dotnet build bitprim.sln /property:Platform=x64
 
 install:
   - "%PYTHON%/Scripts/pip.exe install conan"
@@ -24,6 +24,6 @@ install:
 test_script:
   - cd bitprim.tests
   - dotnet restore
-  - dotnet build
+  - dotnet build /property:Platform=x64
   - dotnet test
   
