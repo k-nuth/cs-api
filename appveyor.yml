@@ -23,7 +23,4 @@ install:
 
 test_script:
   - cd bitprim.tests
-  - dotnet restore
-  - dotnet build /property:Platform=x64
-  - dotnet test
-  
+  - dotnet test /property:Platform=x64
