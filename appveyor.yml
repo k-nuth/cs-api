@@ -17,6 +17,9 @@ environment:
 build_script:
   - dotnet build bitprim.sln
 
+install:
+  - "%PYTHON%/Scripts/pip.exe install conan --upgrade"
+
 test_script:
   - cd bitprim.tests
   - dotnet restore
