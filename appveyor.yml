@@ -23,4 +23,5 @@ install:
 
 test_script:
   - cd bitprim.tests
-  - dotnet test /property:Platform=x64
+  - rmdir bin/
+  - dotnet test /property:Platform=x64 -f net461
