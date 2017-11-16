@@ -1,5 +1,5 @@
 [requires]
-bitprim-node-cint/0.2@bitprim/stable
+bitprim-node-cint/0.3@bitprim/testing
 
 [generators]
 cmake
@@ -8,12 +8,4 @@ cmake
 bitprim-node-cint:shared=True
 
 [imports]
-include/bitprim, *.h   -> ./bitprim/include/bitprim
-include/bitprim, *.hpp -> ./bitprim/include/bitprim
-lib, *.lib    -> ./bitprim/lib
-lib, *.a      -> ./bitprim/lib
-lib, *.dylib* -> ./bitprim/lib
-lib, *.so     -> ./bitprim/lib
-lib, *.dll    -> ./bitprim/lib
-bin, bn.exe -> ./bitprim/bin
-bin, bn     -> ./bitprim/bin
+bin, *.dll    -> .

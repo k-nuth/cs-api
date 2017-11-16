@@ -1,0 +1,105 @@
+using System;
+using Bitprim.Native;
+
+namespace Bitprim
+{
+
+    /// <summary>
+    /// Allows user to read a specific set of blocks from the blockchain.
+    /// </summary>
+    public class BlockReader : IDisposable
+    {
+        private IntPtr nativeInstance_;
+
+        public BlockReader()
+        {
+            nativeInstance_ = GetBlocksNative.chain_get_blocks_construct_default();
+        }
+
+        public BlockReader(HashList start, byte[] stop)
+        {
+            nativeInstance_ = GetBlocksNative.chain_get_blocks_construct(start.NativeInstance, stop);
+        }
+
+        ~BlockReader()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// Return true iif all blocks in the specified set are valid
+        /// </summary>
+        public bool IsValid
+        {
+            get
+            {
+                return GetBlocksNative.chain_get_blocks_is_valid(nativeInstance_) != 0;
+            }
+        }
+
+        /// <summary>
+        /// Get or set on which block to stop reading.
+        /// </summary>
+        public byte[] StopHash
+        {
+            get
+            {
+                return GetBlocksNative.chain_get_blocks_stop_hash(nativeInstance_);
+            }
+            set
+            {
+                GetBlocksNative.chain_get_blocks_set_stop_hash(nativeInstance_, value);
+            }
+        }
+
+        /// <summary>
+        /// Get or set the hashes that have to be read in order to start reading.
+        /// </summary>
+        public HashList StartHashes
+        {
+            get
+            {
+                return new HashList(GetBlocksNative.chain_get_blocks_start_hashes(nativeInstance_));
+            }
+            set
+            {
+                GetBlocksNative.chain_get_blocks_set_start_hashes(nativeInstance_, value.NativeInstance);
+            }
+        }
+
+        /// <summary>
+        /// The sum of the sizes of the read blocks.
+        /// </summary>
+        /// <param name="version"> Protocol version to consider when calculating block size. </param>
+        /// <returns> UInt64 representation of the sum </returns>
+        public UInt64 GetSerializedSize(UInt32 version)
+        {
+            return GetBlocksNative.chain_get_blocks_serialized_size(nativeInstance_, version);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Go back to the beginning of the block set.
+        /// </summary>
+        public void Reset()
+        {
+            GetBlocksNative.chain_get_blocks_reset(nativeInstance_);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+            }
+            //Release unmanaged resources
+            GetBlocksNative.chain_get_blocks_destruct(nativeInstance_);
+        }
+    }
+
+}

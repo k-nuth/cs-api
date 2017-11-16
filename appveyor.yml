@@ -14,26 +14,14 @@ environment:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
-before_build:
-  - cd webtest
-  - dotnet restore
-  - cd ..
-
 build_script:
-  - cd webtest
-  - dotnet build webtest.csproj -c Release
-  - cd ..
-  - "%PYTHON%\\Scripts\\pip.exe --version"
-  - "%PYTHON%\\Scripts\\pip.exe install conan --upgrade"
-  - conan user # It creates the conan data directory
-  - conan remote add bitprim_temp https://api.bintray.com/conan/bitprim/bitprim
-  - wget https://raw.githubusercontent.com/dario-ramos/bitprim-cs/dev/conanfile.txt
-  - conan install .
-  - cp bitprim/* ./bitprim-cs.tests/bin/Release/netcoreapp1.1
+  - SET PATH=%PATH%;%PYTHON%/Scripts/
+  - dotnet build bitprim.sln /property:Platform=x64
+
+install:
+  - "%PYTHON%/Scripts/pip.exe install conan"
 
 test_script:
-  - cd bitprim-cs.tests
-  - dotnet restore
-  - dotnet build
-  - dotnet test
-  
+  - cd bitprim.tests
+  #- rmdir .\bin\x64\Release\blockchain /s /q
+  - dotnet test /property:Platform=x64 -f net461
