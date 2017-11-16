@@ -15,6 +15,7 @@ environment:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
 build_script:
+  - SET PATH=%PATH%;%PYTHON%/Scripts/
   - dotnet build bitprim.sln
 
 install:
