@@ -37,3 +37,5 @@
 /bitprim.tests/conanfile.txt
 /bitprim.tests/conanbuildinfo.txt
 /bitprim.tests/conanbuildinfo.cmake
+/bitprim.restapi/bin/x64/Release/netcoreapp2.0
+/bitprim.tests/bin/x64/Release
