@@ -23,7 +23,7 @@ namespace Bitprim.Tests
             Assert.Equal(0, errorAndHeight.Item1);
         }
 
-        [Fact]
+        /*[Fact]
         public void TestFetchBlockHeaderByHeight()
         {
             var handlerDone = new AutoResetEvent(false);
@@ -310,7 +310,7 @@ namespace Bitprim.Tests
             Assert.Equal(0, error);
             Assert.NotNull(block);
             VerifyBlock170Header(block.Header);
-        }
+        }*/
 
         private static string ByteArrayToHexString(byte[] ba)
         {
