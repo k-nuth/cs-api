@@ -21,7 +21,7 @@ build_script:
   - dotnet build bitprim.sln /property:Platform=x64
 
 install:
-  - "%PYTHON%/Scripts/pip.exe install conan"
+  - "%PYTHON%/Scripts/pip.exe install conan --upgrade"
 
 test_script:
   - cd bitprim.tests
