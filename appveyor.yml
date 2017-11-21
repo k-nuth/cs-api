@@ -24,4 +24,4 @@ install:
 test_script:
   - cd bitprim.tests
   #- rmdir .\bin\x64\Release\blockchain /s /q
-  - dotnet test /property:Platform=x64 -f net461
+  - dotnet test /property:Platform=x64 -f net461 /property:ParallelizeTestCollections=false
