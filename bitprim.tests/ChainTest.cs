@@ -414,6 +414,7 @@ namespace Bitprim.Tests
                     System.Threading.Thread.Sleep(10000);
                 }
             }
+            Assert.Equal(error, 0);
         }
 
     }
