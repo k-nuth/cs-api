@@ -5,121 +5,150 @@ using Bitprim.Native;
 namespace Bitprim
 {
 
-public class Header : IDisposable
-{
-    private IntPtr nativeInstance_;
-
-    ~Header()
+    /// <summary>
+    /// Represents a full Bitcoin blockchain block.
+    /// </summary>
+    public class Header : IDisposable
     {
-        Dispose(false);
-    }
+        private IntPtr nativeInstance_;
 
-    public bool IsValid
-    {
-        get
+        ~Header()
         {
-            return HeaderNative.chain_header_is_valid(nativeInstance_) != 0; 
+            Dispose(false);
         }
-    }
 
-    public byte[] Hash
-    {
-        get
+        /// <summary>
+        /// Returns true if and only if the header conforms to the Bitcoin protocol format.
+        /// </summary>
+        public bool IsValid
         {
-            var managedHash = new hash_t();
-            HeaderNative.chain_header_hash_out(nativeInstance_, ref managedHash);
-            return managedHash.hash;
+            get
+            {
+                return HeaderNative.chain_header_is_valid(nativeInstance_) != 0;
+            }
         }
-    }
 
-    public byte[] Merkle
-    {
-        get
+        /// <summary>
+        /// Block hash in 32 byte array format.
+        /// </summary>
+        public byte[] Hash
         {
-            var managedHash = new hash_t();
-            HeaderNative.chain_header_merkle_out(nativeInstance_, ref managedHash);
-            return managedHash.hash;
+            get
+            {
+                var managedHash = new hash_t();
+                HeaderNative.chain_header_hash_out(nativeInstance_, ref managedHash);
+                return managedHash.hash;
+            }
         }
-    }
 
-    public byte[] PreviousBlockHash
-    {
-        get
+        /// <summary>
+        /// Merkle root in 32 byte array format.
+        /// </summary>
+        public byte[] Merkle
         {
-            var managedHash = new hash_t();
-            HeaderNative.chain_header_previous_block_hash_out(nativeInstance_, ref managedHash);
-            return managedHash.hash;
+            get
+            {
+                var managedHash = new hash_t();
+                HeaderNative.chain_header_merkle_out(nativeInstance_, ref managedHash);
+                return managedHash.hash;
+            }
         }
-    }
 
-    public UInt32 Bits
-    {
-        get
+        /// <summary>
+        /// Hash belonging to the immediately previous block in the blockchain, as a 32 byte array.
+        /// This is all zeros for the first block, a.k.a. Genesis.
+        /// </summary>
+        public byte[] PreviousBlockHash
         {
-            return HeaderNative.chain_header_bits(nativeInstance_);
+            get
+            {
+                var managedHash = new hash_t();
+                HeaderNative.chain_header_previous_block_hash_out(nativeInstance_, ref managedHash);
+                return managedHash.hash;
+            }
         }
-        set
-        {
-            HeaderNative.chain_header_set_bits(nativeInstance_, value);
-        }
-    }
 
-    public UInt32 Nonce
-    {
-        get
+        /// <summary>
+        /// Difficulty threshold.
+        /// </summary>
+        public UInt32 Bits
         {
-            return HeaderNative.chain_header_nonce(nativeInstance_);
+            get
+            {
+                return HeaderNative.chain_header_bits(nativeInstance_);
+            }
+            set
+            {
+                HeaderNative.chain_header_set_bits(nativeInstance_, value);
+            }
         }
-        set
-        {
-            HeaderNative.chain_header_set_nonce(nativeInstance_, value);
-        }
-    }
 
-    public UInt32 Timestamp
-    {
-        get
+        /// <summary>
+        /// The nonce that allowed this block to be added to the blockchain.
+        /// </summary>
+        public UInt32 Nonce
         {
-            return HeaderNative.chain_header_timestamp(nativeInstance_);
+            get
+            {
+                return HeaderNative.chain_header_nonce(nativeInstance_);
+            }
+            set
+            {
+                HeaderNative.chain_header_set_nonce(nativeInstance_, value);
+            }
         }
-        set
+
+        /// <summary>
+        /// Block timestamp in UNIX Epoch format (seconds since January 1st 1970) Assume UTC 0.
+        /// </summary>
+        public UInt32 Timestamp
         {
-            HeaderNative.chain_header_set_timestamp(nativeInstance_, value);
+            get
+            {
+                return HeaderNative.chain_header_timestamp(nativeInstance_);
+            }
+            set
+            {
+                HeaderNative.chain_header_set_timestamp(nativeInstance_, value);
+            }
         }
-    }
 
-    public UInt32 Version
-    {
-        get
+        /// <summary>
+        /// Header protocol version.
+        /// </summary>
+        public UInt32 Version
         {
-            return HeaderNative.chain_header_version(nativeInstance_);
+            get
+            {
+                return HeaderNative.chain_header_version(nativeInstance_);
+            }
+            set
+            {
+                HeaderNative.chain_header_set_version(nativeInstance_, value);
+            }
         }
-        set
+
+        public void Dispose()
         {
-            HeaderNative.chain_header_set_version(nativeInstance_, value);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
-    }
 
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
+        internal Header(IntPtr nativeInstance)
         {
-            //Release managed resources and call Dispose for member variables
-        }   
-        //Release unmanaged resources
-        HeaderNative.chain_header_destruct(nativeInstance_);
-    }
+            nativeInstance_ = nativeInstance;
+        }
 
-    internal Header(IntPtr nativeInstance)
-    {
-        nativeInstance_ = nativeInstance;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+            }
+            //Release unmanaged resources
+            HeaderNative.chain_header_destruct(nativeInstance_);
+        }
+
     }
-}
 
 }

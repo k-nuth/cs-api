@@ -4,81 +4,82 @@ using Bitprim.Native;
 namespace Bitprim
 {
 
-/// <summary>
-/// Represents a binary filter.
-/// </summary>
-public class Binary : IDisposable
-{
-
-    private IntPtr nativeInstance_;
-
     /// <summary>
-    /// Create an empty binary object.
+    /// Represents a binary filter.
     /// </summary>
-    public Binary()
+    public class Binary : IDisposable
     {
-        nativeInstance_ = BinaryNative.binary_construct();
-    }
 
-    /// <summary>
-    /// Creates a binary filter from a binary string.
-    /// </summary>
-    /// <param name="hexString">  Binary string. Example: '10111010101011011111000000001101' </param>
-    public Binary(string hexString)
-    {
-        nativeInstance_ = BinaryNative.binary_construct_string(hexString);
-    }
+        private IntPtr nativeInstance_;
 
-    /// <summary>
-    /// Creates a binary filter from an int array.
-    /// </summary>
-    /// <param name="bitsSize"> Elements size </param>
-    /// <param name="blocks"> Filter representation. Example: '[186,173,240,13]'. </param>
-    /// <param name="n"> Array length in amount of elements. </param>
-    public Binary(UIntPtr bitsSize, byte[] blocks, UIntPtr n)
-    {
-        nativeInstance_ = BinaryNative.binary_construct_blocks(bitsSize, blocks, n);
-    }
-
-    ~Binary()
-    {
-        Dispose(false);
-    }
-
-    /// <summary>
-    /// Filter representation as binary string.
-    /// </summary>
-    public string Encoded
-    {
-        get
+        /// <summary>
+        /// Create an empty binary object.
+        /// </summary>
+        public Binary()
         {
-            return BinaryNative.binary_encoded(nativeInstance_);
+            nativeInstance_ = BinaryNative.binary_construct();
         }
-    }
 
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
+        /// <summary>
+        /// Creates a binary filter from a binary string.
+        /// </summary>
+        /// <param name="hexString">  Binary string. Example: '10111010101011011111000000001101' </param>
+        public Binary(string hexString)
         {
-            //Release managed resources and call Dispose for member variables
-        }   
-        //Release unmanaged resources
-        BinaryNative.binary_destruct(nativeInstance_);
-    }
-
-    internal IntPtr NativeInstance
-    {
-        get
-        {
-            return nativeInstance_;
+            nativeInstance_ = BinaryNative.binary_construct_string(hexString);
         }
+
+        /// <summary>
+        /// Creates a binary filter from an int array.
+        /// </summary>
+        /// <param name="bitsSize"> Elements size </param>
+        /// <param name="blocks"> Filter representation. Example: '[186,173,240,13]'. </param>
+        /// <param name="n"> Array length in amount of elements. </param>
+        public Binary(UIntPtr bitsSize, byte[] blocks, UIntPtr n)
+        {
+            nativeInstance_ = BinaryNative.binary_construct_blocks(bitsSize, blocks, n);
+        }
+
+        ~Binary()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// Filter representation as binary string.
+        /// </summary>
+        public string Encoded
+        {
+            get
+            {
+                return BinaryNative.binary_encoded(nativeInstance_);
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        internal IntPtr NativeInstance
+        {
+            get
+            {
+                return nativeInstance_;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+            }
+            //Release unmanaged resources
+            BinaryNative.binary_destruct(nativeInstance_);
+        }
+
     }
-}
 
 }

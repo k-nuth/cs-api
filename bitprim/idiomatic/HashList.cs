@@ -5,98 +5,98 @@ using System.Collections;
 namespace Bitprim
 {
 
-public class HashList : IDisposable
-{
-
-    private IntPtr nativeInstance_;
-
-    public HashList()
+    public class HashList : IDisposable
     {
-        nativeInstance_ = HashListNative.chain_hash_list_construct_default();
-    }
 
-    ~HashList()
-    {
-        Dispose(false);
-    }
+        private IntPtr nativeInstance_;
 
-    public IEnumerator GetEnumerator()
-    {
-        return new HashListEnumerator(nativeInstance_);
-    }
-
-    public uint Count
-    {
-        get
+        public HashList()
         {
-            return (uint) HashListNative.chain_hash_list_count(nativeInstance_);
+            nativeInstance_ = HashListNative.chain_hash_list_construct_default();
+        }
+
+        ~HashList()
+        {
+            Dispose(false);
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return new HashListEnumerator(nativeInstance_);
+        }
+
+        public uint Count
+        {
+            get
+            {
+                return (uint)HashListNative.chain_hash_list_count(nativeInstance_);
+            }
+        }
+
+        public void Add(byte[] hash)
+        {
+            HashListNative.chain_hash_list_push_back(nativeInstance_, hash);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        internal HashList(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+        }
+
+        internal IntPtr NativeInstance
+        {
+            get
+            {
+                return nativeInstance_;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release managed resources and call Dispose for member variables
+            }
+            //Release unmanaged resources
+            HashListNative.chain_hash_list_destruct(nativeInstance_);
         }
     }
 
-    public void Add(byte[] hash)
+    public class HashListEnumerator : IEnumerator
     {
-        HashListNative.chain_hash_list_push_back(nativeInstance_, hash);
-    }
+        private uint counter_;
+        private IntPtr nativeCollection_;
 
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
+        public bool MoveNext()
         {
-            //Release managed resources and call Dispose for member variables
-        }   
-        //Release unmanaged resources
-        HashListNative.chain_hash_list_destruct(nativeInstance_);
-    }
+            counter_++;
+            return counter_ != (uint)HashListNative.chain_hash_list_count(nativeCollection_);
+        }
 
-    internal HashList(IntPtr nativeInstance)
-    {
-        nativeInstance_ = nativeInstance;
-    }
-
-    internal IntPtr NativeInstance
-    {
-        get
+        public object Current
         {
-            return nativeInstance_;
+            get
+            {
+                return HashListNative.chain_hash_list_nth(nativeCollection_, (UIntPtr)counter_);
+            }
+        }
+
+        public void Reset()
+        {
+            counter_ = 0;
+        }
+
+        internal HashListEnumerator(IntPtr nativeCollection)
+        {
+            nativeCollection_ = nativeCollection;
+            counter_ = 0;
         }
     }
-}
-
-public class HashListEnumerator : IEnumerator
-{
-    private uint counter_;
-    private IntPtr nativeCollection_;
-
-    public HashListEnumerator(IntPtr nativeCollection)
-    {
-        nativeCollection_ = nativeCollection;
-        counter_ = 0;
-    }
-
-    public bool MoveNext()
-    {
-        counter_++;
-        return counter_ != (uint) HashListNative.chain_hash_list_count(nativeCollection_);
-    }
-
-    public object Current
-    {
-        get
-        {
-            return HashListNative.chain_hash_list_nth(nativeCollection_, (UIntPtr) counter_);
-        }
-    }
-
-    public void Reset()
-    {
-        counter_ = 0;
-    }
-}
 
 }
