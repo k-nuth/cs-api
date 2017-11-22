@@ -25,4 +25,4 @@ install:
 
 test_script:
   - cd bitprim.tests
-  - dotnet test /property:Platform=x64 -f net461
+  - dotnet test /property:Platform=x64 -f netcoreapp2.0
