@@ -16,12 +16,12 @@ namespace Bitprim.Tests
             executorFixture_ = fixture;
         }
 
-        /*[Fact]
+        [Fact]
         public void TestFetchLastHeight()
         {
             Tuple<int,UInt64> errorAndHeight = GetLastHeight();
             Assert.Equal(0, errorAndHeight.Item1);
-        }*/
+        }
 
         [Fact]
         public void TestFetchBlockHeaderByHeight()
@@ -44,7 +44,7 @@ namespace Bitprim.Tests
             VerifyGenesisBlockHeader(header);
         }
 
-        /*[Fact]
+        [Fact]
         public void TestFetchBlockHeaderByHash()
         {
             var handlerDone = new AutoResetEvent(false);
@@ -310,7 +310,7 @@ namespace Bitprim.Tests
             Assert.Equal(0, error);
             Assert.NotNull(block);
             VerifyBlock170Header(block.Header);
-        }*/
+        }
 
         private static string ByteArrayToHexString(byte[] ba)
         {
