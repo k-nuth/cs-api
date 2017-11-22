@@ -30,3 +30,12 @@
 /bitprim.restapi/obj
 /bitprim/docs/xml
 /bitprim/docs/api.md
+/bitprim.tests/bin/Release
+/bitprim.tests/bitprim-node-cint.dll
+/bitprim.tests/conan_imports_manifest.txt
+/bitprim.tests/conaninfo.txt
+/bitprim.tests/conanfile.txt
+/bitprim.tests/conanbuildinfo.txt
+/bitprim.tests/conanbuildinfo.cmake
+/bitprim.restapi/bin/x64/Release/netcoreapp2.0
+/bitprim.tests/bin/x64/Release

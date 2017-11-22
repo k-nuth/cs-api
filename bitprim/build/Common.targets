@@ -1,6 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Target Name="CustomScriptTest" AfterTargets="Build">
-    <Message Text="Custom Bitprim build step invoked for .NET 4.6.1 build" />
+  <Target Name="GetBitprimNodeCint">
     <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" IgnoreExitCode="true"/>
     <WriteLinesToFile
       File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.3@bitprim/testing;[generators];cmake;[options];bitprim-node-cint:shared=True;[imports];bin, *.dll    -> ."
