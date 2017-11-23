@@ -16,8 +16,8 @@ environment:
 
 build_script:
   - SET PATH=%PATH%;%PYTHON%/Scripts/
-  - icacls C:\projects\bitprim-cs\bitprim.tests /grant Everyone:F
-  - icacls C:\projects\bitprim-cs\bitprim.tests\* /grant Everyone:F
+#  - icacls C:\projects\bitprim-cs\bitprim.tests /grant Everyone:F
+#  - icacls C:\projects\bitprim-cs\bitprim.tests\* /grant Everyone:F
   - dotnet build bitprim.sln /property:Platform=x64
 
 install:
