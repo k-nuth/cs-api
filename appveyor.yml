@@ -20,8 +20,8 @@ build_script:
 
 install:
   - "%PYTHON%/Scripts/pip.exe install conan --upgrade"
-  - icacls "$(APPVEYOR_BUILD_FOLDER)"\bitprim.tests /grant Everyone:F
-  - icacls "$(APPVEYOR_BUILD_FOLDER)"\bitprim.tests\* /grant Everyone:F
+  - icacls "%APPVEYOR_BUILD_FOLDER%"\bitprim.tests /grant Everyone:F
+  - icacls "%APPVEYOR_BUILD_FOLDER%"\bitprim.tests\* /grant Everyone:F
 
 test_script:
   - cd bitprim.tests
