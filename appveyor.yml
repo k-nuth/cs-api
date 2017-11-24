@@ -26,3 +26,11 @@ install:
 test_script:
   - cd bitprim.tests
   - dotnet test /property:Platform=x64 -f netcoreapp2.0
+
+deploy:
+  deploy:
+  provider: NuGet
+  api_key:
+    secure: QXiv4MV3IX8V/7hl+CGMAH9vcLaUJ12ZEk2ohcKiumfT0jS3AzfkJ13qES92E5Pt
+  skip_symbols: false
+  artifact: /.*\.nupkg/
