@@ -30,4 +30,4 @@ test_script:
   - dotnet test /property:Platform=x64 -f netcoreapp2.0
 
 after_build:
-  - dotnet nuget push "%APPVEYOR_BUILD_FOLDER%"\bitprim\bin\x64\Release\*.nupkg -s https://www.nuget.org/packages/bitprim -k %NUGET_API_KEY%
+  - dotnet nuget push "%APPVEYOR_BUILD_FOLDER%"\bitprim\bin\x64\Release\*.nupkg -s https://www.nuget.org/api/v2/package -k %NUGET_API_KEY%
