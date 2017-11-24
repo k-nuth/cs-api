@@ -33,4 +33,4 @@ deploy:
   api_key:
     secure: QXiv4MV3IX8V/7hl+CGMAH9vcLaUJ12ZEk2ohcKiumfT0jS3AzfkJ13qES92E5Pt
   skip_symbols: false
-  artifact: /.*\.nupkg/
+  artifact: "%APPVEYOR_BUILD_FOLDER%"\bitprim\bin\x64\Release\*.nupkg
