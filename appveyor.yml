@@ -14,7 +14,8 @@ environment:
     
     matrix:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017 PUBLISH_TO_NUGET=true
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+          PUBLISH_TO_NUGET=true
 
 build_script:
   - SET PATH=%PATH%;%PYTHON%/Scripts/
