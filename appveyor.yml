@@ -31,4 +31,5 @@ test_script:
 
 after_build:
   - powershell .\increment_version.ps1
+  - dotnet build "%APPVEYOR_BUILD_FOLDER%"\bitprim\bitprim.csproj /property:Platform=x64
   - dotnet nuget push "%APPVEYOR_BUILD_FOLDER%"\bitprim\bin\x64\Release\*.nupkg -s https://www.nuget.org/api/v2/package -k %NUGET_API_KEY%
