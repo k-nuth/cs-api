@@ -14,7 +14,7 @@ environment:
     
     matrix:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017 PUBLISH_TO_NUGET=true
 
 build_script:
   - SET PATH=%PATH%;%PYTHON%/Scripts/
@@ -30,7 +30,10 @@ test_script:
   - dotnet test /property:Platform=x64 -f netcoreapp2.0
 
 after_build:
-  - del "%APPVEYOR_BUILD_FOLDER%"\bitprim\bin\x64\Release\*.nupkg
-  - powershell .\increment_version.ps1
-  - dotnet build "%APPVEYOR_BUILD_FOLDER%"\bitprim\bitprim.csproj /property:Platform=x64
-  - dotnet nuget push "%APPVEYOR_BUILD_FOLDER%"\bitprim\bin\x64\Release\*.nupkg -s https://www.nuget.org/api/v2/package -k %NUGET_API_KEY%
+  - |
+    if [[ "${PUBLISH_TO_NUGET}" == "true" ]]; then
+        del "%APPVEYOR_BUILD_FOLDER%"\bitprim\bin\x64\Release\*.nupkg
+        powershell .\increment_version.ps1
+        dotnet build "%APPVEYOR_BUILD_FOLDER%"\bitprim\bitprim.csproj /property:Platform=x64
+        dotnet nuget push "%APPVEYOR_BUILD_FOLDER%"\bitprim\bin\x64\Release\*.nupkg -s https://www.nuget.org/api/v2/package -k %NUGET_API_KEY%
+    fi
