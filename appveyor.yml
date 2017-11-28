@@ -33,7 +33,7 @@ test_script:
 
 after_build:
   - ps: >-
-      if($env:PUBLISH_TO_NUGET == "true"){
+      if($env:PUBLISH_TO_NUGET -eq "true"){
         Write-Host "Publish to NuGet"
       }else{
         Write-Host "Don't publish to NuGet"
