@@ -31,12 +31,12 @@ test_script:
   - cd bitprim.tests
   - dotnet test /property:Platform=x64 -f netcoreapp2.0
 
-after_build:
+after_test:
   - ps: >-
       if($env:PUBLISH_TO_NUGET -eq "true"){
-        Write-Host "Publish to NuGet"
-      }else{
-        Write-Host "Don't publish to NuGet"
+        Write-Host "Publishing to NuGet..."
+        Remove-Item "$env:APPVEYOR_BUILD_FOLDER"\bitprim\bin\x64\Release\*.nupkg
+        .\increment_version.ps1
+        dotnet build "$env:APPVEYOR_BUILD_FOLDER"\bitprim\bitprim.csproj /property:Platform=x64
+        dotnet nuget push "$env:APPVEYOR_BUILD_FOLDER"\bitprim\bin\x64\Release\*.nupkg -s https://www.nuget.org/api/v2/package -k $env:NUGET_API_KEY
       }
-
-#  - IF %PUBLISH_TO_NUGET%  == "true" ( del "%APPVEYOR_BUILD_FOLDER%"\bitprim\bin\x64\Release\*.nupkg; powershell .\increment_version.ps1; dotnet build "%APPVEYOR_BUILD_FOLDER%"\bitprim\bitprim.csproj /property:Platform=x64; dotnet nuget push "%APPVEYOR_BUILD_FOLDER%"\bitprim\bin\x64\Release\*.nupkg -s https://www.nuget.org/api/v2/package -k %NUGET_API_KEY%; )
