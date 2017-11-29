@@ -34,21 +34,11 @@ osx: &osx
 matrix:
    include:
       - <<: *linux
-        addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - gcc-5
-            - g++-5
-        env:
-          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
       - <<: *osx
         osx_image: xcode8.3
 
 before_install:
-  - eval "${MATRIX_EVAL}"
   - |
     if test "$TRAVIS_OS_NAME" == "osx"; then
       ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/;
@@ -56,8 +46,6 @@ before_install:
     fi
 
 install:
-  - set -e
-
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
       if [[ "${TRAVIS_OS_NAME}" != "linux" ]]; then
@@ -84,31 +72,9 @@ install:
   - sudo -H pip install conan --upgrade
   - conan user
   - conan remote add bitprim_temp https://api.bintray.com/conan/bitprim/bitprim
-  - wget https://raw.githubusercontent.com/dario-ramos/bitprim-cs/dev/conanfile.txt
-  - |
-    wget https://cmake.org/files/v3.9/cmake-3.9.0-rc6.tar.gz
-    tar -xzf cmake-3.9.0-rc6.tar.gz
-    cd cmake-3.9.0-rc6
-    ./bootstrap
-    make -j2
-    sudo make install
-    cd ..
-    rm -r cmake-3.9.0-rc6.tar.gz
-  - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      dpkg --list | grep compiler
-      export DCMAKE_CXX_COMPILER=g++-5.4
-      export CC=gcc-5.4
-      export CXX=g++-5.4
-      conan install . -s compiler=gcc -s compiler.version=5.4
-    else
-      conan install .
-    fi
   - export DOTNET_INSTALL_DIR="$PWD/.dotnetcli"
   - curl -sSL https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
   - export PATH="$DOTNET_INSTALL_DIR:$PATH"  
 script:
-  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc
-  - gcc --version
   - chmod +x build.sh  
   - ./build.sh
