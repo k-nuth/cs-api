@@ -3,4 +3,4 @@
 #Run tests
 cd bitprim.tests
 dotnet restore
-dotnet test
+dotnet test /property:Platform=x64 -f netcoreapp2.0
