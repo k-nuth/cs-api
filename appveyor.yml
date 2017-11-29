@@ -7,12 +7,16 @@ environment:
     PYTHON: "C:\\Python27"
     PYTHON_VERSION: "2.7.8"
     PYTHON_ARCH: "32"
+    NUGET_API_KEY:
+      secure: QXiv4MV3IX8V/7hl+CGMAH9vcLaUJ12ZEk2ohcKiumfT0jS3AzfkJ13qES92E5Pt
 
     VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
     
     matrix:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+          PUBLISH_TO_NUGET: "false"
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+          PUBLISH_TO_NUGET: "true"
 
 build_script:
   - SET PATH=%PATH%;%PYTHON%/Scripts/
@@ -26,3 +30,22 @@ install:
 test_script:
   - cd bitprim.tests
   - dotnet test /property:Platform=x64 -f netcoreapp2.0
+
+after_test:
+  - ps: >-
+      if($env:PUBLISH_TO_NUGET -eq "true"){
+        Write-Host "Publishing to NuGet..."
+        cmd.exe /c "del $env:APPVEYOR_BUILD_FOLDER\bitprim\bin\x64\Release\*.nupkg"
+        Write-Host "Incrementing version..."
+        # Get the current patch version
+        $response = Invoke-RestMethod -method get -uri https://www.nuget.org/packages/bitprim
+        $patch = $response.Substring($response.IndexOf("| bitprim") + 14, 2)
+        # Add 1 to it
+        $nextVersion = [int]$patch + 1;
+        # Replace the new value in the project metadata
+        (Get-Content -path "$env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj") -replace '<Version>([0-9]+)\.([0-9]+)\.([0-9]+)</Version>', '<Version>$1.$2.%%PATCH_PLACEHOLDER%%</Version>' |  Set-Content "$env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj"
+        (Get-Content -path "$env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj") -replace '%%PATCH_PLACEHOLDER%%', "$nextVersion" |  Set-Content "$env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj"
+        Write-Host "Patch version updated to $nextVersion"
+        cmd.exe /c "dotnet build $env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj /property:Platform=x64"
+        cmd.exe /c "dotnet nuget push $env:APPVEYOR_BUILD_FOLDER\bitprim\bin\x64\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k $env:NUGET_API_KEY"
+      }
