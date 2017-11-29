@@ -49,5 +49,5 @@ after_test:
         (Get-Content -path "$env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj") -replace '%%PATCH_PLACEHOLDER%%', "$nextVersion" |  Set-Content "$env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj"
         Write-Host "Patch version updated to $nextVersion"
         cmd.exe /c "dotnet build $env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj /property:Platform=x64"
-        cmd.exe /c "dotnet nuget push $env:APPVEYOR_BUILD_FOLDER\bitprim\bin\x64\Release\*.nupkg -s https://www.nuget.org/api/v2/package -k $env:NUGET_API_KEY"
+        cmd.exe /c "dotnet nuget push $env:APPVEYOR_BUILD_FOLDER\bitprim\bin\x64\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k $env:NUGET_API_KEY"
       }
