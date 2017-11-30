@@ -44,6 +44,8 @@ before_install:
       ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/;
       ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/;
     fi
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
 
 install:
   - |
@@ -77,6 +79,8 @@ install:
   - sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
   - sudo apt-get update -y
   - sudo apt-get install dotnet-sdk-2.0.2 -y
+  - sudo apt-get install -qq g++-6
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
   - sudo ldconfig
 script:
   - chmod +x build.sh  
