@@ -81,6 +81,8 @@ install:
   - sudo apt-get install dotnet-sdk-2.0.2 -y
   - sudo apt-get install -qq g++-6
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
+  - gcc --version
+  - g++ --version
   - sudo ldconfig
 script:
   - chmod +x build.sh  
