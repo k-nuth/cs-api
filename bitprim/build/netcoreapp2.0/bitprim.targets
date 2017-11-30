@@ -3,6 +3,5 @@
   <Target Name="CustomScriptTest" AfterTargets="Build">
     <Message Text="Custom Bitprim build step invoked for .NET Core 2.0 build" />
     <CallTarget Targets="GetBitprimNodeCint" />
-    <Copy SourceFiles="bitprim-node-cint.dll" DestinationFiles="$(OutDir)libbitprim-node-cint.dll" />
   </Target>
 </Project>

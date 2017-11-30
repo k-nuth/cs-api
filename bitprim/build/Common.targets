@@ -1,11 +1,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="GetBitprimNodeCint">
-    <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" IgnoreExitCode="true"/>
+    <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" IgnoreExitCode="true" ContinueOnError="WarnAndContinue"/>
     <WriteLinesToFile
       File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.3@bitprim/testing;[generators];cmake;[options];bitprim-node-cint:shared=True;[imports];bin, *.dll    -> .;lib, *.so    -> ."
       Overwrite="true"/>
     <Message Text="Operating System: $(OS)"/>
     <Exec Command="conan install . --install-folder=."/>
+    <Message Text="OS = $(OS)" />
     <Copy SourceFiles="bitprim-node-cint.dll" DestinationFiles="$(OutDir)libbitprim-node-cint.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition=" '$(OS)' != 'Windows_NT' "/>
   </Target>
