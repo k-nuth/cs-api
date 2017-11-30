@@ -33,20 +33,12 @@ matrix:
    include:
       - <<: *linux
         compiler: gcc
-        addons:
-          apt:
-            sources:
-              - ubuntu-toolchain-r-test
-            packages:
-              - g++-4.9
-        env:
-          - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+        env: C_COMPILER=gcc-6 CXX_COMPILER=g++-6
 
       - <<: *osx
         osx_image: xcode8.3
 
 before_install:
-  - eval "${MATRIX_EVAL}"
   - |
     if test "$TRAVIS_OS_NAME" == "osx"; then
       ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/;
