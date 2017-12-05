@@ -43,11 +43,13 @@ before_install:
     if test "$TRAVIS_OS_NAME" == "osx"; then
       ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/;
       ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/;
+    else
+      sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+      sudo apt-get update -qq
     fi
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo apt-get update -qq
 
 install:
+  # Install Conan
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
       if [[ "${TRAVIS_OS_NAME}" != "linux" ]]; then
@@ -70,21 +72,29 @@ install:
         pyenv activate conan
       fi
     fi
-  - sudo -H pip install conan_package_tools --upgrade
-  - sudo -H pip install conan --upgrade
+  - pip install conan_package_tools --upgrade --user
+  - pip install conan --upgrade --user
   - conan user
   - conan remote add bitprim_temp https://api.bintray.com/conan/bitprim/bitprim
-  - curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-  - sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-  - sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
-  - sudo apt-get update -y
-  - sudo apt-get install dotnet-sdk-2.0.2 -y
-  - sudo apt-get install -qq g++-4.9
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/g++-4.9 90
-  - gcc --version
-  - g++ --version
-  - sudo ldconfig
+  # Install .NET Core 2.x
+  - |
+    if test "$TRAVIS_OS_NAME" == "osx"; then
+      curl -O https://download.microsoft.com/download/D/7/2/D725E47F-A4F1-4285-8935-A91AE2FCC06A/dotnet-sdk-2.0.3-osx-gs-x64.pkg
+      sudo installer -pkg dotnet-sdk-2.0.3-osx-gs-x64.pkg -target /
+      sudo update_dyld_shared_cache
+    else
+      curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+      sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+      sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
+      sudo apt-get update -y
+      sudo apt-get install dotnet-sdk-2.0.2 -y
+      sudo apt-get install -qq g++-4.9
+      sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
+      sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/g++-4.9 90
+      gcc --version
+      g++ --version
+      sudo ldconfig
+    fi
 script:
   - chmod +x build.sh  
   - ./build.sh
