@@ -33,7 +33,6 @@ matrix:
    include:
       - <<: *linux
         compiler: gcc
-        env: C_COMPILER=gcc-6 CXX_COMPILER=g++-6
 
       - <<: *osx
         osx_image: xcode8.3
