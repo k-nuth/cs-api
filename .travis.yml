@@ -66,6 +66,7 @@ install:
         else
           pyenv install 3.6.1
           pyenv virtualenv 3.6.1 conan
+          sudo easy_install pip
         fi
         pyenv rehash
         pyenv activate conan
