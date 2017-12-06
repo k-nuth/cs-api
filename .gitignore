@@ -40,3 +40,4 @@
 /bitprim.restapi/bin/x64/Release/netcoreapp2.0
 /bitprim.tests/bin/x64/Release
 /webtest/bin/Release/netcoreapp2.0
+/bitprim.tests/bin
