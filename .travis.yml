@@ -36,6 +36,7 @@ matrix:
 
       - <<: *osx
         osx_image: xcode8.3
+        env: TRAVIS_PYTHON_VERSION=3.6 PYTHON_FULL_VERSION=3.6.2
 
 before_install:
   - |
