@@ -488,9 +488,14 @@ namespace Bitprim
         #region Subscribers
 
         /// <summary>
-        /// Be notified (called back) when the local copy of the blockchain is updated at the block level.
+        /// Be notified (called back) when the local copy of the blockchain is reorganized.
         /// </summary>
-        /// <param name="handler"> Callback which will be called when blocks are added. </param>
+        /// <param name="handler"> Callback which will be called when blocks are added or removed.
+        /// The callback returns 3 parameters:
+        ///     - Height (UInt64): The chain height at which reorganization takes place
+        ///     - Incoming (Blocklist): Incoming blocks (added to the blockchain).
+        ///     - Outgoing (Blocklist): Outgoing blocks (removed from the blockchain).
+        /// </param>
         public void SubscribeToBlockChain(Action<UInt64, BlockList, BlockList> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
