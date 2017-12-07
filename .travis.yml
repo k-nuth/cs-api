@@ -16,8 +16,6 @@ addons:
     - libssl-dev
     - libunwind8
     - zlib1g
-mono:  
-  - 4.2.3
 
 linux: &linux
    os: linux
@@ -80,6 +78,7 @@ install:
       curl -O https://download.microsoft.com/download/D/7/2/D725E47F-A4F1-4285-8935-A91AE2FCC06A/dotnet-sdk-2.0.3-osx-gs-x64.pkg
       sudo installer -pkg dotnet-sdk-2.0.3-osx-gs-x64.pkg -target /
       sudo update_dyld_shared_cache
+      dotnet #TODO <TEST>
     else
       curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
       sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
@@ -94,8 +93,6 @@ install:
       sudo ldconfig
     fi
 script:
-  # - chmod +x build.sh  
-  # - ./build.sh
   - cd bitprim.tests
   - dotnet build /property:Platform=x64 -c Release -f netcoreapp2.0 -v normal
   - dotnet test /property:Platform=x64 -c Release -f netcoreapp2.0 -v normal
