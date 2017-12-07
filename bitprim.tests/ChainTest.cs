@@ -315,7 +315,7 @@ namespace Bitprim.Tests
             VerifyBlock170Header(block.Header);
         }
 
-        [Fact]
+        /*[Fact]
         public void TestSubscribeToBlockchain()
         {
             var handlerDone = new AutoResetEvent(false);
@@ -337,7 +337,7 @@ namespace Bitprim.Tests
             Assert.NotNull(firstIncomingBlock);
             dynamic blockDataFromExternalSource = GetBlockDataFromExternalSource(height);
             Assert.Equal(blockDataFromExternalSource.blocks[0].hash, ByteArrayToHexString(firstIncomingBlock.Hash));
-        }
+        }*/
 
         private static dynamic GetBlockDataFromExternalSource(UInt64 height)
         {
