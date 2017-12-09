@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
-    <Version>0.2.61</Version>
+    <Version>0.2.63</Version>
     <Authors>Bitprim</Authors>
     <Company>Bitprim</Company>
     <Description>C# binding for Bitprim Bitcoin platform</Description>
