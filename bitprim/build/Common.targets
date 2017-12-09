@@ -8,7 +8,7 @@
     <Exec Command="conan install . --install-folder=."/>
     <Message Text="OS = $(OS)" />
     <Copy SourceFiles="bitprim-node-cint.dll" DestinationFiles="$(OutDir)libbitprim-node-cint.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
-    <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition="Exists(libbitprim-node-cint.so)"/>
-    <Copy SourceFiles="libbitprim-node-cint.dylib" DestinationFiles="$(OutDir)libbitprim-node-cint.dylib" Condition="Exists(libbitprim-node-cint.dylib)"/>
+    <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition="Exists('libbitprim-node-cint.so')"/>
+    <Copy SourceFiles="libbitprim-node-cint.dylib" DestinationFiles="$(OutDir)libbitprim-node-cint.dylib" Condition="Exists('libbitprim-node-cint.dylib')"/>
   </Target>
 </Project>
