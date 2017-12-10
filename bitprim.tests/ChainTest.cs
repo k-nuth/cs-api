@@ -3,6 +3,9 @@ using System;
 using System.Text;
 using System.Threading;
 using Xunit;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace Bitprim.Tests
 {
@@ -310,6 +313,43 @@ namespace Bitprim.Tests
             Assert.Equal(0, error);
             Assert.NotNull(block);
             VerifyBlock170Header(block.Header);
+        }
+
+        /*[Fact]
+        public void TestSubscribeToBlockchain()
+        {
+            var handlerDone = new AutoResetEvent(false);
+            UInt64 height = 0;
+            BlockList incomingBlocks = null;
+            BlockList outgoingBlocks = null;
+            Action<UInt64, BlockList, BlockList> handler = delegate(UInt64 theHeight, BlockList incoming, BlockList outgoing)
+            {
+                height = theHeight;
+                incomingBlocks = incoming;
+                outgoingBlocks = outgoing;
+                handlerDone.Set();
+            };
+            executorFixture_.Executor.Chain.SubscribeToBlockChain(handler);
+            handlerDone.WaitOne();
+            //Get the block from another service in order to cross-validate these
+            Assert.NotNull(incomingBlocks);
+            var firstIncomingBlock = incomingBlocks[0];
+            Assert.NotNull(firstIncomingBlock);
+            dynamic blockDataFromExternalSource = GetBlockDataFromExternalSource(height);
+            Assert.Equal(blockDataFromExternalSource.blocks[0].hash, ByteArrayToHexString(firstIncomingBlock.Hash));
+        }*/
+
+        private static dynamic GetBlockDataFromExternalSource(UInt64 height)
+        {
+            string uri = @"https://blockchain.info/block-height/" + height + "?format=json";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            using(HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using(Stream stream = response.GetResponseStream())
+            using(StreamReader reader = new StreamReader(stream))
+            {
+                var jsonObject = JsonConvert.DeserializeObject<dynamic>(reader.ReadToEnd());
+                return jsonObject;
+            }
         }
 
         private static string ByteArrayToHexString(byte[] ba)
