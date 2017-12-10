@@ -50,8 +50,6 @@ before_install:
       sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
       sudo apt-get update -qq
     fi
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo apt-get update -qq
 
 install:
   if [[ "${UPDATE_DOCS}" != "true" ]]; then
