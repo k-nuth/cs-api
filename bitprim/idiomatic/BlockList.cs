@@ -20,6 +20,14 @@ namespace Bitprim
             Dispose(false);
         }
 
+        public Block this[int index]
+        {
+            get
+            {
+                return new Block(BlockListNative.chain_block_list_nth(nativeInstance_, (UInt64) index));
+            }
+        }
+
         public IEnumerator GetEnumerator()
         {
             return new BlockListEnumerator(nativeInstance_);
