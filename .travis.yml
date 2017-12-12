@@ -52,6 +52,7 @@ before_install:
     fi
 
 install:
+  # Install Conan
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
       # Install Conan    
