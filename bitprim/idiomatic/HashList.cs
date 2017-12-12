@@ -5,98 +5,41 @@ using System.Collections;
 namespace Bitprim
 {
 
-    public class HashList : IDisposable
+    public class HashList : NativeList<byte[]>
     {
-
-        private IntPtr nativeInstance_;
-
-        public HashList()
+        public override IntPtr CreateNativeList()
         {
-            nativeInstance_ = HashListNative.chain_hash_list_construct_default();
+            return HashListNative.chain_hash_list_construct_default();
         }
 
-        ~HashList()
+        public override byte[] GetNthNativeElement(int n)
         {
-            Dispose(false);
+            return HashListNative.chain_hash_list_nth(NativeInstance, (UInt64)n);
         }
 
-        public IEnumerator GetEnumerator()
+        public override uint GetCount()
         {
-            return new HashListEnumerator(nativeInstance_);
+            return (uint) HashListNative.chain_hash_list_count(NativeInstance);
         }
 
-        public uint Count
+        public override void AddElement(byte[] element)
+        {
+            HashListNative.chain_hash_list_push_back(NativeInstance, element);
+        }
+
+        public override void DestroyNativeList()
+        {
+            HashListNative.chain_hash_list_destruct(NativeInstance);
+        }
+
+        internal override IntPtr NativeInstance
         {
             get
             {
-                return (uint)HashListNative.chain_hash_list_count(nativeInstance_);
+                return base.NativeInstance;
             }
-        }
-
-        public void Add(byte[] hash)
-        {
-            HashListNative.chain_hash_list_push_back(nativeInstance_, hash);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        internal HashList(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            HashListNative.chain_hash_list_destruct(nativeInstance_);
         }
     }
-
-    public class HashListEnumerator : IEnumerator
-    {
-        private uint counter_;
-        private IntPtr nativeCollection_;
-
-        public bool MoveNext()
-        {
-            counter_++;
-            return counter_ != (uint)HashListNative.chain_hash_list_count(nativeCollection_);
-        }
-
-        public object Current
-        {
-            get
-            {
-                return HashListNative.chain_hash_list_nth(nativeCollection_, (UIntPtr)counter_);
-            }
-        }
-
-        public void Reset()
-        {
-            counter_ = 0;
-        }
-
-        internal HashListEnumerator(IntPtr nativeCollection)
-        {
-            nativeCollection_ = nativeCollection;
-            counter_ = 0;
-        }
-    }
+    
 
 }
