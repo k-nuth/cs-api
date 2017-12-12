@@ -5,89 +5,39 @@ using System.Collections;
 namespace Bitprim
 {
 
-    public class HistoryCompactList : IDisposable
+    public class HistoryCompactList : NativeList<HistoryCompact>
     {
-
-        private IntPtr nativeInstance_;
-
-        ~HistoryCompactList()
+        public override IntPtr CreateNativeList()
         {
-            Dispose(false);
+            //There is no native call for this, so we deem it invalid.
+            //Use the IntPtr constructor instead.
+            throw new NotImplementedException();
         }
 
-        public IEnumerator GetEnumerator()
+        public override HistoryCompact GetNthNativeElement(int n)
         {
-            return new HistoryCompactListEnumerator(nativeInstance_);
+            return new HistoryCompact(HistoryCompactListNative.chain_history_compact_list_nth(NativeInstance, (UInt64)n));
         }
 
-        public uint Count
+        public override uint GetCount()
         {
-            get
-            {
-                return (uint)HistoryCompactListNative.chain_history_compact_list_count(nativeInstance_);
-            }
+            return (uint) HistoryCompactListNative.chain_history_compact_list_count(NativeInstance);
         }
 
-        public void Dispose()
+        public override void AddElement(HistoryCompact element)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            //No native call for this
+            throw new NotImplementedException();
         }
 
-        internal HistoryCompactList(IntPtr nativeInstance)
+        public override void DestroyNativeList()
         {
-            nativeInstance_ = nativeInstance;
+            HistoryCompactListNative.chain_history_compact_list_destruct(NativeInstance);
         }
 
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
+        internal HistoryCompactList(IntPtr nativeInstance) : base(nativeInstance)
+        {            
         }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            HistoryCompactListNative.chain_history_compact_list_destruct(nativeInstance_);
-        }
-    }
-
-    public class HistoryCompactListEnumerator : IEnumerator
-    {
-        private UInt64 counter_;
-        private IntPtr nativeCollection_;
-
-        public bool MoveNext()
-        {
-            counter_++;
-            return counter_ != (uint)HistoryCompactListNative.chain_history_compact_list_count(nativeCollection_);
-        }
-
-        public object Current
-        {
-            get
-            {
-                return HistoryCompactListNative.chain_history_compact_list_nth(nativeCollection_, counter_);
-            }
-        }
-
-        public void Reset()
-        {
-            counter_ = 0;
-        }
-
-        internal HistoryCompactListEnumerator(IntPtr nativeCollection)
-        {
-            nativeCollection_ = nativeCollection;
-            counter_ = 0;
-        }
-
     }
 
 }

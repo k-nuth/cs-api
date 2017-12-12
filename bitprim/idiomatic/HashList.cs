@@ -14,7 +14,7 @@ namespace Bitprim
 
         public override byte[] GetNthNativeElement(int n)
         {
-            return HashListNative.chain_hash_list_nth(NativeInstance, (UInt64)n);
+            return HashListNative.chain_hash_list_nth(NativeInstance, (UIntPtr)n);
         }
 
         public override uint GetCount()
@@ -32,12 +32,16 @@ namespace Bitprim
             HashListNative.chain_hash_list_destruct(NativeInstance);
         }
 
-        internal override IntPtr NativeInstance
+        internal new IntPtr NativeInstance
         {
             get
             {
                 return base.NativeInstance;
             }
+        }
+
+        internal HashList(IntPtr nativeInstance) : base(nativeInstance)
+        {            
         }
     }
     

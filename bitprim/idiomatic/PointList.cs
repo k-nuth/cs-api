@@ -5,92 +5,43 @@ using System.Collections;
 namespace Bitprim
 {
 
-    public class PointList : IDisposable
+    public class PointList : NativeList<Point>
     {
-
-        private IntPtr nativeInstance_;
-
-        public PointList()
+        public override IntPtr CreateNativeList()
         {
-            nativeInstance_ = PointListNative.chain_point_list_construct_default();
+            return PointListNative.chain_point_list_construct_default();
         }
 
-        ~PointList()
+        public override Point GetNthNativeElement(int n)
         {
-            Dispose(false);
+            return new Point(PointListNative.chain_point_list_nth(NativeInstance, (UIntPtr) n));
         }
 
-        public IEnumerator GetEnumerator()
+        public override uint GetCount()
         {
-            return new PointListEnumerator(nativeInstance_);
+            return (uint) PointListNative.chain_point_list_count(NativeInstance);
         }
 
-        public uint Count
+        public override void AddElement(Point element)
+        {
+            PointListNative.chain_point_list_push_back(NativeInstance, element.NativeInstance);
+        }
+
+        public override void DestroyNativeList()
+        {
+            PointListNative.chain_point_list_destruct(NativeInstance);
+        }
+
+        internal new IntPtr NativeInstance
         {
             get
             {
-                return (uint)PointListNative.chain_point_list_count(nativeInstance_);
+                return base.NativeInstance;
             }
         }
 
-        public void Add(Point point)
-        {
-            PointListNative.chain_point_list_push_back(nativeInstance_, point.NativeInstance);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            PointListNative.chain_point_list_destruct(nativeInstance_);
-        }
-    }
-
-    public class PointListEnumerator : IEnumerator
-    {
-        private uint counter_;
-        private IntPtr nativeCollection_;
-
-        public PointListEnumerator(IntPtr nativeCollection)
-        {
-            nativeCollection_ = nativeCollection;
-            counter_ = 0;
-        }
-
-        public bool MoveNext()
-        {
-            counter_++;
-            return counter_ != (uint)PointListNative.chain_point_list_count(nativeCollection_);
-        }
-
-        public object Current
-        {
-            get
-            {
-                return new Point(PointListNative.chain_point_list_nth(nativeCollection_, (UIntPtr)counter_));
-            }
-        }
-
-        public void Reset()
-        {
-            counter_ = 0;
+        internal PointList(IntPtr nativeInstance) : base(nativeInstance)
+        {            
         }
     }
 
