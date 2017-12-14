@@ -109,6 +109,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Console.WriteLine("Destroying merkle block " + nativeInstance_.ToString("X"));
             MerkleBlockNative.chain_merkle_block_destruct(nativeInstance_);
         }
     }

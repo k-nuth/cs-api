@@ -29,15 +29,8 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
+            Console.WriteLine("Destroying block " + NativeInstance.ToString("X"));
             HashListNative.chain_hash_list_destruct(NativeInstance);
-        }
-
-        internal new IntPtr NativeInstance
-        {
-            get
-            {
-                return base.NativeInstance;
-            }
         }
 
         internal HashList(IntPtr nativeInstance) : base(nativeInstance)

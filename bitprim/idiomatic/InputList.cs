@@ -29,15 +29,8 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
+            Console.WriteLine("Destroying input list " + NativeInstance.ToString("X"));
             InputListNative.chain_input_list_destruct(NativeInstance);
-        }
-
-        internal new IntPtr NativeInstance
-        {
-            get
-            {
-                return base.NativeInstance;
-            }
         }
 
         internal InputList(IntPtr nativeInstance) : base(nativeInstance)

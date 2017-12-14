@@ -29,6 +29,8 @@ public class ExecutorFixture : IDisposable
     public void Dispose()
     {
         //exec_.Stop();
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
     }
 }
 

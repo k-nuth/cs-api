@@ -97,6 +97,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Console.WriteLine("Destroying compact block " + nativeInstance_.ToString("X"));
             CompactBlockNative.compact_block_destruct(nativeInstance_);
         }
 

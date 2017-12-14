@@ -85,6 +85,7 @@ namespace Bitprim.Native
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Console.WriteLine("Destroying history compact " + nativeInstance_.ToString("X"));
             HistoryCompactNative.chain_history_compact_destruct(nativeInstance_);
         }
     }

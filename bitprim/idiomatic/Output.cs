@@ -125,6 +125,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Console.WriteLine("Destroying output " + nativeInstance_.ToString("X"));
             OutputNative.chain_output_destruct(nativeInstance_);
         }
     }

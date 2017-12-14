@@ -29,15 +29,8 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
+            Console.WriteLine("Destroying transaction list " + NativeInstance.ToString("X"));
             TransactionListNative.chain_transaction_list_destruct(NativeInstance);
-        }
-
-        internal new IntPtr NativeInstance
-        {
-            get
-            {
-                return base.NativeInstance;
-            }
         }
 
         internal TransactionList(IntPtr nativeInstance) : base(nativeInstance)

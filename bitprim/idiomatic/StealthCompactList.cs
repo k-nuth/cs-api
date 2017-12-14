@@ -31,15 +31,8 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
+            Console.WriteLine("Destroying stealth compact list " + NativeInstance.ToString("X"));
             StealthCompactListNative.stealth_compact_list_destruct(NativeInstance);
-        }
-
-        internal new IntPtr NativeInstance
-        {
-            get
-            {
-                return base.NativeInstance;
-            }
         }
 
         internal StealthCompactList(IntPtr nativeInstance) : base(nativeInstance)
