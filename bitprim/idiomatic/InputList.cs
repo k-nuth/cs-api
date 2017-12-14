@@ -29,7 +29,7 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Console.WriteLine("Destroying input list " + NativeInstance.ToString("X"));
+            Logger.Log("Destroying input list " + NativeInstance.ToString("X"));
             InputListNative.chain_input_list_destruct(NativeInstance);
         }
 

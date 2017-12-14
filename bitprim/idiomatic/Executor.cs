@@ -109,7 +109,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Console.WriteLine("Destroying executor " + nativeInstance_.ToString("X"));
+            Logger.Log("Destroying executor " + nativeInstance_.ToString("X"));
             ExecutorNative.executor_destruct(nativeInstance_);
         }
 

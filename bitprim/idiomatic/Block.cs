@@ -271,7 +271,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Console.WriteLine("Destroying block " + nativeInstance_.ToString("X"));
+            Logger.Log("Destroying block " + nativeInstance_.ToString("X"));
             BlockNative.chain_block_destruct(nativeInstance_);
         }
 

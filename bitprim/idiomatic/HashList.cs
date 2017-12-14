@@ -29,7 +29,7 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Console.WriteLine("Destroying block " + NativeInstance.ToString("X"));
+            Logger.Log("Destroying block " + NativeInstance.ToString("X"));
             HashListNative.chain_hash_list_destruct(NativeInstance);
         }
 

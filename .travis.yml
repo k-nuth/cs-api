@@ -129,3 +129,6 @@ script:
       git commit -m "Updated Dotnet docs" || :
       git push -u -f || :
     fi
+
+after_script:
+  - cat ${TRAVIS_BUILD_DIR}bitprim.tests/bin/x64/Release/netcoreapp2.0/bitprim-cs-log.txt

@@ -29,7 +29,7 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Console.WriteLine("Destroying point list " + NativeInstance.ToString("X"));
+            Logger.Log("Destroying point list " + NativeInstance.ToString("X"));
             PointListNative.chain_point_list_destruct(NativeInstance);
         }
 

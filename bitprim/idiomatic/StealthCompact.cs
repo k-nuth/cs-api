@@ -67,7 +67,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Console.WriteLine("Destroying stealth compact " + nativeInstance_.ToString("X"));
+            Logger.Log("Destroying stealth compact " + nativeInstance_.ToString("X"));
             StealthCompactNative.stealth_compact_destruct(nativeInstance_);
         }
     }

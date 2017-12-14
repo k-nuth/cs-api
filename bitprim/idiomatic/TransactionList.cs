@@ -29,7 +29,7 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Console.WriteLine("Destroying transaction list " + NativeInstance.ToString("X"));
+            Logger.Log("Destroying transaction list " + NativeInstance.ToString("X"));
             TransactionListNative.chain_transaction_list_destruct(NativeInstance);
         }
 

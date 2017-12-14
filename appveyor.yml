@@ -49,3 +49,4 @@ after_test:
         cmd.exe /c "dotnet build $env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj /property:Platform=x64"
         cmd.exe /c "dotnet nuget push $env:APPVEYOR_BUILD_FOLDER\bitprim\bin\x64\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k $env:NUGET_API_KEY"
       }
+      Get-Content $env:APPVEYOR_BUILD_FOLDER\bitprim.tests\bin\x64\Release\netcoreapp2.0\bitprim-cs-log.txt

@@ -31,7 +31,7 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Console.WriteLine("Destroying stealth compact list " + NativeInstance.ToString("X"));
+            Logger.Log("Destroying stealth compact list " + NativeInstance.ToString("X"));
             StealthCompactListNative.stealth_compact_list_destruct(NativeInstance);
         }
 

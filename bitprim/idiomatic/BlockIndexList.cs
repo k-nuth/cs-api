@@ -29,7 +29,7 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Console.WriteLine("Destroying block index list " + NativeInstance.ToString("X"));
+            Logger.Log("Destroying block index list " + NativeInstance.ToString("X"));
             BlockIndexesNative.chain_block_indexes_destruct(NativeInstance);
         }
 

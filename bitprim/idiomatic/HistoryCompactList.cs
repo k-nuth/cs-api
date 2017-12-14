@@ -32,7 +32,7 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Console.WriteLine("Destroying history compact list " + NativeInstance.ToString("X"));
+            Logger.Log("Destroying history compact list " + NativeInstance.ToString("X"));
             HistoryCompactListNative.chain_history_compact_list_destruct(NativeInstance);
         }
 
