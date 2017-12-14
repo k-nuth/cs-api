@@ -131,4 +131,4 @@ script:
     fi
 
 after_script:
-  - cat ${TRAVIS_BUILD_DIR}bitprim.tests/bin/x64/Release/netcoreapp2.0/bitprim-cs-log.txt
+  - cat ${TRAVIS_BUILD_DIR}/bitprim.tests/bin/x64/Release/netcoreapp2.0/bitprim-cs-log.txt
