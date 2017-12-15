@@ -41,3 +41,4 @@
 /bitprim.tests/bin/x64/Release
 /webtest/bin/Release/netcoreapp2.0
 /bitprim.tests/bin
+/bitprim.ibd/bin/x64

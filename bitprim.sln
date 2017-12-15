@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.tests", "bitprim.te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.restapi", "bitprim.restapi\bitprim.restapi.csproj", "{AA544A77-1A4D-4DA6-A1E2-4DE44C9EBA23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bitprim.ibd", "bitprim.ibd\bitprim.ibd.csproj", "{531EB0F7-7A9C-4108-B145-9FE8BA297D48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,14 @@ Global
 		{AA544A77-1A4D-4DA6-A1E2-4DE44C9EBA23}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AA544A77-1A4D-4DA6-A1E2-4DE44C9EBA23}.Release|x64.ActiveCfg = Release|x64
 		{AA544A77-1A4D-4DA6-A1E2-4DE44C9EBA23}.Release|x64.Build.0 = Release|x64
+		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Debug|x64.ActiveCfg = Debug|x64
+		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Debug|x64.Build.0 = Debug|x64
+		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Release|x64.ActiveCfg = Release|x64
+		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
