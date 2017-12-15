@@ -71,7 +71,7 @@ namespace Bitprim
             AddElement(element);
         }
 
-        protected IntPtr NativeInstance
+        internal IntPtr NativeInstance
         {
             get
             {

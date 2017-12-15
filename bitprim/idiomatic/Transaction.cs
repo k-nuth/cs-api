@@ -329,6 +329,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Logger.Log("Destroying transaction " + nativeInstance_.ToString("X"));
             TransactionNative.chain_transaction_destruct(nativeInstance_);
         }
 

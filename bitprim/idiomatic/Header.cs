@@ -146,6 +146,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Logger.Log("Destroying header " + nativeInstance_.ToString("X"));
             HeaderNative.chain_header_destruct(nativeInstance_);
         }
 

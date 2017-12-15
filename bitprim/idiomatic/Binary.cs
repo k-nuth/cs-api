@@ -77,6 +77,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Logger.Log("Destroying binary " + nativeInstance_.ToString("X"));
             BinaryNative.binary_destruct(nativeInstance_);
         }
 

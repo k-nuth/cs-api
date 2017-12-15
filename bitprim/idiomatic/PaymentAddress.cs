@@ -68,6 +68,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Logger.Log("Destroying payment address " + nativeInstance_.ToString("X"));
             PaymentAddressNative.chain_payment_address_destruct(nativeInstance_);
         }
     }

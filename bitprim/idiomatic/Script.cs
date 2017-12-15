@@ -106,6 +106,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Logger.Log("Destroying script " + nativeInstance_.ToString("X"));
             ScriptNative.chain_script_destruct(nativeInstance_);
         }
     }

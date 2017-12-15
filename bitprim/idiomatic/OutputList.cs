@@ -5,97 +5,36 @@ using System.Collections;
 namespace Bitprim
 {
 
-    public class OutputList : IDisposable
+    public class OutputList : NativeList<Output>
     {
-
-        private IntPtr nativeInstance_;
-
-        public OutputList()
+        public override IntPtr CreateNativeList()
         {
-            nativeInstance_ = OutputListNative.chain_output_list_construct_default();
+            return OutputListNative.chain_output_list_construct_default();
         }
 
-        internal OutputList(IntPtr nativeInstance)
+        public override Output GetNthNativeElement(int n)
         {
-            nativeInstance_ = nativeInstance;
+            return new Output(OutputListNative.chain_output_list_nth(NativeInstance, (UIntPtr) n));
         }
 
-        ~OutputList()
+        public override uint GetCount()
         {
-            Dispose(false);
+            return (uint) OutputListNative.chain_output_list_count(NativeInstance);
         }
 
-        public IEnumerator GetEnumerator()
+        public override void AddElement(Output element)
         {
-            return new OutputListEnumerator(nativeInstance_);
+            OutputListNative.chain_output_list_push_back(NativeInstance, element.NativeInstance);
         }
 
-        public uint Count
+        public override void DestroyNativeList()
         {
-            get
-            {
-                return (uint)OutputListNative.chain_output_list_count(nativeInstance_);
-            }
+            Logger.Log("Destroying output list " + NativeInstance.ToString("X"));
+            OutputListNative.chain_output_list_destruct(NativeInstance);
         }
 
-        public void Add(Output output)
-        {
-            OutputListNative.chain_output_list_push_back(nativeInstance_, output.NativeInstance);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            OutputListNative.chain_output_list_destruct(nativeInstance_);
-        }
-    }
-
-    public class OutputListEnumerator : IEnumerator
-    {
-        private uint counter_;
-        private IntPtr nativeCollection_;
-
-        public OutputListEnumerator(IntPtr nativeCollection)
-        {
-            nativeCollection_ = nativeCollection;
-            counter_ = 0;
-        }
-
-        public bool MoveNext()
-        {
-            counter_++;
-            return counter_ != (uint)InputListNative.chain_input_list_count(nativeCollection_);
-        }
-
-        public object Current
-        {
-            get
-            {
-                return new Input(InputListNative.chain_input_list_nth(nativeCollection_, (UIntPtr)counter_));
-            }
-        }
-
-        public void Reset()
-        {
-            counter_ = 0;
+        internal OutputList(IntPtr nativeInstance) : base(nativeInstance)
+        {            
         }
     }
 

@@ -5,89 +5,39 @@ using System.Collections;
 namespace Bitprim
 {
 
-    public class StealthCompactList : IDisposable
+    public class StealthCompactList : NativeList<StealthCompact>
     {
-
-        private IntPtr nativeInstance_;
-
-        ~StealthCompactList()
+        public override IntPtr CreateNativeList()
         {
-            Dispose(false);
+            //No native call for this
+            throw new NotImplementedException();
         }
 
-        public IEnumerator GetEnumerator()
+        public override StealthCompact GetNthNativeElement(int n)
         {
-            return new StealthCompactListEnumerator(nativeInstance_);
+            return new StealthCompact(StealthCompactListNative.stealth_compact_list_nth(NativeInstance, (UInt64) n));
         }
 
-        public uint Count
+        public override uint GetCount()
         {
-            get
-            {
-                return (uint)StealthCompactListNative.stealth_compact_list_count(nativeInstance_);
-            }
+            return (uint) StealthCompactListNative.stealth_compact_list_count(NativeInstance);
         }
 
-        public void Dispose()
+        public override void AddElement(StealthCompact element)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            //No native call for this
+            throw new NotImplementedException();
         }
 
-        internal StealthCompactList(IntPtr nativeInstance)
+        public override void DestroyNativeList()
         {
-            nativeInstance_ = nativeInstance;
+            Logger.Log("Destroying stealth compact list " + NativeInstance.ToString("X"));
+            StealthCompactListNative.stealth_compact_list_destruct(NativeInstance);
         }
 
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
+        internal StealthCompactList(IntPtr nativeInstance) : base(nativeInstance)
+        {            
         }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            StealthCompactListNative.stealth_compact_list_destruct(nativeInstance_);
-        }
-    }
-
-    public class StealthCompactListEnumerator : IEnumerator
-    {
-        private UInt64 counter_;
-        private IntPtr nativeCollection_;
-
-        public StealthCompactListEnumerator(IntPtr nativeCollection)
-        {
-            nativeCollection_ = nativeCollection;
-            counter_ = 0;
-        }
-
-        public bool MoveNext()
-        {
-            counter_++;
-            return counter_ != (uint)StealthCompactListNative.stealth_compact_list_count(nativeCollection_);
-        }
-
-        public object Current
-        {
-            get
-            {
-                return StealthCompactListNative.stealth_compact_list_nth(nativeCollection_, counter_);
-            }
-        }
-
-        public void Reset()
-        {
-            counter_ = 0;
-        }
-
     }
 
 }
