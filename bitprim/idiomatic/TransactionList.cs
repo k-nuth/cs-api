@@ -14,7 +14,7 @@ namespace Bitprim
 
         public override Transaction GetNthNativeElement(int n)
         {
-            return new Transaction(TransactionListNative.chain_transaction_list_nth(NativeInstance, (UIntPtr) n));
+            return new Transaction(TransactionListNative.chain_transaction_list_nth(NativeInstance, (UIntPtr) n), false);
         }
 
         public override uint GetCount()
@@ -29,8 +29,9 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Logger.Log("Destroying transaction list " + NativeInstance.ToString("X"));
+            //Logger.Log("Destroying transaction list " + NativeInstance.ToString("X"));
             TransactionListNative.chain_transaction_list_destruct(NativeInstance);
+            //Logger.Log("Transaction list " + NativeInstance.ToString("X") + " destroyed!");
         }
 
         internal TransactionList(IntPtr nativeInstance) : base(nativeInstance)

@@ -9,6 +9,7 @@ namespace Bitprim
     /// </summary>
     public class StealthCompact : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         ~StealthCompact()
@@ -55,9 +56,10 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        internal StealthCompact(IntPtr nativeInstance)
+        internal StealthCompact(IntPtr nativeInstance, bool ownsNativeObject = true)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
         }
 
         protected virtual void Dispose(bool disposing)
@@ -67,8 +69,12 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Logger.Log("Destroying stealth compact " + nativeInstance_.ToString("X"));
-            StealthCompactNative.stealth_compact_destruct(nativeInstance_);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying stealth compact " + nativeInstance_.ToString("X") + " ...");
+                StealthCompactNative.stealth_compact_destruct(nativeInstance_);
+                //Logger.Log("Stealth compact " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
     }
 
