@@ -7,8 +7,11 @@ namespace Bitprim
 
     public class HashList : NativeList<byte[]>
     {
+        private bool ownsNativeObject_;
+
         public override IntPtr CreateNativeList()
         {
+            ownsNativeObject_ = true;
             return HashListNative.chain_hash_list_construct_default();
         }
 
@@ -29,12 +32,17 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Logger.Log("Destroying block " + NativeInstance.ToString("X"));
-            HashListNative.chain_hash_list_destruct(NativeInstance);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying hash list " + NativeInstance.ToString("X") + " ...");
+                HashListNative.chain_hash_list_destruct(NativeInstance);
+                //Logger.Log("Hash list " + NativeInstance.ToString("X") + " destroyed!");
+            }
         }
 
-        internal HashList(IntPtr nativeInstance) : base(nativeInstance)
-        {            
+        internal HashList(IntPtr nativeInstance, bool ownsNativeObject = true) : base(nativeInstance)
+        {
+            ownsNativeObject_ = ownsNativeObject;
         }
     }
     

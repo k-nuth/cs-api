@@ -59,7 +59,7 @@ namespace Bitprim
         {
             get
             {
-                return new HashList(GetBlocksNative.chain_get_blocks_start_hashes(nativeInstance_));
+                return new HashList(GetBlocksNative.chain_get_blocks_start_hashes(nativeInstance_), false);
             }
             set
             {

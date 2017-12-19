@@ -16,7 +16,7 @@ namespace Bitprim
 
         public override HistoryCompact GetNthNativeElement(int n)
         {
-            return new HistoryCompact(HistoryCompactListNative.chain_history_compact_list_nth(NativeInstance, (UInt64)n));
+            return new HistoryCompact(HistoryCompactListNative.chain_history_compact_list_nth(NativeInstance, (UInt64)n), false);
         }
 
         public override uint GetCount()

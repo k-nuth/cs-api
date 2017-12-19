@@ -9,6 +9,7 @@ namespace Bitprim.Native
     /// </summary>
     public class HistoryCompact : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         ~HistoryCompact()
@@ -73,9 +74,10 @@ namespace Bitprim.Native
             GC.SuppressFinalize(this);
         }
 
-        internal HistoryCompact(IntPtr nativeInstance)
+        internal HistoryCompact(IntPtr nativeInstance, bool ownsNativeObject = true)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
         }
 
         protected virtual void Dispose(bool disposing)
@@ -85,8 +87,12 @@ namespace Bitprim.Native
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Logger.Log("Destroying history compact " + nativeInstance_.ToString("X"));
-            HistoryCompactNative.chain_history_compact_destruct(nativeInstance_);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying history compact " + nativeInstance_.ToString("X") + " ...");
+                HistoryCompactNative.chain_history_compact_destruct(nativeInstance_);
+                //Logger.Log("History compact " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
     }
 

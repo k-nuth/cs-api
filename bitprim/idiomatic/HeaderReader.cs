@@ -67,7 +67,7 @@ namespace Bitprim
         {
             get
             {
-                return new HashList(GetHeadersNative.chain_get_headers_start_hashes(nativeInstance_));
+                return new HashList(GetHeadersNative.chain_get_headers_start_hashes(nativeInstance_), false);
             }
             set
             {

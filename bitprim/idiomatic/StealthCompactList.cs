@@ -15,7 +15,7 @@ namespace Bitprim
 
         public override StealthCompact GetNthNativeElement(int n)
         {
-            return new StealthCompact(StealthCompactListNative.stealth_compact_list_nth(NativeInstance, (UInt64) n));
+            return new StealthCompact(StealthCompactListNative.stealth_compact_list_nth(NativeInstance, (UInt64) n), false);
         }
 
         public override uint GetCount()

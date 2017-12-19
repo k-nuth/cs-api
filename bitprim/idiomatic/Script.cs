@@ -8,6 +8,7 @@ namespace Bitprim
     /// </summary>
     public class Script : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         ~Script()
@@ -86,9 +87,10 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        internal Script(IntPtr nativeInstance)
+        internal Script(IntPtr nativeInstance, bool ownsNativeObject = true)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
         }
 
         internal IntPtr NativeInstance
@@ -106,8 +108,12 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Logger.Log("Destroying script " + nativeInstance_.ToString("X"));
-            ScriptNative.chain_script_destruct(nativeInstance_);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying script " + nativeInstance_.ToString("X") + " ...");
+                ScriptNative.chain_script_destruct(nativeInstance_);
+                //Logger.Log("Script " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
     }
 

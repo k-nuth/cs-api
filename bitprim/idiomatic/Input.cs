@@ -9,6 +9,7 @@ namespace Bitprim
     /// </summary>
     public class Input : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         /// <summary>
@@ -17,6 +18,7 @@ namespace Bitprim
         public Input()
         {
             nativeInstance_ = InputNative.chain_input_construct_default();
+            ownsNativeObject_ = true;
         }
 
         /// <summary>
@@ -64,7 +66,7 @@ namespace Bitprim
         {
             get
             {
-                return new Output(InputNative.chain_input_previous_output(nativeInstance_));
+                return new Output(InputNative.chain_input_previous_output(nativeInstance_), false);
             }
         }
 
@@ -75,7 +77,7 @@ namespace Bitprim
         {
             get
             {
-                return new Script(InputNative.chain_input_script(nativeInstance_));
+                return new Script(InputNative.chain_input_script(nativeInstance_), false);
             }
         }
 
@@ -116,9 +118,10 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        internal Input(IntPtr nativeInstance)
+        internal Input(IntPtr nativeInstance, bool ownsNativeObject = true)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
         }
 
         internal IntPtr NativeInstance
@@ -136,8 +139,12 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Logger.Log("Destroying input " + nativeInstance_.ToString("X"));
-            InputNative.chain_input_destruct(nativeInstance_);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying input " + nativeInstance_.ToString("X") + " ...");
+                InputNative.chain_input_destruct(nativeInstance_);
+                //Logger.Log("Input " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
     }
 

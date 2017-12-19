@@ -14,7 +14,7 @@ namespace Bitprim
 
         public override Block GetNthNativeElement(int n)
         {
-            return new Block(BlockListNative.chain_block_list_nth(NativeInstance, (UInt64)n));
+            return new Block(BlockListNative.chain_block_list_nth(NativeInstance, (UInt64)n), false);
         }
 
         public override uint GetCount()

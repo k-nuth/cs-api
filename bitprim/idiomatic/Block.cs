@@ -10,6 +10,7 @@ namespace Bitprim
     /// </summary>
     public class Block : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         ~Block()
@@ -107,7 +108,7 @@ namespace Bitprim
         {
             get
             {
-                return new Header(BlockNative.chain_block_header(nativeInstance_));
+                return new Header(BlockNative.chain_block_header(nativeInstance_), false);
             }
         }
 
@@ -202,7 +203,7 @@ namespace Bitprim
         /// <returns> Full transaction object </returns>
         public Transaction GetNthTransaction(UIntPtr n)
         {
-            return new Transaction(BlockNative.chain_block_transaction_nth(nativeInstance_, n));
+            return new Transaction(BlockNative.chain_block_transaction_nth(nativeInstance_, n), false);
         }
 
         /// <summary>
@@ -251,9 +252,10 @@ namespace Bitprim
             );
         }
 
-        internal Block(IntPtr nativeInstance)
+        internal Block(IntPtr nativeInstance, bool ownsNativeObject = true)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
         }
 
         internal IntPtr NativeInstance
@@ -271,8 +273,12 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Logger.Log("Destroying block " + nativeInstance_.ToString("X"));
-            BlockNative.chain_block_destruct(nativeInstance_);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying block " + nativeInstance_.ToString("X") + "...");
+                BlockNative.chain_block_destruct(nativeInstance_);
+                //Logger.Log("Block " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
 
     }
