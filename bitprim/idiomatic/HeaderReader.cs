@@ -67,7 +67,7 @@ namespace Bitprim
         {
             get
             {
-                return new HashList(GetHeadersNative.chain_get_headers_start_hashes(nativeInstance_));
+                return new HashList(GetHeadersNative.chain_get_headers_start_hashes(nativeInstance_), false);
             }
             set
             {
@@ -114,6 +114,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Logger.Log("Destroying header reader " + nativeInstance_.ToString("X"));
             GetHeadersNative.chain_get_headers_destruct(nativeInstance_);
         }
 

@@ -41,3 +41,13 @@
 /bitprim.tests/bin/x64/Release
 /webtest/bin/Release/netcoreapp2.0
 /bitprim.tests/bin
+/bitprim.ibd/bin/x64
+/bitprim.ibd/obj/x64/Release
+/packages/bitprim.0.2.82
+/bitprim.ibd/bitprim-node-cint.dll
+/bitprim.ibd/conanbuildinfo.cmake
+/bitprim.ibd/conanbuildinfo.txt
+/bitprim.ibd/conanfile.txt
+/bitprim.ibd/conaninfo.txt
+/bitprim.ibd/conan_imports_manifest.txt
+/bitprim.ibd/obj/x64/Debug

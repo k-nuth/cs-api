@@ -10,6 +10,7 @@ namespace Bitprim
     /// </summary>
     public class Header : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         ~Header()
@@ -134,9 +135,10 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        internal Header(IntPtr nativeInstance)
+        internal Header(IntPtr nativeInstance, bool ownsNativeMem = true)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeMem;
         }
 
         protected virtual void Dispose(bool disposing)
@@ -146,7 +148,12 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            HeaderNative.chain_header_destruct(nativeInstance_);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying header " + nativeInstance_.ToString("X"));
+                HeaderNative.chain_header_destruct(nativeInstance_);
+                //Logger.Log("Header " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
 
     }

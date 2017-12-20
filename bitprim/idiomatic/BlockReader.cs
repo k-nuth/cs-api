@@ -59,7 +59,7 @@ namespace Bitprim
         {
             get
             {
-                return new HashList(GetBlocksNative.chain_get_blocks_start_hashes(nativeInstance_));
+                return new HashList(GetBlocksNative.chain_get_blocks_start_hashes(nativeInstance_), false);
             }
             set
             {
@@ -98,6 +98,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Logger.Log("Destroying block reader " + nativeInstance_.ToString("X"));
             GetBlocksNative.chain_get_blocks_destruct(nativeInstance_);
         }
     }

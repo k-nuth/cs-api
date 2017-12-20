@@ -5,98 +5,46 @@ using System.Collections;
 namespace Bitprim
 {
 
-    public class InputList : IDisposable
+    public class InputList : NativeList<Input>
     {
+        private bool ownsNativeObject_;
 
-        private IntPtr nativeInstance_;
-
-        public InputList()
+        public override IntPtr CreateNativeList()
         {
-            nativeInstance_ = InputListNative.chain_input_list_construct_default();
+            ownsNativeObject_ = true;
+            return InputListNative.chain_input_list_construct_default();
         }
 
-        internal InputList(IntPtr nativeInstance)
+        public override Input GetNthNativeElement(int n)
         {
-            nativeInstance_ = nativeInstance;
+            return new Input(InputListNative.chain_input_list_nth(NativeInstance, (UIntPtr)n), false);
         }
 
-        ~InputList()
+        public override uint GetCount()
         {
-            Dispose(false);
+            return (uint) InputListNative.chain_input_list_count(NativeInstance);
         }
 
-        public IEnumerator GetEnumerator()
+        public override void AddElement(Input element)
         {
-            return new InputListEnumerator(nativeInstance_);
+            InputListNative.chain_input_list_push_back(NativeInstance, element.NativeInstance);
         }
 
-        public uint Count
+        public override void DestroyNativeList()
         {
-            get
+            if(ownsNativeObject_)
             {
-                return (uint)InputListNative.chain_input_list_count(nativeInstance_);
+                //Logger.Log("Destroying input list " + NativeInstance.ToString("X") + " ...");
+                InputListNative.chain_input_list_destruct(NativeInstance);
+                //Logger.Log("Input list " + NativeInstance.ToString("X") + " destroyed!");
             }
         }
 
-        public void Add(Input input)
+        internal InputList(IntPtr nativeInstance, bool ownsNativeObject = true) : base(nativeInstance)
         {
-            InputListNative.chain_input_list_push_back(nativeInstance_, input.NativeInstance);
+            ownsNativeObject_ = ownsNativeObject;
         }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            InputListNative.chain_input_list_destruct(nativeInstance_);
-        }
-    }
-
-    public class InputListEnumerator : IEnumerator
-    {
-        private uint counter_;
-        private IntPtr nativeCollection_;
-
-        public InputListEnumerator(IntPtr nativeCollection)
-        {
-            nativeCollection_ = nativeCollection;
-            counter_ = 0;
-        }
-
-        public bool MoveNext()
-        {
-            counter_++;
-            return counter_ != (uint)InputListNative.chain_input_list_count(nativeCollection_);
-        }
-
-        public object Current
-        {
-            get
-            {
-                return new Input(InputListNative.chain_input_list_nth(nativeCollection_, (UIntPtr)counter_));
-            }
-        }
-
-        public void Reset()
-        {
-            counter_ = 0;
-        }
+        
     }
 
 }

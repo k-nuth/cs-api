@@ -9,6 +9,7 @@ namespace Bitprim
     /// </summary>
     public class Transaction : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         /// <summary>
@@ -17,6 +18,7 @@ namespace Bitprim
         public Transaction()
         {
             nativeInstance_ = TransactionNative.chain_transaction_construct_default();
+            ownsNativeObject_ = true;
         }
 
         /// <summary>
@@ -26,6 +28,7 @@ namespace Bitprim
         public Transaction(string hexString)
         {
             nativeInstance_ = ChainNative.hex_to_tx(hexString);
+            ownsNativeObject_ = true;
         }
 
         /// <summary>
@@ -41,6 +44,7 @@ namespace Bitprim
             (
                 version, locktime, inputs.NativeInstance, outputs.NativeInstance
             );
+            ownsNativeObject_ = true;
         }
 
         ~Transaction()
@@ -157,7 +161,7 @@ namespace Bitprim
         {
             get
             {
-                return new InputList(TransactionNative.chain_transaction_inputs(nativeInstance_));
+                return new InputList(TransactionNative.chain_transaction_inputs(nativeInstance_), false);
             }
         }
 
@@ -168,7 +172,7 @@ namespace Bitprim
         {
             get
             {
-                return new OutputList(TransactionNative.chain_transaction_outputs(nativeInstance_));
+                return new OutputList(TransactionNative.chain_transaction_outputs(nativeInstance_), false);
             }
         }
 
@@ -317,9 +321,10 @@ namespace Bitprim
             }
         }
 
-        internal Transaction(IntPtr nativeInstance)
+        internal Transaction(IntPtr nativeInstance, bool ownsNativeObject = true)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
         }
 
         protected virtual void Dispose(bool disposing)
@@ -329,7 +334,12 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            TransactionNative.chain_transaction_destruct(nativeInstance_);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying transaction " + nativeInstance_.ToString("X") + " ...");
+                TransactionNative.chain_transaction_destruct(nativeInstance_);
+                //Logger.Log("Transaction " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
 
     }
