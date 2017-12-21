@@ -58,7 +58,7 @@ namespace Bitprim
         /// <returns> Full transaction object </returns>
         public Transaction GetNthTransaction(UInt64 n)
         {
-            return new Transaction(CompactBlockNative.compact_block_transaction_nth(nativeInstance_, n));
+            return new Transaction(CompactBlockNative.compact_block_transaction_nth(nativeInstance_, n), false);
         }
 
         /// <summary>
@@ -97,6 +97,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            Logger.Log("Destroying compact block " + nativeInstance_.ToString("X"));
             CompactBlockNative.compact_block_destruct(nativeInstance_);
         }
 

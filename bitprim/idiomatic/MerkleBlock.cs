@@ -47,7 +47,7 @@ namespace Bitprim
         {
             get
             {
-                return new Header(MerkleBlockNative.chain_merkle_block_header(nativeInstance_));
+                return new Header(MerkleBlockNative.chain_merkle_block_header(nativeInstance_), false);
             }
         }
 
@@ -109,7 +109,9 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            //Logger.Log("Destroying merkle block " + nativeInstance_.ToString("X") + " ...");
             MerkleBlockNative.chain_merkle_block_destruct(nativeInstance_);
+            //Logger.Log("Merkle block " + nativeInstance_.ToString("X") + " destroyed!");
         }
     }
 

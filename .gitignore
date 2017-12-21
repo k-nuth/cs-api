@@ -3,12 +3,7 @@
 ################################################################################
 
 /.vs/bitprim-cs/v15
-/bitprim-cs/bin
-/bitprim-cs/obj
-/bitprim-cs.tests/bin/Debug/netcoreapp2.0
-/bitprim-cs.tests/obj
 /.vs/config
-/bitprim-cs.tests/bin/Release/netcoreapp2.0
 /bitprim-node-cint.dll
 /conanbuildinfo.cmake
 /conanbuildinfo.txt
@@ -20,7 +15,7 @@
 /bitprim.tests/bin/Debug/netcoreapp2.0
 /bitprim.tests/obj
 /bitprim.restapi/.vscode
-/bitprim.restapi/bin/Debug
+/bitprim.restapi/bin
 /bitprim.restapi/obj
 /bitprim/docs/xml
 /bitprim/docs/api.md
@@ -31,6 +26,14 @@
 /bitprim.tests/conanfile.txt
 /bitprim.tests/conanbuildinfo.txt
 /bitprim.tests/conanbuildinfo.cmake
-/bitprim.restapi/bin/x64/Release/netcoreapp2.0
-/bitprim.tests/bin/x64/Release
+/bitprim.restapi/bin
 /bitprim.tests/bin
+/bitprim.ibd/bin
+/bitprim.ibd/obj
+/packages
+/bitprim.ibd/bitprim-node-cint.dll
+/bitprim.ibd/conanbuildinfo.cmake
+/bitprim.ibd/conanbuildinfo.txt
+/bitprim.ibd/conanfile.txt
+/bitprim.ibd/conaninfo.txt
+/bitprim.ibd/conan_imports_manifest.txt

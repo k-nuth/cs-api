@@ -83,7 +83,9 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            //Logger.Log("Destroying output point " + nativeInstance_.ToString("X") + " ...");
             OutputPointNative.output_point_destruct(nativeInstance_);
+            //Logger.Log("Output point " + nativeInstance_.ToString("X") + " destroyed!");
         }
     }
 

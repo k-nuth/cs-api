@@ -9,6 +9,7 @@ namespace Bitprim
     /// </summary>
     public class Output : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         /// <summary>
@@ -17,6 +18,7 @@ namespace Bitprim
         public Output()
         {
             nativeInstance_ = OutputNative.chain_output_construct_default();
+            ownsNativeObject_ = true;
         }
 
         /// <summary>
@@ -105,9 +107,10 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        internal Output(IntPtr nativeInstance)
+        internal Output(IntPtr nativeInstance, bool ownsNativeObject = true)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
         }
 
         internal IntPtr NativeInstance
@@ -125,7 +128,12 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            OutputNative.chain_output_destruct(nativeInstance_);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying output " + nativeInstance_.ToString("X") + " ...");
+                OutputNative.chain_output_destruct(nativeInstance_);
+                //Logger.Log("Output " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
     }
 
