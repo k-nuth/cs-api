@@ -112,6 +112,7 @@ install:
       cd ../..
       doxygen -v
     fi
+
 script:
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
@@ -129,4 +130,3 @@ script:
       git commit -m "Updated Dotnet docs" || :
       git push -u -f || :
     fi
-    
