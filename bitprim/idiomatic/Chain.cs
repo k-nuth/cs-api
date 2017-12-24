@@ -464,7 +464,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
         /// <param name="handler"> Callback which will called when the reader is retrieved </param>
-        public void FetchBlockLocator(BlockIndexCollection indexes, Action<int, HeaderReader> handler)
+        public void FetchBlockLocator(BlockIndexList indexes, Action<int, HeaderReader> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -476,7 +476,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
         /// <returns> Error code (0 = success), HeaderReader </returns>
-        public Tuple<int, HeaderReader> GetBlockLocator(BlockIndexCollection indexes)
+        public Tuple<int, HeaderReader> GetBlockLocator(BlockIndexList indexes)
         {
             IntPtr headerReader = IntPtr.Zero;
             int result = ChainNative.chain_get_block_locator(nativeInstance_, indexes.NativeInstance, ref headerReader);

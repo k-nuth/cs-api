@@ -9,6 +9,7 @@ namespace Bitprim
     /// </summary>
     public class Output : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         /// <summary>
@@ -17,6 +18,7 @@ namespace Bitprim
         public Output()
         {
             nativeInstance_ = OutputNative.chain_output_construct_default();
+            ownsNativeObject_ = true;
         }
 
         /// <summary>
@@ -81,11 +83,11 @@ namespace Bitprim
         /// <summary>
         /// The amount of signature operations in the output script.
         /// </summary>
-        public UIntPtr SignatureOperationCount
+        public UInt64 SignatureOperationCount
         {
             get
             {
-                return OutputNative.chain_output_signature_operations(nativeInstance_);
+                return (UInt64)OutputNative.chain_output_signature_operations(nativeInstance_);
             }
         }
 
@@ -94,9 +96,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="wire"> If true, size will include size of 'uint32' for storing spender height. </param>
         /// <returns> Size in bytes. </returns>
-        public UIntPtr GetSerializedSize(bool wire)
+        public UInt64 GetSerializedSize(bool wire)
         {
-            return OutputNative.chain_output_serialized_size(nativeInstance_, wire ? 1 : 0);
+            return (UInt64)OutputNative.chain_output_serialized_size(nativeInstance_, wire ? 1 : 0);
         }
 
         public void Dispose()
@@ -105,9 +107,10 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        internal Output(IntPtr nativeInstance)
+        internal Output(IntPtr nativeInstance, bool ownsNativeObject = true)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
         }
 
         internal IntPtr NativeInstance
@@ -125,7 +128,12 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            OutputNative.chain_output_destruct(nativeInstance_);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying output " + nativeInstance_.ToString("X") + " ...");
+                OutputNative.chain_output_destruct(nativeInstance_);
+                //Logger.Log("Output " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
     }
 

@@ -35,9 +35,9 @@ namespace Bitprim
         /// <param name="bitsSize"> Elements size </param>
         /// <param name="blocks"> Filter representation. Example: '[186,173,240,13]'. </param>
         /// <param name="n"> Array length in amount of elements. </param>
-        public Binary(UIntPtr bitsSize, byte[] blocks, UIntPtr n)
+        public Binary(UInt64 bitsSize, byte[] blocks, UInt64 n)
         {
-            nativeInstance_ = BinaryNative.binary_construct_blocks(bitsSize, blocks, n);
+            nativeInstance_ = BinaryNative.binary_construct_blocks((UIntPtr)bitsSize, blocks, (UIntPtr)n);
         }
 
         ~Binary()
@@ -77,7 +77,9 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
+            //Logger.Log("Destroying binary " + nativeInstance_.ToString("X") + " ...");
             BinaryNative.binary_destruct(nativeInstance_);
+            //Logger.Log("Binary " + nativeInstance_.ToString("X") + " destroyed!");
         }
 
     }

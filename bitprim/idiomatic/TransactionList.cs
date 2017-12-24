@@ -5,94 +5,38 @@ using System.Collections;
 namespace Bitprim
 {
 
-    public class TransactionList : IDisposable
+    public class TransactionList : NativeList<Transaction>
     {
-
-        private IntPtr nativeInstance_;
-
-        public TransactionList()
+        public override IntPtr CreateNativeList()
         {
-            nativeInstance_ = TransactionListNative.chain_transaction_list_construct_default();
+            return TransactionListNative.chain_transaction_list_construct_default();
         }
 
-        ~TransactionList()
+        public override Transaction GetNthNativeElement(int n)
         {
-            Dispose(false);
+            return new Transaction(TransactionListNative.chain_transaction_list_nth(NativeInstance, (UIntPtr) n), false);
         }
 
-        public IEnumerator GetEnumerator()
+        public override uint GetCount()
         {
-            return new TransactionListEnumerator(nativeInstance_);
+            return (uint) TransactionListNative.chain_transaction_list_count(NativeInstance);
         }
 
-        public uint Count
+        public override void AddElement(Transaction element)
         {
-            get
-            {
-                return (uint)TransactionListNative.chain_transaction_list_count(nativeInstance_);
-            }
+            TransactionListNative.chain_transaction_list_push_back(NativeInstance, element.NativeInstance);
         }
 
-        public void Add(Transaction transaction)
+        public override void DestroyNativeList()
         {
-            TransactionListNative.chain_transaction_list_push_back(nativeInstance_, transaction.NativeInstance);
+            //Logger.Log("Destroying transaction list " + NativeInstance.ToString("X"));
+            TransactionListNative.chain_transaction_list_destruct(NativeInstance);
+            //Logger.Log("Transaction list " + NativeInstance.ToString("X") + " destroyed!");
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                //Release managed resources and call Dispose for member variables
-            }
-            //Release unmanaged resources
-            TransactionListNative.chain_transaction_list_destruct(nativeInstance_);
-        }
-
-    }
-
-    public class TransactionListEnumerator : IEnumerator
-    {
-        private uint counter_;
-        private IntPtr nativeCollection_;
-
-        public TransactionListEnumerator(IntPtr nativeCollection)
-        {
-            nativeCollection_ = nativeCollection;
-            counter_ = 0;
-        }
-
-        public bool MoveNext()
-        {
-            counter_++;
-            return counter_ != (uint)TransactionListNative.chain_transaction_list_count(nativeCollection_);
-        }
-
-        public object Current
-        {
-            get
-            {
-                return new Transaction(TransactionListNative.chain_transaction_list_nth(nativeCollection_, (UIntPtr)counter_));
-            }
-        }
-
-        public void Reset()
-        {
-            counter_ = 0;
-        }
+        internal TransactionList(IntPtr nativeInstance) : base(nativeInstance)
+        {            
+        }        
     }
 
 }

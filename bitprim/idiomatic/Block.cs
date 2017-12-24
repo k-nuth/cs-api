@@ -10,6 +10,7 @@ namespace Bitprim
     /// </summary>
     public class Block : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         ~Block()
@@ -107,7 +108,7 @@ namespace Bitprim
         {
             get
             {
-                return new Header(BlockNative.chain_block_header(nativeInstance_));
+                return new Header(BlockNative.chain_block_header(nativeInstance_), false);
             }
         }
 
@@ -136,22 +137,22 @@ namespace Bitprim
         /// <summary>
         /// Amount of signature operations in the block.
         /// </summary>
-        public UIntPtr SignatureOperationsCount
+        public UInt64 SignatureOperationsCount
         {
             get
             {
-                return BlockNative.chain_block_signature_operations(nativeInstance_);
+                return (UInt64)BlockNative.chain_block_signature_operations(nativeInstance_);
             }
         }
 
         /// <summary>
         /// The total amount of transactions that the block contains.
         /// </summary>
-        public UIntPtr TransactionCount
+        public UInt64 TransactionCount
         {
             get
             {
-                return BlockNative.chain_block_transaction_count(nativeInstance_);
+                return (UInt64)BlockNative.chain_block_transaction_count(nativeInstance_);
             }
         }
 
@@ -160,9 +161,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"></param>
         /// <returns></returns>
-        public bool IsFinal(UIntPtr height)
+        public bool IsFinal(UInt64 height)
         {
-            return BlockNative.chain_block_is_final(nativeInstance_, height) != 0;
+            return BlockNative.chain_block_is_final(nativeInstance_, (UIntPtr)height) != 0;
         }
 
         /// <summary>
@@ -170,9 +171,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="height">The height which identifies the block to examine</param>
         /// <returns> True iif 1 if coinbase claim is not higher than the deserved reward. </returns>
-        public bool IsValidCoinbaseClaim(UIntPtr height)
+        public bool IsValidCoinbaseClaim(UInt64 height)
         {
-            return BlockNative.chain_block_is_valid_coinbase_claim(nativeInstance_, height) != 0;
+            return BlockNative.chain_block_is_valid_coinbase_claim(nativeInstance_, (UIntPtr)height) != 0;
         }
 
         /// <summary>
@@ -180,9 +181,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> The block's height. Identifies it univocally. </param>
         /// <returns>True iif the block's coinbase script is valid.</returns>
-        public bool IsValidCoinbaseScript(UIntPtr height)
+        public bool IsValidCoinbaseScript(UInt64 height)
         {
-            return BlockNative.chain_block_is_valid_coinbase_script(nativeInstance_, height) != 0;
+            return BlockNative.chain_block_is_valid_coinbase_script(nativeInstance_, (UIntPtr)height) != 0;
         }
 
         /// <summary>
@@ -190,9 +191,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> The block's height. It identifies it univocally. </param>
         /// <returns> UInt64 representation of the block subsidy </returns>
-        public static UInt64 GetSubsidy(UIntPtr height)
+        public static UInt64 GetSubsidy(UInt64 height)
         {
-            return BlockNative.chain_block_subsidy(height);
+            return BlockNative.chain_block_subsidy((UIntPtr)height);
         }
 
         /// <summary>
@@ -200,9 +201,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="n"> Zero-based index </param>
         /// <returns> Full transaction object </returns>
-        public Transaction GetNthTransaction(UIntPtr n)
+        public Transaction GetNthTransaction(UInt64 n)
         {
-            return new Transaction(BlockNative.chain_block_transaction_nth(nativeInstance_, n));
+            return new Transaction(BlockNative.chain_block_transaction_nth(nativeInstance_, (UIntPtr)n), false);
         }
 
         /// <summary>
@@ -210,9 +211,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height in the chain; identifies it univocally. </param>
         /// <returns> UInt64 representation of the block's reward. </returns>
-        public UInt64 GetBlockReward(UIntPtr height)
+        public UInt64 GetBlockReward(UInt64 height)
         {
-            return BlockNative.chain_block_reward(nativeInstance_, height);
+            return BlockNative.chain_block_reward(nativeInstance_, (UIntPtr)height);
         }
 
         /// <summary>
@@ -220,9 +221,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="version"> Protocol version. </param>
         /// <returns> UInt64 representation of the block size in bytes. </returns>
-        public UIntPtr GetSerializedSize(UInt32 version)
+        public UInt64 GetSerializedSize(UInt32 version)
         {
-            return BlockNative.chain_block_serialized_size(nativeInstance_, version);
+            return (UInt64)BlockNative.chain_block_serialized_size(nativeInstance_, version);
         }
 
         /// <summary>
@@ -230,9 +231,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="bip16Active"> Iif true, count bip16 active operations. </param>
         /// <returns> The amount of signature operations in this block </returns>
-        public UIntPtr GetSignatureOperationsCount(bool bip16Active)
+        public UInt64 GetSignatureOperationsCount(bool bip16Active)
         {
-            return BlockNative.chain_block_signature_operations_bip16_active
+            return (UInt64)BlockNative.chain_block_signature_operations_bip16_active
             (
                 nativeInstance_, bip16Active ? 1 : 0
             );
@@ -243,17 +244,18 @@ namespace Bitprim
         /// </summary>
         /// <param name="withCoinbase">Iif true, consider coinbase transactions. </param>
         /// <returns> UInt64 representation of the sum </returns>
-        public UIntPtr GetTotalInputs(bool withCoinbase)
+        public UInt64 GetTotalInputs(bool withCoinbase)
         {
-            return BlockNative.chain_block_total_inputs
+            return (UInt64)BlockNative.chain_block_total_inputs
             (
                 nativeInstance_, withCoinbase ? 1 : 0
             );
         }
 
-        internal Block(IntPtr nativeInstance)
+        internal Block(IntPtr nativeInstance, bool ownsNativeObject = true)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
         }
 
         internal IntPtr NativeInstance
@@ -271,7 +273,12 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            BlockNative.chain_block_destruct(nativeInstance_);
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying block " + nativeInstance_.ToString("X") + "...");
+                BlockNative.chain_block_destruct(nativeInstance_);
+                //Logger.Log("Block " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
 
     }
