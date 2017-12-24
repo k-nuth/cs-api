@@ -112,6 +112,7 @@ install:
       cd ../..
       doxygen -v
     fi
+
 script:
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
