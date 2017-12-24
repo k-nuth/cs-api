@@ -97,9 +97,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="wire"> Iif true, consider 4 extra bytes from wire field. </param>
         /// <returns> Size in bytes. </returns>
-        public UIntPtr GetSerializedSize(bool wire)
+        public UInt64 GetSerializedSize(bool wire)
         {
-            return InputNative.chain_input_serialized_size(nativeInstance_, wire ? 1 : 0);
+            return (UInt64)InputNative.chain_input_serialized_size(nativeInstance_, wire ? 1 : 0);
         }
 
         /// <summary>
@@ -107,9 +107,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="bip16Active"> Iif true, count BIP 16 active sig ops</param>
         /// <returns> Sigops count. </returns>
-        public UIntPtr GetSignatureOperationsCount(bool bip16Active)
+        public UInt64 GetSignatureOperationsCount(bool bip16Active)
         {
-            return InputNative.chain_input_signature_operations(nativeInstance_, bip16Active ? 1 : 0);
+            return (UInt64)InputNative.chain_input_signature_operations(nativeInstance_, bip16Active ? 1 : 0);
         }
 
         public void Dispose()
