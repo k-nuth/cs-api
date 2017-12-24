@@ -83,11 +83,11 @@ namespace Bitprim
         /// <summary>
         /// The amount of signature operations in the output script.
         /// </summary>
-        public UIntPtr SignatureOperationCount
+        public UInt64 SignatureOperationCount
         {
             get
             {
-                return OutputNative.chain_output_signature_operations(nativeInstance_);
+                return (UInt64)OutputNative.chain_output_signature_operations(nativeInstance_);
             }
         }
 
@@ -96,9 +96,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="wire"> If true, size will include size of 'uint32' for storing spender height. </param>
         /// <returns> Size in bytes. </returns>
-        public UIntPtr GetSerializedSize(bool wire)
+        public UInt64 GetSerializedSize(bool wire)
         {
-            return OutputNative.chain_output_serialized_size(nativeInstance_, wire ? 1 : 0);
+            return (UInt64)OutputNative.chain_output_serialized_size(nativeInstance_, wire ? 1 : 0);
         }
 
         public void Dispose()
