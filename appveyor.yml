@@ -41,8 +41,9 @@ after_test:
         cmd.exe /c "del $env:APPVEYOR_BUILD_FOLDER\bitprim\bin\x64\Release\*.nupkg"
         Write-Host "Incrementing version..."
         # Get the current patch version
-        $response = Invoke-RestMethod -method get -uri https://www.nuget.org/packages/bitprim
-        $patch = $response.Substring($response.IndexOf("| bitprim") + 14, 2)
+        $response = Invoke-RestMethod -method get -uri https://api.nuget.org/v3-flatcontainer/bitprim/index.json
+        $last_version = $response.versions[-1]
+        $patch = $last_version.Split(".")[-1]
         # Add 1 to it
         $nextVersion = [int]$patch + 1;
         # Replace the new value in the project metadata
