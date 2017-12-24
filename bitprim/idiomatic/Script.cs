@@ -53,11 +53,11 @@ namespace Bitprim
         /// <summary>
         /// Size in bytes.
         /// </summary>
-        public UIntPtr SatoshiContentSize
+        public UInt64 SatoshiContentSize
         {
             get
             {
-                return ScriptNative.chain_script_satoshi_content_size(nativeInstance_);
+                return (UInt64)ScriptNative.chain_script_satoshi_content_size(nativeInstance_);
             }
         }
 
@@ -66,9 +66,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="prevOutScript"> Reference to previous output script. </param>
         /// <returns> Embedded sigops count. </returns>
-        public UIntPtr GetEmbeddedSigOps(Script prevOutScript)
+        public UInt64 GetEmbeddedSigOps(Script prevOutScript)
         {
-            return ScriptNative.chain_script_embedded_sigops(nativeInstance_, prevOutScript.nativeInstance_);
+            return (UInt64)ScriptNative.chain_script_embedded_sigops(nativeInstance_, prevOutScript.nativeInstance_);
         }
 
         /// <summary>
@@ -76,9 +76,9 @@ namespace Bitprim
         /// </summary>
         /// <param name="embedded"> Iif true, consider this an embedded script. </param>
         /// <returns> Sigops count. </returns>
-        public UIntPtr GetSigOps(bool embedded)
+        public UInt64 GetSigOps(bool embedded)
         {
-            return ScriptNative.chain_script_sigops(nativeInstance_, embedded ? 1 : 0);
+            return (UInt64)ScriptNative.chain_script_sigops(nativeInstance_, embedded ? 1 : 0);
         }
 
         public void Dispose()
