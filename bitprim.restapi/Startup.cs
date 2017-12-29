@@ -8,11 +8,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
+using Bitprim;
 
 namespace api
 {
     public class Startup
     {
+        private Executor exec_;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -41,11 +44,16 @@ namespace api
             services.AddSwaggerGen(c =>  
             {  
                 c.SwaggerDoc("v1", new Info { Title = "bitprim", Version = "v1" });  
-            }); 
+            });
+
+            // Register chain service
+            exec_ = new Executor("", 0, 0);
+            exec_.InitChain();
+            services.AddSingleton<Chain>(exec_.Chain);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime applicationLifetime)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -58,7 +66,15 @@ namespace api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "bitprim V1");
             });
 
+            // Register shutdown handler
+            applicationLifetime.ApplicationStopping.Register(OnShutdown);
+
             app.UseMvc();
+        }
+
+        private void OnShutdown()
+        {
+            exec_.Stop();
         }
     }
 }
