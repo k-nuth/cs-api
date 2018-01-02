@@ -46,9 +46,18 @@ namespace api
                 c.SwaggerDoc("v1", new Info { Title = "bitprim", Version = "v1" });  
             });
 
-            // Register chain service
+            // Initialize and register chain service
             exec_ = new Executor("", 0, 0);
-            exec_.InitChain();
+            bool ok = exec_.InitChain();
+            if(!ok)
+            {
+                throw new ApplicationException("Executor::InitChain failed; check log");
+            }
+            int result = exec_.RunWait();
+            if (result != 0)
+            {
+                throw new ApplicationException("Executor::RunWait failed; error code: " + result);
+            }
             services.AddSingleton<Chain>(exec_.Chain);
         }
 
