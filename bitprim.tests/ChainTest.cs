@@ -113,6 +113,20 @@ namespace Bitprim.Tests
         }
 
         [Fact]
+        public void TestGetBlockByHash()
+        {
+            //https://blockchain.info/es/block-height/0
+            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            Tuple<int, Block, UInt64> result = executorFixture_.Executor.Chain.GetBlockByHash(hash);
+            int error = result.Item1;
+            Block block = result.Item2;
+            UInt64 height = result.Item3;
+            Assert.Equal(0, error);
+            VerifyGenesisBlockHeader(block.Header);
+            Assert.Equal(0UL, height);
+        }
+
+        [Fact]
         public void TestFetchBlockHeight()
         {
             var handlerDone = new AutoResetEvent(false);

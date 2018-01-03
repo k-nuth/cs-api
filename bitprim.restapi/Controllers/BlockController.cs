@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Bitprim;
+using System;
+using System.Collections.Generic;
 
 namespace api.Controllers
 {
@@ -19,5 +21,25 @@ namespace api.Controllers
         {
             return chain_.ToString();
         }
+
+        // GET: api/Block/{hash}
+        [HttpGet("/api/Block/{hash}")]
+        public ActionResult GetBlockByHash(string hash)
+        {
+            byte[] binaryHash = Binary.HexStringToByteArray(hash);
+            Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
+            dynamic jsonBlock = Json(getBlockResult.Item2);
+            jsonBlock.Value.hash = Binary.ByteArrayToHexString(jsonBlock.Value.hash);
+            return Json
+            (
+                new
+                {            
+                    error_code = getBlockResult.Item1,
+                    block = jsonBlock,
+                    height = getBlockResult.Item3
+                }
+            );
+        }
+
     }
 }
