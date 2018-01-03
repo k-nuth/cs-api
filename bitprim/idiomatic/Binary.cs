@@ -46,6 +46,11 @@ namespace Bitprim
             Dispose(false);
         }
 
+        /// <summary>
+        /// Convert byte array to hex tring
+        /// </summary>
+        /// <param name="ba">Byte array</param>
+        /// <returns>HEx string representation, with as many characters as bytes</returns>
         public static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);
@@ -56,6 +61,11 @@ namespace Bitprim
             return hexString.ToString();
         }
 
+        /// <summary>
+        /// Convert hex string to byte array
+        /// </summary>
+        /// <param name="hex">Hex string</param>
+        /// <returns>ASCII byte array</returns>
         public static byte[] HexStringToByteArray(string hex)
         {
             int numberChars = hex.Length;
