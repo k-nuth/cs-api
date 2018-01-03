@@ -61,7 +61,7 @@ namespace Bitprim.Tests
                 handlerDone.Set();
             };
             //https://blockchain.info/es/block-height/0
-            byte[] hash = HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
             executorFixture_.Executor.Chain.FetchBlockHeaderByHash(hash, handler);
             handlerDone.WaitOne();
 
@@ -104,7 +104,7 @@ namespace Bitprim.Tests
                 handlerDone.Set();
             };
             //https://blockchain.info/es/block-height/0
-            byte[] hash = HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
             executorFixture_.Executor.Chain.FetchBlockByHash(hash, handler);
             handlerDone.WaitOne();
 
@@ -126,7 +126,7 @@ namespace Bitprim.Tests
                 handlerDone.Set();
             };
             //https://blockchain.info/es/block-height/0
-            byte[] hash = HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
             executorFixture_.Executor.Chain.FetchBlockHeight(hash, handler);
             handlerDone.WaitOne();
 
@@ -149,14 +149,14 @@ namespace Bitprim.Tests
                 point = thePoint;
                 handlerDone.Set();
             };
-            byte[] hash = HexStringToByteArray("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9");
+            byte[] hash = Binary.HexStringToByteArray("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9");
             OutputPoint outputPoint = new OutputPoint(hash, 0);
             executorFixture_.Executor.Chain.FetchSpend(outputPoint, handler);
             handlerDone.WaitOne();
 
             Assert.Equal(0, error);
             Assert.NotNull(point);
-            Assert.Equal("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16", ByteArrayToHexString(point.Hash));
+            Assert.Equal("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16", Binary.ByteArrayToHexString(point.Hash));
             Assert.Equal<UInt32>(0, point.Index);
         }
 
@@ -176,7 +176,7 @@ namespace Bitprim.Tests
                 handlerDone.Set();
             };
             //https://blockchain.info/es/block-height/0
-            byte[] hash = HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
             executorFixture_.Executor.Chain.FetchMerkleBlockByHash(hash, handler);
             handlerDone.WaitOne();
 
@@ -253,7 +253,7 @@ namespace Bitprim.Tests
                 handlerDone.Set();
             };
             string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
-            byte[] hash = HexStringToByteArray(txHashHexStr);
+            byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
             executorFixture_.Executor.Chain.FetchTransaction(hash, true, handler);
             handlerDone.WaitOne();
 
@@ -281,7 +281,7 @@ namespace Bitprim.Tests
                 handlerDone.Set();
             };
             string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
-            byte[] hash = HexStringToByteArray(txHashHexStr);
+            byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
             executorFixture_.Executor.Chain.FetchTransactionPosition(hash, true, handler);
             handlerDone.WaitOne();
 
@@ -306,7 +306,7 @@ namespace Bitprim.Tests
                 handlerDone.Set();
             };
             //https://blockchain.info/es/block-height/170 - 2
-            byte[] hash = HexStringToByteArray("00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee");
+            byte[] hash = Binary.HexStringToByteArray("00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee");
             executorFixture_.Executor.Chain.FetchBlockByHash(hash, handler);
             handlerDone.WaitOne();
 
@@ -352,34 +352,12 @@ namespace Bitprim.Tests
             }
         }
 
-        private static string ByteArrayToHexString(byte[] ba)
-        {
-            StringBuilder hexString = new StringBuilder(ba.Length * 2);
-            for(int i=ba.Length-1; i>=0; i--)
-            {
-                hexString.AppendFormat("{0:x2}", ba[i]);
-            }
-            return hexString.ToString();
-        }
-
-        private static byte[] HexStringToByteArray(string hex)
-        {
-            int numberChars = hex.Length;
-            byte[] bytes = new byte[numberChars / 2];
-            for (int i = 0; i < numberChars; i += 2)
-            {
-                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            }
-            Array.Reverse(bytes);
-            return bytes;
-        }
-
         private static void VerifyGenesisBlockHeader(Header header)
         {
             Assert.NotNull(header);
-            Assert.Equal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", ByteArrayToHexString(header.Hash));
-            Assert.Equal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", ByteArrayToHexString(header.Merkle));
-            Assert.Equal("0000000000000000000000000000000000000000000000000000000000000000", ByteArrayToHexString(header.PreviousBlockHash));
+            Assert.Equal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", Binary.ByteArrayToHexString(header.Hash));
+            Assert.Equal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", Binary.ByteArrayToHexString(header.Merkle));
+            Assert.Equal("0000000000000000000000000000000000000000000000000000000000000000", Binary.ByteArrayToHexString(header.PreviousBlockHash));
             Assert.Equal<UInt32>(1, header.Version);
             Assert.Equal<UInt32>(486604799, header.Bits);
             Assert.Equal<UInt32>(2083236893, header.Nonce);            
@@ -419,7 +397,7 @@ namespace Bitprim.Tests
         private void CheckFirstNonCoinbaseTxFromHeight170(Transaction tx, string txHashHexStr)
         {
             Assert.Equal<UInt32>(1, tx.Version);
-            Assert.Equal(txHashHexStr, ByteArrayToHexString(tx.Hash));
+            Assert.Equal(txHashHexStr, Binary.ByteArrayToHexString(tx.Hash));
             Assert.Equal<UInt32>(0, tx.Locktime);
             Assert.Equal<UInt64>(275, tx.GetSerializedSize(true));
             Assert.Equal<UInt64>(275, tx.GetSerializedSize(false)); //TODO(dario) Does it make sense that it's the same value?
