@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Bitprim.Native;
 
 namespace Bitprim
@@ -43,6 +44,28 @@ namespace Bitprim
         ~Binary()
         {
             Dispose(false);
+        }
+
+        public static string ByteArrayToHexString(byte[] ba)
+        {
+            StringBuilder hexString = new StringBuilder(ba.Length * 2);
+            for(int i=ba.Length-1; i>=0; i--)
+            {
+                hexString.AppendFormat("{0:x2}", ba[i]);
+            }
+            return hexString.ToString();
+        }
+
+        public static byte[] HexStringToByteArray(string hex)
+        {
+            int numberChars = hex.Length;
+            byte[] bytes = new byte[numberChars / 2];
+            for (int i = 0; i < numberChars; i += 2)
+            {
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            }
+            Array.Reverse(bytes);
+            return bytes;
         }
 
         /// <summary>
