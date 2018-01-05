@@ -22,8 +22,8 @@ namespace api.Controllers
             return chain_.ToString();
         }
 
-        // GET: api/Block/{hash}
-        [HttpGet("/api/Block/{hash}")]
+        // GET: api/block/{hash}
+        [HttpGet("/api/block/{hash}")]
         public ActionResult GetBlockByHash(string hash)
         {
             byte[] binaryHash = Binary.HexStringToByteArray(hash);
@@ -32,6 +32,21 @@ namespace api.Controllers
             return Json
             (
                 BlockToJSON(getBlockResult.Item2, getBlockResult.Item3)
+            );
+        }
+
+        // GET: api/block-index/{height}
+        [HttpGet("/api/block-index/{height}")]
+        public ActionResult GetBlockByHeight(UInt64 height)
+        {
+            Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(height);
+            // TODO Use error information for HTTP code on failure
+            return Json
+            (
+                new
+                {
+                    blockHash = Binary.ByteArrayToHexString(getBlockResult.Item2.Hash)
+                } 
             );
         }
 
