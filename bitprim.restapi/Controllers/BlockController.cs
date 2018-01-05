@@ -29,10 +29,7 @@ namespace api.Controllers
             byte[] binaryHash = Binary.HexStringToByteArray(hash);
             Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
             // TODO Use error information for HTTP code on failure
-            return Json
-            (
-                BlockToJSON(getBlockResult.Item2, getBlockResult.Item3)
-            );
+            return Json(BlockToJSON(getBlockResult.Item2, getBlockResult.Item3));
         }
 
         // GET: api/block-index/{height}

@@ -11,51 +11,45 @@ namespace api.Controllers
     [Route("api/[controller]")]
     public class TransactionController : Controller
     {
+        private Chain chain_;
         private readonly IOptions<NodeConfig> config_;
 
-        public TransactionController(IOptions<NodeConfig> config)
+        public TransactionController(IOptions<NodeConfig> config, Chain chain)
         {
             config_ = config;
+            chain_ = chain;
         }
 
         // GET api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
+        // GET: api/tx/{hash}
+        [HttpGet("/api/tx/{hash}")]
+        public ActionResult GetTransactionByHash(string hash, bool requireConfirmed)
         {
-            return new string[] { "value1", "value2", "value3" };
+            byte[] binaryHash = Binary.HexStringToByteArray(hash);
+            Tuple<int, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
+            //TODO Check error code and set HTTP code accordingly
+            return Json(TxToJSON(getTxResult.Item2, getTxResult.Item4));
         }
 
-        // GET api/values/5
-        // [HttpGet("{id}")]
-        // public string Get(int id)
-        // {
-        //     return "value";
-        // }
-
-        // POST api/values
-        // [HttpPost]
-        // public void Post([FromBody]string value)
-        // {
-        // }
-
-        // PUT api/values/5
-        // [HttpPut("{id}")]
-        // public void Put(int id, [FromBody]string value)
-        // {
-        // }
-
-        // DELETE api/values/5
-        // [HttpDelete("{id}")]
-        // public void Delete(int id)
-        // {
-        // }
-
-        [HttpGet("Validate")]
-        public bool Validate(string tx)
+        private object TxToJSON(Transaction tx, UInt64 blockHeight)
         {
-            var exec = new Executor(config_.Value.NodeConfigFile, 0, 0);
-            //var s = config_.Value;
-            return true;
+            return new
+            {
+                txid = tx.Hash,
+                //version = TODO,
+                locktime = tx.Locktime,
+                //vin = TODO,
+                //vout = TODO,
+                //blockhash = TODO
+                blockheight = blockHeight,
+                //confirmations = TODO,
+                //time = TODO,
+                //blocktime = TODO,
+                isCoinBase = tx.IsCoinbase,
+                valueOut = tx.TotalOutputValue,
+                size = tx.GetSerializedSize()
+            };
         }
+
     }
 }
