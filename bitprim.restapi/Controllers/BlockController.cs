@@ -28,17 +28,45 @@ namespace api.Controllers
         {
             byte[] binaryHash = Binary.HexStringToByteArray(hash);
             Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
-            dynamic jsonBlock = Json(getBlockResult.Item2);
-            jsonBlock.Value.hash = Binary.ByteArrayToHexString(jsonBlock.Value.hash);
+            // TODO Use error information for HTTP code on failure
             return Json
             (
-                new
-                {            
-                    error_code = getBlockResult.Item1,
-                    block = jsonBlock,
-                    height = getBlockResult.Item3
-                }
+                BlockToJSON(getBlockResult.Item2, getBlockResult.Item3)
             );
+        }
+
+        private object BlockToJSON(Block block, UInt64 blockHeight)
+        {
+            return new
+            {
+                hash = Binary.ByteArrayToHexString(block.Hash),
+                size = block.GetSerializedSize(1),
+                height = blockHeight,
+                //version = 1,
+                merkleroot = Binary.ByteArrayToHexString(block.MerkleRoot),
+                tx = BlockTxsToJSON(block),
+                time = block.Header.Timestamp,
+                nonce = block.Header.Nonce,
+                bits = block.Header.Bits,
+                //difficulty = TODO,
+                //chainwork = TODO,
+                //confirmations = TODO,
+                previousblockhash = Binary.ByteArrayToHexString(block.Header.PreviousBlockHash),
+                //nextblockhash
+                reward = block.GetBlockReward(blockHeight)
+                //isMainChain = TODO
+                //poolInfo = TODO
+            };
+        }
+
+        private object[] BlockTxsToJSON(Block block)
+        {
+            var txs = new List<object>();
+            for(uint i = 0; i<block.TransactionCount; i++)
+            {
+                txs.Add(Binary.ByteArrayToHexString(block.GetNthTransaction(i).Hash));
+            }
+            return txs.ToArray();
         }
 
     }
