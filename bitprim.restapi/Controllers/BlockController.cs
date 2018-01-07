@@ -15,13 +15,6 @@ namespace api.Controllers
             chain_ = chain;
         }
 
-        // GET api/values
-        [HttpGet]
-        public string Get()
-        {
-            return chain_.ToString();
-        }
-
         // GET: api/block/{hash}
         [HttpGet("/api/block/{hash}")]
         public ActionResult GetBlockByHash(string hash)
@@ -52,9 +45,9 @@ namespace api.Controllers
             return new
             {
                 hash = Binary.ByteArrayToHexString(block.Hash),
-                size = block.GetSerializedSize(1),
+                size = block.GetSerializedSize(block.Header.Version),
                 height = blockHeight,
-                //version = 1,
+                version = block.Header.Version,
                 merkleroot = Binary.ByteArrayToHexString(block.MerkleRoot),
                 tx = BlockTxsToJSON(block),
                 time = block.Header.Timestamp,
