@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -35,10 +36,10 @@ namespace api.Controllers
         {
             return new
             {
-                txid = tx.Hash,
-                //version = TODO,
+                txid = Binary.ByteArrayToHexString(tx.Hash),
+                version = tx.Version,
                 locktime = tx.Locktime,
-                //vin = TODO,
+                vin = TxInputsToJSON(tx),
                 //vout = TODO,
                 //blockhash = TODO
                 blockheight = blockHeight,
@@ -49,6 +50,23 @@ namespace api.Controllers
                 valueOut = tx.TotalOutputValue,
                 size = tx.GetSerializedSize()
             };
+        }
+
+        private object TxInputsToJSON(Transaction tx)
+        {
+            var inputs = tx.Inputs;
+            var jsonInputs = new List<object>();
+            for(var i=0; i<inputs.Count; i++)
+            {
+                Input input = inputs[i];
+                dynamic jsonInput = new ExpandoObject();
+                if(tx.IsCoinbase)
+                {
+                    jsonInput.coinbase = input.Script.SatoshiContentSize; 
+                }
+                jsonInputs.Add(jsonInput);
+            }
+            return jsonInputs.ToArray();
         }
 
     }
