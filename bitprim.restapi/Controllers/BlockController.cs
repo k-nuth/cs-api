@@ -21,8 +21,9 @@ namespace api.Controllers
         {
             byte[] binaryHash = Binary.HexStringToByteArray(hash);
             Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
+            UInt64 topHeight = chain_.GetLastHeight().Item2;
             // TODO Use error information for HTTP code on failure
-            return Json(BlockToJSON(getBlockResult.Item2, getBlockResult.Item3));
+            return Json(BlockToJSON(getBlockResult.Item2, getBlockResult.Item3, topHeight));
         }
 
         // GET: api/block-index/{height}
@@ -40,7 +41,7 @@ namespace api.Controllers
             );
         }
 
-        private object BlockToJSON(Block block, UInt64 blockHeight)
+        private object BlockToJSON(Block block, UInt64 blockHeight, UInt64 topHeight)
         {
             return new
             {
@@ -55,7 +56,7 @@ namespace api.Controllers
                 bits = block.Header.Bits,
                 //difficulty = TODO,
                 //chainwork = TODO,
-                //confirmations = TODO,
+                confirmations = topHeight - blockHeight + 1,
                 previousblockhash = Binary.ByteArrayToHexString(block.Header.PreviousBlockHash),
                 //nextblockhash
                 reward = block.GetBlockReward(blockHeight)
