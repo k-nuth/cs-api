@@ -27,7 +27,10 @@ namespace api.Controllers
                 Tuple<int, UInt64> getLastHeightResult = chain_.GetLastHeight();
                 Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight() failed, check error log");
                 UInt64 topHeight = getLastHeightResult.Item2;
-                return Json(BlockToJSON(getBlockResult.Item2, getBlockResult.Item3, topHeight));
+                UInt64 blockHeight = getBlockResult.Item3;
+                Tuple<int, Block, UInt64> getNextBlockResult = chain_.GetBlockByHeight(blockHeight + 1);
+                Utils.CheckBitprimApiErrorCode(getNextBlockResult.Item1, "GetBlockByHeight(" + blockHeight + 1 + ") failed, check error log");
+                return Json(BlockToJSON(getBlockResult.Item2, blockHeight, topHeight, getNextBlockResult.Item2.Hash));
             }
             catch(Exception ex)
             {
@@ -57,7 +60,7 @@ namespace api.Controllers
             }            
         }
 
-        private static object BlockToJSON(Block block, UInt64 blockHeight, UInt64 topHeight)
+        private static object BlockToJSON(Block block, UInt64 blockHeight, UInt64 topHeight, byte[] nextBlockHash)
         {
             return new
             {
@@ -74,7 +77,7 @@ namespace api.Controllers
                 //chainwork = TODO,
                 confirmations = topHeight - blockHeight + 1,
                 previousblockhash = Binary.ByteArrayToHexString(block.Header.PreviousBlockHash),
-                //nextblockhash
+                nextblockhash = Binary.ByteArrayToHexString(nextBlockHash),
                 reward = block.GetBlockReward(blockHeight)
                 //isMainChain = TODO
                 //poolInfo = TODO
