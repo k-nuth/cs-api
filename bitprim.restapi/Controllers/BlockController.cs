@@ -19,29 +19,45 @@ namespace api.Controllers
         [HttpGet("/api/block/{hash}")]
         public ActionResult GetBlockByHash(string hash)
         {
-            byte[] binaryHash = Binary.HexStringToByteArray(hash);
-            Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
-            UInt64 topHeight = chain_.GetLastHeight().Item2;
-            // TODO Use error information for HTTP code on failure
-            return Json(BlockToJSON(getBlockResult.Item2, getBlockResult.Item3, topHeight));
+            try
+            {
+                byte[] binaryHash = Binary.HexStringToByteArray(hash);
+                Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
+                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + hash + ") failed, check error log");
+                Tuple<int, UInt64> getLastHeightResult = chain_.GetLastHeight();
+                Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight() failed, check error log");
+                UInt64 topHeight = getLastHeightResult.Item2;
+                return Json(BlockToJSON(getBlockResult.Item2, getBlockResult.Item3, topHeight));
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
         // GET: api/block-index/{height}
         [HttpGet("/api/block-index/{height}")]
         public ActionResult GetBlockByHeight(UInt64 height)
         {
-            Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(height);
-            // TODO Use error information for HTTP code on failure
-            return Json
-            (
-                new
-                {
-                    blockHash = Binary.ByteArrayToHexString(getBlockResult.Item2.Hash)
-                } 
-            );
+            try
+            {
+                Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(height);
+                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + height + ") failed, error log");
+                return Json
+                (
+                    new
+                    {
+                        blockHash = Binary.ByteArrayToHexString(getBlockResult.Item2.Hash)
+                    } 
+                );
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }            
         }
 
-        private object BlockToJSON(Block block, UInt64 blockHeight, UInt64 topHeight)
+        private static object BlockToJSON(Block block, UInt64 blockHeight, UInt64 topHeight)
         {
             return new
             {
@@ -65,7 +81,7 @@ namespace api.Controllers
             };
         }
 
-        private object[] BlockTxsToJSON(Block block)
+        private static object[] BlockTxsToJSON(Block block)
         {
             var txs = new List<object>();
             for(uint i = 0; i<block.TransactionCount; i++)

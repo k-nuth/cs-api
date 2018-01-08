@@ -21,18 +21,24 @@ namespace api.Controllers
             chain_ = chain;
         }
 
-        // GET api/values
         // GET: api/tx/{hash}
         [HttpGet("/api/tx/{hash}")]
         public ActionResult GetTransactionByHash(string hash, bool requireConfirmed)
         {
-            byte[] binaryHash = Binary.HexStringToByteArray(hash);
-            Tuple<int, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
-            //TODO Check error code and set HTTP code accordingly
-            return Json(TxToJSON(getTxResult.Item2, getTxResult.Item4));
+            try
+            {
+                byte[] binaryHash = Binary.HexStringToByteArray(hash);
+                Tuple<int, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
+                Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + hash + ") failed, check error log");
+                return Json(TxToJSON(getTxResult.Item2, getTxResult.Item4));
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
-        private object TxToJSON(Transaction tx, UInt64 blockHeight)
+        private static object TxToJSON(Transaction tx, UInt64 blockHeight)
         {
             return new
             {
@@ -52,7 +58,7 @@ namespace api.Controllers
             };
         }
 
-        private object TxInputsToJSON(Transaction tx)
+        private static object TxInputsToJSON(Transaction tx)
         {
             var inputs = tx.Inputs;
             var jsonInputs = new List<object>();
