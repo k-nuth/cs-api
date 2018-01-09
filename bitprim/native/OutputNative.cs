@@ -8,9 +8,6 @@ public static class OutputNative
 {
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern byte[] chain_output_get_hash(IntPtr output);
-
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int chain_output_is_valid(IntPtr output);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]

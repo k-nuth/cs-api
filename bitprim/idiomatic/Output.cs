@@ -48,17 +48,6 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Output hash in 32 byte array format.
-        /// </summary>
-        public byte[] Hash
-        {
-            get
-            {
-                return OutputNative.chain_output_get_hash(nativeInstance_);
-            }
-        }
-
-        /// <summary>
         /// Output script.
         /// </summary>
         public Script Script
