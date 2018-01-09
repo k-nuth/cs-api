@@ -38,7 +38,7 @@ namespace api.Controllers
             }
         }
 
-        private static object TxToJSON(Transaction tx, UInt64 blockHeight)
+        private object TxToJSON(Transaction tx, UInt64 blockHeight)
         {
             return new
             {
@@ -46,7 +46,7 @@ namespace api.Controllers
                 version = tx.Version,
                 locktime = tx.Locktime,
                 vin = TxInputsToJSON(tx),
-                //vout = TODO,
+                vout = TxOutputsToJSON(tx),
                 //blockhash = TODO
                 blockheight = blockHeight,
                 //confirmations = TODO,
@@ -68,11 +68,53 @@ namespace api.Controllers
                 dynamic jsonInput = new ExpandoObject();
                 if(tx.IsCoinbase)
                 {
-                    jsonInput.coinbase = input.Script.SatoshiContentSize; 
+                    //jsonInput.coinbase = input.Script.SatoshiContentSize; //TODO Not this value (see getrawtransaction.cpp)
                 }
+                else
+                {
+                    //TODO Non coinbase fields
+                }
+                jsonInput.sequence = input.Sequence;
+                jsonInput.n = i;
                 jsonInputs.Add(jsonInput);
             }
             return jsonInputs.ToArray();
+        }
+
+        private object TxOutputsToJSON(Transaction tx)
+        {
+            var outputs = tx.Outputs;
+            var jsonOutputs = new List<object>();
+            for(var i=0; i<outputs.Count; i++)
+            {
+                Output output = outputs[i];
+                dynamic jsonOutput = new ExpandoObject();
+                jsonOutput.value = output.Value;
+                jsonOutput.n = i;
+                jsonOutput.scriptPubKey = ScriptToJSON(output);
+                jsonOutputs.Add(jsonOutput);
+            }
+            return jsonOutputs.ToArray();
+        }
+
+        private static object ScriptToJSON(Output output)
+        {
+            return new
+            {
+                asm = output.Script.ToString(0),
+                //hex = TODO Make libbitcoin::encode_base_16 wrapper?,
+                addresses = ScriptAddressesToJSON(output)
+            };
+        }
+
+        private static object ScriptAddressesToJSON(Output output)
+        {
+            var jsonAddresses = new List<object>();
+            //TODO Need wrapper
+            /*for(var i=0; i<outputs.Count; i++)
+            {
+            }*/
+            return jsonAddresses.ToArray();
         }
 
     }

@@ -62,26 +62,46 @@ namespace api.Controllers
 
         private static object BlockToJSON(Block block, UInt64 blockHeight, UInt64 topHeight, byte[] nextBlockHash)
         {
+            Header blockHeader = block.Header;
             return new
             {
                 hash = Binary.ByteArrayToHexString(block.Hash),
-                size = block.GetSerializedSize(block.Header.Version),
+                size = block.GetSerializedSize(blockHeader.Version),
                 height = blockHeight,
-                version = block.Header.Version,
+                version = blockHeader.Version,
                 merkleroot = Binary.ByteArrayToHexString(block.MerkleRoot),
                 tx = BlockTxsToJSON(block),
-                time = block.Header.Timestamp,
-                nonce = block.Header.Nonce,
-                bits = block.Header.Bits,
-                //difficulty = TODO,
+                time = blockHeader.Timestamp,
+                nonce = blockHeader.Nonce,
+                bits = Utils.EncodeInBase16(blockHeader.Bits),
+                difficulty = BitsToDifficulty(blockHeader.Bits), //TODO Use bitprim API when implemented
                 //chainwork = TODO,
                 confirmations = topHeight - blockHeight + 1,
-                previousblockhash = Binary.ByteArrayToHexString(block.Header.PreviousBlockHash),
+                previousblockhash = Binary.ByteArrayToHexString(blockHeader.PreviousBlockHash),
                 nextblockhash = Binary.ByteArrayToHexString(nextBlockHash),
                 reward = block.GetBlockReward(blockHeight)
                 //isMainChain = TODO
                 //poolInfo = TODO
             };
+        }
+
+        //TODO Remove this when bitprim wrapper implemented
+        private static double BitsToDifficulty(UInt32 bits)
+        {
+            double diff = 1.0;
+            int shift = (int) (bits >> 24) & 0xff;
+            diff = (double)0x0000ffff / (double)(bits & 0x00ffffff);
+            while (shift < 29)
+            {
+                diff *= 256.0;
+                ++shift;
+            }
+            while (shift > 29)
+            {
+                diff /= 256.0;
+                --shift;
+            }
+            return diff;
         }
 
         private static object[] BlockTxsToJSON(Block block)
