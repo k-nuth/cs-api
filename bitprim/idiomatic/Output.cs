@@ -54,7 +54,7 @@ namespace Bitprim
         {
             get
             {
-                return new Script(OutputNative.chain_output_script(nativeInstance_));
+                return new Script(OutputNative.chain_output_script(nativeInstance_), false);
             }
         }
 
