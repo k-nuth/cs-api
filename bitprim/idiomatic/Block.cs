@@ -116,6 +116,13 @@ namespace Bitprim
             }
         }
 
+        public string Proof{
+            get
+            {
+                return new NativeString(BlockNative.chain_block_proof(nativeInstance_)).ToString();
+            }
+        }
+
         /// <summary>
         /// Miner fees included in the block's coinbase transaction.
         /// </summary>
