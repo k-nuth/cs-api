@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Bitprim;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace api.Controllers
 {
@@ -63,6 +64,8 @@ namespace api.Controllers
         private static object BlockToJSON(Block block, UInt64 blockHeight, UInt64 topHeight, byte[] nextBlockHash)
         {
             Header blockHeader = block.Header;
+            BigInteger proof;
+            BigInteger.TryParse(block.Proof, out proof);
             return new
             {
                 hash = Binary.ByteArrayToHexString(block.Hash),
@@ -75,13 +78,12 @@ namespace api.Controllers
                 nonce = blockHeader.Nonce,
                 bits = Utils.EncodeInBase16(blockHeader.Bits),
                 difficulty = BitsToDifficulty(blockHeader.Bits), //TODO Use bitprim API when implemented
-                //chainwork = TODO,
-                confirmations = topHeight - blockHeight + 1,
+                chainwork = (proof * 2).ToString("X64"), //TODO Does not match Blockdozer value; check how bitpay calculates it
                 previousblockhash = Binary.ByteArrayToHexString(blockHeader.PreviousBlockHash),
                 nextblockhash = Binary.ByteArrayToHexString(nextBlockHash),
-                reward = block.GetBlockReward(blockHeight)
-                //isMainChain = TODO
-                //poolInfo = TODO
+                reward = block.GetBlockReward(blockHeight) / 100000000,
+                isMainChain = true, //TODO Check value
+                poolInfo = new{} //TODO Check value
             };
         }
 
