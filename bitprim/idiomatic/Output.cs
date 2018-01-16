@@ -47,6 +47,11 @@ namespace Bitprim
             }
         }
 
+        public PaymentAddress PaymentAddress(bool useTestnetRules)
+        {
+            return new PaymentAddress(OutputNative.chain_output_payment_address(nativeInstance_, useTestnetRules? 1:0));
+        }
+
         /// <summary>
         /// Output script.
         /// </summary>

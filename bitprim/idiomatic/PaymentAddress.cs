@@ -43,7 +43,7 @@ namespace Bitprim
         {
             get
             {
-                return PaymentAddressNative.chain_payment_address_encoded(nativeInstance_);
+                return new NativeString(PaymentAddressNative.chain_payment_address_encoded(nativeInstance_)).ToString();
             }
         }
 
@@ -51,6 +51,11 @@ namespace Bitprim
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        internal PaymentAddress(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
         }
 
         internal IntPtr NativeInstance

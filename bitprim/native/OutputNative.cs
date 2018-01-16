@@ -23,6 +23,9 @@ public static class OutputNative
     public static extern UInt64 chain_output_value(IntPtr output);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern IntPtr chain_output_payment_address(IntPtr output, int /*bool*/ use_testnet_rules);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern UIntPtr /*size_t*/ chain_output_serialized_size(IntPtr output, int /*bool*/ wire /*= true*/);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]

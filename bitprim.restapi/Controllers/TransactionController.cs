@@ -114,10 +114,7 @@ namespace api.Controllers
         private static object ScriptAddressesToJSON(Output output)
         {
             var jsonAddresses = new List<object>();
-            //TODO Need wrapper
-            /*for(var i=0; i<outputs.Count; i++)
-            {
-            }*/
+            jsonAddresses.Add(output.PaymentAddress(false).Encoded); //TODO Ask the node if we're on testnet
             return jsonAddresses.ToArray();
         }
 
