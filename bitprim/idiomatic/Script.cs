@@ -62,6 +62,14 @@ namespace Bitprim
             return new NativeString(ScriptNative.chain_script_to_string(nativeInstance_, activeForks)).ToString();
         }
 
+        public string Type
+        {
+            get
+            {
+                return new NativeString(ScriptNative.chain_script_type(nativeInstance_)).ToString();
+            }
+        }
+
         /// <summary>
         /// Size in bytes.
         /// </summary>

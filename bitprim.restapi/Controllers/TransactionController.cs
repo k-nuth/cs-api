@@ -101,13 +101,15 @@ namespace api.Controllers
 
         private static object ScriptToJSON(Output output)
         {
-            byte[] scriptData = output.Script.ToData(false);
+            Script script = output.Script;
+            byte[] scriptData = script.ToData(false);
             Array.Reverse(scriptData, 0, scriptData.Length);
             return new
             {
-                asm = output.Script.ToString(0),
+                asm = script.ToString(0),
                 hex = Binary.ByteArrayToHexString(scriptData),
-                addresses = ScriptAddressesToJSON(output)
+                addresses = ScriptAddressesToJSON(output),
+                type = script.Type
             };
         }
 
