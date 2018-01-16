@@ -13,7 +13,11 @@ public static class ScriptNative
     public static extern int /*bool*/ chain_script_is_valid_operations(IntPtr script);
 
     //Note: Returned memory must be freed manually using platform_free
-    [DllImport(Constants.BITPRIM_C_LIBRARY, CharSet=CharSet.Ansi)]
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern IntPtr chain_script_to_data(IntPtr script, int /*bool*/ prefix, ref int size);
+
+    //Note: Returned memory must be freed manually using platform_free
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern IntPtr chain_script_to_string(IntPtr script, UInt32 active_forks);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]

@@ -68,7 +68,9 @@ namespace api.Controllers
                 dynamic jsonInput = new ExpandoObject();
                 if(tx.IsCoinbase)
                 {
-                    //jsonInput.coinbase = input.Script.SatoshiContentSize; //TODO Not this value (see getrawtransaction.cpp)
+                    byte[] scriptData = input.Script.ToData(false);
+                    Array.Reverse(scriptData, 0, scriptData.Length);
+                    jsonInput.coinbase = Binary.ByteArrayToHexString(scriptData);
                 }
                 else
                 {

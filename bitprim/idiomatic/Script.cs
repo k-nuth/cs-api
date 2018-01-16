@@ -41,6 +41,18 @@ namespace Bitprim
         }
 
         /// <summary>
+        /// Raw script data
+        /// </summary>
+        /// <param name="prefix"> Tells whether to include script size in data </param>
+        /// <returns> Byte array with script data </returns>
+        public byte[] ToData(bool prefix)
+        {
+            int scriptSize = 0;
+            var scriptData = new NativeBuffer(ScriptNative.chain_script_to_data(nativeInstance_, prefix? 1:0, ref scriptSize));
+            return scriptData.CopyToManagedArray(scriptSize);
+        }
+
+        /// <summary>
         /// Translate operations in the script to a string.
         /// </summary>
         /// <param name="activeForks"> Tells which rule is active. </param>
