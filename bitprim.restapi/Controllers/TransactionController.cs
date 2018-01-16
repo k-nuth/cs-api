@@ -91,7 +91,7 @@ namespace api.Controllers
             {
                 Output output = outputs[i];
                 dynamic jsonOutput = new ExpandoObject();
-                jsonOutput.value = output.Value;
+                jsonOutput.value = Utils.SatoshisToBTC(output.Value);
                 jsonOutput.n = i;
                 jsonOutput.scriptPubKey = ScriptToJSON(output);
                 jsonOutputs.Add(jsonOutput);
@@ -101,10 +101,12 @@ namespace api.Controllers
 
         private static object ScriptToJSON(Output output)
         {
+            byte[] scriptData = output.Script.ToData(false);
+            Array.Reverse(scriptData, 0, scriptData.Length);
             return new
             {
                 asm = output.Script.ToString(0),
-                //hex = TODO Make libbitcoin::encode_base_16 wrapper?,
+                hex = Binary.ByteArrayToHexString(scriptData),
                 addresses = ScriptAddressesToJSON(output)
             };
         }

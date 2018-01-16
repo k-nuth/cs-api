@@ -9,6 +9,11 @@ namespace api
             return Convert.ToString(number, 16);
         }
 
+        public static double SatoshisToBTC(UInt64 satoshis)
+        {
+            return (double)satoshis / 100000000;
+        }
+
         public static void CheckBitprimApiErrorCode(int errorCode, string errorMsg)
         {
             if(errorCode != 0)
