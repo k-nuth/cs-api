@@ -14,11 +14,6 @@ namespace Bitprim
         public NativeString(IntPtr nativePtr) : base(nativePtr){
         }
 
-        ~NativeString()
-        {
-            Dispose(false);
-        }
-
         public override string ToString() => Marshal.PtrToStringAnsi(NativePtr);
 
     }
