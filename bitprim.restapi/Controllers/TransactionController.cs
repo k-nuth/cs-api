@@ -42,6 +42,7 @@ namespace api.Controllers
         {
             Tuple<int, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
             Utils.CheckBitprimApiErrorCode(getBlockHeaderResult.Item1, "GetBlockHeaderByHeight(" + blockHeight + ") failed, check error log");
+            Header blockHeader = getBlockHeaderResult.Item2;
             Tuple<int, UInt64> getLastHeightResult = chain_.GetLastHeight();
             Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight failed, check error log");
             return new
@@ -51,13 +52,13 @@ namespace api.Controllers
                 locktime = tx.Locktime,
                 vin = TxInputsToJSON(tx),
                 vout = TxOutputsToJSON(tx),
-                blockhash = Binary.ByteArrayToHexString(getBlockHeaderResult.Item2.Hash),
+                blockhash = Binary.ByteArrayToHexString(blockHeader.Hash),
                 blockheight = blockHeight,
                 confirmations = getLastHeightResult.Item2 - blockHeight + 1,
-                //time = TODO,
-                //blocktime = TODO,
+                time = blockHeader.Timestamp,
+                blocktime = blockHeader.Timestamp,
                 isCoinBase = tx.IsCoinbase,
-                valueOut = tx.TotalOutputValue,
+                valueOut = Utils.SatoshisToBTC(tx.TotalOutputValue),
                 size = tx.GetSerializedSize()
             };
         }
