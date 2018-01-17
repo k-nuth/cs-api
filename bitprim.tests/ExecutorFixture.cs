@@ -10,12 +10,16 @@ public class ExecutorFixture : IDisposable
     public ExecutorFixture()
     {
         exec_ = new Executor("", 0, 0);
-        int result = exec_.InitChain();
-        /*if(result != 0)
+        bool initChainOk = exec_.InitChain();
+        if(!initChainOk)
         {
-            throw new InvalidOperationException("InitChain error: " + result);
-        }*/
-        result = exec_.RunWait();
+            throw new InvalidOperationException("Executor::InitChain failed, check log");
+        }
+        int runResult = exec_.RunWait();
+        if(runResult != 0)
+        {
+            throw new InvalidOperationException("Executor::RunWait failed, check log");
+        }
     }
 
     public Executor Executor

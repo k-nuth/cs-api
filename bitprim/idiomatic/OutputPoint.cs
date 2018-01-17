@@ -9,6 +9,7 @@ namespace Bitprim
     /// </summary>
     public class OutputPoint : IDisposable
     {
+        private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
         /// <summary>
@@ -17,6 +18,7 @@ namespace Bitprim
         public OutputPoint()
         {
             nativeInstance_ = OutputPointNative.output_point_construct();
+            ownsNativeObject_ = true;
         }
 
         /// <summary>
@@ -31,6 +33,7 @@ namespace Bitprim
                 hash = pointHash
             };
             nativeInstance_ = OutputPointNative.output_point_construct_from_hash_index(managedHash, index);
+            ownsNativeObject_ = true;
         }
 
         ~OutputPoint()
@@ -68,6 +71,12 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
+        internal OutputPoint(IntPtr nativeInstance, bool ownsNativeObject = false)
+        {
+            nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
+        }
+
         internal IntPtr NativeInstance
         {
             get
@@ -83,9 +92,12 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            //Logger.Log("Destroying output point " + nativeInstance_.ToString("X") + " ...");
-            OutputPointNative.output_point_destruct(nativeInstance_);
-            //Logger.Log("Output point " + nativeInstance_.ToString("X") + " destroyed!");
+            if(ownsNativeObject_)
+            {
+                //Logger.Log("Destroying output point " + nativeInstance_.ToString("X") + " ...");
+                OutputPointNative.output_point_destruct(nativeInstance_);
+                //Logger.Log("Output point " + nativeInstance_.ToString("X") + " destroyed!");
+            }
         }
     }
 

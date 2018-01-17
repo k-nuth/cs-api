@@ -12,7 +12,16 @@ public static class BlockNative
     public static extern byte[] chain_block_generate_merkle_root(IntPtr block);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_block_generate_merkle_root_out(IntPtr block, ref hash_t out_hash);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern byte[] chain_block_hash(IntPtr block);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_block_hash_out(IntPtr block, ref hash_t out_hash);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern IntPtr chain_block_proof(IntPtr block);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int /*bool*/ chain_block_is_distinct_transaction_set(IntPtr block);
