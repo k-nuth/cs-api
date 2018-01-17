@@ -30,7 +30,7 @@ namespace api.Controllers
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
                 Tuple<int, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + hash + ") failed, check error log");
-                return Json(TxToJSON(getTxResult.Item2, getTxResult.Item4));
+                return Json(TxToJSON(getTxResult.Item2, getTxResult.Item3));
             }
             catch(Exception ex)
             {
@@ -40,6 +40,8 @@ namespace api.Controllers
 
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
         {
+            Tuple<int, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
+            Utils.CheckBitprimApiErrorCode(getBlockHeaderResult.Item1, "GetBlockHeaderByHeight(" + blockHeight + ") failed, check error log");
             return new
             {
                 txid = Binary.ByteArrayToHexString(tx.Hash),
@@ -47,7 +49,7 @@ namespace api.Controllers
                 locktime = tx.Locktime,
                 vin = TxInputsToJSON(tx),
                 vout = TxOutputsToJSON(tx),
-                //blockhash = TODO
+                blockhash = Binary.ByteArrayToHexString(getBlockHeaderResult.Item2.Hash),
                 blockheight = blockHeight,
                 //confirmations = TODO,
                 //time = TODO,
