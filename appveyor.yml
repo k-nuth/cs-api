@@ -19,7 +19,7 @@ environment:
           PUBLISH_TO_NUGET: "true"
 
 before_build:
-  - rd /s /q packages
+  - rd /s /q "%APPVEYOR_BUILD_FOLDER%"\packages
   - nuget restore
 
 build_script:
