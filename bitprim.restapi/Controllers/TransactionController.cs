@@ -42,6 +42,8 @@ namespace api.Controllers
         {
             Tuple<int, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
             Utils.CheckBitprimApiErrorCode(getBlockHeaderResult.Item1, "GetBlockHeaderByHeight(" + blockHeight + ") failed, check error log");
+            Tuple<int, UInt64> getLastHeightResult = chain_.GetLastHeight();
+            Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight failed, check error log");
             return new
             {
                 txid = Binary.ByteArrayToHexString(tx.Hash),
@@ -51,7 +53,7 @@ namespace api.Controllers
                 vout = TxOutputsToJSON(tx),
                 blockhash = Binary.ByteArrayToHexString(getBlockHeaderResult.Item2.Hash),
                 blockheight = blockHeight,
-                //confirmations = TODO,
+                confirmations = getLastHeightResult.Item2 - blockHeight + 1,
                 //time = TODO,
                 //blocktime = TODO,
                 isCoinBase = tx.IsCoinbase,
