@@ -19,6 +19,7 @@ environment:
           PUBLISH_TO_NUGET: "true"
 
 before_build:
+  - rd /s /q packages
   - nuget restore
 
 build_script:
