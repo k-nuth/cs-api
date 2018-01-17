@@ -80,6 +80,7 @@ namespace api.Controllers
                 else
                 {
                     //TODO Non coinbase fields
+                    jsonInput.txid = Binary.ByteArrayToHexString(input.PreviousOutput.Hash);
                 }
                 jsonInput.sequence = input.Sequence;
                 jsonInput.n = i;
