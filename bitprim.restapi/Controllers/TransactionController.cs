@@ -94,9 +94,26 @@ namespace api.Controllers
                 jsonOutput.value = Utils.SatoshisToBTC(output.Value);
                 jsonOutput.n = i;
                 jsonOutput.scriptPubKey = ScriptToJSON(output);
+                SetOutputSpendInfo(jsonOutput, tx.Hash.Reverse().ToArray(), (UInt32)i);
                 jsonOutputs.Add(jsonOutput);
             }
             return jsonOutputs.ToArray();
+        }
+
+        private void SetOutputSpendInfo(dynamic jsonOutput, byte[] txHash, UInt32 index)
+        {
+            Tuple<int, Point> fetchSpendResult = chain_.GetSpend(new OutputPoint(txHash, index));
+            if(fetchSpendResult.Item1 == 3) //TODO 3 == not_found When node-cint provides enum error codes, fix this magic number
+            {
+                jsonOutput.spentTxId = null;
+                jsonOutput.spentIndex = null;
+                jsonOutput.spentHeight = null;
+            }
+            else
+            {
+                Utils.CheckBitprimApiErrorCode(fetchSpendResult.Item1, "GetSpend failed, check error log");
+                //TODO Set 
+            }
         }
 
         private static object ScriptToJSON(Output output)
