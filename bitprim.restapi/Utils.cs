@@ -1,4 +1,5 @@
 using System;
+using Bitprim;
 
 namespace api
 {
@@ -14,9 +15,9 @@ namespace api
             return (double)satoshis / 100000000;
         }
 
-        public static void CheckBitprimApiErrorCode(int errorCode, string errorMsg)
+        public static void CheckBitprimApiErrorCode(ErrorCode errorCode, string errorMsg)
         {
-            if(errorCode != 0)
+            if(errorCode != ErrorCode.Success)
             {
                 throw new ApplicationException(errorMsg);
             }

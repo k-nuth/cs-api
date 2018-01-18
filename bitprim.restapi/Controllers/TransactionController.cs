@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Bitprim;
+using Bitprim.Native;
 
 namespace api.Controllers
 {
@@ -28,7 +29,7 @@ namespace api.Controllers
             try
             {
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
-                Tuple<int, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
+                Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + hash + ") failed, check error log");
                 return Json(TxToJSON(getTxResult.Item2, getTxResult.Item3));
             }
@@ -40,10 +41,10 @@ namespace api.Controllers
 
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
         {
-            Tuple<int, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
+            Tuple<ErrorCode, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
             Utils.CheckBitprimApiErrorCode(getBlockHeaderResult.Item1, "GetBlockHeaderByHeight(" + blockHeight + ") failed, check error log");
             Header blockHeader = getBlockHeaderResult.Item2;
-            Tuple<int, UInt64> getLastHeightResult = chain_.GetLastHeight();
+            Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
             Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight failed, check error log");
             return new
             {
@@ -110,8 +111,8 @@ namespace api.Controllers
 
         private void SetOutputSpendInfo(dynamic jsonOutput, byte[] txHash, UInt32 index)
         {
-            Tuple<int, Point> fetchSpendResult = chain_.GetSpend(new OutputPoint(txHash, index));
-            if(fetchSpendResult.Item1 == 3) //TODO 3 == not_found When node-cint provides enum error codes, fix this magic number
+            Tuple<ErrorCode, Point> fetchSpendResult = chain_.GetSpend(new OutputPoint(txHash, index));
+            if(fetchSpendResult.Item1 == ErrorCode.NotFound)
             {
                 jsonOutput.spentTxId = null;
                 jsonOutput.spentIndex = null;
@@ -120,7 +121,7 @@ namespace api.Controllers
             else
             {
                 Utils.CheckBitprimApiErrorCode(fetchSpendResult.Item1, "GetSpend failed, check error log");
-                //TODO Set 
+                //TODO Set remaining fields
             }
         }
 

@@ -23,13 +23,13 @@ namespace api.Controllers
             try
             {
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
-                Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
+                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
                 Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + hash + ") failed, check error log");
-                Tuple<int, UInt64> getLastHeightResult = chain_.GetLastHeight();
+                Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
                 Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight() failed, check error log");
                 UInt64 topHeight = getLastHeightResult.Item2;
                 UInt64 blockHeight = getBlockResult.Item3;
-                Tuple<int, Block, UInt64> getNextBlockResult = chain_.GetBlockByHeight(blockHeight + 1);
+                Tuple<ErrorCode, Block, UInt64> getNextBlockResult = chain_.GetBlockByHeight(blockHeight + 1);
                 Utils.CheckBitprimApiErrorCode(getNextBlockResult.Item1, "GetBlockByHeight(" + blockHeight + 1 + ") failed, check error log");
                 return Json(BlockToJSON(getBlockResult.Item2, blockHeight, topHeight, getNextBlockResult.Item2.Hash));
             }
@@ -45,7 +45,7 @@ namespace api.Controllers
         {
             try
             {
-                Tuple<int, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(height);
+                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(height);
                 Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + height + ") failed, error log");
                 return Json
                 (
