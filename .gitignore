@@ -37,3 +37,11 @@
 /bitprim.ibd/conanfile.txt
 /bitprim.ibd/conaninfo.txt
 /bitprim.ibd/conan_imports_manifest.txt
+/bitprim.restapi/bitprim-node-cint.dll
+/bitprim.restapi/error.log
+/bitprim.restapi/debug.log
+/bitprim.restapi/conan_imports_manifest.txt
+/bitprim.restapi/conaninfo.txt
+/bitprim.restapi/conanfile.txt
+/bitprim.restapi/conanbuildinfo.txt
+/bitprim.restapi/conanbuildinfo.cmake

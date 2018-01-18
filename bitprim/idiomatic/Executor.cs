@@ -57,10 +57,10 @@ namespace Bitprim
         /// <summary>
         /// Initialize the local dabatase structure.
         /// </summary>
-        /// <returns></returns>
-        public int InitChain()
+        /// <returns>True iif local chain init succeeded</returns>
+        public bool InitChain()
         {
-            return ExecutorNative.executor_initchain(nativeInstance_);
+            return ExecutorNative.executor_initchain(nativeInstance_) != 0;
         }
 
         /// <summary>

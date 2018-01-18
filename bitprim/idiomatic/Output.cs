@@ -47,15 +47,9 @@ namespace Bitprim
             }
         }
 
-        /// <summary>
-        /// Output hash in 32 byte array format.
-        /// </summary>
-        public byte[] Hash
+        public PaymentAddress PaymentAddress(bool useTestnetRules)
         {
-            get
-            {
-                return OutputNative.chain_output_get_hash(nativeInstance_);
-            }
+            return new PaymentAddress(OutputNative.chain_output_payment_address(nativeInstance_, useTestnetRules? 1:0));
         }
 
         /// <summary>
@@ -65,7 +59,7 @@ namespace Bitprim
         {
             get
             {
-                return new Script(OutputNative.chain_output_script(nativeInstance_));
+                return new Script(OutputNative.chain_output_script(nativeInstance_), false);
             }
         }
 

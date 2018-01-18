@@ -30,6 +30,7 @@ namespace Bitprim
         public Input(Output previousOutput, Script script, UInt32 sequence)
         {
             nativeInstance_ = InputNative.chain_input_construct(previousOutput.NativeInstance, script.NativeInstance, sequence);
+            ownsNativeObject_ = true;
         }
 
         ~Input()
@@ -60,13 +61,13 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Returns the previous output, with its transaction hash and index.
+        /// Returns a reference to the previous output, as an OutputPoint: a transaction hash and index pair.
         /// </summary>
-        public Output PreviousOutput
+        public OutputPoint PreviousOutput
         {
             get
             {
-                return new Output(InputNative.chain_input_previous_output(nativeInstance_), false);
+                return new OutputPoint(InputNative.chain_input_previous_output(nativeInstance_), false);
             }
         }
 

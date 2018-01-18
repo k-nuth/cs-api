@@ -2,6 +2,7 @@ using Bitprim.Native;
 using System;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Bitprim
 {
@@ -396,7 +397,7 @@ namespace Bitprim
         #region Spend
 
         /// <summary>
-        /// Fetch the transaction input which spends the indicated output.
+        /// Fetch the transaction input which spends the indicated output, asynchronously.
         /// </summary>
         /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
         /// <param name="handler"> Callback which will be called when spend is retrieved </param>
@@ -404,6 +405,28 @@ namespace Bitprim
         {
             IntPtr contextPtr = CreateContext(handler, outputPoint);
             ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, FetchSpendHandler);
+        }
+
+        /// <summary>
+        /// Get the transaction input which spends the indicated output, synchronously.
+        /// </summary>
+        /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
+        /// <returns> Error code and output point </returns>
+        public Tuple<int, Point> GetSpend(OutputPoint outputPoint)
+        {
+            //TODO When node-cint wraps a get function for this, call that instead
+            var handlerDone = new AutoResetEvent(false);
+            int error = 0;
+            Point point = null;
+            Action<int, Point> handler = delegate(int theError, Point thePoint)
+            {
+                error = theError;
+                point = thePoint;
+                handlerDone.Set();
+            };
+            FetchSpend(outputPoint, handler);
+            handlerDone.WaitOne();
+            return new Tuple<int, Point>(error, point);
         }
 
         #endregion //Spend
