@@ -1,4 +1,4 @@
-namespace Bitprim.Native
+namespace Bitprim
 {
 
     public enum ErrorCode
@@ -7,10 +7,10 @@ namespace Bitprim.Native
         Success = 0,
         Deprecated = 6,
         Unknown = 43,
-        Not_found = 3,
+        NotFound = 3,
         FileSystem = 42,
         NonStandard = 17,
-        Not_implemented = 4,
+        NotImplemented = 4,
         Oversubscribed = 71,
 
         // network

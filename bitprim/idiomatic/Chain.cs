@@ -41,22 +41,22 @@ namespace Bitprim
         /// <param name="blockHash">  32-byte array representation of the block hash.
         ///    Identifies it univocally. </param>
         /// <returns> The block height </returns>
-        public Tuple<int, UInt64> GetBlockHeight(byte[] blockHash)
+        public Tuple<ErrorCode, UInt64> GetBlockHeight(byte[] blockHash)
         {
             UInt64 height = 0;
             var managedHash = new hash_t
             {
                 hash = blockHash
             };
-            int result = ChainNative.chain_get_block_height(nativeInstance_, managedHash, ref height);
-            return new Tuple<int, UInt64>(result, height);
+            ErrorCode result = ChainNative.chain_get_block_height(nativeInstance_, managedHash, ref height);
+            return new Tuple<ErrorCode, UInt64>(result, height);
         }
 
         /// <summary>
         /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
         /// </summary>
         /// <param name="handler"> Callback which will be called once the last height is retrieved. </param>
-        public void FetchLastHeight(Action<int, UInt64> handler)
+        public void FetchLastHeight(Action<ErrorCode, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -68,11 +68,11 @@ namespace Bitprim
         /// It blocks until height is retrieved.
         /// </summary>
         /// <returns> Error code (0 = success) and height </returns>
-        public Tuple<int, UInt64> GetLastHeight()
+        public Tuple<ErrorCode, UInt64> GetLastHeight()
         {
             UInt64 height = 0;
-            int result = ChainNative.chain_get_last_height(nativeInstance_, ref height);
-            return new Tuple<int, UInt64>(result, height);
+            ErrorCode result = ChainNative.chain_get_last_height(nativeInstance_, ref height);
+            return new Tuple<ErrorCode, UInt64>(result, height);
         }
 
         #endregion //Chain
@@ -84,7 +84,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        public void FetchBlockByHash(byte[] blockHash, Action<int, Block> handler)
+        public void FetchBlockByHash(byte[] blockHash, Action<ErrorCode, Block> handler)
         {
             var managedHash = new hash_t
             {
@@ -98,8 +98,8 @@ namespace Bitprim
         /// Given a block hash, get the full block it identifies, synchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code (0 = success) and full block </returns>
-        public Tuple<int, Block, UInt64> GetBlockByHash(byte[] blockHash)
+        /// <returns> Error code and full block </returns>
+        public Tuple<ErrorCode, Block, UInt64> GetBlockByHash(byte[] blockHash)
         {
             IntPtr block = IntPtr.Zero;
             UInt64 height = 0;
@@ -107,8 +107,8 @@ namespace Bitprim
             {
                 hash = blockHash
             };
-            int result = ChainNative.chain_get_block_by_hash(nativeInstance_, managedHash, ref block, ref height);
-            return new Tuple<int, Block, UInt64>(result, new Block(block), height);
+            ErrorCode result = ChainNative.chain_get_block_by_hash(nativeInstance_, managedHash, ref block, ref height);
+            return new Tuple<ErrorCode, Block, UInt64>(result, new Block(block), height);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        public void FetchBlockByHeight(UInt64 height, Action<int, Block> handler)
+        public void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -127,13 +127,13 @@ namespace Bitprim
         /// Given a block height, get the full block it identifies, synchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
-        /// <returns> Error code (0 = success) and full block </returns>
-        public Tuple<int, Block, UInt64> GetBlockByHeight(UInt64 height)
+        /// <returns> Error code and full block </returns>
+        public Tuple<ErrorCode, Block, UInt64> GetBlockByHeight(UInt64 height)
         {
             IntPtr block = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
-            int result = ChainNative.chain_get_block_by_height(nativeInstance_, height, ref block, ref actualHeight);
-            return new Tuple<int, Block, UInt64>(result, new Block(block), actualHeight);
+            ErrorCode result = ChainNative.chain_get_block_by_height(nativeInstance_, height, ref block, ref actualHeight);
+            return new Tuple<ErrorCode, Block, UInt64>(result, new Block(block), actualHeight);
         }
 
         #endregion //Block
@@ -145,7 +145,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the header is retrieved </param>
-        public void FetchBlockHeaderByHash(byte[] blockHash, Action<int, Header> handler)
+        public void FetchBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header> handler)
         {
             var managedHash = new hash_t
             {
@@ -159,8 +159,8 @@ namespace Bitprim
         /// Given a block hash, get the header from the block it identifies, synchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code (0 = success), full block header and block height </returns>
-        public Tuple<int, Header, UInt64> GetBlockHeaderByHash(byte[] blockHash)
+        /// <returns> Error code, full block header and block height </returns>
+        public Tuple<ErrorCode, Header, UInt64> GetBlockHeaderByHash(byte[] blockHash)
         {
             IntPtr header = IntPtr.Zero;
             UInt64 height = 0;
@@ -168,8 +168,8 @@ namespace Bitprim
             {
                 hash = blockHash
             };
-            int result = ChainNative.chain_get_block_header_by_hash(nativeInstance_, managedHash, ref header, ref height);
-            return new Tuple<int, Header, UInt64>(result, new Header(header), height);
+            ErrorCode result = ChainNative.chain_get_block_header_by_hash(nativeInstance_, managedHash, ref header, ref height);
+            return new Tuple<ErrorCode, Header, UInt64>(result, new Header(header), height);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be invoked when the block header is retrieved </param>
-        public void FetchBlockHeaderByHeight(UInt64 height, Action<int, Header> handler)
+        public void FetchBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -188,13 +188,13 @@ namespace Bitprim
         /// Given a block height, get the header from the block it identifies, synchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
-        /// <returns> Error code (0 = success), full block header, and height </returns>
-        public Tuple<int, Header, UInt64> GetBlockHeaderByHeight(UInt64 height)
+        /// <returns> Error code, full block header, and height </returns>
+        public Tuple<ErrorCode, Header, UInt64> GetBlockHeaderByHeight(UInt64 height)
         {
             IntPtr header = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
-            int result = ChainNative.chain_get_block_header_by_height(nativeInstance_, height, ref header, ref actualHeight);
-            return new Tuple<int, Header, UInt64>(result, new Header(header), actualHeight);
+            ErrorCode result = ChainNative.chain_get_block_header_by_height(nativeInstance_, height, ref header, ref actualHeight);
+            return new Tuple<ErrorCode, Header, UInt64>(result, new Header(header), actualHeight);
         }
 
         #endregion //Block header
@@ -206,7 +206,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be invoked when the Merkle block is retrieved </param>
-        public void FetchMerkleBlockByHash(byte[] blockHash, Action<int, MerkleBlock, UInt64> handler)
+        public void FetchMerkleBlockByHash(byte[] blockHash, Action<ErrorCode, MerkleBlock, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -220,8 +220,8 @@ namespace Bitprim
         /// Given a block hash, get the merkle block from the block it identifies, synchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code (0 = success), full Merkle block and height </returns>
-        public Tuple<int, MerkleBlock, UInt64> GetMerkleBlockByHash(byte[] blockHash)
+        /// <returns> Error code, full Merkle block and height </returns>
+        public Tuple<ErrorCode, MerkleBlock, UInt64> GetMerkleBlockByHash(byte[] blockHash)
         {
             IntPtr merkleBlock = IntPtr.Zero;
             UInt64 height = 0;
@@ -229,8 +229,8 @@ namespace Bitprim
             {
                 hash = blockHash
             };
-            int result = ChainNative.chain_get_merkle_block_by_hash(nativeInstance_, managedHash, ref merkleBlock, ref height);
-            return new Tuple<int, MerkleBlock, UInt64>(result, new MerkleBlock(merkleBlock), height);
+            ErrorCode result = ChainNative.chain_get_merkle_block_by_hash(nativeInstance_, managedHash, ref merkleBlock, ref height);
+            return new Tuple<ErrorCode, MerkleBlock, UInt64>(result, new MerkleBlock(merkleBlock), height);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <param name="handler"> Callback which will be invoked when the Merkle block is retrieved </param>
-        public void FetchMerkleBlockByHeight(UInt64 height, Action<int, MerkleBlock, UInt64> handler)
+        public void FetchMerkleBlockByHeight(UInt64 height, Action<ErrorCode, MerkleBlock, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -249,13 +249,13 @@ namespace Bitprim
         /// Given a block height, get the merkle block from the block it identifies, synchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
-        /// <returns> Error code (0 = success), full Merkle block and height </returns>
-        public Tuple<int, MerkleBlock, UInt64> GetMerkleBlockByHeight(UInt64 height)
+        /// <returns> Error code, full Merkle block and height </returns>
+        public Tuple<ErrorCode, MerkleBlock, UInt64> GetMerkleBlockByHeight(UInt64 height)
         {
             IntPtr merkleBlock = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
-            int result = ChainNative.chain_get_merkle_block_by_height(nativeInstance_, height, ref merkleBlock, ref actualHeight);
-            return new Tuple<int, MerkleBlock, UInt64>(result, new MerkleBlock(merkleBlock), actualHeight);
+            ErrorCode result = ChainNative.chain_get_merkle_block_by_height(nativeInstance_, height, ref merkleBlock, ref actualHeight);
+            return new Tuple<ErrorCode, MerkleBlock, UInt64>(result, new MerkleBlock(merkleBlock), actualHeight);
         }
 
         #endregion //Merkle Block
@@ -267,7 +267,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        public void FetchCompactBlockByHash(byte[] blockHash, Action<int, CompactBlock> handler)
+        public void FetchCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock> handler)
         {
             var managedHash = new hash_t
             {
@@ -281,8 +281,8 @@ namespace Bitprim
         /// Given a block hash, get the compact block from the block it identifies, synchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code (0 = success), full compact block and height </returns>
-        public Tuple<int, CompactBlock, UInt64> GetCompactBlockByHash(byte[] blockHash)
+        /// <returns> Error code, full compact block and height </returns>
+        public Tuple<ErrorCode, CompactBlock, UInt64> GetCompactBlockByHash(byte[] blockHash)
         {
             IntPtr compactBlock = IntPtr.Zero;
             UInt64 height = 0;
@@ -290,8 +290,8 @@ namespace Bitprim
             {
                 hash = blockHash
             };
-            int result = ChainNative.chain_get_compact_block_by_hash(nativeInstance_, managedHash, ref compactBlock, ref height);
-            return new Tuple<int, CompactBlock, UInt64>(result, new CompactBlock(compactBlock), height);
+            ErrorCode result = ChainNative.chain_get_compact_block_by_hash(nativeInstance_, managedHash, ref compactBlock, ref height);
+            return new Tuple<ErrorCode, CompactBlock, UInt64>(result, new CompactBlock(compactBlock), height);
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        public void FetchCompactBlockByHeight(UInt64 height, Action<int, CompactBlock> handler)
+        public void FetchCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -310,13 +310,13 @@ namespace Bitprim
         /// Given a block height, get the compact block from the block it identifies, synchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
-        /// <returns> Error code (0 = success), full compact block and height </returns>
-        public Tuple<int, CompactBlock, UInt64> GetCompactBlockByHeight(UInt64 height)
+        /// <returns> Error code, full compact block and height </returns>
+        public Tuple<ErrorCode, CompactBlock, UInt64> GetCompactBlockByHeight(UInt64 height)
         {
             IntPtr compactBlock = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
-            int result = ChainNative.chain_get_compact_block_by_height(nativeInstance_, height, ref compactBlock, ref actualHeight);
-            return new Tuple<int, CompactBlock, UInt64>(result, new CompactBlock(compactBlock), actualHeight);
+            ErrorCode result = ChainNative.chain_get_compact_block_by_height(nativeInstance_, height, ref compactBlock, ref actualHeight);
+            return new Tuple<ErrorCode, CompactBlock, UInt64>(result, new CompactBlock(compactBlock), actualHeight);
         }
 
         #endregion //Compact block
@@ -329,7 +329,7 @@ namespace Bitprim
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <param name="handler"> Callback which will be invoked when the transaction is retrieved </param>
-        public void FetchTransaction(byte[] txHash, bool requireConfirmed, Action<int, Transaction, UInt64, UInt64> handler)
+        public void FetchTransaction(byte[] txHash, bool requireConfirmed, Action<ErrorCode, Transaction, UInt64, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -344,8 +344,8 @@ namespace Bitprim
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
-        /// <returns> Error code (0 = success), full transaction, index inside block and height </returns>
-        public Tuple<int, Transaction, UInt64, UInt64> GetTransaction(byte[] txHash, bool requireConfirmed)
+        /// <returns> Error code, full transaction, index inside block and height </returns>
+        public Tuple<ErrorCode, Transaction, UInt64, UInt64> GetTransaction(byte[] txHash, bool requireConfirmed)
         {
             IntPtr transaction = IntPtr.Zero;
             UInt64 index = 0;
@@ -354,8 +354,8 @@ namespace Bitprim
             {
                 hash = txHash
             };
-            int result = ChainNative.chain_get_transaction(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref transaction, ref index, ref height);
-            return new Tuple<int, Transaction, UInt64, UInt64>(result, new Transaction(transaction), index, height);
+            ErrorCode result = ChainNative.chain_get_transaction(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref transaction, ref index, ref height);
+            return new Tuple<ErrorCode, Transaction, UInt64, UInt64>(result, new Transaction(transaction), index, height);
         }
 
         /// <summary>
@@ -364,7 +364,7 @@ namespace Bitprim
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <param name="handler"> Callback which will be invoked when the transaction position is retrieved </param>
-        public void FetchTransactionPosition(byte[] txHash, bool requireConfirmed, Action<int, UInt64, UInt64> handler)
+        public void FetchTransactionPosition(byte[] txHash, bool requireConfirmed, Action<ErrorCode, UInt64, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -379,8 +379,8 @@ namespace Bitprim
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
-        /// <returns> Error code (0 = success), index in block (zero based) and block height </returns>
-        public Tuple<int, UInt64, UInt64> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
+        /// <returns> Error code, index in block (zero based) and block height </returns>
+        public Tuple<ErrorCode, UInt64, UInt64> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
         {
             UInt64 index = 0;
             UInt64 height = 0;
@@ -388,8 +388,8 @@ namespace Bitprim
             {
                 hash = txHash
             };
-            int result = ChainNative.chain_get_transaction_position(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref index, ref height);
-            return new Tuple<int, UInt64, UInt64>(result, index, height);
+            ErrorCode result = ChainNative.chain_get_transaction_position(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref index, ref height);
+            return new Tuple<ErrorCode, UInt64, UInt64>(result, index, height);
         }
 
         #endregion //Transaction
@@ -440,7 +440,7 @@ namespace Bitprim
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
         /// <param name="handler"> Callback which will be called when the history is retrieved </param>
-        public void FetchHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<int, HistoryCompactList> handler)
+        public void FetchHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HistoryCompactList> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -453,12 +453,12 @@ namespace Bitprim
         /// <param name="address"> Bitcoin payment address to search </param>
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
-        /// <returns> Error code (0 = success), HistoryCompactList </returns>
-        public Tuple<int, HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
+        /// <returns> Error code, HistoryCompactList </returns>
+        public Tuple<ErrorCode, HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
         {
             IntPtr history = IntPtr.Zero;
-            int result = ChainNative.chain_get_history(nativeInstance_, address.NativeInstance, limit, fromHeight, ref history);
-            return new Tuple<int, HistoryCompactList>(result, new HistoryCompactList(history));
+            ErrorCode result = ChainNative.chain_get_history(nativeInstance_, address.NativeInstance, limit, fromHeight, ref history);
+            return new Tuple<ErrorCode, HistoryCompactList>(result, new HistoryCompactList(history));
         }
 
         #endregion //History
@@ -472,7 +472,7 @@ namespace Bitprim
         /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
         /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
         /// <param name="handler"> Callback which will be called when the stealth list is retrieved </param>
-        public void FetchStealth(Binary filter, UInt64 fromHeight, Action<int, StealthCompactList> handler)
+        public void FetchStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
         {
             IntPtr contextPtr = CreateContext(handler, filter);
             ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, FetchStealthHandler);
@@ -487,7 +487,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
         /// <param name="handler"> Callback which will called when the reader is retrieved </param>
-        public void FetchBlockLocator(BlockIndexList indexes, Action<int, HeaderReader> handler)
+        public void FetchBlockLocator(BlockIndexList indexes, Action<ErrorCode, HeaderReader> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -498,12 +498,12 @@ namespace Bitprim
         /// Given a list of indexes, fetch a header reader for them, synchronously
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
-        /// <returns> Error code (0 = success), HeaderReader </returns>
-        public Tuple<int, HeaderReader> GetBlockLocator(BlockIndexList indexes)
+        /// <returns> Error code, HeaderReader </returns>
+        public Tuple<ErrorCode, HeaderReader> GetBlockLocator(BlockIndexList indexes)
         {
             IntPtr headerReader = IntPtr.Zero;
-            int result = ChainNative.chain_get_block_locator(nativeInstance_, indexes.NativeInstance, ref headerReader);
-            return new Tuple<int, HeaderReader>(result, new HeaderReader(headerReader));
+            ErrorCode result = ChainNative.chain_get_block_locator(nativeInstance_, indexes.NativeInstance, ref headerReader);
+            return new Tuple<ErrorCode, HeaderReader>(result, new HeaderReader(headerReader));
         }
 
         #endregion //Block indexes
@@ -557,8 +557,8 @@ namespace Bitprim
         /// Given a block, organize it (sync).
         /// </summary>
         /// <param name="block"> The block to organize. </param>
-        /// <returns> Error code (0 = success) </returns>
-        public int OrganizeBlockSync(Block block)
+        /// <returns> Error code </returns>
+        public ErrorCode OrganizeBlockSync(Block block)
         {
             return ChainNative.chain_organize_block_sync(nativeInstance_, block.NativeInstance);
         }
@@ -579,8 +579,8 @@ namespace Bitprim
         /// Given a transaction, organize it (sync)
         /// </summary>
         /// <param name="transaction"> The transaction to organize </param>
-        /// <returns> Error code (0 = success) </returns>
-        public int OrganizeTransactionSync(Transaction transaction)
+        /// <returns> Error code </returns>
+        public ErrorCode OrganizeTransactionSync(Transaction transaction)
         {
             return ChainNative.chain_organize_transaction_sync(nativeInstance_, transaction.NativeInstance);
         }
