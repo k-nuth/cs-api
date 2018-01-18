@@ -3,4 +3,4 @@
 C# binding for the Bitprim API.
 NuGet package:
 
-https://nuget.org/bitprim
+https://www.nuget.org/packages/bitprim/
