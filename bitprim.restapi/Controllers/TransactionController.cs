@@ -101,6 +101,7 @@ namespace api.Controllers
             jsonInput.addr =  output.PaymentAddress(false).Encoded; //TODO Ask the node if it is using testnet rules
             jsonInput.valueSat = output.Value;
             jsonInput.value = Utils.SatoshisToBTC(output.Value);
+            jsonInput.doubleSpentTxID = null; //We don't handle double spent transactions
         }
 
         private object InputScriptToJSON(Script inputScript)
