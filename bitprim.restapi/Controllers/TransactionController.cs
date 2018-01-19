@@ -126,7 +126,7 @@ namespace api.Controllers
                 jsonOutput.value = Utils.SatoshisToBTC(output.Value);
                 jsonOutput.n = i;
                 jsonOutput.scriptPubKey = OutputScriptToJSON(output);
-                SetOutputSpendInfo(jsonOutput, tx.Hash.Reverse().ToArray(), (UInt32)i);
+                SetOutputSpendInfo(jsonOutput, tx.Hash, (UInt32)i);
                 jsonOutputs.Add(jsonOutput);
             }
             return jsonOutputs.ToArray();
@@ -144,7 +144,12 @@ namespace api.Controllers
             else
             {
                 Utils.CheckBitprimApiErrorCode(fetchSpendResult.Item1, "GetSpend failed, check error log");
-                //TODO Set remaining fields
+                Point spend = fetchSpendResult.Item2;
+                jsonOutput.spentTxId = Binary.ByteArrayToHexString(spend.Hash);
+                jsonOutput.spentIndex = spend.Index;
+                Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(spend.Hash, false);
+                Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(spend.Hash) + "), check error log");
+                jsonOutput.spentHeight = getTxResult.Item3;
             }
         }
 
