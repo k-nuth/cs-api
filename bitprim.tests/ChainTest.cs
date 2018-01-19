@@ -6,6 +6,7 @@ using Xunit;
 using System.Net;
 using System.IO;
 using Newtonsoft.Json;
+using Bitprim.Native;
 
 namespace Bitprim.Tests
 {
@@ -22,18 +23,18 @@ namespace Bitprim.Tests
         [Fact]
         public void TestFetchLastHeight()
         {
-            Tuple<int,UInt64> errorAndHeight = GetLastHeight();
-            Assert.Equal(0, errorAndHeight.Item1);
+            Tuple<ErrorCode,UInt64> errorAndHeight = GetLastHeight();
+            Assert.Equal(ErrorCode.Success, errorAndHeight.Item1);
         }
 
         [Fact]
         public void TestFetchBlockHeaderByHeight()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             Header header = null;
 
-            Action<int, Header> handler = delegate(int theError, Header theHeader)
+            Action<ErrorCode, Header> handler = delegate(ErrorCode theError, Header theHeader)
             {
                 error = theError;
                 header = theHeader;
@@ -43,7 +44,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchBlockHeaderByHeight(0, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             VerifyGenesisBlockHeader(header);
         }
 
@@ -51,10 +52,10 @@ namespace Bitprim.Tests
         public void TestFetchBlockHeaderByHash()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             Header header = null;
 
-            Action<int, Header> handler = delegate(int theError, Header theHeader)
+            Action<ErrorCode, Header> handler = delegate(ErrorCode theError, Header theHeader)
             {
                 error = theError;
                 header = theHeader;
@@ -65,7 +66,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchBlockHeaderByHash(hash, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             VerifyGenesisBlockHeader(header);
         }
 
@@ -73,10 +74,10 @@ namespace Bitprim.Tests
         public void TestFetchBlockByHeight()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             Block block = null;
 
-            Action<int, Block> handler = delegate(int theError, Block theBlock)
+            Action<ErrorCode, Block> handler = delegate(ErrorCode theError, Block theBlock)
             {
                 error = theError;
                 block = theBlock;
@@ -86,7 +87,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchBlockByHeight(0, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             VerifyGenesisBlockHeader(block.Header);
         }
 
@@ -94,10 +95,10 @@ namespace Bitprim.Tests
         public void TestFetchBlockByHash()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             Block block = null;
 
-            Action<int, Block> handler = delegate(int theError, Block theBlock)
+            Action<ErrorCode, Block> handler = delegate(ErrorCode theError, Block theBlock)
             {
                 error = theError;
                 block = theBlock;
@@ -108,7 +109,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchBlockByHash(hash, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             VerifyGenesisBlockHeader(block.Header);
         }
 
@@ -117,11 +118,11 @@ namespace Bitprim.Tests
         {
             //https://blockchain.info/es/block-height/0
             byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            Tuple<int, Block, UInt64> result = executorFixture_.Executor.Chain.GetBlockByHash(hash);
-            int error = result.Item1;
+            Tuple<ErrorCode, Block, UInt64> result = executorFixture_.Executor.Chain.GetBlockByHash(hash);
+            ErrorCode error = result.Item1;
             Block block = result.Item2;
             UInt64 height = result.Item3;
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             VerifyGenesisBlockHeader(block.Header);
             Assert.Equal(0UL, height);
         }
@@ -130,10 +131,10 @@ namespace Bitprim.Tests
         public void TestFetchBlockHeight()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             UInt64 height = 0;
 
-            Action<int, UInt64> handler = delegate(int theError, UInt64 theHeight)
+            Action<ErrorCode, UInt64> handler = delegate(ErrorCode theError, UInt64 theHeight)
             {
                 error = theError;
                 height = theHeight;
@@ -144,7 +145,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchBlockHeight(hash, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             Assert.Equal<UInt64>(0, height);
         }
 
@@ -154,10 +155,10 @@ namespace Bitprim.Tests
             var handlerDone = new AutoResetEvent(false);
             WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchSpend");
 
-            int error = 0;
+            ErrorCode error = 0;
             Point point = null;
 
-            Action<int, Point> handler = delegate(int theError, Point thePoint)
+            Action<ErrorCode, Point> handler = delegate(ErrorCode theError, Point thePoint)
             {
                 error = theError;
                 point = thePoint;
@@ -168,7 +169,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchSpend(outputPoint, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             Assert.NotNull(point);
             Assert.Equal("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16", Binary.ByteArrayToHexString(point.Hash));
             Assert.Equal<UInt32>(0, point.Index);
@@ -178,11 +179,11 @@ namespace Bitprim.Tests
         public void TestFetchMerkleBlockByHash()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             MerkleBlock merkleBlock = null;
             UInt64 height = 0;
 
-            Action<int, MerkleBlock, UInt64> handler = delegate(int theError, MerkleBlock theBlock, UInt64 theHeight)
+            Action<ErrorCode, MerkleBlock, UInt64> handler = delegate(ErrorCode theError, MerkleBlock theBlock, UInt64 theHeight)
             {
                 error = theError;
                 merkleBlock = theBlock;
@@ -194,7 +195,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchMerkleBlockByHash(hash, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             Assert.NotNull(merkleBlock);
             Assert.Equal<UInt64>(0, height);
             Assert.Equal<UInt64>(1, merkleBlock.TotalTransactionCount);
@@ -205,11 +206,11 @@ namespace Bitprim.Tests
         public void TestFetchMerkleBlockByHeight()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             MerkleBlock merkleBlock = null;
             UInt64 height = 0;
 
-            Action<int, MerkleBlock, UInt64> handler = delegate(int theError, MerkleBlock theBlock, UInt64 theHeight)
+            Action<ErrorCode, MerkleBlock, UInt64> handler = delegate(ErrorCode theError, MerkleBlock theBlock, UInt64 theHeight)
             {
                 error = theError;
                 merkleBlock = theBlock;
@@ -220,7 +221,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchMerkleBlockByHeight(0, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             Assert.NotNull(merkleBlock);
             Assert.Equal<UInt64>(0, height);
             Assert.Equal<UInt64>(1, merkleBlock.TotalTransactionCount);
@@ -231,10 +232,10 @@ namespace Bitprim.Tests
         public void TestFetchStealth()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             StealthCompactList list = null;
 
-            Action<int, StealthCompactList> handler = delegate(int theError, StealthCompactList theList)
+            Action<ErrorCode, StealthCompactList> handler = delegate(ErrorCode theError, StealthCompactList theList)
             {
                 error = theError;
                 list = theList;
@@ -243,7 +244,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchStealth(new Binary("1111"), 0, handler);
             handlerDone.WaitOne();
             
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             Assert.Equal<uint>(0, list.Count);
         }
 
@@ -251,14 +252,14 @@ namespace Bitprim.Tests
         public void TestFetchTransaction()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             Transaction tx = null;
             UInt64 height = 0;
             UInt64 index = 0;
 
             WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransaction");
 
-            Action<int, Transaction, UInt64, UInt64> handler = delegate(int theError, Transaction theTx, UInt64 theIndex, UInt64 theHeight)
+            Action<ErrorCode, Transaction, UInt64, UInt64> handler = delegate(ErrorCode theError, Transaction theTx, UInt64 theIndex, UInt64 theHeight)
             {
                 error = theError;
                 tx = theTx;
@@ -271,7 +272,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchTransaction(hash, true, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, height);
             Assert.Equal<UInt64>(1, index);
             CheckFirstNonCoinbaseTxFromHeight170(tx, txHashHexStr);
@@ -281,13 +282,13 @@ namespace Bitprim.Tests
         public void TestFetchTransactionPosition()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             UInt64 height = 0;
             UInt64 index = 0;
 
             WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransactionPosition");
 
-            Action<int, UInt64, UInt64> handler = delegate(int theError, UInt64 theIndex, UInt64 theHeight)
+            Action<ErrorCode, UInt64, UInt64> handler = delegate(ErrorCode theError, UInt64 theIndex, UInt64 theHeight)
             {
                 error = theError;
                 index = theIndex;
@@ -299,7 +300,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchTransactionPosition(hash, true, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             Assert.Equal<UInt64>(1, index);
             Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, height);
         }
@@ -308,12 +309,12 @@ namespace Bitprim.Tests
         public void TestFetchBlockByHash170()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             Block block = null;
 
             WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchBlockByHash170");
 
-            Action<int, Block> handler = delegate(int theError, Block theBlock)
+            Action<ErrorCode, Block> handler = delegate(ErrorCode theError, Block theBlock)
             {
                 error = theError;
                 block = theBlock;
@@ -324,7 +325,7 @@ namespace Bitprim.Tests
             executorFixture_.Executor.Chain.FetchBlockByHash(hash, handler);
             handlerDone.WaitOne();
 
-            Assert.Equal(0, error);
+            Assert.Equal(ErrorCode.Success, error);
             Assert.NotNull(block);
             VerifyBlock170Header(block.Header);
         }
@@ -392,12 +393,12 @@ namespace Bitprim.Tests
             Assert.Equal("2009-01-12 03:30:25", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
-        private Tuple<int, UInt64> GetLastHeight()
+        private Tuple<ErrorCode, UInt64> GetLastHeight()
         {
             var handlerDone = new AutoResetEvent(false);
-            int error = 0;
+            ErrorCode error = 0;
             UInt64 height = 0;
-            Action<int, UInt64> handler = delegate(int theError, UInt64 theHeight)
+            Action<ErrorCode, UInt64> handler = delegate(ErrorCode theError, UInt64 theHeight)
             {
                 error = theError;
                 height = theHeight;
@@ -405,7 +406,7 @@ namespace Bitprim.Tests
             };
             executorFixture_.Executor.Chain.FetchLastHeight(handler);
             handlerDone.WaitOne();
-            return new Tuple<int, UInt64>(error, height);
+            return new Tuple<ErrorCode, UInt64>(error, height);
         }
 
         private void CheckFirstNonCoinbaseTxFromHeight170(Transaction tx, string txHashHexStr)
@@ -497,11 +498,11 @@ namespace Bitprim.Tests
 
         private void WaitUntilBlock(UInt64 desiredHeight, string callerName)
         {
-            int error = 0;
+            ErrorCode error = 0;
             UInt64 height = 0;            
             while(error == 0 && height < desiredHeight){
                 Console.WriteLine("--->" + callerName + " checking height: " + height);
-                Tuple<int, UInt64> errorAndHeight = GetLastHeight();
+                Tuple<ErrorCode, UInt64> errorAndHeight = GetLastHeight();
                 error = errorAndHeight.Item1;
                 height = errorAndHeight.Item2;
                 if(height < desiredHeight)
@@ -509,7 +510,7 @@ namespace Bitprim.Tests
                     System.Threading.Thread.Sleep(10000);
                 }
             }
-            Assert.Equal(error, 0);
+            Assert.Equal(ErrorCode.Success, error);
         }
 
     }
