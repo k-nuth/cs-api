@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Bitprim;
+using Bitprim.Native;
 
 namespace api.Controllers
 {
@@ -28,7 +29,7 @@ namespace api.Controllers
             try
             {
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
-                Tuple<int, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
+                Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + hash + ") failed, check error log");
                 return Json(TxToJSON(getTxResult.Item2, getTxResult.Item3));
             }
@@ -40,10 +41,10 @@ namespace api.Controllers
 
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
         {
-            Tuple<int, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
+            Tuple<ErrorCode, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
             Utils.CheckBitprimApiErrorCode(getBlockHeaderResult.Item1, "GetBlockHeaderByHeight(" + blockHeight + ") failed, check error log");
             Header blockHeader = getBlockHeaderResult.Item2;
-            Tuple<int, UInt64> getLastHeightResult = chain_.GetLastHeight();
+            Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
             Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight failed, check error log");
             return new
             {
@@ -63,7 +64,7 @@ namespace api.Controllers
             };
         }
 
-        private static object TxInputsToJSON(Transaction tx)
+        private object TxInputsToJSON(Transaction tx)
         {
             var inputs = tx.Inputs;
             var jsonInputs = new List<object>();
@@ -79,14 +80,39 @@ namespace api.Controllers
                 }
                 else
                 {
-                    //TODO Non coinbase fields
-                    jsonInput.txid = Binary.ByteArrayToHexString(input.PreviousOutput.Hash);
+                    SetInputNonCoinbaseFields(jsonInput, input);
                 }
                 jsonInput.sequence = input.Sequence;
                 jsonInput.n = i;
                 jsonInputs.Add(jsonInput);
             }
             return jsonInputs.ToArray();
+        }
+
+        private void SetInputNonCoinbaseFields(dynamic jsonInput, Input input)
+        {
+            OutputPoint previousOutput = input.PreviousOutput;
+            jsonInput.txid = Binary.ByteArrayToHexString(previousOutput.Hash);
+            jsonInput.vout = previousOutput.Index;
+            jsonInput.script = InputScriptToJSON(input.Script);
+            Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(previousOutput.Hash, false);
+            Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(previousOutput.Hash) + ") failed, check errog log");
+            Output output = getTxResult.Item2.Outputs[(int)previousOutput.Index];
+            jsonInput.addr =  output.PaymentAddress(false).Encoded; //TODO Ask the node if it is using testnet rules
+            jsonInput.valueSat = output.Value;
+            jsonInput.value = Utils.SatoshisToBTC(output.Value);
+            jsonInput.doubleSpentTxID = null; //We don't handle double spent transactions
+        }
+
+        private object InputScriptToJSON(Script inputScript)
+        {
+            byte[] scriptData = inputScript.ToData(false);
+            Array.Reverse(scriptData, 0, scriptData.Length);
+            return new
+            {
+                asm = inputScript.ToString(0),
+                hex = Binary.ByteArrayToHexString(scriptData)
+            };
         }
 
         private object TxOutputsToJSON(Transaction tx)
@@ -99,8 +125,8 @@ namespace api.Controllers
                 dynamic jsonOutput = new ExpandoObject();
                 jsonOutput.value = Utils.SatoshisToBTC(output.Value);
                 jsonOutput.n = i;
-                jsonOutput.scriptPubKey = ScriptToJSON(output);
-                SetOutputSpendInfo(jsonOutput, tx.Hash.Reverse().ToArray(), (UInt32)i);
+                jsonOutput.scriptPubKey = OutputScriptToJSON(output);
+                SetOutputSpendInfo(jsonOutput, tx.Hash, (UInt32)i);
                 jsonOutputs.Add(jsonOutput);
             }
             return jsonOutputs.ToArray();
@@ -108,8 +134,8 @@ namespace api.Controllers
 
         private void SetOutputSpendInfo(dynamic jsonOutput, byte[] txHash, UInt32 index)
         {
-            Tuple<int, Point> fetchSpendResult = chain_.GetSpend(new OutputPoint(txHash, index));
-            if(fetchSpendResult.Item1 == 3) //TODO 3 == not_found When node-cint provides enum error codes, fix this magic number
+            Tuple<ErrorCode, Point> fetchSpendResult = chain_.GetSpend(new OutputPoint(txHash, index));
+            if(fetchSpendResult.Item1 == ErrorCode.NotFound)
             {
                 jsonOutput.spentTxId = null;
                 jsonOutput.spentIndex = null;
@@ -118,11 +144,16 @@ namespace api.Controllers
             else
             {
                 Utils.CheckBitprimApiErrorCode(fetchSpendResult.Item1, "GetSpend failed, check error log");
-                //TODO Set 
+                Point spend = fetchSpendResult.Item2;
+                jsonOutput.spentTxId = Binary.ByteArrayToHexString(spend.Hash);
+                jsonOutput.spentIndex = spend.Index;
+                Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(spend.Hash, false);
+                Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(spend.Hash) + "), check error log");
+                jsonOutput.spentHeight = getTxResult.Item3;
             }
         }
 
-        private static object ScriptToJSON(Output output)
+        private static object OutputScriptToJSON(Output output)
         {
             Script script = output.Script;
             byte[] scriptData = script.ToData(false);
