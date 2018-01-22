@@ -53,7 +53,7 @@ namespace api.Controllers
                     new
                     {
                         blockHash = Binary.ByteArrayToHexString(getBlockResult.Item2.Hash)
-                    } 
+                    }
                 );
             }
             catch(Exception ex)

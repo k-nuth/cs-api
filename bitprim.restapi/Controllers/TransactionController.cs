@@ -122,7 +122,8 @@ namespace api.Controllers
             Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(previousOutput.Hash, false);
             Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(previousOutput.Hash) + ") failed, check errog log");
             Output output = getTxResult.Item2.Outputs[(int)previousOutput.Index];
-            jsonInput.addr =  output.PaymentAddress(false).Encoded; //TODO Ask the node if it is using testnet rules
+            //TODO Awaiting fix (get_network returning none)
+            jsonInput.addr =  output.PaymentAddress(/*NodeSettings.UseTestnetRules*/false).Encoded;
             jsonInput.valueSat = output.Value;
             jsonInput.value = Utils.SatoshisToBTC(output.Value);
             jsonInput.doubleSpentTxID = null; //We don't handle double spent transactions
@@ -194,7 +195,8 @@ namespace api.Controllers
         private static object ScriptAddressesToJSON(Output output)
         {
             var jsonAddresses = new List<object>();
-            jsonAddresses.Add(output.PaymentAddress(false).Encoded); //TODO Ask the node if we're on testnet
+            //TODO Awaiting fix (get_network returning none)
+            jsonAddresses.Add(output.PaymentAddress(/*NodeSettings.UseTestnetRules*/false).Encoded);
             return jsonAddresses.ToArray();
         }
 

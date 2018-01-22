@@ -52,7 +52,9 @@ namespace api.Controllers
                         // "unconfirmedTxApperances": 0,
                         // "txApperances": 33,
                         // "transactions":,
-                        historyCount = history.Count 
+                        historyCount = history.Count
+                        //network = NodeSettings.NetworkType.ToString(),
+                        //currency = NodeSettings.CurrencyType.ToString()
                     }
                 );
             }
