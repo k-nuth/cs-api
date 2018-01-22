@@ -39,6 +39,30 @@ namespace api.Controllers
             }
         }
 
+        // GET: api/rawtx/{hash}
+        [HttpGet("/api/rawtx/{hash}")]
+        public ActionResult GetRawTransactionByHash(string hash)
+        {
+            try
+            {
+                byte[] binaryHash = Binary.HexStringToByteArray(hash);
+                Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, false);
+                Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + hash + ") failed, check error log");
+                Transaction tx = getTxResult.Item2;
+                return Json
+                (
+                    new
+                    {
+                        rawtx = Binary.ByteArrayToHexString(tx.ToData(false).Reverse().ToArray())
+                    }
+                );
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
         {
             Tuple<ErrorCode, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
