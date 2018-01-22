@@ -293,6 +293,18 @@ namespace Bitprim
         }
 
         /// <summary>
+        /// Raw transaction data.
+        /// </summary>
+        /// <param name="wire">Iif true, include data size at the beginning.</param>
+        /// <returns>Byte array with transaction data.</returns>
+        public byte[] ToData(bool wire)
+        {
+            int txSize = 0;
+            var txData = new NativeBuffer(TransactionNative.chain_transaction_to_data(nativeInstance_, wire? 1:0, ref txSize));
+            return txData.CopyToManagedArray(txSize);
+        }
+
+        /// <summary>
         /// Transaction size in bytes.
         /// </summary>
         /// <param name="wire"> If and only if true, size will

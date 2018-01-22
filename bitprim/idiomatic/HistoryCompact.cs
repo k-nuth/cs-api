@@ -1,7 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
+using Bitprim.Native;
 
-namespace Bitprim.Native
+namespace Bitprim
 {
 
     /// <summary>

@@ -19,7 +19,7 @@ namespace api
         {
             if(errorCode != ErrorCode.Success)
             {
-                throw new ApplicationException(errorMsg);
+                throw new ApplicationException(errorMsg + ". ErrorCode: " + errorCode.ToString());
             }
         }
     }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Bitprim;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace api.Controllers
@@ -59,6 +60,53 @@ namespace api.Controllers
             {
                 return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }            
+        }
+
+        // GET: api/rawblock/{hash}
+        [HttpGet("/api/rawblock/{hash}")]
+        public ActionResult GetRawBlockByHash(string hash)
+        {
+            try
+            {
+                byte[] binaryHash = Binary.HexStringToByteArray(hash);
+                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
+                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + hash + ") failed, check error log");
+                Block block = getBlockResult.Item2;
+                return Json
+                (
+                    new
+                    {
+                        rawblock = Binary.ByteArrayToHexString(block.ToData(false).Reverse().ToArray())
+                    }
+                );
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        // GET: api/rawblock-index/{height}
+        [HttpGet("/api/rawblock-index/{height}")]
+        public ActionResult GetRawBlockByHeight(UInt64 height)
+        {
+            try
+            {
+                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(height);
+                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + height + ") failed, check error log");
+                Block block = getBlockResult.Item2;
+                return Json
+                (
+                    new
+                    {
+                        rawblock = Binary.ByteArrayToHexString(block.ToData(false).Reverse().ToArray())
+                    }
+                );
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
         private static object BlockToJSON(Block block, UInt64 blockHeight, UInt64 topHeight, byte[] nextBlockHash)
