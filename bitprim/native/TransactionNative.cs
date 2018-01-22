@@ -55,6 +55,10 @@ public static class TransactionNative
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern IntPtr chain_transaction_outputs(IntPtr transaction);
 
+    //Note: Returned memory must be freed manually using platform_free
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern IntPtr chain_transaction_to_data(IntPtr transaction, int /*bool*/ wire, ref int size);
+
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern UInt32 chain_transaction_locktime(IntPtr transaction);
 

@@ -198,6 +198,18 @@ namespace Bitprim
         }
 
         /// <summary>
+        /// Raw block data.
+        /// </summary>
+        /// <param name="wire">Iif true, include data size at the beginning.</param>
+        /// <returns>Byte array with block data.</returns>
+        public byte[] ToData(bool wire)
+        {
+            int blockSize = 0;
+            var blockData = new NativeBuffer(BlockNative.chain_block_to_data(nativeInstance_, wire? 1:0, ref blockSize));
+            return blockData.CopyToManagedArray(blockSize);
+        }
+
+        /// <summary>
         /// The block subsidy. It's the same value for all blocks.
         /// </summary>
         /// <param name="height"> The block's height. It identifies it univocally. </param>
