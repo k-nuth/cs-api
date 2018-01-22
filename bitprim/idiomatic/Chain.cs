@@ -601,6 +601,18 @@ namespace Bitprim
             ChainNative.chain_validate_tx(nativeInstance_, handlerPtr, transaction.NativeInstance, ValidateTransactionHandler);
         }
 
+        /// <summary>
+        /// Determine if the node is synchronized (i.e. has the latest copy of the blockchain/is at top height)
+        /// Criterion: no nodes from the last 48 hs.
+        /// </summary>
+        public bool IsStale
+        {
+            get
+            {
+                return ChainNative.chain_is_stale(nativeInstance_) != 0;
+            }
+        }
+
         #endregion //Misc
 
         internal Chain(IntPtr nativeInstance)

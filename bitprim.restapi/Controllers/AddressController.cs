@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Bitprim;
 using System;
 
@@ -8,10 +9,12 @@ namespace api.Controllers
     public class AddressController : Controller
     {
         private Chain chain_;
+        private readonly NodeConfig config_;
 
-        public AddressController(Chain chain)
+        public AddressController(IOptions<NodeConfig> config, Chain chain)
         {
             chain_ = chain;
+            config_ = config.Value;
         }
 
         // GET: api/addr/{paymentAddress}
@@ -20,6 +23,7 @@ namespace api.Controllers
         {
             try
             {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
                 Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
                 HistoryCompactList history = getAddressHistoryResult.Item2;
@@ -52,7 +56,7 @@ namespace api.Controllers
                         // "unconfirmedTxApperances": 0,
                         // "txApperances": 33,
                         // "transactions":,
-                        historyCount = history.Count
+                        historyCount = history.Count,
                         //network = NodeSettings.NetworkType.ToString(),
                         //currency = NodeSettings.CurrencyType.ToString()
                     }

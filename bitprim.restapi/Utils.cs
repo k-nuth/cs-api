@@ -22,5 +22,13 @@ namespace api
                 throw new ApplicationException(errorMsg + ". ErrorCode: " + errorCode.ToString());
             }
         }
+
+        public static void CheckIfChainIsFresh(Chain chain, bool acceptStaleRequests)
+        {
+            if(!acceptStaleRequests && chain.IsStale)
+            {
+                throw new ApplicationException("Node is still synchronizing; API cannot be used yet");
+            }
+        }
     }
 }
