@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Bitprim;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,11 @@ namespace api.Controllers
     public class BlockController : Controller
     {
         private Chain chain_;
+        private readonly NodeConfig config_;
 
-        public BlockController(Chain chain)
+        public BlockController(IOptions<NodeConfig> config, Chain chain)
         {
+            config_ = config.Value;
             chain_ = chain;
         }
 
@@ -23,6 +26,7 @@ namespace api.Controllers
         {
             try
             {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
                 Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
                 Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + hash + ") failed, check error log");
@@ -46,6 +50,7 @@ namespace api.Controllers
         {
             try
             {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(height);
                 Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + height + ") failed, error log");
                 return Json
@@ -68,6 +73,7 @@ namespace api.Controllers
         {
             try
             {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
                 Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);
                 Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + hash + ") failed, check error log");
@@ -92,6 +98,7 @@ namespace api.Controllers
         {
             try
             {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(height);
                 Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + height + ") failed, check error log");
                 Block block = getBlockResult.Item2;

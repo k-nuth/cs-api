@@ -14,11 +14,11 @@ namespace api.Controllers
     public class TransactionController : Controller
     {
         private Chain chain_;
-        private readonly IOptions<NodeConfig> config_;
+        private readonly NodeConfig config_;
 
         public TransactionController(IOptions<NodeConfig> config, Chain chain)
         {
-            config_ = config;
+            config_ = config.Value;
             chain_ = chain;
         }
 
@@ -28,6 +28,7 @@ namespace api.Controllers
         {
             try
             {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + hash + ") failed, check error log");
@@ -45,6 +46,7 @@ namespace api.Controllers
         {
             try
             {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, false);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + hash + ") failed, check error log");
