@@ -83,7 +83,10 @@ namespace api
 
         private void OnShutdown()
         {
+            Console.WriteLine("Stopping node...");
             exec_.Stop();
+            exec_.Dispose();
+            Console.WriteLine("Node stopped!");
         }
     }
 }
