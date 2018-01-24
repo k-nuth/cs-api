@@ -82,7 +82,11 @@ namespace api.Controllers
                     Transaction tx = block.GetNthTransaction(i);
                     txs.Add(TxToJSON(tx, blockHeight));
                 }
-                return Json(txs);
+                return Json(new
+                {
+                     pagesTotal = 1, //TODO Implement paging
+                     txs = txs.ToArray()
+                });
             }
             catch(Exception ex)
             {
