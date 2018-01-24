@@ -65,6 +65,31 @@ namespace api.Controllers
             }
         }
 
+        // GET: api/txs/?block=HASH
+        [HttpGet("/api/txs/?block={hash}")]
+        public ActionResult GetTransactionsByBlock(string blockHash)
+        {
+            try
+            {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(Binary.HexStringToByteArray(blockHash));
+                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + blockHash + ") failed, check error log");
+                Block block = getBlockResult.Item2;
+                UInt64 blockHeight = getBlockResult.Item3;
+                List<object> txs = new List<object>();
+                for(UInt64 i=0; i<block.TransactionCount; i++)
+                {
+                    Transaction tx = block.GetNthTransaction(i);
+                    txs.Add(TxToJSON(tx, blockHeight));
+                }
+                return Json(txs);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
         {
             Tuple<ErrorCode, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
