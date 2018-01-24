@@ -84,7 +84,7 @@ namespace api.Controllers
                 }
                 return Json(new
                 {
-                     pagesTotal = 1,
+                     pagesTotal = 1, //TODO Implement paging
                      txs = txs.ToArray()
                 });
             }

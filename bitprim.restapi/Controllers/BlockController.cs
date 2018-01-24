@@ -116,6 +116,84 @@ namespace api.Controllers
             }
         }
 
+        // GET: api/blocks/?limit={limit}&blockDate={blockDate}
+        [HttpGet("/api/blocks/?limit={limit}&blockDate={blockDate}")]
+        public ActionResult GetBlocksByDate(UInt64 limit, DateTime blockDate)
+        {
+            try
+            {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+                Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
+                Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight failed, check error log");
+                UInt64 topHeight = getLastHeightResult.Item2;
+                //Find the highest block with a timestamp from the previous day
+                UInt64 low = 0;
+                UInt64 high = topHeight;
+                UInt64 mid = 0;
+                var blocks = new List<object>();
+                while(low <= high)
+                {
+                    mid = (UInt64) ((double)low + (double) high/2); //Adds as doubles to prevent overflow
+                    Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(mid);
+                    Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + mid + ") failed, check error log");
+                    if(DateTimeOffset.FromUnixTimeSeconds(getBlockResult.Item2.Header.Timestamp).Date >= blockDate.Date)
+                    {
+                        high = mid - 1; 
+                    }else
+                    {
+                        low = mid + 1;
+                    }
+                }
+                if(low == 0) //No blocks
+                {
+                    return Json(BlocksByDateToJSON(blocks, blockDate, false, -1));
+                }
+                //Grab the specified amount of blocks (limit)
+                UInt64 startingHeight = low;
+                for(UInt64 i=0; i<limit && startingHeight+i<topHeight; i++)
+                {
+                    Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(startingHeight + i);
+                    Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + startingHeight + i + ") failed, check error log");
+                    Block block = getBlockResult.Item2;
+                    blocks.Add(new
+                    {
+                        height = getBlockResult.Item3,
+                        size = block.GetSerializedSize(block.Header.Version),
+                        hash = Binary.ByteArrayToHexString(block.Hash),
+                        time = block.Header.Timestamp,
+                        txLength = block.TransactionCount
+                        //TODO Add pool info
+                    });
+                }
+                //TODO Check if there are more blocks
+                return Json(BlocksByDateToJSON(blocks, blockDate, false, -1));
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        private static object BlocksByDateToJSON(List<object> blocks, DateTime blockDate, bool moreBlocks, int moreBlocksTs)
+        {
+            const string dateFormat = "YYYY-MM-dd";
+            return new
+            {
+                blocks = blocks.ToArray(),
+                length = blocks.Count,
+                pagination = new
+                {
+                    next = blockDate.Date.AddDays(-1).ToString(dateFormat),
+                    prev = blockDate.Date.AddDays(+1).ToString(dateFormat),
+                    currentTs = new DateTimeOffset(blockDate).ToUnixTimeSeconds(),
+                    current = blockDate.Date.ToString(dateFormat),
+                    isToday = (blockDate.Date == DateTime.Now.Date),
+                    more = moreBlocks,
+                    moreTs = moreBlocks? (object) moreBlocksTs : null
+                }
+            };
+        }
+
         private static object BlockToJSON(Block block, UInt64 blockHeight, UInt64 topHeight, byte[] nextBlockHash)
         {
             Header blockHeader = block.Header;
