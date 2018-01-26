@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="bitprim" Version="0.2.139" /> 
+    <PackageReference Include="bitprim" Version="0.2.152" /> 
     <!--<ProjectReference Include="..\bitprim\bitprim.csproj" />-->
     <PackageReference Include="Microsoft.CSharp" Version="4.4.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
