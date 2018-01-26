@@ -66,20 +66,20 @@ namespace api.Controllers
         }
 
         // GET: api/txs/?block=HASH
-        [HttpGet("/api/txs/?block={hash}")]
-        public ActionResult GetTransactionsByBlock(string blockHash)
+        [HttpGet("/api/txs/#by_block_hash")]
+        public ActionResult GetTransactionsByBlock(string block)
         {
             try
             {
                 Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
-                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(Binary.HexStringToByteArray(blockHash));
-                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + blockHash + ") failed, check error log");
-                Block block = getBlockResult.Item2;
+                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(Binary.HexStringToByteArray(block));
+                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + block + ") failed, check error log");
+                Block fullBlock = getBlockResult.Item2;
                 UInt64 blockHeight = getBlockResult.Item3;
                 List<object> txs = new List<object>();
-                for(UInt64 i=0; i<block.TransactionCount; i++)
+                for(UInt64 i=0; i<fullBlock.TransactionCount; i++)
                 {
-                    Transaction tx = block.GetNthTransaction(i);
+                    Transaction tx = fullBlock.GetNthTransaction(i);
                     txs.Add(TxToJSON(tx, blockHeight));
                 }
                 return Json(new
@@ -94,12 +94,12 @@ namespace api.Controllers
             }
         }
 
-        [HttpGet("/api/txs/?addr={paymentAddress}")]
-        public ActionResult GetTransactionsByAddress(string paymentAddress)
+        [HttpGet("/api/txs/#by_address")]
+        public ActionResult GetTransactionsByAddress(string addr)
         {
             try
             {
-                List<object> txs = GetTransactionsBySingleAddress(paymentAddress);
+                List<object> txs = GetTransactionsBySingleAddress(addr);
                 return Json(new{
                     pagesTotal = 1, //TODO Implement paging
                     txs = txs.ToArray()

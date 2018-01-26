@@ -47,7 +47,8 @@ namespace api
             });
 
             // Initialize and register chain service
-            exec_ = new Executor("", 0, 0);
+            string configFile = Configuration.Get<NodeConfig>().NodeConfigFile;
+            exec_ = new Executor(configFile, 0, 0);
             bool ok = exec_.InitChain();
             if(!ok)
             {
