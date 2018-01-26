@@ -94,6 +94,33 @@ namespace api.Controllers
             }
         }
 
+        [HttpGet("/api/txs/?addr={paymentAddress}")]
+        public ActionResult GetTransactionsByAddress(string paymentAddress)
+        {
+            try
+            {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+                Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
+                Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
+                HistoryCompactList history = getAddressHistoryResult.Item2;
+                var txs = new List<object>();
+                foreach(HistoryCompact compact in history)
+                {
+                    Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(compact.Point.Hash, true);
+                    Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(compact.Point.Hash) + ") failed, check error log");
+                    txs.Add(TxToJSON(getTxResult.Item2, getTxResult.Item3));
+                }
+                return Json(new{
+                    pagesTotal = 1,
+                    txs = txs.ToArray()
+                });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
         {
             Tuple<ErrorCode, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
