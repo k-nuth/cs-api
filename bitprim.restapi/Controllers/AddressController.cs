@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Bitprim;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace api.Controllers
 {
@@ -97,34 +98,29 @@ namespace api.Controllers
 
         // GET: api/addr/{paymentAddress}/utxo
         [HttpGet("/api/addr/{paymentAddress}/utxo")]
-        public ActionResult GetUtxo(string paymentAddress)
+        public ActionResult GetUtxoForSingleAddress(string paymentAddress)
         {
             try
             {
-                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
-                Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
-                Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
-                HistoryCompactList history = getAddressHistoryResult.Item2;
-                var utxo = new List<dynamic>();
-                Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
-                Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight failed, check error log");
-                UInt64 topHeight = getLastHeightResult.Item2;
-                foreach(HistoryCompact compact in history)
+                List<object> utxo = GetUtxo(paymentAddress);
+                return Json(utxo.ToArray());
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+
+        [HttpGet("/api/addrs/{paymentAddresses}/utxo")]
+        public ActionResult GetUtxoForMultipleAddresses(string addresses)
+        {
+            try
+            {
+                var utxo = new List<object>();
+                foreach(string address in addresses.Split(","))
                 {
-                    if(compact.PointKind == PointKind.Output)
-                    {
-                        Tuple<ErrorCode, Point> getSpendResult = chain_.GetSpend(new OutputPoint(compact.Point.Hash, compact.Point.Index));
-                        ErrorCode errorCode = getSpendResult.Item1;
-                        Point outputPoint = getSpendResult.Item2;
-                        if(errorCode == ErrorCode.NotFound) //Unspent = it's an utxo
-                        {
-                            //Get the tx to get the script
-                            Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(outputPoint.Hash, true);
-                            ErrorCode getTxEc = getTxResult.Item1;
-                            Transaction tx = getTxResult.Item2;
-                            utxo.Add(UtxoToJSON(paymentAddress, outputPoint, getTxEc, tx, compact, topHeight));
-                        }
-                    }
+                    utxo.Concat(GetUtxo(address));
                 }
                 return Json(utxo.ToArray());
             }
@@ -132,6 +128,42 @@ namespace api.Controllers
             {
                 return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }
+        }
+
+        [HttpPost("/api/addrs/utxo")]
+        public ActionResult GetUtxoForMultipleAddressesPost([FromBody] string addrs)
+        {
+            return GetUtxoForMultipleAddresses(addrs);
+        }
+
+        private List<object> GetUtxo(string paymentAddress)
+        {
+            Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+            Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
+            Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
+            HistoryCompactList history = getAddressHistoryResult.Item2;
+            var utxo = new List<dynamic>();
+            Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
+            Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight failed, check error log");
+            UInt64 topHeight = getLastHeightResult.Item2;
+            foreach(HistoryCompact compact in history)
+            {
+                if(compact.PointKind == PointKind.Output)
+                {
+                    Tuple<ErrorCode, Point> getSpendResult = chain_.GetSpend(new OutputPoint(compact.Point.Hash, compact.Point.Index));
+                    ErrorCode errorCode = getSpendResult.Item1;
+                    Point outputPoint = getSpendResult.Item2;
+                    if(errorCode == ErrorCode.NotFound) //Unspent = it's an utxo
+                    {
+                        //Get the tx to get the script
+                        Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(outputPoint.Hash, true);
+                        ErrorCode getTxEc = getTxResult.Item1;
+                        Transaction tx = getTxResult.Item2;
+                        utxo.Add(UtxoToJSON(paymentAddress, outputPoint, getTxEc, tx, compact, topHeight));
+                    }
+                }
+            }
+            return utxo;
         }
 
         private static object UtxoToJSON(string paymentAddress, Point outputPoint, ErrorCode getTxEc, Transaction tx, HistoryCompact compact, UInt64 topHeight)
