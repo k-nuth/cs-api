@@ -84,7 +84,7 @@ namespace api.Controllers
                 }
                 return Json(new
                 {
-                     pagesTotal = 1, //TODO Implement paging
+                     pagesTotal = 1, //TODO Implement pagination
                      txs = txs.ToArray()
                 });
             }
@@ -101,7 +101,7 @@ namespace api.Controllers
             {
                 List<object> txs = GetTransactionsBySingleAddress(addr);
                 return Json(new{
-                    pagesTotal = 1, //TODO Implement paging
+                    pagesTotal = 1, //TODO Implement pagination
                     txs = txs.ToArray()
                 });
             }
