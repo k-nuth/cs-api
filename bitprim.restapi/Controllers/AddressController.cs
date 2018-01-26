@@ -130,6 +130,12 @@ namespace api.Controllers
             }
         }
 
+        [HttpPost("/api/addrs/utxo")]
+        public ActionResult GetUtxoForMultipleAddressesPost([FromBody] string addrs)
+        {
+            return GetUtxoForMultipleAddresses(addrs);
+        }
+
         private List<object> GetUtxo(string paymentAddress)
         {
             Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
