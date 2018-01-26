@@ -99,17 +99,7 @@ namespace api.Controllers
         {
             try
             {
-                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
-                Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
-                Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
-                HistoryCompactList history = getAddressHistoryResult.Item2;
-                var txs = new List<object>();
-                foreach(HistoryCompact compact in history)
-                {
-                    Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(compact.Point.Hash, true);
-                    Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(compact.Point.Hash) + ") failed, check error log");
-                    txs.Add(TxToJSON(getTxResult.Item2, getTxResult.Item3));
-                }
+                List<object> txs = GetTransactionsBySingleAddress(paymentAddress);
                 return Json(new{
                     pagesTotal = 1, //TODO Implement paging
                     txs = txs.ToArray()
@@ -119,6 +109,45 @@ namespace api.Controllers
             {
                 return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }
+        }
+
+        [HttpGet("/api/addrs/{paymentAddresses}/txs")]
+        public ActionResult GetTransactionsForMultipleAddresses(string addresses)
+        {
+            try
+            {
+                var txs = new List<object>();
+                foreach(string address in addresses.Split(","))
+                {
+                    txs.Concat(GetTransactionsBySingleAddress(address));
+                }
+                return Json(new{
+                    totalItems = txs.Count, //TODO paging
+                    from = 0,
+                    to = txs.Count,
+                    items = txs.ToArray()
+                });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        private List<object> GetTransactionsBySingleAddress(string paymentAddress)
+        {
+            Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+            Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
+            Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
+            HistoryCompactList history = getAddressHistoryResult.Item2;
+            var txs = new List<object>();
+            foreach(HistoryCompact compact in history)
+            {
+                Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(compact.Point.Hash, true);
+                Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(compact.Point.Hash) + ") failed, check error log");
+                txs.Add(TxToJSON(getTxResult.Item2, getTxResult.Item3));
+            }
+            return txs;
         }
 
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
