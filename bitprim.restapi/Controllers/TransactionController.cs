@@ -111,7 +111,7 @@ namespace api.Controllers
                     txs.Add(TxToJSON(getTxResult.Item2, getTxResult.Item3));
                 }
                 return Json(new{
-                    pagesTotal = 1,
+                    pagesTotal = 1, //TODO Implement paging
                     txs = txs.ToArray()
                 });
             }
