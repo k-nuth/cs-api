@@ -9,6 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="bitprim" Version="0.2.152" />
+    <!-- <ProjectReference Include="../bitprim/bitprim.csproj" /> -->
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.2" />
@@ -16,4 +17,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.1.0" />
   </ItemGroup>
+
+  <!-- <Target Name="CopyNativeLib" AfterTargets="Build">
+    <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition="Exists('libbitprim-node-cint.so')"/>
+  </Target> -->
 </Project>
