@@ -134,6 +134,29 @@ namespace api.Controllers
             }
         }
 
+        [HttpPost("/api/tx/send")]
+        public ActionResult BroadcastTransaction([FromBody] string rawtx)
+        {
+            try
+            {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+                var tx = new Transaction(rawtx);
+                ErrorCode ec = chain_.OrganizeTransactionSync(tx);
+                Utils.CheckBitprimApiErrorCode(ec, "OrganizeTransaction(" + rawtx + ") failed");
+                return Json
+                (
+                    new
+                    {
+                        txid = Binary.ByteArrayToHexString(tx.Hash) //TODO Check if this should be returned by organize call
+                    }
+                );
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
         private List<object> GetTransactionsBySingleAddress(string paymentAddress)
         {
             Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
