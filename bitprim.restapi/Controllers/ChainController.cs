@@ -75,30 +75,45 @@ namespace api.Controllers
 
         private ActionResult GetDifficulty()
         {
+            Block topBlock = GetLastBlock();
             return Json
             (
                 new
                 {
-                    difficulty = GetCurrentDifficulty()
+                    difficulty = Utils.BitsToDifficulty(topBlock.Header.Bits)
                 }
             );
         }
 
         private ActionResult GetBestBlockHash()
         {
-            return Json(new{});
+            Block topBlock = GetLastBlock();
+            return Json
+            (
+                new
+                {
+                    bestblockhash = Binary.ByteArrayToHexString(topBlock.Hash)
+                }
+            );
         }
 
         private ActionResult GetLastBlockHash()
         {
-            return Json(new{});
+            Block topBlock = GetLastBlock();
+            string hashHexString = Binary.ByteArrayToHexString(topBlock.Hash); 
+            return Json
+            (
+                new
+                {
+                    syncTipHash = hashHexString
+                    lastblockhash = hashHexString
+                }
+            );
         }
 
         private ActionResult GetInfo()
         {
-            Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
-            Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight() failed");
-            UInt64 currentHeight = getLastHeightResult.Item2;
+            Block block = GetLastBlock();
             return Json
             (
                 new
@@ -107,11 +122,11 @@ namespace api.Controllers
                     {
                         //version = 120100, //TODO
                         //protocolversion = 70012, //TODO
-                        blocks = currentHeight,
+                        blocks = block.Height,
                         //timeoffset = 0, //TODO
                         //connections = 8, //TODO
                         //proxy = "", //TODO
-                        difficulty = GetCurrentDifficulty(),
+                        difficulty = Utils.BitsToDifficulty(block.Header.Bits),
                         testnet = /*NodeSettings.UseTestnetRules*/true //TODO Use NodeSettings when node-cint fixed
                         //relayfee = 0.00001, //TODO
                         //errors = "Warning: unknown new rules activated (versionbit 28)", //TODO
@@ -121,7 +136,7 @@ namespace api.Controllers
             );
         }
 
-        private double GetCurrentDifficulty()
+        private Block GetLastBlock()
         {
             Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
             Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight() failed");
@@ -129,7 +144,7 @@ namespace api.Controllers
             Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(currentHeight);
             Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + currentHeight + ") failed");
             Block topBlock = getBlockResult.Item2;
-            return Utils.BitsToDifficulty(topBlock.Header.Bits);
         }
+
     }
 }
