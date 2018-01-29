@@ -233,7 +233,7 @@ namespace api.Controllers
             Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(previousOutput.Hash) + ") failed, check errog log");
             Output output = getTxResult.Item2.Outputs[(int)previousOutput.Index];
             //TODO Awaiting fix (get_network returning none)
-            jsonInput.addr =  output.PaymentAddress(/*NodeSettings.UseTestnetRules*/false).Encoded;
+            jsonInput.addr =  output.PaymentAddress(NodeSettings.UseTestnetRules).Encoded;
             jsonInput.valueSat = output.Value;
             jsonInput.value = Utils.SatoshisToBTC(output.Value);
             jsonInput.doubleSpentTxID = null; //We don't handle double spent transactions
@@ -305,8 +305,7 @@ namespace api.Controllers
         private static object ScriptAddressesToJSON(Output output)
         {
             var jsonAddresses = new List<object>();
-            //TODO Awaiting fix (get_network returning none)
-            jsonAddresses.Add(output.PaymentAddress(/*NodeSettings.UseTestnetRules*/false).Encoded);
+            jsonAddresses.Add(output.PaymentAddress(NodeSettings.UseTestnetRules).Encoded);
             return jsonAddresses.ToArray();
         }
 
