@@ -45,7 +45,7 @@ namespace api.Controllers
             }
         }
 
-        [HttpGet("api/status")]
+        [HttpGet("/api/status")]
         public ActionResult GetStatus(string method)
         {
             try
