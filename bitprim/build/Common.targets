@@ -1,6 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="GetBitprimNodeCint">
-    <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" IgnoreExitCode="true" ContinueOnError="WarnAndContinue"/>
+    <Exec Command="conan remote list" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="ConanRemoteList" />
+    </Exec>
+    <Exec Command="conan remote update bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="$(ConanRemoteList.Contains('bitprim'))" />
+    <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
     <WriteLinesToFile
       File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.7@bitprim/testing;[generators];cmake;[options];bitprim-node-cint:shared=True;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
