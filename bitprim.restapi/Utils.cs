@@ -15,6 +15,25 @@ namespace api
             return (double)satoshis / 100000000;
         }
 
+        //TODO Remove this when bitprim wrapper implemented
+        public static double BitsToDifficulty(UInt32 bits)
+        {
+            double diff = 1.0;
+            int shift = (int) (bits >> 24) & 0xff;
+            diff = (double)0x0000ffff / (double)(bits & 0x00ffffff);
+            while (shift < 29)
+            {
+                diff *= 256.0;
+                ++shift;
+            }
+            while (shift > 29)
+            {
+                diff /= 256.0;
+                --shift;
+            }
+            return diff;
+        }
+
         public static void CheckBitprimApiErrorCode(ErrorCode errorCode, string errorMsg)
         {
             if(errorCode != ErrorCode.Success)

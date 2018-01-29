@@ -11,6 +11,9 @@ namespace api.Controllers
     {
         private Chain chain_;
         private readonly NodeConfig config_;
+        private const string GET_BEST_BLOCK_HASH = "getBestBlockHash";
+        private const string GET_LAST_BLOCK_HASH = "getLastBlockHash";
+        private const string GET_DIFFICULTY = "getDifficulty";
 
         public ChainController(IOptions<NodeConfig> config, Chain chain)
         {
@@ -41,5 +44,107 @@ namespace api.Controllers
                 return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("/api/status")]
+        public ActionResult GetStatus(string method)
+        {
+            try
+            {
+                if(method == GET_DIFFICULTY)
+                {
+                    return GetDifficulty();
+                }
+                else if(method == GET_BEST_BLOCK_HASH)
+                {
+                    return GetBestBlockHash();
+                }
+                else if(method == GET_LAST_BLOCK_HASH)
+                {
+                    return GetLastBlockHash();
+                }
+                else
+                {
+                    return GetInfo();
+                }
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        private ActionResult GetDifficulty()
+        {
+            Block topBlock = GetLastBlock();
+            return Json
+            (
+                new
+                {
+                    difficulty = Utils.BitsToDifficulty(topBlock.Header.Bits)
+                }
+            );
+        }
+
+        private ActionResult GetBestBlockHash()
+        {
+            Block topBlock = GetLastBlock();
+            return Json
+            (
+                new
+                {
+                    bestblockhash = Binary.ByteArrayToHexString(topBlock.Hash)
+                }
+            );
+        }
+
+        private ActionResult GetLastBlockHash()
+        {
+            Block topBlock = GetLastBlock();
+            string hashHexString = Binary.ByteArrayToHexString(topBlock.Hash); 
+            return Json
+            (
+                new
+                {
+                    syncTipHash = hashHexString
+                    lastblockhash = hashHexString
+                }
+            );
+        }
+
+        private ActionResult GetInfo()
+        {
+            Block block = GetLastBlock();
+            return Json
+            (
+                new
+                {
+                    info = new 
+                    {
+                        //version = 120100, //TODO
+                        //protocolversion = 70012, //TODO
+                        blocks = block.Height,
+                        //timeoffset = 0, //TODO
+                        //connections = 8, //TODO
+                        //proxy = "", //TODO
+                        difficulty = Utils.BitsToDifficulty(block.Header.Bits),
+                        testnet = /*NodeSettings.UseTestnetRules*/true //TODO Use NodeSettings when node-cint fixed
+                        //relayfee = 0.00001, //TODO
+                        //errors = "Warning: unknown new rules activated (versionbit 28)", //TODO
+                    },
+                    network = /*NodeSettings.NetworkType.ToString()*/ "testnet" //TODO Use NodeSettings when node-cint fixed
+                }
+            );
+        }
+
+        private Block GetLastBlock()
+        {
+            Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
+            Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight() failed");
+            UInt64 currentHeight = getLastHeightResult.Item2;
+            Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(currentHeight);
+            Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + currentHeight + ") failed");
+            Block topBlock = getBlockResult.Item2;
+        }
+
     }
 }

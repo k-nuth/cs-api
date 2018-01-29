@@ -211,7 +211,7 @@ namespace api.Controllers
                 time = blockHeader.Timestamp,
                 nonce = blockHeader.Nonce,
                 bits = Utils.EncodeInBase16(blockHeader.Bits),
-                difficulty = BitsToDifficulty(blockHeader.Bits), //TODO Use bitprim API when implemented
+                difficulty = Utils.BitsToDifficulty(blockHeader.Bits), //TODO Use bitprim API when implemented
                 chainwork = (proof * 2).ToString("X64"), //TODO Does not match Blockdozer value; check how bitpay calculates it
                 previousblockhash = Binary.ByteArrayToHexString(blockHeader.PreviousBlockHash),
                 nextblockhash = Binary.ByteArrayToHexString(nextBlockHash),
@@ -219,25 +219,6 @@ namespace api.Controllers
                 isMainChain = true, //TODO Check value
                 poolInfo = new{} //TODO Check value
             };
-        }
-
-        //TODO Remove this when bitprim wrapper implemented
-        private static double BitsToDifficulty(UInt32 bits)
-        {
-            double diff = 1.0;
-            int shift = (int) (bits >> 24) & 0xff;
-            diff = (double)0x0000ffff / (double)(bits & 0x00ffffff);
-            while (shift < 29)
-            {
-                diff *= 256.0;
-                ++shift;
-            }
-            while (shift > 29)
-            {
-                diff /= 256.0;
-                --shift;
-            }
-            return diff;
         }
 
         private static object[] BlockTxsToJSON(Block block)
