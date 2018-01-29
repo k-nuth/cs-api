@@ -9,8 +9,6 @@ namespace api.Controllers
     [Route("api/[controller]")]
     public class PeerController : Controller
     {
-        private readonly NodeConfig config_;
-
         [HttpGet("/api/peer")]
         public ActionResult GetPeerStatus()
         {

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Bitprim;
 using System;
 using System.Dynamic;
+using System.Collections.Generic;
 
 namespace api.Controllers
 {
@@ -74,13 +75,13 @@ namespace api.Controllers
         }
 
         [HttpGet("/api/utils/estimatefee")]
-        public ActionResult GetEstimateFee([FromQuery] int nbBlocks = 2)
+        public ActionResult GetEstimateFee([FromQuery] int? nbBlocks = 2)
         {
             try
             {
-                dynamic estimateFee = new ExpandoObject();
+                var estimateFee = new ExpandoObject() as IDictionary<string, Object>;
                 //TODO Check which algorithm to use (see bitcoin-abc's median, at src/policy/fees.cpp for an example)
-                estimateFee[nbBlocks.ToString()] = 0;
+                estimateFee.Add(nbBlocks.ToString(), 0);
                 return Json(estimateFee);
             }
             catch(Exception ex)
