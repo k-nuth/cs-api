@@ -73,6 +73,22 @@ namespace api.Controllers
             }
         }
 
+        [HttpGet("/api/utils/estimatefee")]
+        public ActionResult GetEstimateFee([FromQuery] int nbBlocks = 2)
+        {
+            try
+            {
+                dynamic estimateFee = new ExpandoObject();
+                //TODO Check which algorithm to use (see bitcoin-abc's median, at src/policy/fees.cpp for an example)
+                estimateFee[nbBlocks.ToString()] = 0;
+                return Json(estimateFee);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
         private ActionResult GetDifficulty()
         {
             Block topBlock = GetLastBlock();
