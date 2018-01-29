@@ -144,11 +144,11 @@ namespace api.Controllers
                         //connections = 8, //TODO
                         //proxy = "", //TODO
                         difficulty = Utils.BitsToDifficulty(block.Item1.Header.Bits),
-                        testnet = /*NodeSettings.UseTestnetRules*/true //TODO Use NodeSettings when node-cint fixed
+                        testnet = NodeSettings.UseTestnetRules
                         //relayfee = 0.00001, //TODO
                         //errors = "Warning: unknown new rules activated (versionbit 28)", //TODO
                     },
-                    network = /*NodeSettings.NetworkType.ToString()*/ "testnet" //TODO Use NodeSettings when node-cint fixed
+                    network = NodeSettings.NetworkType.ToString()
                 }
             );
         }
