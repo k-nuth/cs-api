@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Bitprim;
 using System;
 using System.Dynamic;
+using System.Collections.Generic;
 
 namespace api.Controllers
 {
@@ -73,39 +74,55 @@ namespace api.Controllers
             }
         }
 
+        [HttpGet("/api/utils/estimatefee")]
+        public ActionResult GetEstimateFee([FromQuery] int? nbBlocks = 2)
+        {
+            try
+            {
+                var estimateFee = new ExpandoObject() as IDictionary<string, Object>;
+                //TODO Check which algorithm to use (see bitcoin-abc's median, at src/policy/fees.cpp for an example)
+                estimateFee.Add(nbBlocks.ToString(), 0);
+                return Json(estimateFee);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
         private ActionResult GetDifficulty()
         {
-            Block topBlock = GetLastBlock();
+            Tuple<Block, UInt64> topBlock = GetLastBlock();
             return Json
             (
                 new
                 {
-                    difficulty = Utils.BitsToDifficulty(topBlock.Header.Bits)
+                    difficulty = Utils.BitsToDifficulty(topBlock.Item1.Header.Bits)
                 }
             );
         }
 
         private ActionResult GetBestBlockHash()
         {
-            Block topBlock = GetLastBlock();
+            Tuple<Block, UInt64> topBlock = GetLastBlock();
             return Json
             (
                 new
                 {
-                    bestblockhash = Binary.ByteArrayToHexString(topBlock.Hash)
+                    bestblockhash = Binary.ByteArrayToHexString(topBlock.Item1.Hash)
                 }
             );
         }
 
         private ActionResult GetLastBlockHash()
         {
-            Block topBlock = GetLastBlock();
-            string hashHexString = Binary.ByteArrayToHexString(topBlock.Hash); 
+            Tuple<Block, UInt64> topBlock = GetLastBlock();
+            string hashHexString = Binary.ByteArrayToHexString(topBlock.Item1.Hash); 
             return Json
             (
                 new
                 {
-                    syncTipHash = hashHexString
+                    syncTipHash = hashHexString,
                     lastblockhash = hashHexString
                 }
             );
@@ -113,7 +130,7 @@ namespace api.Controllers
 
         private ActionResult GetInfo()
         {
-            Block block = GetLastBlock();
+            Tuple<Block, UInt64> block = GetLastBlock();
             return Json
             (
                 new
@@ -122,11 +139,11 @@ namespace api.Controllers
                     {
                         //version = 120100, //TODO
                         //protocolversion = 70012, //TODO
-                        blocks = block.Height,
+                        blocks = block.Item2,
                         //timeoffset = 0, //TODO
                         //connections = 8, //TODO
                         //proxy = "", //TODO
-                        difficulty = Utils.BitsToDifficulty(block.Header.Bits),
+                        difficulty = Utils.BitsToDifficulty(block.Item1.Header.Bits),
                         testnet = /*NodeSettings.UseTestnetRules*/true //TODO Use NodeSettings when node-cint fixed
                         //relayfee = 0.00001, //TODO
                         //errors = "Warning: unknown new rules activated (versionbit 28)", //TODO
@@ -136,7 +153,7 @@ namespace api.Controllers
             );
         }
 
-        private Block GetLastBlock()
+        private Tuple<Block, UInt64> GetLastBlock()
         {
             Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
             Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight() failed");
@@ -144,6 +161,7 @@ namespace api.Controllers
             Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(currentHeight);
             Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + currentHeight + ") failed");
             Block topBlock = getBlockResult.Item2;
+            return new Tuple<Block, UInt64>(topBlock, currentHeight);
         }
 
     }
