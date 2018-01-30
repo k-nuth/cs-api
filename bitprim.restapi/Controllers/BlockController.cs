@@ -122,57 +122,90 @@ namespace api.Controllers
         {
             try
             {
-                DateTime blockDateToSearch = Convert.ToDateTime(blockDate);
+                //Find blocks starting point
                 Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
                 Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight failed, check error log");
                 UInt64 topHeight = getLastHeightResult.Item2;
-                //Find the highest block with a timestamp from the previous day
-                UInt64 low = 0;
-                UInt64 high = topHeight;
-                UInt64 mid = 0;
-                var blocks = new List<object>();
-                while(low <= high)
-                {
-                    mid = (UInt64) ((double)low + (double) high/2); //Adds as doubles to prevent overflow
-                    Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(mid);
-                    Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + mid + ") failed, check error log");
-                    if(DateTimeOffset.FromUnixTimeSeconds(getBlockResult.Item2.Header.Timestamp).Date >= blockDateToSearch.Date)
-                    {
-                        high = mid - 1; 
-                    }else
-                    {
-                        low = mid + 1;
-                    }
-                }
+                DateTime blockDateToSearch = Convert.ToDateTime(blockDate);
+                UInt64 low = FindHighestBlockFromPreviousDay(blockDateToSearch, topHeight);
                 if(low == 0) //No blocks
                 {
-                    return Json(BlocksByDateToJSON(blocks, blockDateToSearch, false, -1));
+                    return Json(BlocksByDateToJSON(new List<object>(), blockDateToSearch, false, -1));
                 }
                 //Grab the specified amount of blocks (limit)
-                UInt64 startingHeight = low;
-                for(UInt64 i=0; i<limit && startingHeight+i<topHeight; i++)
-                {
-                    Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(startingHeight + i);
-                    Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + startingHeight + i + ") failed, check error log");
-                    Block block = getBlockResult.Item2;
-                    blocks.Add(new
-                    {
-                        height = getBlockResult.Item3,
-                        size = block.GetSerializedSize(block.Header.Version),
-                        hash = Binary.ByteArrayToHexString(block.Hash),
-                        time = block.Header.Timestamp,
-                        txLength = block.TransactionCount
-                        //TODO Add pool info
-                    });
-                }
-                //TODO Check if there are more blocks
-                return Json(BlocksByDateToJSON(blocks, blockDateToSearch, false, -1));
+                UInt64 startingHeight = low + 1;
+                List<object> blocks = GetBlocks(startingHeight, topHeight, limit);
+                //Check if there are more blocks: grab the next block
+                Tuple<bool, int> moreBlocks = CheckIfMoreBlocks(startingHeight, limit, topHeight, blockDateToSearch);
+                return Json(BlocksByDateToJSON(blocks, blockDateToSearch, moreBlocks.Item1, moreBlocks.Item2));
             }
             catch(Exception ex)
             {
                 return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }
+        }
+
+        private UInt64 FindHighestBlockFromPreviousDay(DateTime blockDateToSearch, UInt64 topHeight)
+        {
+            //Adapted binary search
+            UInt64 low = 0;
+            UInt64 high = topHeight;
+            UInt64 mid = 0;
+            while(low <= high)
+            {
+                mid = (UInt64) ((double)low + (double) high/2); //Adds as doubles to prevent overflow
+                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(mid);
+                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + mid + ") failed, check error log");
+                if(DateTimeOffset.FromUnixTimeSeconds(getBlockResult.Item2.Header.Timestamp).Date >= blockDateToSearch.Date)
+                {
+                    high = mid - 1; 
+                }else
+                {
+                    low = mid + 1;
+                }
+            }
+            return low;
+        } 
+
+        private List<object> GetBlocks(UInt64 startingHeight, UInt64 topHeight, UInt64 blockCount)
+        {
+            var blocks = new List<object>();
+            for(UInt64 i=0; i<blockCount && startingHeight+i<topHeight; i++)
+            {
+                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(startingHeight + i);
+                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + startingHeight + i + ") failed, check error log");
+                Block block = getBlockResult.Item2;
+                blocks.Add(new
+                {
+                    height = getBlockResult.Item3,
+                    size = block.GetSerializedSize(block.Header.Version),
+                    hash = Binary.ByteArrayToHexString(block.Hash),
+                    time = block.Header.Timestamp,
+                    txLength = block.TransactionCount
+                    //TODO Add pool info
+                });
+            }
+            return blocks;
+        }
+
+        private Tuple<bool, int> CheckIfMoreBlocks(UInt64 startingHeight, UInt64 limit, UInt64 topHeight, DateTime blockDateToSearch)
+        {
+            bool moreBlocks = false;
+            int moreBlocksTs = -1;
+            if(startingHeight + limit >= topHeight)
+            {
+                moreBlocks = false;
+            }
+            else
+            {
+                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(startingHeight + limit);
+                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + startingHeight + limit + ") failed, check error log");
+                Block block = getBlockResult.Item2;
+                moreBlocks = DateTimeOffset.FromUnixTimeSeconds(block.Header.Timestamp).Date == blockDateToSearch.Date;
+                moreBlocksTs = moreBlocks? (int) block.Header.Timestamp : -1;
+            }
+            return new Tuple<bool, int>(moreBlocks, moreBlocksTs);
         }
 
         private static object BlocksByDateToJSON(List<object> blocks, DateTime blockDate, bool moreBlocks, int moreBlocksTs)
