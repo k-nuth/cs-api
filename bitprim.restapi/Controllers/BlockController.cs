@@ -210,15 +210,15 @@ namespace api.Controllers
 
         private static object BlocksByDateToJSON(List<object> blocks, DateTime blockDate, bool moreBlocks, int moreBlocksTs)
         {
-            const string dateFormat = "YYYY-MM-dd";
+            const string dateFormat = "yyyy-MM-dd";
             return new
             {
                 blocks = blocks.ToArray(),
                 length = blocks.Count,
                 pagination = new
                 {
-                    next = blockDate.Date.AddDays(-1).ToString(dateFormat),
-                    prev = blockDate.Date.AddDays(+1).ToString(dateFormat),
+                    next = blockDate.Date.AddDays(+1).ToString(dateFormat),
+                    prev = blockDate.Date.AddDays(-1).ToString(dateFormat),
                     currentTs = new DateTimeOffset(blockDate).ToUnixTimeSeconds(),
                     current = blockDate.Date.ToString(dateFormat),
                     isToday = (blockDate.Date == DateTime.Now.Date),
