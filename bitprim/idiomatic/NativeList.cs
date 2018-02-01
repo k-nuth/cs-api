@@ -101,13 +101,13 @@ namespace Bitprim
 
         public void Reset()
         {
-            counter_ = 0;
+            counter_ = -1;
         }
 
         internal NativeListEnumerator(NativeList<T> nativeList)
         {
             nativeList_ = nativeList;
-            counter_ = 0;
+            Reset();
         }
     }
 

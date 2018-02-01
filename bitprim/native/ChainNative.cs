@@ -214,6 +214,9 @@ public static class ChainNative
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_validate_tx(IntPtr chain, IntPtr context, IntPtr transaction, ValidateTxHandler handler);
 
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern int /* bool */ chain_is_stale(IntPtr chain);
+
 }
 
 }

@@ -14,11 +14,11 @@ namespace api.Controllers
     public class TransactionController : Controller
     {
         private Chain chain_;
-        private readonly IOptions<NodeConfig> config_;
+        private readonly NodeConfig config_;
 
         public TransactionController(IOptions<NodeConfig> config, Chain chain)
         {
-            config_ = config;
+            config_ = config.Value;
             chain_ = chain;
         }
 
@@ -28,6 +28,7 @@ namespace api.Controllers
         {
             try
             {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + hash + ") failed, check error log");
@@ -45,6 +46,7 @@ namespace api.Controllers
         {
             try
             {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, false);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + hash + ") failed, check error log");
@@ -61,6 +63,114 @@ namespace api.Controllers
             {
                 return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }
+        }
+
+        // GET: api/txs/?block=HASH
+        [HttpGet("/api/txs/#by_block_hash")]
+        public ActionResult GetTransactionsByBlock(string block)
+        {
+            try
+            {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(Binary.HexStringToByteArray(block));
+                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + block + ") failed, check error log");
+                Block fullBlock = getBlockResult.Item2;
+                UInt64 blockHeight = getBlockResult.Item3;
+                List<object> txs = new List<object>();
+                for(UInt64 i=0; i<fullBlock.TransactionCount; i++)
+                {
+                    Transaction tx = fullBlock.GetNthTransaction(i);
+                    txs.Add(TxToJSON(tx, blockHeight));
+                }
+                return Json(new
+                {
+                     pagesTotal = 1, //TODO Implement pagination
+                     txs = txs.ToArray()
+                });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("/api/txs/#by_address")]
+        public ActionResult GetTransactionsByAddress(string addr)
+        {
+            try
+            {
+                List<object> txs = GetTransactionsBySingleAddress(addr);
+                return Json(new{
+                    pagesTotal = 1, //TODO Implement pagination
+                    txs = txs.ToArray()
+                });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("/api/addrs/{paymentAddresses}/txs")]
+        public ActionResult GetTransactionsForMultipleAddresses(string addresses)
+        {
+            try
+            {
+                var txs = new List<object>();
+                foreach(string address in addresses.Split(","))
+                {
+                    txs.Concat(GetTransactionsBySingleAddress(address));
+                }
+                return Json(new{
+                    totalItems = txs.Count, //TODO paging
+                    from = 0,
+                    to = txs.Count,
+                    items = txs.ToArray()
+                });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("/api/tx/send")]
+        public ActionResult BroadcastTransaction([FromBody] string rawtx)
+        {
+            try
+            {
+                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+                var tx = new Transaction(rawtx);
+                ErrorCode ec = chain_.OrganizeTransactionSync(tx);
+                Utils.CheckBitprimApiErrorCode(ec, "OrganizeTransaction(" + rawtx + ") failed");
+                return Json
+                (
+                    new
+                    {
+                        txid = Binary.ByteArrayToHexString(tx.Hash) //TODO Check if this should be returned by organize call
+                    }
+                );
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        private List<object> GetTransactionsBySingleAddress(string paymentAddress)
+        {
+            Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+            Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
+            Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
+            HistoryCompactList history = getAddressHistoryResult.Item2;
+            var txs = new List<object>();
+            foreach(HistoryCompact compact in history)
+            {
+                Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(compact.Point.Hash, true);
+                Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(compact.Point.Hash) + ") failed, check error log");
+                txs.Add(TxToJSON(getTxResult.Item2, getTxResult.Item3));
+            }
+            return txs;
         }
 
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
@@ -122,7 +232,8 @@ namespace api.Controllers
             Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(previousOutput.Hash, false);
             Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(previousOutput.Hash) + ") failed, check errog log");
             Output output = getTxResult.Item2.Outputs[(int)previousOutput.Index];
-            jsonInput.addr =  output.PaymentAddress(false).Encoded; //TODO Ask the node if it is using testnet rules
+            //TODO Awaiting fix (get_network returning none)
+            jsonInput.addr =  output.PaymentAddress(NodeSettings.UseTestnetRules).Encoded;
             jsonInput.valueSat = output.Value;
             jsonInput.value = Utils.SatoshisToBTC(output.Value);
             jsonInput.doubleSpentTxID = null; //We don't handle double spent transactions
@@ -194,7 +305,7 @@ namespace api.Controllers
         private static object ScriptAddressesToJSON(Output output)
         {
             var jsonAddresses = new List<object>();
-            jsonAddresses.Add(output.PaymentAddress(false).Encoded); //TODO Ask the node if we're on testnet
+            jsonAddresses.Add(output.PaymentAddress(NodeSettings.UseTestnetRules).Encoded);
             return jsonAddresses.ToArray();
         }
 
