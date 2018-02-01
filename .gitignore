@@ -45,3 +45,5 @@
 /bitprim.restapi/conanfile.txt
 /bitprim.restapi/conanbuildinfo.txt
 /bitprim.restapi/conanbuildinfo.cmake
+/.vscode/launch.json
+/.vscode

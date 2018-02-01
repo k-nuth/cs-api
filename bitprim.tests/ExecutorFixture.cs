@@ -9,7 +9,7 @@ public class ExecutorFixture : IDisposable
 
     public ExecutorFixture()
     {
-        exec_ = new Executor("", 0, 0);
+        exec_ = new Executor("");
         bool initChainOk = exec_.InitChain();
         if(!initChainOk)
         {
