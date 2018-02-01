@@ -73,7 +73,7 @@ namespace api
         {
             // Initialize and register chain service
             NodeConfig config = Configuration.Get<NodeConfig>();
-            exec_ = new Executor(config.NodeConfigFile, 0, 0);
+            exec_ = new Executor(config.NodeConfigFile);
             if(config.StartDatabaseFromScratch)
             {
                 bool ok = exec_.InitChain();

@@ -16,24 +16,29 @@ namespace Bitprim
         /// Create executor. Does not init database or start execution yet.
         /// </summary>
         /// <param name="configFile"> Path to configuration file. </param>
-        /// <param name="stdOut"> File descriptor for redirecting standard output.
-        /// If zero, output goes to debug file. </param>
-        /// <param name="stdErr"> File descriptor for redirecting standard error output.
-        /// If zero, output goes to error file. </param>
-        public Executor(string configFile, int stdOut = 0, int stdErr = 0)
+        public Executor(string configFile)
         {
-            nativeInstance_ = ExecutorNative.executor_construct_fd(configFile, stdOut, stdErr);
+            nativeInstance_ = ExecutorNative.executor_construct_fd(configFile, 0, 0);
         }
+
+        /// <summary> //TODO See BIT-20
+        /// Create executor. Does not init database or start execution yet.
+        /// </summary>
+        /// <param name="configFile"> Path to configuration file. </param>
+        /// <param name="stdOut"> File descriptor for redirecting standard output. </param>
+        /// <param name="stdErr"> File descriptor for redirecting standard error output. </param>
+        // public Executor(string configFile, int stdOut, int stdErr)
+        // {
+        //     nativeInstance_ = ExecutorNative.executor_construct_fd(configFile, stdOut, stdErr);
+        // }
 
         /// <summary>
         /// Create executor. Does not init database or start execution yet.
         /// </summary>
         /// <param name="configFile"> Path to configuration file. </param>
-        /// <param name="stdOut"> Handle for redirecting standard output.
-        /// If IntPtr.Zero, output goes to debug file. </param>
-        /// <param name="stdErr"> Handle for redirecting standard output.
-        /// If IntPtr.Zero, output goes to debug file. </param>
-        public Executor(string configFile, IntPtr stdOut = default(IntPtr), IntPtr stdErr = default(IntPtr))
+        /// <param name="stdOut"> Handle for redirecting standard output. </param>
+        /// <param name="stdErr"> Handle for redirecting standard output. </param>
+        public Executor(string configFile, IntPtr stdOut, IntPtr stdErr)
         {
             nativeInstance_ = ExecutorNative.executor_construct_handles(configFile, stdOut, stdErr);
         }
