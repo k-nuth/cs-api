@@ -46,20 +46,7 @@ namespace api
                 c.SwaggerDoc("v1", new Info { Title = "bitprim", Version = "v1" });  
             });
 
-            // Initialize and register chain service
-            string configFile = Configuration.Get<NodeConfig>().NodeConfigFile;
-            exec_ = new Executor(configFile, 0, 0);
-            bool ok = exec_.InitChain();
-            if(!ok)
-            {
-                throw new ApplicationException("Executor::InitChain failed; check log");
-            }
-            int result = exec_.RunWait();
-            if (result != 0)
-            {
-                throw new ApplicationException("Executor::RunWait failed; error code: " + result);
-            }
-            services.AddSingleton<Chain>(exec_.Chain);
+             StartBitprimNode(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +67,27 @@ namespace api
             applicationLifetime.ApplicationStopping.Register(OnShutdown);
 
             app.UseMvc();
+        }
+
+        private void StartBitprimNode(IServiceCollection services)
+        {
+            // Initialize and register chain service
+            NodeConfig config = Configuration.Get<NodeConfig>();
+            exec_ = new Executor(config.NodeConfigFile, 0, 0);
+            if(config.StartDatabaseFromScratch)
+            {
+                bool ok = exec_.InitChain();
+                if(!ok)
+                {
+                    throw new ApplicationException("Executor::InitChain failed; check log");
+                }
+            }
+            int result = exec_.RunWait();
+            if (result != 0)
+            {
+                throw new ApplicationException("Executor::RunWait failed; error code: " + result);
+            }
+            services.AddSingleton<Chain>(exec_.Chain);
         }
 
         private void OnShutdown()
