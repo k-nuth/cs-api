@@ -154,15 +154,15 @@ namespace api.Controllers
             UInt64 mid = 0;
             while(low <= high)
             {
-                mid = (UInt64) ((double)low + (double) high/2); //Adds as doubles to prevent overflow
+                mid = (UInt64) ((double)low + (double) high)/2; //Adds as doubles to prevent overflow
                 Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHeight(mid);
                 Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHeight(" + mid + ") failed, check error log");
-                if(DateTimeOffset.FromUnixTimeSeconds(getBlockResult.Item2.Header.Timestamp).Date >= blockDateToSearch.Date)
-                {
-                    high = mid - 1; 
-                }else
+                if(DateTimeOffset.FromUnixTimeSeconds(getBlockResult.Item2.Header.Timestamp).Date < blockDateToSearch.Date)
                 {
                     low = mid + 1;
+                }else
+                {
+                    high = mid - 1;
                 }
             }
             return low;
