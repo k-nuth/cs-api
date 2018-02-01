@@ -213,7 +213,7 @@ namespace api.Controllers
             return new Tuple<bool, int>(moreBlocks, moreBlocksTs);
         }
 
-        private static object BlocksByDateToJSON(List<object> blocks, DateTime blockDate, bool moreBlocks, int moreBlocksTs)
+        private static object BlocksByDateToJSON(List<dynamic> blocks, DateTime blockDate, bool moreBlocks, int moreBlocksTs)
         {
             const string dateFormat = "yyyy-MM-dd";
             return new
@@ -224,7 +224,7 @@ namespace api.Controllers
                 {
                     next = blockDate.Date.AddDays(+1).ToString(dateFormat),
                     prev = blockDate.Date.AddDays(-1).ToString(dateFormat),
-                    currentTs = new DateTimeOffset(blockDate).ToUnixTimeSeconds(),
+                    currentTs = blocks.Count > 0? blocks[0].time : new DateTimeOffset(blockDate).ToUnixTimeSeconds(),
                     current = blockDate.Date.ToString(dateFormat),
                     isToday = (blockDate.Date == DateTime.Now.Date),
                     more = moreBlocks,
