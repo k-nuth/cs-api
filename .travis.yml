@@ -76,7 +76,6 @@ install:
       pip install wheel --upgrade
       pip install twine --upgrade
       conan user
-      conan remote add bitprim_temp https://api.bintray.com/conan/bitprim/bitprim
       # Install .NET Core 2.x
       if test "$TRAVIS_OS_NAME" == "osx"; then
         curl -O https://download.microsoft.com/download/D/7/2/D725E47F-A4F1-4285-8935-A91AE2FCC06A/dotnet-sdk-2.0.3-osx-gs-x64.pkg
