@@ -95,14 +95,14 @@ namespace api.Controllers
         }
 
         [HttpGet("/api/addrs/{paymentAddresses}/txs")]
-        public ActionResult GetTransactionsForMultipleAddresses(string addresses)
+        public ActionResult GetTransactionsForMultipleAddresses(string addresses, int pageNum = 0)
         {
             try
             {
                 var txs = new List<object>();
                 foreach(string address in addresses.Split(","))
                 {
-                    txs.Concat(GetTransactionsBySingleAddress(address));
+                    txs.Concat(GetTransactionsBySingleAddress(address, pageNum).Item1);
                 }
                 return Json(new{
                     totalItems = txs.Count, //TODO paging
