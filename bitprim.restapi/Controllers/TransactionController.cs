@@ -66,44 +66,27 @@ namespace api.Controllers
         }
 
         // GET: api/txs/?block=HASH
-        [HttpGet("/api/txs/#by_block_hash")]
-        public ActionResult GetTransactionsByBlock(string block)
+        [HttpGet("/api/txs")]
+        public ActionResult GetTransactions(string block = null, string addr = null)
         {
             try
             {
-                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
-                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(Binary.HexStringToByteArray(block));
-                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + block + ") failed, check error log");
-                Block fullBlock = getBlockResult.Item2;
-                UInt64 blockHeight = getBlockResult.Item3;
-                List<object> txs = new List<object>();
-                for(UInt64 i=0; i<fullBlock.TransactionCount; i++)
+                if(block == null && addr == null)
                 {
-                    Transaction tx = fullBlock.GetNthTransaction(i);
-                    txs.Add(TxToJSON(tx, blockHeight));
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "Specify block or address");
                 }
-                return Json(new
+                else if(block != null && addr != null)
                 {
-                     pagesTotal = 1, //TODO Implement pagination
-                     txs = txs.ToArray()
-                });
-            }
-            catch(Exception ex)
-            {
-                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
-            }
-        }
-
-        [HttpGet("/api/txs/#by_address")]
-        public ActionResult GetTransactionsByAddress(string addr)
-        {
-            try
-            {
-                List<object> txs = GetTransactionsBySingleAddress(addr);
-                return Json(new{
-                    pagesTotal = 1, //TODO Implement pagination
-                    txs = txs.ToArray()
-                });
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "Specify either block or address, but not both");
+                }
+                else if(block != null)
+                {
+                    return GetTransactionsByBlockHash(block);
+                }
+                else
+                {
+                    return GetTransactionsByAddress(addr);
+                }
             }
             catch(Exception ex)
             {
@@ -155,6 +138,35 @@ namespace api.Controllers
             {
                 return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }
+        }
+
+        private ActionResult GetTransactionsByBlockHash(string blockHash)
+        {
+            Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+            Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(Binary.HexStringToByteArray(blockHash));
+            Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + blockHash + ") failed, check error log");
+            Block fullBlock = getBlockResult.Item2;
+            UInt64 blockHeight = getBlockResult.Item3;
+            List<object> txs = new List<object>();
+            for(UInt64 i=0; i<fullBlock.TransactionCount; i++)
+            {
+                Transaction tx = fullBlock.GetNthTransaction(i);
+                txs.Add(TxToJSON(tx, blockHeight));
+            }
+            return Json(new
+            {
+                pagesTotal = 1, //TODO Implement pagination
+                txs = txs.ToArray()
+            });
+        }
+
+        private ActionResult GetTransactionsByAddress(string addr)
+        {
+            List<object> txs = GetTransactionsBySingleAddress(addr);
+            return Json(new{
+                pagesTotal = 1, //TODO Implement pagination
+                txs = txs.ToArray()
+            });
         }
 
         private List<object> GetTransactionsBySingleAddress(string paymentAddress)
