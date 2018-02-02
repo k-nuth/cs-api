@@ -67,15 +67,15 @@ namespace api.Controllers
 
         // GET: api/txs/?block=HASH
         [HttpGet("/api/txs")]
-        public ActionResult GetTransactions(string block = null, string addr = null)
+        public ActionResult GetTransactions(string block = null, string address = null, int pageNum = 0)
         {
             try
             {
-                if(block == null && addr == null)
+                if(block == null && address == null)
                 {
                     return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "Specify block or address");
                 }
-                else if(block != null && addr != null)
+                else if(block != null && address != null)
                 {
                     return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "Specify either block or address, but not both");
                 }
@@ -85,7 +85,7 @@ namespace api.Controllers
                 }
                 else
                 {
-                    return GetTransactionsByAddress(addr);
+                    return GetTransactionsByAddress(address, pageNum);
                 }
             }
             catch(Exception ex)
@@ -160,29 +160,31 @@ namespace api.Controllers
             });
         }
 
-        private ActionResult GetTransactionsByAddress(string addr)
+        private ActionResult GetTransactionsByAddress(string address, int pageNum)
         {
-            List<object> txs = GetTransactionsBySingleAddress(addr);
+            Tuple<List<object>, UInt64> txsByAddress = GetTransactionsBySingleAddress(address, pageNum);
             return Json(new{
-                pagesTotal = 1, //TODO Implement pagination
-                txs = txs.ToArray()
+                pagesTotal = txsByAddress.Item2,
+                txs = txsByAddress.Item1.ToArray()
             });
         }
 
-        private List<object> GetTransactionsBySingleAddress(string paymentAddress)
+        private Tuple<List<object>, UInt64> GetTransactionsBySingleAddress(string paymentAddress, int pageNum)
         {
             Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
             Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
             Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
             HistoryCompactList history = getAddressHistoryResult.Item2;
             var txs = new List<object>();
-            foreach(HistoryCompact compact in history)
+            int pageSize = config_.TransactionsByAddressPageSize;
+            for(int i=0; i<pageSize; i++)
             {
+                HistoryCompact compact = history[pageNum * pageSize + i];
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(compact.Point.Hash, true);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(compact.Point.Hash) + ") failed, check error log");
                 txs.Add(TxToJSON(getTxResult.Item2, getTxResult.Item3));
             }
-            return txs;
+            return new Tuple<List<object>, UInt64>(txs, history.Count/(UInt64)pageSize);
         }
 
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
