@@ -81,7 +81,7 @@ namespace api.Controllers
                 }
                 else if(block != null)
                 {
-                    return GetTransactionsByBlockHash(block);
+                    return GetTransactionsByBlockHash(block, pageNum);
                 }
                 else
                 {
@@ -140,22 +140,28 @@ namespace api.Controllers
             }
         }
 
-        private ActionResult GetTransactionsByBlockHash(string blockHash)
+        private ActionResult GetTransactionsByBlockHash(string blockHash, int pageNum)
         {
+            if(pageNum < 0)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "pageNum cannot be negative");
+            }
             Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
             Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(Binary.HexStringToByteArray(blockHash));
             Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + blockHash + ") failed, check error log");
             Block fullBlock = getBlockResult.Item2;
             UInt64 blockHeight = getBlockResult.Item3;
+            UInt64 pageSize = (UInt64) config_.TransactionsByAddressPageSize;
+            UInt64 pageCount = (UInt64) Math.Ceiling((double)fullBlock.TransactionCount/(double)pageSize);
             List<object> txs = new List<object>();
-            for(UInt64 i=0; i<fullBlock.TransactionCount; i++)
+            for(UInt64 i=0; i<pageSize && (UInt64)pageNum * pageSize + i < fullBlock.TransactionCount; i++)
             {
                 Transaction tx = fullBlock.GetNthTransaction(i);
                 txs.Add(TxToJSON(tx, blockHeight));
             }
             return Json(new
             {
-                pagesTotal = 1, //TODO Implement pagination
+                pagesTotal = pageCount,
                 txs = txs.ToArray()
             });
         }
