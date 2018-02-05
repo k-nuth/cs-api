@@ -118,16 +118,22 @@ namespace api.Controllers
 
         // GET: api/blocks/?limit={limit}&blockDate={blockDate}
         [HttpGet("/api/blocks/")]
-        public ActionResult GetBlocksByDate(UInt64 limit, string blockDate)
+        public ActionResult GetBlocksByDate(int limit, string blockDate)
         {
             try
             {
+                //Validate input
+                Tuple<bool, string, DateTime?> validateInputResult = ValidateGetBlocksByDateInput(limit, blockDate);
+                if(!validateInputResult.Item1)
+                {
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, validateInputResult.Item2);
+                }
+                DateTime blockDateToSearch = validateInputResult.Item3.Value;
                 //Find blocks starting point
                 Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 Tuple<ErrorCode, UInt64> getLastHeightResult = chain_.GetLastHeight();
                 Utils.CheckBitprimApiErrorCode(getLastHeightResult.Item1, "GetLastHeight failed, check error log");
                 UInt64 topHeight = getLastHeightResult.Item2;
-                DateTime blockDateToSearch = Convert.ToDateTime(blockDate);
                 UInt64 low = FindFirstBlockFromNextDay(blockDateToSearch, topHeight);
                 if(low == 0) //No blocks
                 {
@@ -135,15 +141,33 @@ namespace api.Controllers
                 }
                 //Grab the specified amount of blocks (limit)
                 UInt64 startingHeight = low - 1;
-                List<object> blocks = GetPreviousBlocks(startingHeight, limit, blockDateToSearch);
+                List<object> blocks = GetPreviousBlocks(startingHeight, (UInt64)limit, blockDateToSearch);
                 //Check if there are more blocks: grab one more earlier block
-                Tuple<bool, int> moreBlocks = CheckIfMoreBlocks(startingHeight, limit, blockDateToSearch);
+                Tuple<bool, int> moreBlocks = CheckIfMoreBlocks(startingHeight, (UInt64)limit, blockDateToSearch);
                 return Json(BlocksByDateToJSON(blocks, blockDateToSearch, moreBlocks.Item1, moreBlocks.Item2));
             }
             catch(Exception ex)
             {
                 return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }
+        }
+
+        private Tuple<bool, string, DateTime?> ValidateGetBlocksByDateInput(int limit, string blockDate)
+        {
+            if(limit <= 0)
+            {
+                return new Tuple<bool, string, DateTime?>(false, "Invalid limit; must be greater than zero", null);
+            }
+            if(limit > config_.MaxBlockSummarySize)
+            {
+                return new Tuple<bool, string, DateTime?>(false, "Invalid limit; must be lower than " + config_.MaxBlockSummarySize, null);
+            }
+            DateTime blockDateToSearch;
+            if(!DateTime.TryParseExact(blockDate, config_.DateInputFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out blockDateToSearch))
+            {
+                return new Tuple<bool, string, DateTime?>(false, "Invalid date format; expected " + config_.DateInputFormat, null);
+            }
+            return new Tuple<bool, string, DateTime?>(true, "", blockDateToSearch);
         }
 
         private UInt64 FindFirstBlockFromNextDay(DateTime blockDateToSearch, UInt64 topHeight)
