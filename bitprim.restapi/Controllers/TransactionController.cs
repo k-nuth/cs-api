@@ -162,9 +162,22 @@ namespace api.Controllers
 
         private ActionResult GetTransactionsByAddress(string address, int pageNum)
         {
+            if(pageNum < 0)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "pageNum cannot be negative");
+            }
             Tuple<List<object>, UInt64> txsByAddress = GetTransactionsBySingleAddress(address, pageNum);
+            UInt64 pageCount = txsByAddress.Item2;
+            if((UInt64)pageNum >= pageCount)
+            {
+                return StatusCode
+                (
+                    (int)System.Net.HttpStatusCode.BadRequest,
+                    "pageNum cannot exceed " + (pageCount - 1) + " (zero-indexed)"
+                );
+            }
             return Json(new{
-                pagesTotal = txsByAddress.Item2,
+                pagesTotal = pageCount,
                 txs = txsByAddress.Item1.ToArray()
             });
         }
@@ -177,7 +190,7 @@ namespace api.Controllers
             HistoryCompactList history = getAddressHistoryResult.Item2;
             var txs = new List<object>();
             int pageSize = config_.TransactionsByAddressPageSize;
-            for(int i=0; i<pageSize; i++)
+            for(int i=0; i<pageSize && (pageNum * pageSize + i < history.Count); i++)
             {
                 HistoryCompact compact = history[pageNum * pageSize + i];
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(compact.Point.Hash, true);
