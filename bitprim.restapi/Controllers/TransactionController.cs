@@ -67,7 +67,7 @@ namespace api.Controllers
 
         // GET: api/txs/?block=HASH
         [HttpGet("/api/txs")]
-        public ActionResult GetTransactions(string block = null, string address = null, int pageNum = 0)
+        public ActionResult GetTransactions(string block = null, string address = null, UInt64? pageNum = 0)
         {
             try
             {
@@ -81,11 +81,11 @@ namespace api.Controllers
                 }
                 else if(block != null)
                 {
-                    return GetTransactionsByBlockHash(block, pageNum);
+                    return GetTransactionsByBlockHash(block, pageNum.Value);
                 }
                 else
                 {
-                    return GetTransactionsByAddress(address, pageNum);
+                    return GetTransactionsByAddress(address, pageNum.Value);
                 }
             }
             catch(Exception ex)
@@ -95,14 +95,14 @@ namespace api.Controllers
         }
 
         [HttpGet("/api/addrs/{paymentAddresses}/txs")]
-        public ActionResult GetTransactionsForMultipleAddresses(string addresses, int pageNum = 0)
+        public ActionResult GetTransactionsForMultipleAddresses(string addresses, UInt64? pageNum = 0)
         {
             try
             {
                 var txs = new List<object>();
                 foreach(string address in addresses.Split(","))
                 {
-                    txs.Concat(GetTransactionsBySingleAddress(address, pageNum).Item1);
+                    txs.Concat(GetTransactionsBySingleAddress(address, pageNum.Value).Item1);
                 }
                 return Json(new{
                     totalItems = txs.Count, //TODO paging
@@ -140,12 +140,8 @@ namespace api.Controllers
             }
         }
 
-        private ActionResult GetTransactionsByBlockHash(string blockHash, int pageNum)
+        private ActionResult GetTransactionsByBlockHash(string blockHash, UInt64 pageNum)
         {
-            if(pageNum < 0)
-            {
-                return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "pageNum cannot be negative");
-            }
             Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
             Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(Binary.HexStringToByteArray(blockHash));
             Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + blockHash + ") failed, check error log");
@@ -153,10 +149,18 @@ namespace api.Controllers
             UInt64 blockHeight = getBlockResult.Item3;
             UInt64 pageSize = (UInt64) config_.TransactionsByAddressPageSize;
             UInt64 pageCount = (UInt64) Math.Ceiling((double)fullBlock.TransactionCount/(double)pageSize);
-            List<object> txs = new List<object>();
-            for(UInt64 i=0; i<pageSize && (UInt64)pageNum * pageSize + i < fullBlock.TransactionCount; i++)
+            if(pageNum >= pageCount)
             {
-                Transaction tx = fullBlock.GetNthTransaction(i);
+                return StatusCode
+                (
+                    (int)System.Net.HttpStatusCode.BadRequest,
+                    "pageNum cannot exceed " + (pageCount - 1) + " (zero-indexed)"
+                );
+            }
+            List<object> txs = new List<object>();
+            for(UInt64 i=0; i<pageSize && pageNum * pageSize + i < fullBlock.TransactionCount; i++)
+            {
+                Transaction tx = fullBlock.GetNthTransaction(pageNum * pageSize + i);
                 txs.Add(TxToJSON(tx, blockHeight));
             }
             return Json(new
@@ -166,15 +170,11 @@ namespace api.Controllers
             });
         }
 
-        private ActionResult GetTransactionsByAddress(string address, int pageNum)
+        private ActionResult GetTransactionsByAddress(string address, UInt64 pageNum)
         {
-            if(pageNum < 0)
-            {
-                return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "pageNum cannot be negative");
-            }
             Tuple<List<object>, UInt64> txsByAddress = GetTransactionsBySingleAddress(address, pageNum);
             UInt64 pageCount = txsByAddress.Item2;
-            if((UInt64)pageNum >= pageCount)
+            if(pageNum >= pageCount)
             {
                 return StatusCode
                 (
@@ -188,22 +188,23 @@ namespace api.Controllers
             });
         }
 
-        private Tuple<List<object>, UInt64> GetTransactionsBySingleAddress(string paymentAddress, int pageNum)
+        private Tuple<List<object>, UInt64> GetTransactionsBySingleAddress(string paymentAddress, UInt64 pageNum)
         {
             Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
             Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
             Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
             HistoryCompactList history = getAddressHistoryResult.Item2;
             var txs = new List<object>();
-            int pageSize = config_.TransactionsByAddressPageSize;
-            for(int i=0; i<pageSize && (pageNum * pageSize + i < history.Count); i++)
+            UInt64 pageSize = (UInt64) config_.TransactionsByAddressPageSize;
+            for(UInt64 i=0; i<pageSize && (pageNum * pageSize + i < history.Count); i++)
             {
-                HistoryCompact compact = history[pageNum * pageSize + i];
+                HistoryCompact compact = history[(int)(pageNum * pageSize + i)];
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(compact.Point.Hash, true);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(compact.Point.Hash) + ") failed, check error log");
                 txs.Add(TxToJSON(getTxResult.Item2, getTxResult.Item3));
             }
-            return new Tuple<List<object>, UInt64>(txs, history.Count/(UInt64)pageSize);
+            UInt64 pageCount = (UInt64) Math.Ceiling((double)history.Count/(double)pageSize);
+            return new Tuple<List<object>, UInt64>(txs, pageCount);
         }
 
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
