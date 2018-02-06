@@ -95,20 +95,30 @@ namespace api.Controllers
         }
 
         [HttpGet("/api/addrs/{paymentAddresses}/txs")]
-        public ActionResult GetTransactionsForMultipleAddresses(string addresses, UInt64? pageNum = 0)
+        public ActionResult GetTransactionsForMultipleAddresses([FromRoute] string paymentAddresses, [FromQuery] int? from = 0, [FromQuery] int? to = 20)
         {
             try
             {
-                var txs = new List<object>();
-                foreach(string address in addresses.Split(","))
+                if(from < 0)
                 {
-                    txs.Concat(GetTransactionsBySingleAddress(address, pageNum.Value).Item1);
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be non negative");
+                }
+                var txs = new List<dynamic>();
+                foreach(string address in System.Web.HttpUtility.UrlDecode(paymentAddresses).Split(","))
+                {
+                    txs = txs.Concat(GetTransactionsBySingleAddress(address, false, 0).Item1).ToList();
+                }
+                //Sort by descending blocktime
+                txs.Sort((tx1, tx2) => tx2.blocktime.CompareTo(tx1.blocktime) );
+                if(to >= txs.Count)
+                {
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'to' exceeds results count (" + txs.Count + ")");
                 }
                 return Json(new{
-                    totalItems = txs.Count, //TODO paging
-                    from = 0,
-                    to = txs.Count,
-                    items = txs.ToArray()
+                    totalItems = txs.Count,
+                    from = from,
+                    to = to,
+                    items = txs.GetRange(from.Value, to.Value + 1).ToArray()
                 });
             }
             catch(Exception ex)
@@ -172,7 +182,7 @@ namespace api.Controllers
 
         private ActionResult GetTransactionsByAddress(string address, UInt64 pageNum)
         {
-            Tuple<List<object>, UInt64> txsByAddress = GetTransactionsBySingleAddress(address, pageNum);
+            Tuple<List<object>, UInt64> txsByAddress = GetTransactionsBySingleAddress(address, true, pageNum);
             UInt64 pageCount = txsByAddress.Item2;
             if(pageNum >= pageCount)
             {
@@ -188,14 +198,14 @@ namespace api.Controllers
             });
         }
 
-        private Tuple<List<object>, UInt64> GetTransactionsBySingleAddress(string paymentAddress, UInt64 pageNum)
+        private Tuple<List<object>, UInt64> GetTransactionsBySingleAddress(string paymentAddress, bool pageResults, UInt64 pageNum)
         {
             Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
             Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
             Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
             HistoryCompactList history = getAddressHistoryResult.Item2;
             var txs = new List<object>();
-            UInt64 pageSize = (UInt64) config_.TransactionsByAddressPageSize;
+            UInt64 pageSize = pageResults? (UInt64) config_.TransactionsByAddressPageSize : history.Count;
             for(UInt64 i=0; i<pageSize && (pageNum * pageSize + i < history.Count); i++)
             {
                 HistoryCompact compact = history[(int)(pageNum * pageSize + i)];
