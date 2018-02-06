@@ -2,6 +2,11 @@ language: csharp
 sudo: required  
 dist: trusty
 
+branches:
+  only:
+  - master
+  - dev
+
 configuration:
 - Release
 

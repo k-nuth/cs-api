@@ -1,5 +1,10 @@
 build: false
 
+branches:
+  only:
+  - master
+  - dev
+
 configuration:
 - Release
 
