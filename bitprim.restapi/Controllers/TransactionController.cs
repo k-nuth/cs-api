@@ -110,10 +110,7 @@ namespace api.Controllers
                 }
                 //Sort by descending blocktime
                 txs.Sort((tx1, tx2) => tx2.blocktime.CompareTo(tx1.blocktime) );
-                if(to >= txs.Count)
-                {
-                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'to' exceeds results count (" + txs.Count + ")");
-                }
+                to.Value = (int) Math.Min(to.Value, txs.Count - 1);
                 return Json(new{
                     totalItems = txs.Count,
                     from = from,
