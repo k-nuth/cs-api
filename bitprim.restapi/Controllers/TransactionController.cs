@@ -103,7 +103,7 @@ namespace api.Controllers
                 {
                     return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be non negative");
                 }
-                if(from < to)
+                if(from > to)
                 {
                     return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be lower or equal than 'to'");
                 }
