@@ -103,6 +103,10 @@ namespace api.Controllers
                 {
                     return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be non negative");
                 }
+                if(from < to)
+                {
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be lower or equal than 'to'");
+                }
                 var txs = new List<dynamic>();
                 foreach(string address in System.Web.HttpUtility.UrlDecode(paymentAddresses).Split(","))
                 {
@@ -110,7 +114,7 @@ namespace api.Controllers
                 }
                 //Sort by descending blocktime
                 txs.Sort((tx1, tx2) => tx2.blocktime.CompareTo(tx1.blocktime) );
-                to.Value = (int) Math.Min(to.Value, txs.Count - 1);
+                to = (int) Math.Min(to.Value, txs.Count - 1);
                 return Json(new{
                     totalItems = txs.Count,
                     from = from,
