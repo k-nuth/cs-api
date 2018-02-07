@@ -1,1 +1,1 @@
-bitprim-node-cint: v0.3.0-121-g3de9c96
+bitprim-node-cint: v0.3.0-122-gc5d470f
