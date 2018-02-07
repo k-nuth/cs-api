@@ -66,44 +66,27 @@ namespace api.Controllers
         }
 
         // GET: api/txs/?block=HASH
-        [HttpGet("/api/txs/#by_block_hash")]
-        public ActionResult GetTransactionsByBlock(string block)
+        [HttpGet("/api/txs")]
+        public ActionResult GetTransactions(string block = null, string address = null, UInt64? pageNum = 0)
         {
             try
             {
-                Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
-                Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(Binary.HexStringToByteArray(block));
-                Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + block + ") failed, check error log");
-                Block fullBlock = getBlockResult.Item2;
-                UInt64 blockHeight = getBlockResult.Item3;
-                List<object> txs = new List<object>();
-                for(UInt64 i=0; i<fullBlock.TransactionCount; i++)
+                if(block == null && address == null)
                 {
-                    Transaction tx = fullBlock.GetNthTransaction(i);
-                    txs.Add(TxToJSON(tx, blockHeight));
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "Specify block or address");
                 }
-                return Json(new
+                else if(block != null && address != null)
                 {
-                     pagesTotal = 1, //TODO Implement pagination
-                     txs = txs.ToArray()
-                });
-            }
-            catch(Exception ex)
-            {
-                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
-            }
-        }
-
-        [HttpGet("/api/txs/#by_address")]
-        public ActionResult GetTransactionsByAddress(string addr)
-        {
-            try
-            {
-                List<object> txs = GetTransactionsBySingleAddress(addr);
-                return Json(new{
-                    pagesTotal = 1, //TODO Implement pagination
-                    txs = txs.ToArray()
-                });
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "Specify either block or address, but not both");
+                }
+                else if(block != null)
+                {
+                    return GetTransactionsByBlockHash(block, pageNum.Value);
+                }
+                else
+                {
+                    return GetTransactionsByAddress(address, pageNum.Value);
+                }
             }
             catch(Exception ex)
             {
@@ -112,20 +95,31 @@ namespace api.Controllers
         }
 
         [HttpGet("/api/addrs/{paymentAddresses}/txs")]
-        public ActionResult GetTransactionsForMultipleAddresses(string addresses)
+        public ActionResult GetTransactionsForMultipleAddresses([FromRoute] string paymentAddresses, [FromQuery] int? from = 0, [FromQuery] int? to = 20)
         {
             try
             {
-                var txs = new List<object>();
-                foreach(string address in addresses.Split(","))
+                if(from < 0)
                 {
-                    txs.Concat(GetTransactionsBySingleAddress(address));
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be non negative");
                 }
+                if(from > to)
+                {
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be lower or equal than 'to'");
+                }
+                var txs = new List<dynamic>();
+                foreach(string address in System.Web.HttpUtility.UrlDecode(paymentAddresses).Split(","))
+                {
+                    txs = txs.Concat(GetTransactionsBySingleAddress(address, false, 0).Item1).ToList();
+                }
+                //Sort by descending blocktime
+                txs.Sort((tx1, tx2) => tx2.blocktime.CompareTo(tx1.blocktime) );
+                to = (int) Math.Min(to.Value, txs.Count - 1);
                 return Json(new{
-                    totalItems = txs.Count, //TODO paging
-                    from = 0,
-                    to = txs.Count,
-                    items = txs.ToArray()
+                    totalItems = txs.Count,
+                    from = from,
+                    to = to,
+                    items = txs.GetRange(from.Value, to.Value - from.Value + 1).ToArray()
                 });
             }
             catch(Exception ex)
@@ -157,20 +151,71 @@ namespace api.Controllers
             }
         }
 
-        private List<object> GetTransactionsBySingleAddress(string paymentAddress)
+        private ActionResult GetTransactionsByBlockHash(string blockHash, UInt64 pageNum)
+        {
+            Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
+            Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(Binary.HexStringToByteArray(blockHash));
+            Utils.CheckBitprimApiErrorCode(getBlockResult.Item1, "GetBlockByHash(" + blockHash + ") failed, check error log");
+            Block fullBlock = getBlockResult.Item2;
+            UInt64 blockHeight = getBlockResult.Item3;
+            UInt64 pageSize = (UInt64) config_.TransactionsByAddressPageSize;
+            UInt64 pageCount = (UInt64) Math.Ceiling((double)fullBlock.TransactionCount/(double)pageSize);
+            if(pageNum >= pageCount)
+            {
+                return StatusCode
+                (
+                    (int)System.Net.HttpStatusCode.BadRequest,
+                    "pageNum cannot exceed " + (pageCount - 1) + " (zero-indexed)"
+                );
+            }
+            List<object> txs = new List<object>();
+            for(UInt64 i=0; i<pageSize && pageNum * pageSize + i < fullBlock.TransactionCount; i++)
+            {
+                Transaction tx = fullBlock.GetNthTransaction(pageNum * pageSize + i);
+                txs.Add(TxToJSON(tx, blockHeight));
+            }
+            return Json(new
+            {
+                pagesTotal = pageCount,
+                txs = txs.ToArray()
+            });
+        }
+
+        private ActionResult GetTransactionsByAddress(string address, UInt64 pageNum)
+        {
+            Tuple<List<object>, UInt64> txsByAddress = GetTransactionsBySingleAddress(address, true, pageNum);
+            UInt64 pageCount = txsByAddress.Item2;
+            if(pageNum >= pageCount)
+            {
+                return StatusCode
+                (
+                    (int)System.Net.HttpStatusCode.BadRequest,
+                    "pageNum cannot exceed " + (pageCount - 1) + " (zero-indexed)"
+                );
+            }
+            return Json(new{
+                pagesTotal = pageCount,
+                txs = txsByAddress.Item1.ToArray()
+            });
+        }
+
+        private Tuple<List<object>, UInt64> GetTransactionsBySingleAddress(string paymentAddress, bool pageResults, UInt64 pageNum)
         {
             Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
             Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
             Utils.CheckBitprimApiErrorCode(getAddressHistoryResult.Item1, "GetHistory(" + paymentAddress + ") failed, check error log.");
             HistoryCompactList history = getAddressHistoryResult.Item2;
             var txs = new List<object>();
-            foreach(HistoryCompact compact in history)
+            UInt64 pageSize = pageResults? (UInt64) config_.TransactionsByAddressPageSize : history.Count;
+            for(UInt64 i=0; i<pageSize && (pageNum * pageSize + i < history.Count); i++)
             {
+                HistoryCompact compact = history[(int)(pageNum * pageSize + i)];
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(compact.Point.Hash, true);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(compact.Point.Hash) + ") failed, check error log");
                 txs.Add(TxToJSON(getTxResult.Item2, getTxResult.Item3));
             }
-            return txs;
+            UInt64 pageCount = (UInt64) Math.Ceiling((double)history.Count/(double)pageSize);
+            return new Tuple<List<object>, UInt64>(txs, pageCount);
         }
 
         private object TxToJSON(Transaction tx, UInt64 blockHeight)
