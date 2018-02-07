@@ -118,7 +118,7 @@ namespace api.Controllers
                     totalItems = txs.Count,
                     from = from,
                     to = to,
-                    items = txs.GetRange(from.Value, to.Value + 1).ToArray()
+                    items = txs.GetRange(from.Value, to.Value - from.Value + 1).ToArray()
                 });
             }
             catch(Exception ex)
