@@ -32,7 +32,7 @@ namespace api.Controllers
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + hash + ") failed, check error log");
-                return Json(TxToJSON(getTxResult.Item2, getTxResult.Item3));
+                return Json(TxToJSON(getTxResult.Item2, getTxResult.Item3, noAsm: false, noScriptSig: false, noSpend: false));
             }
             catch(Exception ex)
             {
@@ -97,35 +97,14 @@ namespace api.Controllers
         [HttpGet("/api/addrs/{paymentAddresses}/txs")]
         public ActionResult GetTransactionsForMultipleAddresses([FromRoute] string paymentAddresses, [FromQuery] int? from = 0, [FromQuery] int? to = 20)
         {
-            try
-            {
-                if(from < 0)
-                {
-                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be non negative");
-                }
-                if(from > to)
-                {
-                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be lower or equal than 'to'");
-                }
-                var txs = new List<dynamic>();
-                foreach(string address in System.Web.HttpUtility.UrlDecode(paymentAddresses).Split(","))
-                {
-                    txs = txs.Concat(GetTransactionsBySingleAddress(address, false, 0).Item1).ToList();
-                }
-                //Sort by descending blocktime
-                txs.Sort((tx1, tx2) => tx2.blocktime.CompareTo(tx1.blocktime) );
-                to = (int) Math.Min(to.Value, txs.Count - 1);
-                return Json(new{
-                    totalItems = txs.Count,
-                    from = from,
-                    to = to,
-                    items = txs.GetRange(from.Value, to.Value - from.Value + 1).ToArray()
-                });
-            }
-            catch(Exception ex)
-            {
-                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
-            }
+            return GetTransactionsForMultipleAddresses(paymentAddresses, from, to);
+        }
+
+        [HttpPost("/api/addrs/txs")]
+        public ActionResult GetTransactionsForMultipleAddresses([FromBody] string addrs, [FromBody] int? from = 0, [FromBody] int? to = 20,
+                                                                [FromBody] bool? noAsm = true, [FromBody] bool? noScriptSig = true, [FromBody] bool? noSpend = true)
+        {
+            return GetTransactionsForMultipleAddresses(addrs, from.Value, to.Value, noAsm.Value, noScriptSig.Value, noSpend.Value);
         }
 
         [HttpPost("/api/tx/send")]
@@ -144,6 +123,40 @@ namespace api.Controllers
                         txid = Binary.ByteArrayToHexString(tx.Hash) //TODO Check if this should be returned by organize call
                     }
                 );
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        private ActionResult GetTransactionsForMultipleAddresses(string addrs, int from, int to,
+                                                                 bool noAsm = true, bool noScriptSig = true, bool noSpend = true)
+        {
+            try
+            {
+                if(from < 0)
+                {
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be non negative");
+                }
+                if(from > to)
+                {
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, "'from' must be lower or equal than 'to'");
+                }
+                var txs = new List<dynamic>();
+                foreach(string address in System.Web.HttpUtility.UrlDecode(addrs).Split(","))
+                {
+                    txs = txs.Concat(GetTransactionsBySingleAddress(address, false, 0, noAsm, noScriptSig, noSpend).Item1).ToList();
+                }
+                //Sort by descending blocktime
+                txs.Sort((tx1, tx2) => tx2.blocktime.CompareTo(tx1.blocktime) );
+                to = (int) Math.Min(to, txs.Count - 1);
+                return Json(new{
+                    totalItems = txs.Count,
+                    from = from,
+                    to = to,
+                    items = txs.GetRange(from, to - from + 1).ToArray()
+                });
             }
             catch(Exception ex)
             {
@@ -172,7 +185,7 @@ namespace api.Controllers
             for(UInt64 i=0; i<pageSize && pageNum * pageSize + i < fullBlock.TransactionCount; i++)
             {
                 Transaction tx = fullBlock.GetNthTransaction(pageNum * pageSize + i);
-                txs.Add(TxToJSON(tx, blockHeight));
+                txs.Add(TxToJSON(tx, blockHeight, noAsm: false, noScriptSig: false, noSpend: false));
             }
             return Json(new
             {
@@ -183,7 +196,7 @@ namespace api.Controllers
 
         private ActionResult GetTransactionsByAddress(string address, UInt64 pageNum)
         {
-            Tuple<List<object>, UInt64> txsByAddress = GetTransactionsBySingleAddress(address, true, pageNum);
+            Tuple<List<object>, UInt64> txsByAddress = GetTransactionsBySingleAddress(address, true, pageNum, true, true, true);
             UInt64 pageCount = txsByAddress.Item2;
             if(pageNum >= pageCount)
             {
@@ -199,7 +212,8 @@ namespace api.Controllers
             });
         }
 
-        private Tuple<List<object>, UInt64> GetTransactionsBySingleAddress(string paymentAddress, bool pageResults, UInt64 pageNum)
+        private Tuple<List<object>, UInt64> GetTransactionsBySingleAddress(string paymentAddress, bool pageResults, UInt64 pageNum,
+                                                                           bool noAsm, bool noScriptSig, bool noSpend)
         {
             Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
             Tuple<ErrorCode, HistoryCompactList> getAddressHistoryResult = chain_.GetHistory(new PaymentAddress(paymentAddress), UInt64.MaxValue, 0);
@@ -212,13 +226,13 @@ namespace api.Controllers
                 HistoryCompact compact = history[(int)(pageNum * pageSize + i)];
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(compact.Point.Hash, true);
                 Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(compact.Point.Hash) + ") failed, check error log");
-                txs.Add(TxToJSON(getTxResult.Item2, getTxResult.Item3));
+                txs.Add(TxToJSON(getTxResult.Item2, getTxResult.Item3, noAsm, noScriptSig, noSpend));
             }
             UInt64 pageCount = (UInt64) Math.Ceiling((double)history.Count/(double)pageSize);
             return new Tuple<List<object>, UInt64>(txs, pageCount);
         }
 
-        private object TxToJSON(Transaction tx, UInt64 blockHeight)
+        private object TxToJSON(Transaction tx, UInt64 blockHeight, bool noAsm, bool noScriptSig, bool noSpend)
         {
             Tuple<ErrorCode, Header, UInt64> getBlockHeaderResult = chain_.GetBlockHeaderByHeight(blockHeight);
             Utils.CheckBitprimApiErrorCode(getBlockHeaderResult.Item1, "GetBlockHeaderByHeight(" + blockHeight + ") failed, check error log");
@@ -230,8 +244,8 @@ namespace api.Controllers
                 txid = Binary.ByteArrayToHexString(tx.Hash),
                 version = tx.Version,
                 locktime = tx.Locktime,
-                vin = TxInputsToJSON(tx),
-                vout = TxOutputsToJSON(tx),
+                vin = TxInputsToJSON(tx, noAsm, noScriptSig),
+                vout = TxOutputsToJSON(tx, noAsm, noSpend),
                 blockhash = Binary.ByteArrayToHexString(blockHeader.Hash),
                 blockheight = blockHeight,
                 confirmations = getLastHeightResult.Item2 - blockHeight + 1,
@@ -243,7 +257,7 @@ namespace api.Controllers
             };
         }
 
-        private object TxInputsToJSON(Transaction tx)
+        private object TxInputsToJSON(Transaction tx, bool noAsm, bool noScriptSig)
         {
             var inputs = tx.Inputs;
             var jsonInputs = new List<object>();
@@ -259,7 +273,7 @@ namespace api.Controllers
                 }
                 else
                 {
-                    SetInputNonCoinbaseFields(jsonInput, input);
+                    SetInputNonCoinbaseFields(jsonInput, input, noAsm, noScriptSig);
                 }
                 jsonInput.sequence = input.Sequence;
                 jsonInput.n = i;
@@ -268,34 +282,38 @@ namespace api.Controllers
             return jsonInputs.ToArray();
         }
 
-        private void SetInputNonCoinbaseFields(dynamic jsonInput, Input input)
+        private void SetInputNonCoinbaseFields(dynamic jsonInput, Input input, bool noAsm, bool noScriptSig)
         {
             OutputPoint previousOutput = input.PreviousOutput;
             jsonInput.txid = Binary.ByteArrayToHexString(previousOutput.Hash);
             jsonInput.vout = previousOutput.Index;
-            jsonInput.script = InputScriptToJSON(input.Script);
+            if(!noScriptSig)
+            {
+                jsonInput.scriptSig = InputScriptToJSON(input.Script, noAsm);
+            }
             Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(previousOutput.Hash, false);
             Utils.CheckBitprimApiErrorCode(getTxResult.Item1, "GetTransaction(" + Binary.ByteArrayToHexString(previousOutput.Hash) + ") failed, check errog log");
             Output output = getTxResult.Item2.Outputs[(int)previousOutput.Index];
-            //TODO Awaiting fix (get_network returning none)
             jsonInput.addr =  output.PaymentAddress(NodeSettings.UseTestnetRules).Encoded;
             jsonInput.valueSat = output.Value;
             jsonInput.value = Utils.SatoshisToBTC(output.Value);
             jsonInput.doubleSpentTxID = null; //We don't handle double spent transactions
         }
 
-        private object InputScriptToJSON(Script inputScript)
+        private object InputScriptToJSON(Script inputScript, bool noAsm)
         {
             byte[] scriptData = inputScript.ToData(false);
             Array.Reverse(scriptData, 0, scriptData.Length);
-            return new
+            dynamic result = new ExpandoObject();
+            if(!noAsm)
             {
-                asm = inputScript.ToString(0),
-                hex = Binary.ByteArrayToHexString(scriptData)
-            };
+                result.asm = inputScript.ToString(0);
+            }
+            result.hex = Binary.ByteArrayToHexString(scriptData);
+            return result;
         }
 
-        private object TxOutputsToJSON(Transaction tx)
+        private object TxOutputsToJSON(Transaction tx, bool noAsm, bool noSpend)
         {
             var outputs = tx.Outputs;
             var jsonOutputs = new List<object>();
@@ -305,8 +323,11 @@ namespace api.Controllers
                 dynamic jsonOutput = new ExpandoObject();
                 jsonOutput.value = Utils.SatoshisToBTC(output.Value);
                 jsonOutput.n = i;
-                jsonOutput.scriptPubKey = OutputScriptToJSON(output);
-                SetOutputSpendInfo(jsonOutput, tx.Hash, (UInt32)i);
+                jsonOutput.scriptPubKey = OutputScriptToJSON(output, noAsm);
+                if(!noSpend)
+                {
+                    SetOutputSpendInfo(jsonOutput, tx.Hash, (UInt32)i);
+                }
                 jsonOutputs.Add(jsonOutput);
             }
             return jsonOutputs.ToArray();
@@ -333,18 +354,20 @@ namespace api.Controllers
             }
         }
 
-        private static object OutputScriptToJSON(Output output)
+        private static object OutputScriptToJSON(Output output, bool noAsm)
         {
             Script script = output.Script;
             byte[] scriptData = script.ToData(false);
             Array.Reverse(scriptData, 0, scriptData.Length);
-            return new
+            dynamic result = new ExpandoObject();
+            if(!noAsm)
             {
-                asm = script.ToString(0),
-                hex = Binary.ByteArrayToHexString(scriptData),
-                addresses = ScriptAddressesToJSON(output),
-                type = script.Type
-            };
+                result.asm = script.ToString(0);
+            }
+            result.hex = Binary.ByteArrayToHexString(scriptData);
+            result.addresses = ScriptAddressesToJSON(output);
+            result.type = script.Type;
+            return result;
         }
 
         private static object ScriptAddressesToJSON(Output output)
