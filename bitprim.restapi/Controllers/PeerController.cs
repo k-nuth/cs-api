@@ -26,5 +26,12 @@ namespace api.Controllers
                 return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("/api/version")]
+        public ActionResult GetApiVersion()
+        {
+            //TODO Implement versioning (RA-6)
+            return Json(new{version = "0.1.0"});
+        }
     }
 }
