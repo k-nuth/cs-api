@@ -118,7 +118,7 @@ namespace api.Controllers
 
         // GET: api/blocks/?limit={limit}&blockDate={blockDate}
         [HttpGet("/api/blocks/")]
-        public ActionResult GetBlocksByDate(int limit, string blockDate)
+        public ActionResult GetBlocksByDate(int limit, string blockDate = "")
         {
             try
             {
@@ -161,6 +161,10 @@ namespace api.Controllers
             if(limit > config_.MaxBlockSummarySize)
             {
                 return new Tuple<bool, string, DateTime?>(false, "Invalid limit; must be lower than " + config_.MaxBlockSummarySize, null);
+            }
+            if(string.IsNullOrWhiteSpace(blockDate))
+            {
+                blockDate = DateTime.Now.Date.ToString(config_.DateInputFormat);
             }
             DateTime blockDateToSearch;
             if(!DateTime.TryParseExact(blockDate, config_.DateInputFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out blockDateToSearch))
