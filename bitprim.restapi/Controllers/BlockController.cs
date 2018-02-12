@@ -118,12 +118,12 @@ namespace api.Controllers
 
         // GET: api/blocks/?limit={limit}&blockDate={blockDate}
         [HttpGet("/api/blocks/")]
-        public ActionResult GetBlocksByDate(int limit, string blockDate = "")
+        public ActionResult GetBlocksByDate(int? limit = 200, string blockDate = "")
         {
             try
             {
                 //Validate input
-                Tuple<bool, string, DateTime?> validateInputResult = ValidateGetBlocksByDateInput(limit, blockDate);
+                Tuple<bool, string, DateTime?> validateInputResult = ValidateGetBlocksByDateInput(limit.Value, blockDate);
                 if(!validateInputResult.Item1)
                 {
                     return StatusCode((int)System.Net.HttpStatusCode.BadRequest, validateInputResult.Item2);
