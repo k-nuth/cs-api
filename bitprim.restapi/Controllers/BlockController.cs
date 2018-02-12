@@ -214,7 +214,7 @@ namespace api.Controllers
                         size = block.GetSerializedSize(block.Header.Version),
                         hash = Binary.ByteArrayToHexString(block.Hash),
                         time = block.Header.Timestamp,
-                        txLength = block.TransactionCount
+                        txlength = block.TransactionCount
                         //TODO Add pool info
                     });
                 }
