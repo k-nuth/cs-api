@@ -118,12 +118,12 @@ namespace api.Controllers
 
         // GET: api/blocks/?limit={limit}&blockDate={blockDate}
         [HttpGet("/api/blocks/")]
-        public ActionResult GetBlocksByDate(int limit, string blockDate)
+        public ActionResult GetBlocksByDate(int? limit = 200, string blockDate = "")
         {
             try
             {
                 //Validate input
-                Tuple<bool, string, DateTime?> validateInputResult = ValidateGetBlocksByDateInput(limit, blockDate);
+                Tuple<bool, string, DateTime?> validateInputResult = ValidateGetBlocksByDateInput(limit.Value, blockDate);
                 if(!validateInputResult.Item1)
                 {
                     return StatusCode((int)System.Net.HttpStatusCode.BadRequest, validateInputResult.Item2);
@@ -161,6 +161,10 @@ namespace api.Controllers
             if(limit > config_.MaxBlockSummarySize)
             {
                 return new Tuple<bool, string, DateTime?>(false, "Invalid limit; must be lower than " + config_.MaxBlockSummarySize, null);
+            }
+            if(string.IsNullOrWhiteSpace(blockDate))
+            {
+                blockDate = DateTime.Now.Date.ToString(config_.DateInputFormat);
             }
             DateTime blockDateToSearch;
             if(!DateTime.TryParseExact(blockDate, config_.DateInputFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out blockDateToSearch))
@@ -210,7 +214,7 @@ namespace api.Controllers
                         size = block.GetSerializedSize(block.Header.Version),
                         hash = Binary.ByteArrayToHexString(block.Hash),
                         time = block.Header.Timestamp,
-                        txLength = block.TransactionCount
+                        txlength = block.TransactionCount
                         //TODO Add pool info
                     });
                 }

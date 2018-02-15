@@ -90,6 +90,19 @@ namespace api.Controllers
             }
         }
 
+        [HttpGet("/api/currency")]
+        public ActionResult GetCurrency()
+        {
+            //TODO Implement in node-cint? Or here? Ask
+            return Json(new{
+                status = 200,
+                data = new
+                {
+                    bistamp = 8025.3f
+                }
+            });
+        }
+
         private ActionResult GetDifficulty()
         {
             Tuple<Block, UInt64> topBlock = GetLastBlock();
