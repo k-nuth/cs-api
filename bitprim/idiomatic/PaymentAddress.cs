@@ -26,6 +26,17 @@ namespace Bitprim
         }
 
         /// <summary>
+        /// Returns true iif this is a valid Base58 address.
+        /// </summary>
+        public bool IsValid
+        {
+            get
+            {
+                return PaymentAddressNative.chain_payment_address_is_valid(nativeInstance_) != 0;
+            }
+        }
+
+        /// <summary>
         /// Address version.
         /// </summary>
         public byte Version
