@@ -9,9 +9,9 @@ namespace Bitprim.Tests
         [Fact]
         public void TestAddressValidation()
         {
-            Assert.False(Validations.IsValidBase58Address("abcd"));
-            Assert.False(Validations.IsValidBase58Address("my2dxGb5jz43ktwGxg2doUaEb9WhZ9PQ"));
-            Assert.True(Validations.IsValidBase58Address("my2dxGb5jz43ktwGxg2doUaEb9WhZ9PQ7K"));
+            Assert.False(Validations.IsValidPaymentAddress("abcd"));
+            Assert.False(Validations.IsValidPaymentAddress("my2dxGb5jz43ktwGxg2doUaEb9WhZ9PQ"));
+            Assert.True(Validations.IsValidPaymentAddress("my2dxGb5jz43ktwGxg2doUaEb9WhZ9PQ7K"));
         }
 
         [Fact]

@@ -33,7 +33,7 @@ namespace api.Controllers
         {
             try
             {
-                if(!Validations.IsValidBase58Address(paymentAddress))
+                if(!Validations.IsValidPaymentAddress(paymentAddress))
                 {
                     return StatusCode((int)System.Net.HttpStatusCode.BadRequest, paymentAddress + " is not a valid Base58 address");
                 }

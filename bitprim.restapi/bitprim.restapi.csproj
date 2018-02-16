@@ -8,7 +8,7 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="bitprim" Version="0.2.168" />
+    <PackageReference Include="bitprim" Version="0.2.172" />
     <!-- <ProjectReference Include="../bitprim/bitprim.csproj" /> -->
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
