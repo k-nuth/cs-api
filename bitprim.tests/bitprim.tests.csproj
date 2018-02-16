@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\bitprim\build\Common.targets"/>
+
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -8,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="bitprim" Version="0.2.172" /> 
-    <!--<ProjectReference Include="..\bitprim\bitprim.csproj" />-->
+    <!-- <PackageReference Include="bitprim" Version="0.2.172" />  -->
+    <ProjectReference Include="..\bitprim\bitprim.csproj" />
     <PackageReference Include="Microsoft.CSharp" Version="4.4.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
@@ -17,7 +19,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
 
-  <!-- <Target Name="CopyNativeLib" AfterTargets="Build">
-    <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition="Exists('libbitprim-node-cint.so')"/>
-  </Target> -->
+  <Target Name="CopyNativeLib" AfterTargets="Build">
+    <CallTarget Targets="GetBitprimNodeCint" />
+  </Target>
 </Project>
