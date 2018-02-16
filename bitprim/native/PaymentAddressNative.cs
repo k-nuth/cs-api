@@ -10,6 +10,9 @@ public static class PaymentAddressNative
     public static extern byte chain_payment_address_version(IntPtr payment_address);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern int chain_payment_address_is_valid(IntPtr payment_address);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern IntPtr chain_payment_address_construct_from_string([MarshalAs(UnmanagedType.LPStr)]string address);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]

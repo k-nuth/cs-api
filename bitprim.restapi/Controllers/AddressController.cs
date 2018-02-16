@@ -33,6 +33,10 @@ namespace api.Controllers
         {
             try
             {
+                if(!Validations.IsValidPaymentAddress(paymentAddress))
+                {
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, paymentAddress + " is not a valid Base58 address");
+                }
                 Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 AddressBalance balance = GetBalance(paymentAddress);
                 return Json
