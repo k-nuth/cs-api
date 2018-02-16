@@ -26,6 +26,10 @@ namespace api.Controllers
         {
             try
             {
+                if(!Validations.IsValidHash(hash))
+                {
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, hash + " is not a valid block hash");
+                }
                 Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
                 Tuple<ErrorCode, Block, UInt64> getBlockResult = chain_.GetBlockByHash(binaryHash);

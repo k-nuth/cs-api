@@ -29,6 +29,10 @@ namespace api.Controllers
         {
             try
             {
+                if(!Validations.IsValidHash(hash))
+                {
+                    return StatusCode((int)System.Net.HttpStatusCode.BadRequest, hash + " is not a valid transaction hash");
+                }
                 Utils.CheckIfChainIsFresh(chain_, config_.AcceptStaleRequests);
                 byte[] binaryHash = Binary.HexStringToByteArray(hash);
                 Tuple<ErrorCode, Transaction, UInt64, UInt64> getTxResult = chain_.GetTransaction(binaryHash, requireConfirmed);
