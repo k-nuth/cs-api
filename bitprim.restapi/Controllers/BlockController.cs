@@ -168,7 +168,7 @@ namespace api.Controllers
             }
             if(string.IsNullOrWhiteSpace(blockDate))
             {
-                blockDate = DateTime.Now.Date.ToString(config_.DateInputFormat);
+                blockDate = DateTime.Today.ToString(config_.DateInputFormat);
             }
             DateTime blockDateToSearch;
             if(!DateTime.TryParseExact(blockDate, config_.DateInputFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out blockDateToSearch))
