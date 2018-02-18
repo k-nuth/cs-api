@@ -21,5 +21,5 @@
 
   <Target Name="CopyNativeLib" AfterTargets="Build">
     <CallTarget Targets="GetBitprimNodeCint" />
-  </Target>
+  <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="/usr/local/lib/libbitprim-node-cint.so" Condition="Exists('libbitprim-node-cint.so')" />
 </Project>
