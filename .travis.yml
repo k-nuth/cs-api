@@ -121,7 +121,7 @@ script:
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
       cd bitprim.tests
-      dotnet test -f netcoreapp2.0 -c Release -v normal
+      sudo dotnet test -f netcoreapp2.0 -c Release -v normal
     else
       cd bitprim/docs
       doxygen Doxyfile
