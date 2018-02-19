@@ -121,9 +121,8 @@ script:
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
       cd bitprim.tests
-      dotnet build -f netcoreapp2.0 -c Release /ṕroperty:Platform=x64 -v normal
-      cd bin/x64/Release/netcoreapp2.0
-      dotnet test bitprim.tests.dll
+      dotnet build -f netcoreapp2.0 -c Release -v normal
+      dotnet test -f netcoreapp2.0 -c Release -v normal
     else
       cd bitprim/docs
       doxygen Doxyfile
