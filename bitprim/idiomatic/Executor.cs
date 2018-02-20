@@ -10,6 +10,9 @@ namespace Bitprim
     /// </summary>
     public class Executor : IDisposable
     {
+        public delegate bool BlockHandler(ErrorCode e, UInt64 u, BlockList incoming, BlockList outgoing);
+        public delegate bool TransactionHandler(ErrorCode e, Transaction newTx);
+
         private IntPtr nativeInstance_;
 
         /// <summary>
@@ -46,6 +49,12 @@ namespace Bitprim
         ~Executor()
         {
             Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -93,18 +102,39 @@ namespace Bitprim
             return result;
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         /// <summary>
         /// Stops the node; that includes all activies, such as synchronization and networking.
         /// </summary>
         public void Stop()
         {
             ExecutorNative.executor_stop(nativeInstance_);
+        }
+
+        /// <summary>
+        /// Be notified (called back) when the local copy of the blockchain is reorganized.
+        /// </summary>
+        /// <param name="handler"> Callback which will be called when blocks are added or removed.
+        /// The callback returns 3 parameters:
+        ///     - Height (UInt64): The chain height at which reorganization takes place
+        ///     - Incoming (Blocklist): Incoming blocks (added to the blockchain).
+        ///     - Outgoing (Blocklist): Outgoing blocks (removed from the blockchain).
+        /// </param>
+        public void SubscribeToBlockChain(BlockHandler handler)
+        {
+            GCHandle handlerHandle = GCHandle.Alloc(handler);
+            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            ExecutorNative.chain_subscribe_blockchain(nativeInstance_, Chain.NativeInstance, handlerPtr, ReorganizeHandler);
+        }
+
+        /// <summary>
+        /// Be notified (called back) when the local copy of the blockchain is updated at the transaction level.
+        /// </summary>
+        /// <param name="handler"> Callback which will be called when a transaction is added. </param>
+        public void SubscribeToTransaction(TransactionHandler handler)
+        {
+            GCHandle handlerHandle = GCHandle.Alloc(handler);
+            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            ExecutorNative.chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, TransactionInternalHandler);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -116,6 +146,37 @@ namespace Bitprim
             //Release unmanaged resources
             Logger.Log("Destroying executor " + nativeInstance_.ToString("X"));
             ExecutorNative.executor_destruct(nativeInstance_);
+        }
+
+        private static int ReorganizeHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr blockList, IntPtr blockList2)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
+            {
+                handlerHandle.Free();
+                return 0;
+            }
+            var handler = (handlerHandle.Target as BlockHandler);
+            bool keepSubscription = handler(error, u, new BlockList(blockList), new BlockList(blockList2));
+            if ( ! keepSubscription )
+            {
+                handlerHandle.Free();
+            }
+            return keepSubscription ? 1 : 0;
+        }
+
+        private static int TransactionInternalHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
+            {
+                handlerHandle.Free();
+                return 0;
+            }
+            var handler = (handlerHandle.Target as TransactionHandler);
+            bool keepSubscription = handler(error, new Transaction(transaction));
+            handlerHandle.Free();
+            return keepSubscription ? 1 : 0;
         }
 
         private static void NativeCallbackHandler(IntPtr handlerPtr, int error)
