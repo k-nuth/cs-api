@@ -164,24 +164,6 @@ public static class ChainNative
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern ErrorCode chain_get_block_locator(IntPtr chain, IntPtr heights, ref IntPtr outHeaders);
 
-    // Subscribers -----------------------------------------------------------------
-
-    //typedef int (*reorganize_handler_t)(chain_t, void*, error_code_t, uint64_t /*size_t*/, block_list_t, block_list_t);
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void ReorganizeHandler(IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr blockList, IntPtr blockList2);
-
-    //typedef int (*transaction_handler_t)(chain_t, void*, error_code_t, transaction_t);
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void TransactionHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction);
-
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_subscribe_blockchain(IntPtr chain, IntPtr context, ReorganizeHandler handler);
-
-
-    [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_subscribe_transaction(IntPtr chain, IntPtr context, TransactionHandler handler);
-
-
     // Organizers.
     //-------------------------------------------------------------------------
 

@@ -508,37 +508,6 @@ namespace Bitprim
 
         #endregion //Block indexes
 
-        #region Subscribers
-
-        /// <summary>
-        /// Be notified (called back) when the local copy of the blockchain is reorganized.
-        /// </summary>
-        /// <param name="handler"> Callback which will be called when blocks are added or removed.
-        /// The callback returns 3 parameters:
-        ///     - Height (UInt64): The chain height at which reorganization takes place
-        ///     - Incoming (Blocklist): Incoming blocks (added to the blockchain).
-        ///     - Outgoing (Blocklist): Outgoing blocks (removed from the blockchain).
-        /// </param>
-        public void SubscribeToBlockChain(Action<UInt64, BlockList, BlockList> handler)
-        {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_subscribe_blockchain(nativeInstance_, handlerPtr, ReorganizeHandler);
-        }
-
-        /// <summary>
-        /// Be notified (called back) when the local copy of the blockchain is updated at the transaction level.
-        /// </summary>
-        /// <param name="handler"> Callback which will be called when a transaction is added. </param>
-        public void SubscribeToTransaction(Action<UInt64, BlockList, BlockList> handler)
-        {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_subscribe_transaction(nativeInstance_, handlerPtr, TransactionHandler);
-        }
-
-        #endregion //Subscribers
-
         #region Organizers
 
         /// <summary>
@@ -618,6 +587,14 @@ namespace Bitprim
         internal Chain(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
+        }
+
+        internal IntPtr NativeInstance
+        {
+            get
+            {
+                return nativeInstance_;
+            }
         }
 
         private static void FetchBlockHeaderByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr header, UInt64 height)
@@ -765,27 +742,11 @@ namespace Bitprim
             contextHandle.Free();
         }
 
-        private static void ReorganizeHandler(IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr blockList, IntPtr blockList2)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, UInt64, BlockList, BlockList> handler = (handlerHandle.Target as Action<ErrorCode, UInt64, BlockList, BlockList>);
-            handler(error, u, new BlockList(blockList), new BlockList(blockList2));
-            handlerHandle.Free();
-        }
-
         private static void ResultHandler(IntPtr chain, IntPtr context, ErrorCode error)
         {
             GCHandle handlerHandle = (GCHandle)context;
             Action<ErrorCode> handler = (handlerHandle.Target as Action<ErrorCode>);
             handler(error);
-            handlerHandle.Free();
-        }
-
-        private static void TransactionHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, Transaction> handler = (handlerHandle.Target as Action<ErrorCode, Transaction>);
-            handler(error, new Transaction(transaction));
             handlerHandle.Free();
         }
 
