@@ -53,7 +53,7 @@ namespace Bitprim
 
         public void Dispose()
         {
-            Disp            if*()ose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
