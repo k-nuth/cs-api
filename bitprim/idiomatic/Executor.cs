@@ -175,7 +175,10 @@ namespace Bitprim
             }
             var handler = (handlerHandle.Target as TransactionHandler);
             bool keepSubscription = handler(error, new Transaction(transaction));
-            handlerHandle.Free();
+            if( ! keepSubscription )
+            {
+                handlerHandle.Free();
+            }
             return keepSubscription ? 1 : 0;
         }
 
