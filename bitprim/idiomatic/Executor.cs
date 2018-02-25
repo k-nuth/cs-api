@@ -13,6 +13,7 @@ namespace Bitprim
         public delegate bool BlockHandler(ErrorCode e, UInt64 u, BlockList incoming, BlockList outgoing);
         public delegate bool TransactionHandler(ErrorCode e, Transaction newTx);
 
+        private Chain chain_;
         private IntPtr nativeInstance_;
 
         /// <summary>
@@ -58,13 +59,14 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// The node's query interface.
+        /// The node's query interface. Will be null until InitChain() is called
+        /// and succeeds.
         /// </summary>
         public Chain Chain
         {
             get
             {
-                return new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+                return chain_;
             }
         }
 
@@ -74,7 +76,12 @@ namespace Bitprim
         /// <returns>True iif local chain init succeeded</returns>
         public bool InitChain()
         {
-            return ExecutorNative.executor_initchain(nativeInstance_) != 0;
+            bool chainInitialized = ExecutorNative.executor_initchain(nativeInstance_) != 0;
+            if(chainInitialized)
+            {
+                chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+            }
+            return chainInitialized;
         }
 
         /// <summary>
