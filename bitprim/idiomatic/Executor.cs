@@ -145,7 +145,7 @@ namespace Bitprim
             }
             //Release unmanaged resources
             //Logger.Log("Destroying executor " + nativeInstance_.ToString("X"));
-            if( ! ExecutorNative.executor_stopped(nativeInstance_) )
+            if( ExecutorNative.executor_stopped(nativeInstance_) != 0 )
             {
                 ExecutorNative.executor_stop(nativeInstance_);
             }
