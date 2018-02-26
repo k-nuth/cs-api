@@ -11,6 +11,7 @@ namespace Bitprim
     {
         private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
+        private Script script_;
 
         /// <summary>
         /// Create an empty output.
@@ -19,6 +20,7 @@ namespace Bitprim
         {
             nativeInstance_ = OutputNative.chain_output_construct_default();
             ownsNativeObject_ = true;
+            script_ = new Script(OutputNative.chain_output_script(nativeInstance_), false);
         }
 
         /// <summary>
@@ -29,6 +31,8 @@ namespace Bitprim
         public Output(UInt64 value, Script script)
         {
             nativeInstance_ = OutputNative.chain_output_construct(value, script.NativeInstance);
+            ownsNativeObject_ = true;
+            script_ = new Script(OutputNative.chain_output_script(nativeInstance_), false);
         }
 
         ~Output()
@@ -59,7 +63,7 @@ namespace Bitprim
         {
             get
             {
-                return new Script(OutputNative.chain_output_script(nativeInstance_), false);
+                return script_;
             }
         }
 
@@ -105,6 +109,7 @@ namespace Bitprim
         {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
+            script_ = new Script(OutputNative.chain_output_script(nativeInstance_), false);
         }
 
         internal IntPtr NativeInstance
