@@ -12,6 +12,7 @@ namespace Bitprim
     {
         private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
+        private Point point_;
 
         ~HistoryCompact()
         {
@@ -25,7 +26,7 @@ namespace Bitprim
         {
             get
             {
-                return new Point(HistoryCompactNative.chain_history_compact_get_point(nativeInstance_));
+                return point_;
             }
         }
 
@@ -79,6 +80,7 @@ namespace Bitprim
         {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
+            point_ = new Point(HistoryCompactNative.chain_history_compact_get_point(nativeInstance_));
         }
 
         protected virtual void Dispose(bool disposing)
