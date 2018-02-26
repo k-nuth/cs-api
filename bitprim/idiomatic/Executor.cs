@@ -59,8 +59,8 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// The node's query interface. Will be null until InitChain() is called
-        /// and succeeds.
+        /// The node's query interface. Will be null until node starts running
+        /// (i.e. Run or RunWait succeeded)
         /// </summary>
         public Chain Chain
         {
@@ -76,12 +76,7 @@ namespace Bitprim
         /// <returns>True iif local chain init succeeded</returns>
         public bool InitChain()
         {
-            bool chainInitialized = ExecutorNative.executor_initchain(nativeInstance_) != 0;
-            if(chainInitialized)
-            {
-                chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
-            }
-            return chainInitialized;
+            return ExecutorNative.executor_initchain(nativeInstance_) != 0;
         }
 
         /// <summary>
@@ -95,7 +90,12 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            return ExecutorNative.executor_run(nativeInstance_, handlerPtr, NativeCallbackHandler);
+            int result = ExecutorNative.executor_run(nativeInstance_, handlerPtr, NativeCallbackHandler);
+            if(result == 0)
+            {
+                chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+            }
+            return result;
         }
 
         /// <summary>
@@ -106,6 +106,10 @@ namespace Bitprim
         public int RunWait()
         {
             int result = ExecutorNative.executor_run_wait(nativeInstance_);
+            if(result == 0)
+            {
+                chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+            }
             return result;
         }
 
