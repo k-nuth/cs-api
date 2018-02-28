@@ -110,6 +110,15 @@ namespace Bitprim
             ExecutorNative.executor_stop(nativeInstance_);
         }
 
+        public bool IsStopped
+        {
+            get
+            {
+                return ExecutorNative.executor_stopped(nativeInstance_) != 0;
+            }
+        }
+
+
         /// <summary>
         /// Be notified (called back) when the local copy of the blockchain is reorganized.
         /// </summary>
@@ -144,7 +153,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Logger.Log("Destroying executor " + nativeInstance_.ToString("X"));
+            //Logger.Log("Destroying executor " + nativeInstance_.ToString("X"));
             ExecutorNative.executor_destruct(nativeInstance_);
         }
 
