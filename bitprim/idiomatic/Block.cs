@@ -11,6 +11,7 @@ namespace Bitprim
     public class Block : IDisposable
     {
         private bool ownsNativeObject_;
+        private Header header_;
         private IntPtr nativeInstance_;
 
         ~Block()
@@ -112,7 +113,7 @@ namespace Bitprim
         {
             get
             {
-                return new Header(BlockNative.chain_block_header(nativeInstance_), false);
+                return header_;
             }
         }
 
@@ -280,6 +281,7 @@ namespace Bitprim
         {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
+            header_ = new Header(BlockNative.chain_block_header(nativeInstance_), false);
         }
 
         internal IntPtr NativeInstance
