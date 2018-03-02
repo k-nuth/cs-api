@@ -121,6 +121,15 @@ namespace Bitprim
             ExecutorNative.executor_stop(nativeInstance_);
         }
 
+        public bool IsStopped
+        {
+            get
+            {
+                return ExecutorNative.executor_stopped(nativeInstance_) != 0;
+            }
+        }
+
+
         /// <summary>
         /// Be notified (called back) when the local copy of the blockchain is reorganized.
         /// </summary>
@@ -190,7 +199,10 @@ namespace Bitprim
             }
             var handler = (handlerHandle.Target as TransactionHandler);
             bool keepSubscription = handler(error, new Transaction(transaction));
-            handlerHandle.Free();
+            if( ! keepSubscription )
+            {
+                handlerHandle.Free();
+            }
             return keepSubscription ? 1 : 0;
         }
 
