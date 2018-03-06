@@ -34,6 +34,14 @@ public static class ChainNative
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void FetchBlockHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block, UInt64 height);
 
+    //typedef void (*block_hash_timestamp_fetch_handler_t)(chain_t, void*, error_code_t, hash_t, uint32_t, uint64_t /*size_t*/);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FetchBlockHeightTimestampHandler(IntPtr chain, IntPtr context, ErrorCode error, hash_t blockHash, UInt32 timestamp, UInt64 height);
+
+    //typedef void (*block_txs_size_fetch_handler_t)(chain_t, void*, error_code_t, block_t, uint64_t /*size_t*/, hash_list_t, uint64_t);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void FetchBlockHashTxsSizeHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block, UInt64 block_height, IntPtr tx_hashes, UInt64 block_serialized_size);
+
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_fetch_block_by_hash(IntPtr chain, IntPtr context, hash_t hash, FetchBlockHandler handler);
 
@@ -41,10 +49,22 @@ public static class ChainNative
     public static extern ErrorCode chain_get_block_by_hash(IntPtr chain, hash_t hash, ref IntPtr out_block, ref UInt64 out_height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_fetch_block_by_hash_txs_size(IntPtr chain, IntPtr ctx, hash_t hash, FetchBlockHashTxsSizeHandler handler);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern ErrorCode chain_get_block_by_hash_txs_size(IntPtr chain, hash_t hash, ref IntPtr out_block, ref UInt64 out_block_height, ref IntPtr out_tx_hashes, ref UInt64 out_serialized_size);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern void chain_fetch_block_by_height(IntPtr chain, IntPtr context, UInt64 height, FetchBlockHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern ErrorCode chain_get_block_by_height(IntPtr chain, UInt64 height, ref IntPtr out_block, ref UInt64 out_height);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern void chain_fetch_block_by_height_timestamp(IntPtr chain, IntPtr context, UInt64 height, FetchBlockHeightTimestampHandler handler);
+
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern ErrorCode chain_get_block_by_height_timestamp(IntPtr chain, UInt64 height, ref hash_t out_hash, ref UInt32 out_timestamp, ref UInt64 out_height);
 
     // Block header------------------------------------------------------------------------------
     //typedef void (*block_header_fetch_handler_t)(chain_t, void*, error_code_t, header_t header, UInt64 /*size_t*/ h);
