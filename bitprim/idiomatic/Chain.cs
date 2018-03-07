@@ -205,6 +205,20 @@ namespace Bitprim
             return new Tuple<ErrorCode, Block, UInt64>(result, new Block(block), actualHeight);
         }
 
+        /// <summary>
+        /// Given a block height, get just the block hash, synchronously.
+        /// </summary>
+        /// <param name="height"> Block height. </param>
+        /// <returns> Error code and block hash. </returns>
+        public Tuple<ErrorCode, byte[]> GetBlockHash(UInt64 height)
+        {
+            var blockHash = new hash_t();
+            ErrorCode result = ChainNative.chain_get_block_hash(height, ref blockHash);
+            return result == ErrorCode.Success?
+                new Tuple<ErrorCode, byte[]>(result, blockHash.hash):
+                new Tuple<ErrorCode, byte[]>(result, null);
+        }
+
         #endregion //Block
 
         #region Block header
