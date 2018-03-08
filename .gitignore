@@ -47,3 +47,10 @@
 /bitprim.restapi/conanbuildinfo.cmake
 /.vscode/launch.json
 /.vscode
+/bitprim.console/bin/Release/netcoreapp2.0
+/bitprim.console/obj
+/bitprim.console/conaninfo.txt
+/bitprim.console/conanfile.txt
+/bitprim.console/conanbuildinfo.txt
+/bitprim.console/conanbuildinfo.cmake
+/backlog_2018-02-07.txt

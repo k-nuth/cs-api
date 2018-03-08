@@ -55,7 +55,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="bitprim, Version=0.1.1.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\bitprim.0.2.172\lib\net461\bitprim.dll</HintPath>
+      <HintPath>..\packages\bitprim.0.2.186\lib\net461\bitprim.dll</HintPath>
     </Reference>
     <Reference Include="bitprim, Version=0.2.*, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -83,11 +83,11 @@
     <Content Include="conanfile.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\bitprim.0.2.172\build\net461\bitprim.targets" Condition="Exists('..\packages\bitprim.0.2.172\build\net461\bitprim.targets')" />
+  <Import Project="..\packages\bitprim.0.2.186\build\net461\bitprim.targets" Condition="Exists('..\packages\bitprim.0.2.186\build\net461\bitprim.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\bitprim.0.2.172\build\net461\bitprim.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\bitprim.0.2.172\build\net461\bitprim.targets'))" />
+    <Error Condition="!Exists('..\packages\bitprim.0.2.186\build\net461\bitprim.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\bitprim.0.2.186\build\net461\bitprim.targets'))" />
   </Target>
 </Project>
