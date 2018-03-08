@@ -189,7 +189,7 @@ namespace Bitprim
             UInt32 blockTimestamp = 0;
             UInt64 blockHeight = 0;
             ErrorCode result = ChainNative.chain_get_block_by_height_timestamp(nativeInstance_, height, ref blockHash, ref blockTimestamp, ref blockHeight);
-            return new Tuple<ErrorCode, byte[], DateTime>(result, blockHash.hash, DateTimeOffset.FromUnixTimeSeconds(blockTimestamp).Date);
+            return new Tuple<ErrorCode, byte[], DateTime>(result, blockHash.hash, DateTimeOffset.FromUnixTimeSeconds(blockTimestamp).UtcDateTime);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace Bitprim
         public Tuple<ErrorCode, byte[]> GetBlockHash(UInt64 height)
         {
             var blockHash = new hash_t();
-            ErrorCode result = ChainNative.chain_get_block_hash(height, ref blockHash);
+            ErrorCode result = ChainNative.chain_get_block_hash(nativeInstance_, height, ref blockHash);
             return result == ErrorCode.Success?
                 new Tuple<ErrorCode, byte[]>(result, blockHash.hash):
                 new Tuple<ErrorCode, byte[]>(result, null);
@@ -733,7 +733,7 @@ namespace Bitprim
             byte[] blockHashCopy = new byte[blockHash.hash.Length];
             blockHash.hash.CopyTo(blockHashCopy, 0);
             //Convert Unix timestamp to date
-            DateTime blockDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).Date;
+            DateTime blockDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).UtcDateTime;
             handler(error, blockHashCopy, blockDate, height);
             handlerHandle.Free();
         }

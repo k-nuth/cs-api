@@ -67,7 +67,7 @@ public static class ChainNative
     public static extern ErrorCode chain_get_block_by_height_timestamp(IntPtr chain, UInt64 height, ref hash_t out_hash, ref UInt32 out_timestamp, ref UInt64 out_height);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern ErrorCode chain_get_block_hash(UInt64 height, ref hash_t out_hash);
+    public static extern ErrorCode chain_get_block_hash(IntPtr chain, UInt64 height, ref hash_t out_hash);
 
     // Block header------------------------------------------------------------------------------
     //typedef void (*block_header_fetch_handler_t)(chain_t, void*, error_code_t, header_t header, UInt64 /*size_t*/ h);
