@@ -49,8 +49,16 @@
 /.vscode
 /bitprim.console/bin/Release/netcoreapp2.0
 /bitprim.console/obj
+/bitprim.console/bin
+/bitprim.console/blockchain
+/bitprim.console/obj
+/bitprim.console/bitprim-cs-log.txt
+/bitprim.console/hosts.cache
+/bitprim.console/error.log
+/bitprim.console/debug.log
+/bitprim.console/conan_imports_manifest.txt
 /bitprim.console/conaninfo.txt
 /bitprim.console/conanfile.txt
 /bitprim.console/conanbuildinfo.txt
 /bitprim.console/conanbuildinfo.cmake
-/backlog_2018-02-07.txt
+/bitprim.console/bitprim-node-cint.dll
