@@ -728,14 +728,20 @@ namespace Bitprim
         private static void FetchBlockByHeightHashTimestampInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, hash_t blockHash, UInt32 timestamp, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
-            var handler = (handlerHandle.Target as FetchBlockByHeightHashTimestampHandler);
-            //Copy native memory before it goes out of scope
-            byte[] blockHashCopy = new byte[blockHash.hash.Length];
-            blockHash.hash.CopyTo(blockHashCopy, 0);
-            //Convert Unix timestamp to date
-            DateTime blockDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).UtcDateTime;
-            handler(error, blockHashCopy, blockDate, height);
-            handlerHandle.Free();
+            try
+            {
+                var handler = (handlerHandle.Target as FetchBlockByHeightHashTimestampHandler);
+                //Copy native memory before it goes out of scope
+                byte[] blockHashCopy = new byte[blockHash.hash.Length];
+                blockHash.hash.CopyTo(blockHashCopy, 0);
+                //Convert Unix timestamp to date
+                DateTime blockDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).UtcDateTime;
+                handler(error, blockHashCopy, blockDate, height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
         }
 
         private static void FetchBlockHeightHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 height)
