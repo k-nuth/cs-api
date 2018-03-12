@@ -13,6 +13,7 @@ namespace Bitprim
         public delegate bool BlockHandler(ErrorCode e, UInt64 u, BlockList incoming, BlockList outgoing);
         public delegate bool TransactionHandler(ErrorCode e, Transaction newTx);
 
+        private Chain chain_;
         private IntPtr nativeInstance_;
 
         /// <summary>
@@ -58,13 +59,14 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// The node's query interface.
+        /// The node's query interface. Will be null until node starts running
+        /// (i.e. Run or RunWait succeeded)
         /// </summary>
         public Chain Chain
         {
             get
             {
-                return new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+                return chain_;
             }
         }
 
@@ -88,7 +90,12 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            return ExecutorNative.executor_run(nativeInstance_, handlerPtr, NativeCallbackHandler);
+            int result = ExecutorNative.executor_run(nativeInstance_, handlerPtr, NativeCallbackHandler);
+            if(result == 0)
+            {
+                chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+            }
+            return result;
         }
 
         /// <summary>
@@ -99,6 +106,10 @@ namespace Bitprim
         public int RunWait()
         {
             int result = ExecutorNative.executor_run_wait(nativeInstance_);
+            if(result == 0)
+            {
+                chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+            }
             return result;
         }
 
@@ -154,6 +165,10 @@ namespace Bitprim
             }
             //Release unmanaged resources
             //Logger.Log("Destroying executor " + nativeInstance_.ToString("X"));
+            if( ExecutorNative.executor_stopped(nativeInstance_) != 0 )
+            {
+                ExecutorNative.executor_stop(nativeInstance_);
+            }
             ExecutorNative.executor_destruct(nativeInstance_);
         }
 
