@@ -17,7 +17,9 @@ namespace Bitprim
 
         public override byte[] GetNthNativeElement(int n)
         {
-            return HashListNative.chain_hash_list_nth(NativeInstance, (UIntPtr)n);
+            var managedHash = new hash_t();
+            HashListNative.chain_hash_list_nth_out(NativeInstance, (UIntPtr)n, ref managedHash);
+            return managedHash.hash;
         }
 
         public override uint GetCount()

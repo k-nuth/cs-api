@@ -172,7 +172,7 @@ namespace Bitprim
             ExecutorNative.executor_destruct(nativeInstance_);
         }
 
-        private static int ReorganizeHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr blockList, IntPtr blockList2)
+        private static int ReorganizeHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing)
         {
             GCHandle handlerHandle = (GCHandle)context;
             if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
@@ -180,8 +180,10 @@ namespace Bitprim
                 handlerHandle.Free();
                 return 0;
             }
+            var incomingBlocks = incoming != IntPtr.Zero? new BlockList(incoming) : null;
+            var outgoingBlocks = outgoing != IntPtr.Zero? new BlockList(outgoing) : null;
             var handler = (handlerHandle.Target as BlockHandler);
-            bool keepSubscription = handler(error, u, new BlockList(blockList), new BlockList(blockList2));
+            bool keepSubscription = handler(error, u, incomingBlocks, outgoingBlocks);
             if ( ! keepSubscription )
             {
                 handlerHandle.Free();
@@ -197,8 +199,9 @@ namespace Bitprim
                 handlerHandle.Free();
                 return 0;
             }
+            var newTransaction = transaction != IntPtr.Zero? new Transaction(transaction) : null;
             var handler = (handlerHandle.Target as TransactionHandler);
-            bool keepSubscription = handler(error, new Transaction(transaction));
+            bool keepSubscription = handler(error, newTransaction);
             if( ! keepSubscription )
             {
                 handlerHandle.Free();

@@ -47,6 +47,8 @@
 /bitprim.restapi/conanbuildinfo.cmake
 /.vscode/launch.json
 /.vscode
+/bitprim.console/bin/Release/netcoreapp2.0
+/bitprim.console/obj
 /bitprim.console/bin
 /bitprim.console/blockchain
 /bitprim.console/obj

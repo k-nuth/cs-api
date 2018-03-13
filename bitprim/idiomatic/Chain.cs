@@ -12,6 +12,9 @@ namespace Bitprim
     /// </summary>
     public class Chain
     {
+        public delegate void FetchBlockByHeightHashTimestampHandler(ErrorCode errorCode, byte[] blockHash, DateTime blockDate, UInt64 blockHeight);
+        public delegate void FetchBlockByHashTxsSizeHandler(ErrorCode errorCode, Block block, UInt64 blockHeight, HashList txHashes, UInt64 serializedBlockSize);
+
         private IntPtr nativeInstance_;
 
         #region Chain
@@ -95,6 +98,46 @@ namespace Bitprim
         }
 
         /// <summary>
+        /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
+        /// <param name="handler"> Callback which will be called when the block data is retrieved. </param>
+        public void FetchBlockByHashTxSizes(byte[] blockHash, FetchBlockByHashTxsSizeHandler handler)
+        {
+            var managedHash = new hash_t
+            {
+                hash = blockHash
+            };
+            IntPtr contextPtr = CreateContext(handler, managedHash);
+            ChainNative.chain_fetch_block_by_hash_txs_size(nativeInstance_, contextPtr, managedHash, FetchBlockByHashTxsSizeInternalHandler);
+        }
+
+        /// <summary>
+        /// Given a block hash, retrieve block header, tx hashes and serialized block size, synchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash. </param>
+        /// <returns> Error code, block header, block height, tx hashes, serialized block size. </returns>
+        public Tuple<ErrorCode, Block, UInt64, HashList, UInt64> GetBlockByHashTxSizes(byte[] blockHash)
+        {
+            var managedHash = new hash_t
+            {
+                hash = blockHash
+            };
+            IntPtr block = IntPtr.Zero;
+            UInt64 blockHeight = 0;
+            IntPtr txHashes = IntPtr.Zero;
+            UInt64 serializedBlockSize = 0;
+            ErrorCode result = ChainNative.chain_get_block_by_hash_txs_size
+            (
+                nativeInstance_, managedHash, ref block,
+                ref blockHeight, ref txHashes, ref serializedBlockSize
+            );
+            return result == ErrorCode.Success?
+                new Tuple<ErrorCode, Block, UInt64, HashList, UInt64>(result, new Block(block), blockHeight, new HashList(txHashes), serializedBlockSize):
+                new Tuple<ErrorCode, Block, UInt64, HashList, UInt64>(result, null, 0, null, 0);
+        }
+
+        /// <summary>
         /// Given a block hash, get the full block it identifies, synchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
@@ -124,6 +167,32 @@ namespace Bitprim
         }
 
         /// <summary>
+        /// Given a block height, retrieve only block hash and timestamp, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        /// <param name="handler"> Callback which will be called when the block data is retrieved. </param>
+        public void FetchBlockByHeightHashTimestamp(UInt64 height, FetchBlockByHeightHashTimestampHandler handler)
+        {
+            GCHandle handlerHandle = GCHandle.Alloc(handler);
+            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            ChainNative.chain_fetch_block_by_height_timestamp(nativeInstance_, handlerPtr, height, FetchBlockByHeightHashTimestampInternalHandler);
+        }
+
+        /// <summary>
+        /// Given a block height, retrieve only its block hash and timestamp, synchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        /// <returns> Error code, block hash and block timestamp. </returns>
+        public Tuple<ErrorCode, byte[], DateTime> GetBlockByHeightHashTimestamp(UInt64 height)
+        {
+            var blockHash = new hash_t();
+            UInt32 blockTimestamp = 0;
+            UInt64 blockHeight = 0;
+            ErrorCode result = ChainNative.chain_get_block_by_height_timestamp(nativeInstance_, height, ref blockHash, ref blockTimestamp, ref blockHeight);
+            return new Tuple<ErrorCode, byte[], DateTime>(result, blockHash.hash, DateTimeOffset.FromUnixTimeSeconds(blockTimestamp).UtcDateTime);
+        }
+
+        /// <summary>
         /// Given a block height, get the full block it identifies, synchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
@@ -134,6 +203,20 @@ namespace Bitprim
             UInt64 actualHeight = 0; //Should always match input height
             ErrorCode result = ChainNative.chain_get_block_by_height(nativeInstance_, height, ref block, ref actualHeight);
             return new Tuple<ErrorCode, Block, UInt64>(result, new Block(block), actualHeight);
+        }
+
+        /// <summary>
+        /// Given a block height, get just the block hash, synchronously.
+        /// </summary>
+        /// <param name="height"> Block height. </param>
+        /// <returns> Error code and block hash. </returns>
+        public Tuple<ErrorCode, byte[]> GetBlockHash(UInt64 height)
+        {
+            var blockHash = new hash_t();
+            ErrorCode result = ChainNative.chain_get_block_hash(nativeInstance_, height, ref blockHash);
+            return result == ErrorCode.Success?
+                new Tuple<ErrorCode, byte[]>(result, blockHash.hash):
+                new Tuple<ErrorCode, byte[]>(result, null);
         }
 
         #endregion //Block
@@ -623,12 +706,42 @@ namespace Bitprim
             contextHandle.Free();
         }
 
+        private static void FetchBlockByHashTxsSizeInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                                   IntPtr block, UInt64 blockHeight, IntPtr txHashes,
+                                                                   UInt64 blockSerializedSize)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            Tuple<FetchBlockByHashTxsSizeHandler, hash_t> context = (contextHandle.Target as Tuple<FetchBlockByHashTxsSizeHandler, hash_t>);
+            FetchBlockByHashTxsSizeHandler handler = context.Item1;
+            handler(error, new Block(block), blockHeight, new HashList(txHashes), blockSerializedSize);
+            contextHandle.Free();
+        }
+
         private static void FetchBlockByHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
             Action<ErrorCode, Block> handler = (handlerHandle.Target as Action<ErrorCode, Block>);
             handler(error, new Block(block));
             handlerHandle.Free();
+        }
+
+        private static void FetchBlockByHeightHashTimestampInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, hash_t blockHash, UInt32 timestamp, UInt64 height)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as FetchBlockByHeightHashTimestampHandler);
+                //Copy native memory before it goes out of scope
+                byte[] blockHashCopy = new byte[blockHash.hash.Length];
+                blockHash.hash.CopyTo(blockHashCopy, 0);
+                //Convert Unix timestamp to date
+                DateTime blockDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).UtcDateTime;
+                handler(error, blockHashCopy, blockDate, height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
         }
 
         private static void FetchBlockHeightHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 height)

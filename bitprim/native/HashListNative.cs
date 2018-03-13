@@ -10,7 +10,7 @@ public static class HashListNative
     public static extern IntPtr chain_hash_list_construct_default();
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern byte[] chain_hash_list_nth(IntPtr list, UIntPtr /*size_t*/ n);
+    public static extern void chain_hash_list_nth_out(IntPtr list, UIntPtr /*size_t*/ n, ref hash_t out_hash);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern UIntPtr /*size_t*/ chain_hash_list_count(IntPtr list);
