@@ -34,7 +34,7 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_height(nativeInstance_, contextPtr, managedHash, FetchBlockHeightHandler);
+            ChainNative.chain_fetch_block_height(nativeInstance_, contextPtr, managedHash, FetchBlockHeightInternalHandler);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_last_height(nativeInstance_, handlerPtr, FetchLastHeightHandler);
+            ChainNative.chain_fetch_last_height(nativeInstance_, handlerPtr, FetchLastHeightInternalHandler);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockByHashHandler);
+            ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockByHashInternalHandler);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, FetchBlockByHeightHandler);
+            ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, FetchBlockByHeightInternalHandler);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashHandler);
+            ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashInternalHandler);
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, FetchBlockHeaderbyHeightHandler);
+            ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, FetchBlockHeaderbyHeightInternalHandler);
         }
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchMerkleBlockByHashHandler);
+            ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchMerkleBlockByHashInternalHandler);
         }
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, FetchMerkleBlockByHeightHandler);
+            ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, FetchMerkleBlockByHeightInternalHandler);
         }
 
         /// <summary>
@@ -357,7 +357,7 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchCompactBlockByHashHandler);
+            ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchCompactBlockByHashInternalHandler);
         }
 
         /// <summary>
@@ -386,7 +386,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, FetchCompactBlockByHeightHandler);
+            ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, FetchCompactBlockByHeightInternalHandler);
         }
 
         /// <summary>
@@ -419,7 +419,7 @@ namespace Bitprim
                 hash = txHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, FetchTransactionByHashHandler);
+            ChainNative.chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, FetchTransactionByHashInternalHandler);
         }
 
         /// <summary>
@@ -454,7 +454,7 @@ namespace Bitprim
                 hash = txHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, FetchTransactionPositionHandler);
+            ChainNative.chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, FetchTransactionPositionInternalHandler);
         }
 
         /// <summary>
@@ -487,7 +487,7 @@ namespace Bitprim
         public void FetchSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler)
         {
             IntPtr contextPtr = CreateContext(handler, outputPoint);
-            ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, FetchSpendHandler);
+            ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, FetchSpendInternalHandler);
         }
 
         /// <summary>
@@ -527,7 +527,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, FetchHistoryHandler);
+            ChainNative.chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, FetchHistoryInternalHandler);
         }
 
         /// <summary>
@@ -558,7 +558,7 @@ namespace Bitprim
         public void FetchStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
         {
             IntPtr contextPtr = CreateContext(handler, filter);
-            ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, FetchStealthHandler);
+            ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, FetchStealthInternalHandler);
         }
 
         #endregion //Stealth
@@ -574,7 +574,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, FetchBlockLocatorHandler);
+            ChainNative.chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, FetchBlockLocatorInternalHandler);
         }
 
         /// <summary>
@@ -602,7 +602,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, ResultHandler);
+            ChainNative.chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, ResultInternalHandler);
         }
 
         /// <summary>
@@ -624,7 +624,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance, ResultHandler);
+            ChainNative.chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance, ResultInternalHandler);
         }
 
         /// <summary>
@@ -650,7 +650,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_validate_tx(nativeInstance_, handlerPtr, transaction.NativeInstance, ValidateTransactionHandler);
+            ChainNative.chain_validate_tx(nativeInstance_, handlerPtr, transaction.NativeInstance, ValidateTransactionInternalHandler);
         }
 
         /// <summary>
@@ -680,30 +680,30 @@ namespace Bitprim
             }
         }
 
-        private static void FetchBlockHeaderByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr header, UInt64 height)
+        private IntPtr CreateContext<C, P>(C callback, P parameters)
         {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, Header>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, Header>, hash_t>);
-            Action<ErrorCode, Header> handler = context.Item1;
-            handler(error, new Header(header));
-            contextHandle.Free();
+            // Both the callback and its parameters need to hold garbage collection off until
+            // the callback is called, so a GCHandle is taken for an object containing both of them:
+            // that is the context
+            var context = new Tuple<C, P>(callback, parameters);
+            GCHandle contextHandle = GCHandle.Alloc(context);
+            return (IntPtr)contextHandle;
         }
 
-        private static void FetchBlockHeaderbyHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr header, UInt64 height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, Header> handler = (handlerHandle.Target as Action<ErrorCode, Header>);
-            handler(error, new Header(header));
-            handlerHandle.Free();
-        }
-
-        private static void FetchBlockByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr block, UInt64 height)
+        private static void FetchBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                            IntPtr block, UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, Block>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, Block>, hash_t>);
-            Action<ErrorCode, Block> handler = context.Item1;
-            handler(error, new Block(block));
-            contextHandle.Free();
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Block>, hash_t>);
+                Action<ErrorCode, Block> handler = context.Item1;
+                handler(error, new Block(block));
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
         }
 
         private static void FetchBlockByHashTxsSizeInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
@@ -711,21 +711,20 @@ namespace Bitprim
                                                                    UInt64 blockSerializedSize)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<FetchBlockByHashTxsSizeHandler, hash_t> context = (contextHandle.Target as Tuple<FetchBlockByHashTxsSizeHandler, hash_t>);
-            FetchBlockByHashTxsSizeHandler handler = context.Item1;
-            handler(error, new Block(block), blockHeight, new HashList(txHashes), blockSerializedSize);
-            contextHandle.Free();
+            try
+            {
+                var context = (contextHandle.Target as Tuple<FetchBlockByHashTxsSizeHandler, hash_t>);
+                FetchBlockByHashTxsSizeHandler handler = context.Item1;
+                handler(error, new Block(block), blockHeight, new HashList(txHashes), blockSerializedSize);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
         }
 
-        private static void FetchBlockByHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block, UInt64 height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, Block> handler = (handlerHandle.Target as Action<ErrorCode, Block>);
-            handler(error, new Block(block));
-            handlerHandle.Free();
-        }
-
-        private static void FetchBlockByHeightHashTimestampInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, hash_t blockHash, UInt32 timestamp, UInt64 height)
+        private static void FetchBlockByHeightHashTimestampInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
+                                                                           hash_t blockHash, UInt32 timestamp, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
             try
@@ -744,142 +743,283 @@ namespace Bitprim
             }
         }
 
-        private static void FetchBlockHeightHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 height)
+        private static void FetchBlockByHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
+                                                              IntPtr block, UInt64 height)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                Action<ErrorCode, Block> handler = (handlerHandle.Target as Action<ErrorCode, Block>);
+                handler(error, new Block(block));
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchBlockHeaderByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                                  IntPtr header, UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, UInt64>, hash_t>);
-            Action<ErrorCode, UInt64> handler = context.Item1;
-            handler(error, height);
-            contextHandle.Free();
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Header>, hash_t>);
+                Action<ErrorCode, Header> handler = context.Item1;
+                handler(error, new Header(header));
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
         }
 
-        private static void FetchBlockLocatorHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr headerReader)
+        private static void FetchBlockHeaderbyHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
+                                                                    IntPtr header, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, HeaderReader> handler = (handlerHandle.Target as Action<ErrorCode, HeaderReader>);
-            handler(error, new HeaderReader(headerReader));
-            handlerHandle.Free();
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, Header>);
+                handler(error, new Header(header));
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
         }
 
-        private static void FetchCompactBlockByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr compactBlock, UInt64 height)
+        private static void FetchBlockHeightInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                            UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, CompactBlock>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, CompactBlock>, hash_t>);
-            Action<ErrorCode, CompactBlock> handler = context.Item1;
-            handler(error, new CompactBlock(compactBlock));
-            contextHandle.Free();
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, UInt64>, hash_t>);
+                Action<ErrorCode, UInt64> handler = context.Item1;
+                handler(error, height);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
         }
 
-        private static void FetchCompactBlockByHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr compactBlock, UInt64 height)
+        private static void FetchBlockLocatorInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
+                                                             IntPtr headerReader)
         {
             GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, CompactBlock> handler = (handlerHandle.Target as Action<ErrorCode, CompactBlock>);
-            handler(error, new CompactBlock(compactBlock));
-            handlerHandle.Free();
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, HeaderReader>);
+                handler(error, new HeaderReader(headerReader));
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
         }
 
-        private static void FetchHistoryHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr history)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, HistoryCompactList> handler = (handlerHandle.Target as Action<ErrorCode, HistoryCompactList>);
-            handler(error, new HistoryCompactList(history));
-            handlerHandle.Free();
-        }
-
-        private static void FetchLastHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, UIntPtr height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, UInt64> handler = (handlerHandle.Target as Action<ErrorCode, UInt64>);
-            handler(error, (UInt64)height);
-            handlerHandle.Free();
-        }
-
-        private static void FetchMerkleBlockByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr merkleBlock, UInt64 height)
+        private static void FetchCompactBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                                   IntPtr compactBlock, UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, MerkleBlock, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, MerkleBlock, UInt64>, hash_t>);
-            Action<ErrorCode, MerkleBlock, UInt64> handler = context.Item1;
-            handler(error, new MerkleBlock(merkleBlock), height);
-            contextHandle.Free();
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, CompactBlock>, hash_t>);
+                Action<ErrorCode, CompactBlock> handler = context.Item1;
+                handler(error, new CompactBlock(compactBlock));
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
         }
 
-        private static void FetchMerkleBlockByHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr merkleBlock, UInt64 height)
+        private static void FetchCompactBlockByHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
+                                                             IntPtr compactBlock, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, MerkleBlock, UInt64> handler = (handlerHandle.Target as Action<ErrorCode, MerkleBlock, UInt64>);
-            handler(error, new MerkleBlock(merkleBlock), height);
-            handlerHandle.Free();
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, CompactBlock>);
+                handler(error, new CompactBlock(compactBlock));
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
         }
 
-        private static void FetchSpendHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr inputPoint)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, Point>, OutputPoint> context = (contextHandle.Target as Tuple<Action<ErrorCode, Point>, OutputPoint>);
-            Action<ErrorCode, Point> handler = context.Item1;
-            handler(error, new Point(inputPoint));
-            contextHandle.Free();
-        }
-
-        private static void FetchStealthHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr stealth)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, StealthCompactList>, Binary> context = (contextHandle.Target as Tuple<Action<ErrorCode, StealthCompactList>, Binary>);
-            Action<ErrorCode, StealthCompactList> handler = context.Item1;
-            handler(error, new StealthCompactList(stealth));
-            contextHandle.Free();
-        }
-
-        private static void FetchTransactionByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr transaction, UInt64 index, UInt64 height)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, Transaction, UInt64, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, Transaction, UInt64, UInt64>, hash_t>);
-            Action<ErrorCode, Transaction, UInt64, UInt64> handler = context.Item1;
-            handler(error, new Transaction(transaction), index, height);
-            contextHandle.Free();
-        }
-
-        private static void FetchTransactionByHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction, UInt64 index, UInt64 height)
+        private static void FetchHistoryInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
+                                                                IntPtr history)
         {
             GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, Transaction, UInt64, UInt64> handler = (handlerHandle.Target as Action<ErrorCode, Transaction, UInt64, UInt64>);
-            handler(error, new Transaction(transaction), index, height);
-            handlerHandle.Free();
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, HistoryCompactList>);
+                handler(error, new HistoryCompactList(history));
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
         }
 
-        private static void FetchTransactionPositionHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 index, UInt64 height)
+        private static void FetchLastHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
+                                                                   UIntPtr height)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, UInt64>);
+                handler(error, (UInt64)height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchMerkleBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                                          IntPtr merkleBlock, UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, UInt64, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, UInt64, UInt64>, hash_t>);
-            Action<ErrorCode, UInt64, UInt64> handler = context.Item1;
-            handler(error, index, height);
-            contextHandle.Free();
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, MerkleBlock, UInt64>, hash_t>);
+                Action<ErrorCode, MerkleBlock, UInt64> handler = context.Item1;
+                handler(error, new MerkleBlock(merkleBlock), height);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
         }
 
-        private static void ResultHandler(IntPtr chain, IntPtr context, ErrorCode error)
+        private static void FetchMerkleBlockByHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
+                                                                    IntPtr merkleBlock, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode> handler = (handlerHandle.Target as Action<ErrorCode>);
-            handler(error);
-            handlerHandle.Free();
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, MerkleBlock, UInt64>);
+                handler(error, new MerkleBlock(merkleBlock), height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
         }
 
-        private static void ValidateTransactionHandler(IntPtr chain, IntPtr context, ErrorCode error, string message)
+        private static void FetchSpendInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                      IntPtr inputPoint)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Point>, OutputPoint>);
+                Action<ErrorCode, Point> handler = context.Item1;
+                handler(error, new Point(inputPoint));
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchStealthInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                        IntPtr stealth)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, StealthCompactList>, Binary>);
+                Action<ErrorCode, StealthCompactList> handler = context.Item1;
+                handler(error, new StealthCompactList(stealth));
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchTransactionByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                                  IntPtr transaction, UInt64 index, UInt64 height)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Transaction, UInt64, UInt64>, hash_t>);
+                Action<ErrorCode, Transaction, UInt64, UInt64> handler = context.Item1;
+                handler(error, new Transaction(transaction), index, height);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchTransactionByHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
+                                                                    IntPtr transaction, UInt64 index, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, string> handler = (handlerHandle.Target as Action<ErrorCode, string>);
-            handler(error, message);
-            handlerHandle.Free();
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, Transaction, UInt64, UInt64>);
+                handler(error, new Transaction(transaction), index, height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
         }
 
-        private IntPtr CreateContext<C, P>(C callback, P parameters)
+        private static void FetchTransactionPositionInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                                    UInt64 index, UInt64 height)
         {
-            // Both the callback and its parameters need to hold garbage collection off until
-            // the callback is called, so a GCHandle is taken for an object containing both of them:
-            // that is the context
-            var context = new Tuple<C, P>(callback, parameters);
-            GCHandle contextHandle = GCHandle.Alloc(context);
-            return (IntPtr)contextHandle;
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, UInt64, UInt64>, hash_t>);
+                Action<ErrorCode, UInt64, UInt64> handler = context.Item1;
+                handler(error, index, height);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
         }
+
+        private static void ResultInternalHandler(IntPtr chain, IntPtr context, ErrorCode error)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                Action<ErrorCode> handler = (handlerHandle.Target as Action<ErrorCode>);
+                handler(error);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void ValidateTransactionInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
+                                                               string message)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, string>);
+                handler(error, message);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
     }
 
 }
