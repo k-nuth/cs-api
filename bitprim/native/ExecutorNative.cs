@@ -41,10 +41,10 @@ public static class ExecutorNative
     public delegate int TransactionHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_subscribe_blockchain(IntPtr exec, IntPtr chain, IntPtr context, ReorganizeHandler handler);
+    public static extern void chain_subscribe_blockchain(IntPtr exec, IntPtr chain, IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)]ReorganizeHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern void chain_subscribe_transaction(IntPtr exec, IntPtr chain, IntPtr context, TransactionHandler handler);
+    public static extern void chain_subscribe_transaction(IntPtr exec, IntPtr chain, IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)]TransactionHandler handler);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern IntPtr executor_get_chain(IntPtr exec);
