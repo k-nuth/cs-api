@@ -184,6 +184,10 @@ namespace Bitprim
             var outgoingBlocks = outgoing != IntPtr.Zero? new BlockList(outgoing) : null;
             var handler = (handlerHandle.Target as BlockHandler);
             bool keepSubscription = handler(error, u, incomingBlocks, outgoingBlocks);
+            
+            incomingBlocks?.Dispose();
+            outgoingBlocks?.Dispose();
+
             if ( ! keepSubscription )
             {
                 handlerHandle.Free();
