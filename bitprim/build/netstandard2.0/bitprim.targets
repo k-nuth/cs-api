@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\Common.targets"/>
   <Target Name="CustomScriptTest" AfterTargets="Build">
-    <Message Text="Custom Bitprim build step invoked for .NET 4.6.1 build" />
+    <Message Text="Custom Bitprim build step invoked for netstandard2.0 build" />
     <CallTarget Targets="GetBitprimNodeCint" />
   </Target>
 </Project>

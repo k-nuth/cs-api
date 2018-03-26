@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Version>0.2.189</Version>
     <Authors>Bitprim</Authors>
     <Company>Bitprim</Company>
@@ -20,10 +20,11 @@
 
   <ItemGroup>
     <!-- pack the target files -->
-    <Content Include="build\net461\bitprim.targets" PackagePath="build\net461\bitprim.targets" />
-    <Content Include="build\netcoreapp2.0\bitprim.targets" PackagePath="build\netcoreapp2.0\bitprim.targets" />
-    <Content Include="build\Common.targets" PackagePath="build\Common.targets" />
-    <!-- pack the conan file -->
+    <Content Include="build\netstandard2.0\bitprim.targets" PackagePath="build\netstandard2.0\bitprim.targets" />
+	    
+	<Content Include="build\Common.targets" PackagePath="build\Common.targets" />
+    
+	<!-- pack the conan file -->
     <Content Include="..\conanfile.txt" PackagePath="content\conanfile.txt" />
   </ItemGroup>
 
