@@ -8,14 +8,14 @@ public static class ExecutorNative
 {
     //Delegates for callbacks
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void RunHandler(IntPtr ctx, int error);
+    public delegate void RunNodeHandler(IntPtr ctx, int error);
 
     //Functions
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int executor_initchain(IntPtr exec);
 
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
-    public static extern int executor_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunHandler handler);
+    public static extern int executor_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
     
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int executor_run_wait(IntPtr exec);
