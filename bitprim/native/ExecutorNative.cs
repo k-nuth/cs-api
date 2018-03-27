@@ -52,6 +52,9 @@ public static class ExecutorNative
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern int /*bool*/ executor_stopped(IntPtr exec);
 
+    [DllImport(Constants.BITPRIM_C_LIBRARY, EntryPoint="node_settings_get_network")]
+    public static extern NetworkType executor_get_network(IntPtr executor);
+
     //TODO Add when networking interface is ready
     //[DllImport(Constants.BITPRIM_C_LIBRARY)]
     //public static extern IntPtr executor_get_p2p(IntPtr exec);

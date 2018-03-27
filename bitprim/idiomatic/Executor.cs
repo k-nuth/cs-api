@@ -65,6 +65,17 @@ namespace Bitprim
         }
 
         /// <summary>
+        /// Returns true iif the current network is a testnet.
+        /// </summary>
+        public bool UseTestnetRules
+        {
+            get
+            {
+                return NetworkType == NetworkType.Testnet;
+            }
+        }
+
+        /// <summary>
         /// The node's query interface. Will be null until node starts running
         /// (i.e. Run or RunWait succeeded)
         /// </summary>
@@ -73,6 +84,18 @@ namespace Bitprim
             get
             {
                 return chain_;
+            }
+        }
+
+        /// <summary>
+        /// The node's network. Won't be valid until node starts running
+        /// (i.e. Run or RunWait succeeded)
+        /// </summary>
+        public NetworkType NetworkType
+        {
+            get
+            {
+                return ExecutorNative.executor_get_network(nativeInstance_);
             }
         }
 
