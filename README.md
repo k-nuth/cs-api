@@ -1,6 +1,6 @@
 # bitprim-cs
 
 C# binding for the Bitprim API.
-NuGet package:
+Includes blockchain query interface.
 
-https://www.nuget.org/packages/bitprim/
+NuGet: [![NuGet](https://img.shields.io/nuget/v/Nuget.Core.svg)](https://www.nuget.org/packages/bitprim)
