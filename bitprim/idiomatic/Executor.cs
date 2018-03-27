@@ -15,6 +15,9 @@ namespace Bitprim
 
         private Chain chain_;
         private IntPtr nativeInstance_;
+        private ExecutorNative.ReorganizeHandler internalBlockHandler_;
+        private ExecutorNative.RunNodeHandler internalRunNodeHandler_;
+        private ExecutorNative.TransactionHandler internalTxHandler_;
 
         /// <summary>
         /// Create executor. Does not init database or start execution yet.
@@ -45,6 +48,9 @@ namespace Bitprim
         public Executor(string configFile, IntPtr stdOut, IntPtr stdErr)
         {
             nativeInstance_ = ExecutorNative.executor_construct_handles(configFile, stdOut, stdErr);
+            internalBlockHandler_ = new ExecutorNative.ReorganizeHandler(InternalBlockHandler);
+            internalRunNodeHandler_ = new ExecutorNative.RunNodeHandler(InternalRunNodeHandler);
+            internalTxHandler_ = new ExecutorNative.TransactionHandler(InternalTransactionHandler);
         }
 
         ~Executor()
@@ -90,7 +96,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            int result = ExecutorNative.executor_run(nativeInstance_, handlerPtr, NativeCallbackHandler);
+            int result = ExecutorNative.executor_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
             if(result == 0)
             {
                 chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
@@ -143,7 +149,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ExecutorNative.chain_subscribe_blockchain(nativeInstance_, Chain.NativeInstance, handlerPtr, ReorganizeHandler);
+            ExecutorNative.chain_subscribe_blockchain(nativeInstance_, Chain.NativeInstance, handlerPtr, internalBlockHandler_);
         }
 
         /// <summary>
@@ -154,7 +160,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ExecutorNative.chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, TransactionInternalHandler);
+            ExecutorNative.chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, internalTxHandler_);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -164,7 +170,6 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            //Logger.Log("Destroying executor " + nativeInstance_.ToString("X"));
             if( ExecutorNative.executor_stopped(nativeInstance_) != 0 )
             {
                 ExecutorNative.executor_stop(nativeInstance_);
@@ -172,7 +177,7 @@ namespace Bitprim
             ExecutorNative.executor_destruct(nativeInstance_);
         }
 
-        private static int ReorganizeHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing)
+        private static int InternalBlockHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing)
         {
             GCHandle handlerHandle = (GCHandle)context;
             if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
@@ -195,7 +200,15 @@ namespace Bitprim
             return keepSubscription ? 1 : 0;
         }
 
-        private static int TransactionInternalHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction)
+        private static void InternalRunNodeHandler(IntPtr handlerPtr, int error)
+        {
+            GCHandle handlerHandle = (GCHandle)handlerPtr;
+            Action<int> handler = (handlerHandle.Target as Action<int>);
+            handler(error);
+            handlerHandle.Free();
+        }
+
+        private static int InternalTransactionHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction)
         {
             GCHandle handlerHandle = (GCHandle)context;
             if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
@@ -211,14 +224,6 @@ namespace Bitprim
                 handlerHandle.Free();
             }
             return keepSubscription ? 1 : 0;
-        }
-
-        private static void NativeCallbackHandler(IntPtr handlerPtr, int error)
-        {
-            GCHandle handlerHandle = (GCHandle)handlerPtr;
-            Action<int> handler = (handlerHandle.Target as Action<int>);
-            handler(error);
-            handlerHandle.Free();
         }
 
     }
