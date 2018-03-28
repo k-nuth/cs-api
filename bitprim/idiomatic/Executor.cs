@@ -20,10 +20,21 @@ namespace Bitprim
         private ExecutorNative.TransactionHandler internalTxHandler_;
 
         /// <summary>
+        /// Create a executor object. Only for internal use, to instantiating delegates.
+        /// </summary>
+        private Executor()
+        {
+            //TODO(fernando): create the delegate object only when it is necessary
+            internalBlockHandler_ = new ExecutorNative.ReorganizeHandler(InternalBlockHandler);
+            internalRunNodeHandler_ = new ExecutorNative.RunNodeHandler(InternalRunNodeHandler);
+            internalTxHandler_ = new ExecutorNative.TransactionHandler(InternalTransactionHandler);
+        }
+
+        /// <summary>
         /// Create executor. Does not init database or start execution yet.
         /// </summary>
         /// <param name="configFile"> Path to configuration file. </param>
-        public Executor(string configFile)
+        public Executor(string configFile) : this()
         {
             nativeInstance_ = ExecutorNative.executor_construct_fd(configFile, 0, 0);
         }
@@ -45,12 +56,9 @@ namespace Bitprim
         /// <param name="configFile"> Path to configuration file. </param>
         /// <param name="stdOut"> Handle for redirecting standard output. </param>
         /// <param name="stdErr"> Handle for redirecting standard output. </param>
-        public Executor(string configFile, IntPtr stdOut, IntPtr stdErr)
+        public Executor(string configFile, IntPtr stdOut, IntPtr stdErr) : this()
         {
             nativeInstance_ = ExecutorNative.executor_construct_handles(configFile, stdOut, stdErr);
-            internalBlockHandler_ = new ExecutorNative.ReorganizeHandler(InternalBlockHandler);
-            internalRunNodeHandler_ = new ExecutorNative.RunNodeHandler(InternalRunNodeHandler);
-            internalTxHandler_ = new ExecutorNative.TransactionHandler(InternalTransactionHandler);
         }
 
         ~Executor()
