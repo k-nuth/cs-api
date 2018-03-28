@@ -20,7 +20,7 @@ namespace Bitprim
         private ExecutorNative.TransactionHandler internalTxHandler_;
 
         /// <summary>
-        /// Create a executor object. Only for internal use, to instantiating delegates.
+        /// Create an executor object. Only for internal use, to instantiate delegates.
         /// </summary>
         private Executor()
         {
