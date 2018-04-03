@@ -1,0 +1,109 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.2.189</Version>
+    <Authors>Bitprim</Authors>
+    <Company>Bitprim</Company>
+    <Description>C# binding for Bitprim Bitcoin platform</Description>
+    <PackageProjectUrl>www.bitprim.org</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/bitprim/bitprim-cs</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Bitcoin, C#, Litecoin, Bitcoin Cash</PackageTags>
+    <PackageReleaseNotes>Basic chain queries</PackageReleaseNotes>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <FileVersion>0.1.1.0</FileVersion>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\bitprim-bch\Constants.cs" Link="Constants.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Binary.cs" Link="Idiomatic\Binary.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Block.cs" Link="Idiomatic\Block.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\BlockIndexList.cs" Link="Idiomatic\BlockIndexList.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\BlockList.cs" Link="Idiomatic\BlockList.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\BlockReader.cs" Link="Idiomatic\BlockReader.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Chain.cs" Link="Idiomatic\Chain.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\CompactBlock.cs" Link="Idiomatic\CompactBlock.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\CurrencyType.cs" Link="Idiomatic\CurrencyType.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\ErrorCode.cs" Link="Idiomatic\ErrorCode.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Executor.cs" Link="Idiomatic\Executor.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\HashList.cs" Link="Idiomatic\HashList.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Header.cs" Link="Idiomatic\Header.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\HeaderReader.cs" Link="Idiomatic\HeaderReader.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\HistoryCompact.cs" Link="Idiomatic\HistoryCompact.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\HistoryCompactList.cs" Link="Idiomatic\HistoryCompactList.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Input.cs" Link="Idiomatic\Input.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\InputList.cs" Link="Idiomatic\InputList.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Logger.cs" Link="Idiomatic\Logger.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\MerkleBlock.cs" Link="Idiomatic\MerkleBlock.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\NativeBuffer.cs" Link="Idiomatic\NativeBuffer.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\NativeList.cs" Link="Idiomatic\NativeList.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\NativeString.cs" Link="Idiomatic\NativeString.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\NetworkType.cs" Link="Idiomatic\NetworkType.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\NodeSettings.cs" Link="Idiomatic\NodeSettings.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Output.cs" Link="Idiomatic\Output.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\OutputList.cs" Link="Idiomatic\OutputList.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\OutputPoint.cs" Link="Idiomatic\OutputPoint.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\PaymentAddress.cs" Link="Idiomatic\PaymentAddress.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Point.cs" Link="Idiomatic\Point.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\PointKind.cs" Link="Idiomatic\PointKind.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\PointList.cs" Link="Idiomatic\PointList.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Script.cs" Link="Idiomatic\Script.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\StealthCompact.cs" Link="Idiomatic\StealthCompact.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\StealthCompactList.cs" Link="Idiomatic\StealthCompactList.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Transaction.cs" Link="Idiomatic\Transaction.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\TransactionList.cs" Link="Idiomatic\TransactionList.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\Validations.cs" Link="Idiomatic\Validations.cs" />
+    <Compile Include="..\bitprim-bch\native\BinaryNative.cs" Link="native\BinaryNative.cs" />
+    <Compile Include="..\bitprim-bch\native\BlockIndexesNative.cs" Link="native\BlockIndexesNative.cs" />
+    <Compile Include="..\bitprim-bch\native\BlockListNative.cs" Link="native\BlockListNative.cs" />
+    <Compile Include="..\bitprim-bch\native\BlockNative.cs" Link="native\BlockNative.cs" />
+    <Compile Include="..\bitprim-bch\native\ChainNative.cs" Link="native\ChainNative.cs" />
+    <Compile Include="..\bitprim-bch\native\CompactBlockNative.cs" Link="native\CompactBlockNative.cs" />
+    <Compile Include="..\bitprim-bch\native\ExecutorNative.cs" Link="native\ExecutorNative.cs" />
+    <Compile Include="..\bitprim-bch\native\GetBlocksNative.cs" Link="native\GetBlocksNative.cs" />
+    <Compile Include="..\bitprim-bch\native\GetHeadersNative.cs" Link="native\GetHeadersNative.cs" />
+    <Compile Include="..\bitprim-bch\native\Hash.cs" Link="native\Hash.cs" />
+    <Compile Include="..\bitprim-bch\native\HashListNative.cs" Link="native\HashListNative.cs" />
+    <Compile Include="..\bitprim-bch\native\HeaderNative.cs" Link="native\HeaderNative.cs" />
+    <Compile Include="..\bitprim-bch\native\HistoryCompactListNative.cs" Link="native\HistoryCompactListNative.cs" />
+    <Compile Include="..\bitprim-bch\native\HistoryCompactNative.cs" Link="native\HistoryCompactNative.cs" />
+    <Compile Include="..\bitprim-bch\native\InputListNative.cs" Link="native\InputListNative.cs" />
+    <Compile Include="..\bitprim-bch\native\InputNative.cs" Link="native\InputNative.cs" />
+    <Compile Include="..\bitprim-bch\native\MerkleBlockNative.cs" Link="native\MerkleBlockNative.cs" />
+    <Compile Include="..\bitprim-bch\native\NodeSettingsNative.cs" Link="native\NodeSettingsNative.cs" />
+    <Compile Include="..\bitprim-bch\native\OutputListNative.cs" Link="native\OutputListNative.cs" />
+    <Compile Include="..\bitprim-bch\native\OutputNative.cs" Link="native\OutputNative.cs" />
+    <Compile Include="..\bitprim-bch\native\OutputPointNative.cs" Link="native\OutputPointNative.cs" />
+    <Compile Include="..\bitprim-bch\native\PaymentAddressNative.cs" Link="native\PaymentAddressNative.cs" />
+    <Compile Include="..\bitprim-bch\native\Platform.cs" Link="native\Platform.cs" />
+    <Compile Include="..\bitprim-bch\native\PointListNative.cs" Link="native\PointListNative.cs" />
+    <Compile Include="..\bitprim-bch\native\PointNative.cs" Link="native\PointNative.cs" />
+    <Compile Include="..\bitprim-bch\native\ScriptNative.cs" Link="native\ScriptNative.cs" />
+    <Compile Include="..\bitprim-bch\native\StealthCompactListNative.cs" Link="native\StealthCompactListNative.cs" />
+    <Compile Include="..\bitprim-bch\native\StealthCompactNative.cs" Link="native\StealthCompactNative.cs" />
+    <Compile Include="..\bitprim-bch\native\TransactionListNative.cs" Link="native\TransactionListNative.cs" />
+    <Compile Include="..\bitprim-bch\native\TransactionNative.cs" Link="native\TransactionNative.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- pack the target files -->
+    <Content Include="build\netstandard2.0\bitprim-btc.targets" PackagePath="build\netstandard2.0\bitprim-btc.targets"  />
+     
+		<Content Include="build\Common.targets" PackagePath="build\Common.targets" />
+    
+	<!-- pack the conan file -->
+    <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="build\netstandard2.0\" />
+    <Folder Include="Idiomatic\" />
+    <Folder Include="native\" />
+    <Folder Include="content\" />
+  </ItemGroup>
+
+</Project>

@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <!-- pack the target files -->
-    <Content Include="build\netstandard2.0\bitprim.targets" PackagePath="build\netstandard2.0\bitprim.targets" />
+    <Content Include="build\netstandard2.0\bitprim-bch.targets" PackagePath="build\netstandard2.0\bitprim-bch.targets" />
 	    
 	<Content Include="build\Common.targets" PackagePath="build\Common.targets" />
     
