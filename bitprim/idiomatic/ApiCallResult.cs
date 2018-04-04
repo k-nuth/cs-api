@@ -8,11 +8,28 @@ namespace Bitprim
         public TResultData Result { get; set; }
     }
 
-    public class GetBlockByHashTxSizeResult
+    public sealed class DisposableApiCallResult<TResultData> : IDisposable where TResultData : IDisposable
+    {
+        public Bitprim.ErrorCode ErrorCode { get; set; }
+        public TResultData Result { get; set; }
+
+        public void Dispose()
+        {
+            Result.Dispose();
+        }
+    }
+
+    public sealed class GetBlockByHashTxSizeResult : IDisposable
     {
         public GetBlockDataResult<Block> Block { get; set; }
         public Bitprim.HashList TransactionHashes { get; set; }
         public UInt64 SerializedBlockSize { get; set; }
+
+        public void Dispose()
+        {
+            Block.Dispose();
+            TransactionHashes.Dispose();
+        }
     }
 
     public class GetBlockHashTimestampResult
@@ -21,19 +38,29 @@ namespace Bitprim
         public DateTime BlockTimestamp { get; set; }
     }
 
-    public class GetBlockDataResult<TBlockData>
+    public sealed class GetBlockDataResult<TBlockData> : IDisposable where TBlockData : IDisposable
     {
         public TBlockData BlockData { get; set; }
         public UInt64 BlockHeight;
+
+        public void Dispose()
+        {
+            BlockData.Dispose();
+        }
     }
 
-    public class GetTxDataResult
+    public class GetTxDataResult : IDisposable
     {
         public Transaction Tx { get; set; }
         public GetTxPositionResult TxPosition { get; set; }
+
+        public void Dispose()
+        {
+            Tx.Dispose();
+        }
     }
 
-    public class GetTxPositionResult
+    public struct GetTxPositionResult
     {
         public UInt64 Index { get; set; }
         public UInt64 BlockHeight { get; set; }
