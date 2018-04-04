@@ -62,3 +62,4 @@
 /bitprim.console/conanbuildinfo.txt
 /bitprim.console/conanbuildinfo.cmake
 /bitprim.console/bitprim-node-cint.dll
+/bitprim.tests/libbitprim-node-cint.dll
