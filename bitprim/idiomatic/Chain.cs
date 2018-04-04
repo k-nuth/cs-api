@@ -135,7 +135,7 @@ namespace Bitprim
             return result == ErrorCode.Success?
                 new ApiCallResult<GetBlockByHashTxSizeResult>{ ErrorCode = result, Result = new GetBlockByHashTxSizeResult
                     {
-                        BlockData = new GetBlockResult{ Block =  new Block(block), BlockHeight = blockHeight },
+                        Block = new GetBlockDataResult<Block>{ BlockData =  new Block(block), BlockHeight = blockHeight },
                         TransactionHashes = new HashList(txHashes),
                         SerializedBlockSize = serializedBlockSize
                     }}:
@@ -147,7 +147,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Error code and full block </returns>
-        public ApiCallResult<GetBlockResult> GetBlockByHash(byte[] blockHash)
+        public ApiCallResult<GetBlockDataResult<Block>> GetBlockByHash(byte[] blockHash)
         {
             IntPtr block = IntPtr.Zero;
             UInt64 height = 0;
@@ -156,10 +156,10 @@ namespace Bitprim
                 hash = blockHash
             };
             ErrorCode result = ChainNative.chain_get_block_by_hash(nativeInstance_, managedHash, ref block, ref height);
-            return new ApiCallResult<GetBlockResult>
+            return new ApiCallResult<GetBlockDataResult<Block>>
             {
                 ErrorCode = result,
-                Result = new GetBlockResult{ Block = new Block(block), BlockHeight = height }
+                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = height }
             };
         }
 
@@ -214,15 +214,15 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <returns> Error code and full block </returns>
-        public ApiCallResult<GetBlockResult> GetBlockByHeight(UInt64 height)
+        public ApiCallResult<GetBlockDataResult<Block>> GetBlockByHeight(UInt64 height)
         {
             IntPtr block = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
             ErrorCode result = ChainNative.chain_get_block_by_height(nativeInstance_, height, ref block, ref actualHeight);
-            return new ApiCallResult<GetBlockResult>
+            return new ApiCallResult<GetBlockDataResult<Block>>
             {
                 ErrorCode = result,
-                Result = new GetBlockResult{ Block = new Block(block), BlockHeight = actualHeight }
+                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = actualHeight }
             };
         }
 
@@ -264,7 +264,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Error code, full block header and block height </returns>
-        public ApiCallResult<GetBlockHeaderResult> GetBlockHeaderByHash(byte[] blockHash)
+        public ApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHash(byte[] blockHash)
         {
             IntPtr header = IntPtr.Zero;
             UInt64 height = 0;
@@ -273,10 +273,10 @@ namespace Bitprim
                 hash = blockHash
             };
             ErrorCode result = ChainNative.chain_get_block_header_by_hash(nativeInstance_, managedHash, ref header, ref height);
-            return new ApiCallResult<GetBlockHeaderResult>
+            return new ApiCallResult<GetBlockDataResult<Header>>
             {
                 ErrorCode = result,
-                Result = new GetBlockHeaderResult{ BlockHeader = new Header(header), BlockHeight = height }
+                Result = new GetBlockDataResult<Header>{ BlockData = new Header(header), BlockHeight = height }
             };
         }
 
@@ -297,15 +297,15 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <returns> Error code, full block header, and height </returns>
-        public ApiCallResult<GetBlockHeaderResult> GetBlockHeaderByHeight(UInt64 height)
+        public ApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHeight(UInt64 height)
         {
             IntPtr header = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
             ErrorCode result = ChainNative.chain_get_block_header_by_height(nativeInstance_, height, ref header, ref actualHeight);
-            return new ApiCallResult<GetBlockHeaderResult>
+            return new ApiCallResult<GetBlockDataResult<Header>>
             {
                 ErrorCode = result,
-                Result = new GetBlockHeaderResult{ BlockHeader = new Header(header), BlockHeight = actualHeight }
+                Result = new GetBlockDataResult<Header>{ BlockData = new Header(header), BlockHeight = actualHeight }
             };
         }
 
@@ -333,7 +333,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Error code, full Merkle block and height </returns>
-        public ApiCallResult<GetMerkleBlockResult> GetMerkleBlockByHash(byte[] blockHash)
+        public ApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHash(byte[] blockHash)
         {
             IntPtr merkleBlock = IntPtr.Zero;
             UInt64 height = 0;
@@ -342,10 +342,10 @@ namespace Bitprim
                 hash = blockHash
             };
             ErrorCode result = ChainNative.chain_get_merkle_block_by_hash(nativeInstance_, managedHash, ref merkleBlock, ref height);
-            return new ApiCallResult<GetMerkleBlockResult>
+            return new ApiCallResult<GetBlockDataResult<MerkleBlock>>
             {
                 ErrorCode = result,
-                Result = new GetMerkleBlockResult{ MerkleBlock = new MerkleBlock(merkleBlock), BlockHeight = height }
+                Result = new GetBlockDataResult<MerkleBlock>{ BlockData = new MerkleBlock(merkleBlock), BlockHeight = height }
             };
         }
 
@@ -366,15 +366,15 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <returns> Error code, full Merkle block and height </returns>
-        public ApiCallResult<GetMerkleBlockResult> GetMerkleBlockByHeight(UInt64 height)
+        public ApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHeight(UInt64 height)
         {
             IntPtr merkleBlock = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
             ErrorCode result = ChainNative.chain_get_merkle_block_by_height(nativeInstance_, height, ref merkleBlock, ref actualHeight);
-            return new ApiCallResult<GetMerkleBlockResult>
+            return new ApiCallResult<GetBlockDataResult<MerkleBlock>>
             {
                 ErrorCode = result,
-                Result = new GetMerkleBlockResult{ MerkleBlock = new MerkleBlock(merkleBlock), BlockHeight = actualHeight }
+                Result = new GetBlockDataResult<MerkleBlock>{ BlockData = new MerkleBlock(merkleBlock), BlockHeight = actualHeight }
             };
         }
 
@@ -402,7 +402,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Error code, full compact block and height </returns>
-        public Tuple<ErrorCode, CompactBlock, UInt64> GetCompactBlockByHash(byte[] blockHash)
+        public ApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHash(byte[] blockHash)
         {
             IntPtr compactBlock = IntPtr.Zero;
             UInt64 height = 0;
@@ -410,8 +410,12 @@ namespace Bitprim
             {
                 hash = blockHash
             };
-            ErrorCode result = ChainNative.chain_get_compact_block_by_hash(nativeInstance_, managedHash, ref compactBlock, ref height);
-            return new Tuple<ErrorCode, CompactBlock, UInt64>(result, new CompactBlock(compactBlock), height);
+            ErrorCode errorCode = ChainNative.chain_get_compact_block_by_hash(nativeInstance_, managedHash, ref compactBlock, ref height);
+            return new ApiCallResult<GetBlockDataResult<CompactBlock>>
+            {
+                ErrorCode = errorCode,
+                Result = new GetBlockDataResult<CompactBlock>{ BlockData = new CompactBlock(compactBlock), BlockHeight = height }
+            };
         }
 
         /// <summary>
@@ -431,12 +435,16 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <returns> Error code, full compact block and height </returns>
-        public Tuple<ErrorCode, CompactBlock, UInt64> GetCompactBlockByHeight(UInt64 height)
+        public ApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHeight(UInt64 height)
         {
             IntPtr compactBlock = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode result = ChainNative.chain_get_compact_block_by_height(nativeInstance_, height, ref compactBlock, ref actualHeight);
-            return new Tuple<ErrorCode, CompactBlock, UInt64>(result, new CompactBlock(compactBlock), actualHeight);
+            ErrorCode errorCode = ChainNative.chain_get_compact_block_by_height(nativeInstance_, height, ref compactBlock, ref actualHeight);
+            return new ApiCallResult<GetBlockDataResult<CompactBlock>>
+            {
+                ErrorCode = errorCode,
+                Result = new GetBlockDataResult<CompactBlock>{ BlockData = new CompactBlock(compactBlock), BlockHeight = actualHeight }
+            };
         }
 
         #endregion //Compact block
@@ -465,7 +473,7 @@ namespace Bitprim
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <returns> Error code, full transaction, index inside block and height </returns>
-        public Tuple<ErrorCode, Transaction, UInt64, UInt64> GetTransaction(byte[] txHash, bool requireConfirmed)
+        public ApiCallResult<GetTxDataResult> GetTransaction(byte[] txHash, bool requireConfirmed)
         {
             IntPtr transaction = IntPtr.Zero;
             UInt64 index = 0;
@@ -474,8 +482,16 @@ namespace Bitprim
             {
                 hash = txHash
             };
-            ErrorCode result = ChainNative.chain_get_transaction(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref transaction, ref index, ref height);
-            return new Tuple<ErrorCode, Transaction, UInt64, UInt64>(result, new Transaction(transaction), index, height);
+            ErrorCode errorCode = ChainNative.chain_get_transaction(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref transaction, ref index, ref height);
+            return new ApiCallResult<GetTxDataResult>
+            {
+                ErrorCode = errorCode,
+                Result = new GetTxDataResult
+                {
+                     Tx = new Transaction(transaction),
+                     TxPosition = new GetTxPositionResult{ Index = index, BlockHeight = height }
+                }
+            };
         }
 
         /// <summary>
@@ -500,7 +516,7 @@ namespace Bitprim
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <returns> Error code, index in block (zero based) and block height </returns>
-        public Tuple<ErrorCode, UInt64, UInt64> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
+        public ApiCallResult<GetTxPositionResult> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
         {
             UInt64 index = 0;
             UInt64 height = 0;
@@ -508,8 +524,12 @@ namespace Bitprim
             {
                 hash = txHash
             };
-            ErrorCode result = ChainNative.chain_get_transaction_position(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref index, ref height);
-            return new Tuple<ErrorCode, UInt64, UInt64>(result, index, height);
+            ErrorCode errorCode = ChainNative.chain_get_transaction_position(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref index, ref height);
+            return new ApiCallResult<GetTxPositionResult>
+            {
+                ErrorCode = errorCode,
+                Result = new GetTxPositionResult{ Index = index, BlockHeight = height }
+            };
         }
 
         #endregion //Transaction
@@ -532,7 +552,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
         /// <returns> Error code and output point </returns>
-        public Tuple<ErrorCode, Point> GetSpend(OutputPoint outputPoint)
+        public ApiCallResult<Point> GetSpend(OutputPoint outputPoint)
         {
             //TODO When node-cint wraps a get function for this, call that instead
             var handlerDone = new AutoResetEvent(false);
@@ -546,7 +566,7 @@ namespace Bitprim
             };
             FetchSpend(outputPoint, handler);
             handlerDone.WaitOne();
-            return new Tuple<ErrorCode, Point>(error, point);
+            return new ApiCallResult<Point>{ ErrorCode = error, Result = point };
         }
 
         #endregion //Spend
@@ -574,11 +594,11 @@ namespace Bitprim
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
         /// <returns> Error code, HistoryCompactList </returns>
-        public Tuple<ErrorCode, HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
+        public ApiCallResult<HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
         {
             IntPtr history = IntPtr.Zero;
-            ErrorCode result = ChainNative.chain_get_history(nativeInstance_, address.NativeInstance, limit, fromHeight, ref history);
-            return new Tuple<ErrorCode, HistoryCompactList>(result, new HistoryCompactList(history));
+            ErrorCode errorCode = ChainNative.chain_get_history(nativeInstance_, address.NativeInstance, limit, fromHeight, ref history);
+            return new ApiCallResult<HistoryCompactList>{ ErrorCode = errorCode, Result = new HistoryCompactList(history) };
         }
 
         #endregion //History
@@ -619,11 +639,11 @@ namespace Bitprim
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
         /// <returns> Error code, HeaderReader </returns>
-        public Tuple<ErrorCode, HeaderReader> GetBlockLocator(BlockIndexList indexes)
+        public ApiCallResult<HeaderReader> GetBlockLocator(BlockIndexList indexes)
         {
             IntPtr headerReader = IntPtr.Zero;
-            ErrorCode result = ChainNative.chain_get_block_locator(nativeInstance_, indexes.NativeInstance, ref headerReader);
-            return new Tuple<ErrorCode, HeaderReader>(result, new HeaderReader(headerReader));
+            ErrorCode errorCode = ChainNative.chain_get_block_locator(nativeInstance_, indexes.NativeInstance, ref headerReader);
+            return new ApiCallResult<HeaderReader>{ ErrorCode = errorCode, Result = new HeaderReader(headerReader) };
         }
 
         #endregion //Block indexes
@@ -919,7 +939,7 @@ namespace Bitprim
         }
 
         private static void FetchMerkleBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                                          IntPtr merkleBlock, UInt64 height)
+                                                                  IntPtr merkleBlock, UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
