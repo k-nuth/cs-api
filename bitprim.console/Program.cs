@@ -1,9 +1,10 @@
 ﻿using Bitprim;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace bitprim.ibd
+namespace bitprim.console
 {
     public class Program
     {
@@ -15,7 +16,14 @@ namespace bitprim.ibd
             {
                 Console.CancelKeyPress += new ConsoleCancelEventHandler(OnSigInterrupt);
                 Console.WriteLine("Initializing...");
-                var executor = new Executor("");
+                var stdOut = new FileStream("stdout.txt", FileMode.Create);
+                var stdOutWriter = new StreamWriter(stdOut);
+                Console.SetOut(stdOutWriter);
+                var stdErr = new FileStream("stderr.txt", FileMode.Create);
+                var stdErrWriter = new StreamWriter(stdErr);
+                Console.SetError(stdErrWriter);
+                Console.OpenStandardError();
+                var executor = new Executor("", stdOut, stdErr);
                 bool ok = executor.InitChain();
                 if (!ok)
                 {

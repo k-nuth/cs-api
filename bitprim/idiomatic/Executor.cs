@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using Bitprim.Native;
 
@@ -54,11 +55,13 @@ namespace Bitprim
         /// Create executor. Does not init database or start execution yet.
         /// </summary>
         /// <param name="configFile"> Path to configuration file. </param>
-        /// <param name="stdOut"> Handle for redirecting standard output. </param>
-        /// <param name="stdErr"> Handle for redirecting standard output. </param>
-        public Executor(string configFile, IntPtr stdOut, IntPtr stdErr) : this()
+        /// <param name="stdOutStream"> For redirecting standard output. </param>
+        /// <param name="stdErrStream"> For redirecting standard output. </param>
+        public Executor(string configFile, FileStream stdOutStream, FileStream stdErrStream) : this()
         {
-            nativeInstance_ = ExecutorNative.executor_construct_handles(configFile, stdOut, stdErr);
+            IntPtr stdOutHandle = stdOutStream.SafeFileHandle.DangerousGetHandle();
+            IntPtr stdErrHandle = stdErrStream.SafeFileHandle.DangerousGetHandle();
+            nativeInstance_ = ExecutorNative.executor_construct_handles(configFile, stdOutHandle, stdErrHandle);
         }
 
         ~Executor()
