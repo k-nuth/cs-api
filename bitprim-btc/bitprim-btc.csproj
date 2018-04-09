@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Compile Include="..\bitprim-bch\Constants.cs" Link="Constants.cs" />
+    <Compile Include="..\bitprim-bch\idiomatic\ApiCallResult.cs" Link="Idiomatic\ApiCallResult.cs" />
     <Compile Include="..\bitprim-bch\idiomatic\Binary.cs" Link="Idiomatic\Binary.cs" />
     <Compile Include="..\bitprim-bch\idiomatic\Block.cs" Link="Idiomatic\Block.cs" />
     <Compile Include="..\bitprim-bch\idiomatic\BlockIndexList.cs" Link="Idiomatic\BlockIndexList.cs" />
@@ -91,7 +92,7 @@
 
   <ItemGroup>
     <!-- pack the target files -->
-    <Content Include="build\netstandard2.0\bitprim-btc.targets" PackagePath="build\netstandard2.0\bitprim-btc.targets"  />
+    <Content Include="build\netstandard2.0\bitprim-btc.targets" PackagePath="build\netstandard2.0\bitprim-btc.targets" />
      
 		<Content Include="build\Common.targets" PackagePath="build\Common.targets" />
     
@@ -101,7 +102,6 @@
 
   <ItemGroup>
     <Folder Include="build\netstandard2.0\" />
-    <Folder Include="Idiomatic\" />
     <Folder Include="native\" />
     <Folder Include="content\" />
   </ItemGroup>

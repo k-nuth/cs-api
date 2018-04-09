@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-bch", "bitprim-bch\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.tests", "bitprim.tests\bitprim.tests.csproj", "{78411BF0-35E5-4240-8B55-FB06C6BC4E47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bitprim.ibd", "bitprim.ibd\bitprim.ibd.csproj", "{531EB0F7-7A9C-4108-B145-9FE8BA297D48}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.console", "bitprim.console\bitprim.console.csproj", "{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-btc", "bitprim-btc\bitprim-btc.csproj", "{6D2DD63A-143A-4F39-B219-2E8F226E53BD}"
@@ -37,14 +35,6 @@ Global
 		{78411BF0-35E5-4240-8B55-FB06C6BC4E47}.Release|Any CPU.Build.0 = Release|Any CPU
 		{78411BF0-35E5-4240-8B55-FB06C6BC4E47}.Release|x64.ActiveCfg = Release|x64
 		{78411BF0-35E5-4240-8B55-FB06C6BC4E47}.Release|x64.Build.0 = Release|x64
-		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Debug|x64.ActiveCfg = Debug|x64
-		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Debug|x64.Build.0 = Debug|x64
-		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Release|x64.ActiveCfg = Release|x64
-		{531EB0F7-7A9C-4108-B145-9FE8BA297D48}.Release|x64.Build.0 = Release|x64
 		{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}.Debug|x64.ActiveCfg = Debug|Any CPU
