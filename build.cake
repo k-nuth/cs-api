@@ -18,7 +18,6 @@ Task("Clean")
 
         CleanDirectory("./bitprim-bch/bin");
         CleanDirectory("./bitprim.console/bin");
-        CleanDirectory("./bitprim.ibd/bin");
         CleanDirectory("./bitprim.tests/bin");
         CleanDirectory("./bitprim-btc/bin");
     
