@@ -6,6 +6,7 @@ cmake
 
 [options]
 bitprim-node-cint:shared=True
+bitprim-node-cint:currency=BCH
 
 [imports]
 bin, *.dll    -> .
