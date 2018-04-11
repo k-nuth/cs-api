@@ -39,10 +39,3 @@ build_script:
 
 test: off
 #skip_tags: true
-
-#test_script:
-#  - cd bitprim.tests
-#  - dotnet test /property:Platform=x64 -f netcoreapp2.0
-
-cache:
-  - packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
