@@ -17,7 +17,7 @@ environment:
     PYTHON_VERSION: "2.7.8"
     PYTHON_ARCH: "32"
     NUGET_API_KEY:
-      secure: QXiv4MV3IX8V/7hl+CGMAH9vcLaUJ12ZEk2ohcKiumfT0jS3AzfkJ13qES92E5Pt
+      secure: v1FcTnqyvedsvmDN+hkritZIzgvbs19CsZ9CB1Lxdq6SLi4FEeMZC5eBRulPmN+2
 
     VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
 
