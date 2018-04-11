@@ -136,12 +136,12 @@ Task("DeployNuget")
         foreach (string f in files)
         {
             Information("Pushing to nuget " + f);
-            /*NuGetPush(
+            NuGetPush(
                 outputDir + f,
                 new NuGetPushSettings {
                     ApiKey = EnvironmentVariable("NUGET_API_KEY"),
                     Source = "https://www.nuget.org/api/v2/package"
-                });*/
+                });
         }
         
     });
