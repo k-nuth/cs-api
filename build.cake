@@ -11,16 +11,18 @@ var outputDir = "./build/";
 
 var platform = "/property:Platform=x64";
 
+var publishToNuget = EnvironmentVariable("PUBLISH_TO_NUGET") ?? "false";
+
 Task("Clean")
     .Does(() => {
         
         Information("Cleaning... ");
 
         CleanDirectory("./bitprim-bch/bin");
+        CleanDirectory("./bitprim-btc/bin");
         CleanDirectory("./bitprim.console/bin");
         CleanDirectory("./bitprim.tests/bin");
-        CleanDirectory("./bitprim-btc/bin");
-    
+       
         if (DirectoryExists(outputDir))
         {
             DeleteDirectory(outputDir, new DeleteDirectorySettings {
@@ -33,7 +35,7 @@ Task("Clean")
 Task("Restore")
     .Does(() => {
         DotNetCoreRestore(solutionName);
-        NuGetRestore(solutionName);
+        //NuGetRestore(solutionName);
     });
 
 GitVersion versionInfo = null;
@@ -100,14 +102,51 @@ Task("Package")
             "nuget:bitprim-btc." + versionInfo.NuGetVersion + ".nupkg"
         });
 
-        if (AppVeyor.IsRunningOnAppVeyor)
+        //if (AppVeyor.IsRunningOnAppVeyor)
+        //{
+        //    foreach (var file in GetFiles(outputDir + "**/*"))
+        //        AppVeyor.UploadArtifact(file.FullPath);
+        //}
+        
+    });
+
+Task("UpdateVersionInfo")
+    .IsDependentOn("Package")
+    .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
+    .Does(() =>
+    {
+        var isTag = AppVeyor.Environment.Repository.Tag.IsTag && !string.IsNullOrWhiteSpace(AppVeyor.Environment.Repository.Tag.Name);
+        if (isTag) 
         {
-            foreach (var file in GetFiles(outputDir + "**/*"))
-                AppVeyor.UploadArtifact(file.FullPath);
+            AppVeyor.UpdateBuildVersion(AppVeyor.Environment.Repository.Tag.Name);
         }
     });
 
+Task("DeployNuget")
+    .IsDependentOn("UpdateVersionInfo")
+    .WithCriteria(publishToNuget == "true")
+    .Does(() =>
+    {
+        var files = System.IO.File
+            .ReadAllLines(outputDir + "artifacts")
+            .Select(l => l.Split(':'))
+            .Select(l => l[1])
+            .ToList();
+
+        foreach (string f in files)
+        {
+            Information("Pushing to nuget " + f);
+            /*NuGetPush(
+                outputDir + f,
+                new NuGetPushSettings {
+                    ApiKey = EnvironmentVariable("NUGET_API_KEY"),
+                    Source = "https://www.nuget.org/api/v2/package"
+                });*/
+        }
+        
+    });
+
 Task("Default")
-    .IsDependentOn("Package");
+    .IsDependentOn("DeployNuget");
 
 RunTarget(target);

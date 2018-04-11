@@ -1,9 +1,12 @@
-build: false
+build: off
 
 branches:
   only:
   - master
   - dev
+
+platform:
+  - x64
 
 configuration:
 - Release
@@ -23,39 +26,24 @@ environment:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           PUBLISH_TO_NUGET: "true"
 
-before_build:
-  - nuget restore
-
-build_script:
-  - SET PATH=%PATH%;%PYTHON%/Scripts/
-  - dotnet build bitprim.sln /property:Platform=x64
+assembly_info:
+  patch: false
 
 install:
   - "%PYTHON%/Scripts/pip.exe install conan --upgrade"
   - icacls "%APPVEYOR_BUILD_FOLDER%"\bitprim.tests /grant Everyone:F
   - icacls "%APPVEYOR_BUILD_FOLDER%"\bitprim.tests\* /grant Everyone:F
 
-test_script:
-  - cd bitprim.tests
-  - dotnet test /property:Platform=x64 -f netcoreapp2.0
+build_script:
+  - SET PATH=%PATH%;%PYTHON%/Scripts/
+  - powershell .\build.ps1
 
-after_test:
-  - ps: >-
-      if($env:PUBLISH_TO_NUGET -eq "true"){
-        Write-Host "Publishing to NuGet..."
-        cmd.exe /c "del $env:APPVEYOR_BUILD_FOLDER\bitprim\bin\x64\Release\*.nupkg"
-        Write-Host "Incrementing version..."
-        # Get the current patch version
-        $response = Invoke-RestMethod -method get -uri https://api.nuget.org/v3-flatcontainer/bitprim/index.json
-        $last_version = $response.versions[-1]
-        $patch = $last_version.Split(".")[-1]
-        # Add 1 to it
-        $nextVersion = [int]$patch + 1;
-        # Replace the new value in the project metadata
-        (Get-Content -path "$env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj") -replace '<Version>([0-9]+)\.([0-9]+)\.([0-9]+)</Version>', '<Version>$1.$2.%%PATCH_PLACEHOLDER%%</Version>' |  Set-Content "$env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj"
-        (Get-Content -path "$env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj") -replace '%%PATCH_PLACEHOLDER%%', "$nextVersion" |  Set-Content "$env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj"
-        Write-Host "Patch version updated to $nextVersion"
-        cmd.exe /c "dotnet build $env:APPVEYOR_BUILD_FOLDER\bitprim\bitprim.csproj /property:Platform=x64"
-        cmd.exe /c "dotnet nuget push $env:APPVEYOR_BUILD_FOLDER\bitprim\bin\x64\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k $env:NUGET_API_KEY"
-      }
-      Get-Content $env:APPVEYOR_BUILD_FOLDER\bitprim.tests\bin\x64\Release\netcoreapp2.0\bitprim-cs-log.txt
+test: off
+skip_tags: true
+
+#test_script:
+#  - cd bitprim.tests
+#  - dotnet test /property:Platform=x64 -f netcoreapp2.0
+
+cache:
+  - src\packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
