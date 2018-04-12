@@ -6,6 +6,7 @@ branches:
   only:
   - master
   - dev
+  - feature/CS-9
 
 configuration:
 - Release
@@ -120,9 +121,13 @@ install:
 script:
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
-      cd bitprim.tests
-      dotnet build -f netcoreapp2.0 -c Release -v normal
-      dotnet test --no-build -f netcoreapp2.0 -c Release -v normal
+      #cd bitprim.tests
+      # dotnet build -f netcoreapp2.0 -c Release -v normal
+      # dotnet test --no-build -f netcoreapp2.0 -c Release -v normal
+
+      chmod +x build.sh
+      ./build.sh
+      
     else
       cd bitprim/docs
       doxygen Doxyfile
