@@ -132,7 +132,7 @@ script:
       #cd bitprim.tests
       # dotnet build -f netcoreapp2.0 -c Release -v normal
       # dotnet test --no-build -f netcoreapp2.0 -c Release -v normal
-
+      git fetch
       chmod +x build.sh
       ./build.sh
 
