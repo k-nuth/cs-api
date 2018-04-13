@@ -135,6 +135,7 @@ script:
       
       if [[ "${TRAVIS_BRANCH}" != "dev" ]]; then
         git fetch origin dev:dev
+        git fetch --unshallow
       fi
 
       chmod +x build.sh
