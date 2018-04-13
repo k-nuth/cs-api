@@ -133,6 +133,10 @@ script:
       # dotnet build -f netcoreapp2.0 -c Release -v normal
       # dotnet test --no-build -f netcoreapp2.0 -c Release -v normal
       
+      if [[ "${TRAVIS_BRANCH}" != "dev" ]]; then
+        git fetch origin dev:dev
+      fi
+
       chmod +x build.sh
       ./build.sh
 
