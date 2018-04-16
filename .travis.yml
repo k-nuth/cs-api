@@ -44,7 +44,7 @@ matrix:
       - <<: *linux
         compiler: gcc 
         env: UPDATE_DOCS=false
-        
+
       - <<: *linux
         compiler: gcc 
         env: UPDATE_DOCS=true
@@ -68,7 +68,7 @@ before_install:
     git fetch origin
 
 install:
-  # Install Conan
+  
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
       # Install Conan    
@@ -87,6 +87,7 @@ install:
         pyenv rehash
         pyenv activate conan
       fi
+      
       pip install conan_package_tools --upgrade
       pip install conan --upgrade
       pip install wheel --upgrade
@@ -117,7 +118,9 @@ install:
         echo "deb https://download.mono-project.com/repo/ubuntu stable-trusty main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
         sudo apt update
         sudo apt install mono-devel
+
       fi
+
     else
       #Install Moxygen
       nvm install 8.4.0
