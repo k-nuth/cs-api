@@ -4,7 +4,6 @@ branches:
   only:
   - master
   - dev
-  - feature/CS-9
 
 platform:
   - x64
@@ -38,4 +37,3 @@ build_script:
   - powershell .\build.ps1
 
 test: off
-#skip_tags: true

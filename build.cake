@@ -21,7 +21,8 @@ Task("Clean")
         CleanDirectory("./bitprim-bch/bin");
         CleanDirectory("./bitprim-btc/bin");
         CleanDirectory("./bitprim.console/bin");
-        CleanDirectory("./bitprim.tests/bin");
+        CleanDirectory("./bitprim.tests.bch/bin");
+        CleanDirectory("./bitprim.tests.btc/bin");
        
         if (DirectoryExists(outputDir))
         {
@@ -78,11 +79,13 @@ Task("Test")
                 Configuration = configuration
             };
         
-        DotNetCoreTest("./bitprim.tests",settings);
+        DotNetCoreTest("./bitprim.tests.bch",settings);
+        DotNetCoreTest("./bitprim.tests.btc",settings);
     });
 
 Task("Package")
     .IsDependentOn("Test")
+    .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
     .Does(() => {
 
         var settings = new DotNetCorePackSettings
@@ -101,12 +104,6 @@ Task("Package")
             "nuget:bitprim-bch." + versionInfo.NuGetVersion + ".nupkg",
             "nuget:bitprim-btc." + versionInfo.NuGetVersion + ".nupkg"
         });
-
-        //if (AppVeyor.IsRunningOnAppVeyor)
-        //{
-        //    foreach (var file in GetFiles(outputDir + "**/*"))
-        //        AppVeyor.UploadArtifact(file.FullPath);
-        //}
         
     });
 
@@ -136,12 +133,12 @@ Task("DeployNuget")
         foreach (string f in files)
         {
             Information("Pushing to nuget " + f);
-           /* NuGetPush(
+            NuGetPush(
                 outputDir + f,
                 new NuGetPushSettings {
                     ApiKey = EnvironmentVariable("NUGET_API_KEY"),
                     Source = "https://www.nuget.org/api/v2/package"
-                });*/
+                });
         }
         
     });

@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-bch", "bitprim-bch/bitprim-bch.csproj", "{A8818430-8063-42CF-A935-EA6093975364}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-bch", "bitprim-bch\bitprim-bch.csproj", "{A8818430-8063-42CF-A935-EA6093975364}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.tests", "bitprim.tests/bitprim.tests.csproj", "{78411BF0-35E5-4240-8B55-FB06C6BC4E47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.tests.bch", "bitprim.tests.bch\bitprim.tests.bch.csproj", "{78411BF0-35E5-4240-8B55-FB06C6BC4E47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.console", "bitprim.console/bitprim.console.csproj", "{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.console", "bitprim.console\bitprim.console.csproj", "{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-btc", "bitprim-btc/bitprim-btc.csproj", "{6D2DD63A-143A-4F39-B219-2E8F226E53BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-btc", "bitprim-btc\bitprim-btc.csproj", "{6D2DD63A-143A-4F39-B219-2E8F226E53BD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.tests.btc", "bitprim.tests.btc\bitprim.tests.btc.csproj", "{E6A24977-E057-473A-AE03-CFA116823883}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,14 @@ Global
 		{6D2DD63A-143A-4F39-B219-2E8F226E53BD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6D2DD63A-143A-4F39-B219-2E8F226E53BD}.Release|x64.ActiveCfg = Release|x64
 		{6D2DD63A-143A-4F39-B219-2E8F226E53BD}.Release|x64.Build.0 = Release|x64
+		{E6A24977-E057-473A-AE03-CFA116823883}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6A24977-E057-473A-AE03-CFA116823883}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6A24977-E057-473A-AE03-CFA116823883}.Debug|x64.ActiveCfg = Debug|x64
+		{E6A24977-E057-473A-AE03-CFA116823883}.Debug|x64.Build.0 = Debug|x64
+		{E6A24977-E057-473A-AE03-CFA116823883}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6A24977-E057-473A-AE03-CFA116823883}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6A24977-E057-473A-AE03-CFA116823883}.Release|x64.ActiveCfg = Release|x64
+		{E6A24977-E057-473A-AE03-CFA116823883}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
