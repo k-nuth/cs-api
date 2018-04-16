@@ -35,7 +35,7 @@ osx: &osx
    language: csharp
 
 mono:
-  - 4.4.2
+  - latest
 
 dotnet: 2.1.4
 
@@ -44,7 +44,7 @@ matrix:
       - <<: *linux
         compiler: gcc 
         env: UPDATE_DOCS=false
-
+        
       - <<: *linux
         compiler: gcc 
         env: UPDATE_DOCS=true
@@ -92,32 +92,32 @@ install:
       pip install wheel --upgrade
       pip install twine --upgrade
       conan user
+      
       # Install .NET Core 2.x
-      #if test "$TRAVIS_OS_NAME" == "osx"; then
+      if test "$TRAVIS_OS_NAME" == "osx"; then
       #  curl -O https://download.microsoft.com/download/D/7/2/D725E47F-A4F1-4285-8935-A91AE2FCC06A/dotnet-sdk-2.0.3-osx-gs-x64.pkg
       #  sudo installer -pkg dotnet-sdk-2.0.3-osx-gs-x64.pkg -target /
       #  sudo update_dyld_shared_cache
       #  ln -s /usr/local/share/dotnet/dotnet /usr/local/bin/
-      #else
-      #  curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-      #  sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-      #  sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
-      #  sudo apt-get update -y
-      #  sudo apt-get install dotnet-sdk-2.0.2 -y
-      #  sudo apt-get install -qq g++-4.9
-      #  sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
-      #  sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/g++-4.9 90
-      #  gcc --version
-      #  g++ --version
-      #  sudo ldconfig
+      else
+        curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+        sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+        sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
+        sudo apt-get update -y
+        sudo apt-get install dotnet-sdk-2.0.2 -y
+        sudo apt-get install -qq g++-4.9
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/g++-4.9 90
+        gcc --version
+        g++ --version
+        sudo ldconfig
 
-      #  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-      #  sudo apt install apt-transport-https
-      #  echo "deb https://download.mono-project.com/repo/ubuntu stable-trusty main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-      #  sudo apt update
-      #  sudo apt install mono-devel
-
-      #fi
+        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+        sudo apt install apt-transport-https
+        echo "deb https://download.mono-project.com/repo/ubuntu stable-trusty main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+        sudo apt update
+        sudo apt install mono-devel
+      fi
     else
       #Install Moxygen
       nvm install 8.4.0

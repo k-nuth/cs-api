@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-bch", "bitprim-bch\bitprim-bch.csproj", "{A8818430-8063-42CF-A935-EA6093975364}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-bch", "bitprim-bch/bitprim-bch.csproj", "{A8818430-8063-42CF-A935-EA6093975364}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.tests", "bitprim.tests\bitprim.tests.csproj", "{78411BF0-35E5-4240-8B55-FB06C6BC4E47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.tests", "bitprim.tests/bitprim.tests.csproj", "{78411BF0-35E5-4240-8B55-FB06C6BC4E47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.console", "bitprim.console\bitprim.console.csproj", "{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.console", "bitprim.console/bitprim.console.csproj", "{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-btc", "bitprim-btc\bitprim-btc.csproj", "{6D2DD63A-143A-4F39-B219-2E8F226E53BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-btc", "bitprim-btc/bitprim-btc.csproj", "{6D2DD63A-143A-4F39-B219-2E8F226E53BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
