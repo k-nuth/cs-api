@@ -13,7 +13,7 @@ namespace Bitprim
     public class Chain
     {
         public delegate void FetchBlockByHeightHashTimestampHandler(ErrorCode errorCode, byte[] blockHash, DateTime blockDate, UInt64 blockHeight);
-        public delegate void FetchBlockByHashTxsSizeHandler(ErrorCode errorCode, Block block, UInt64 blockHeight, HashList txHashes, UInt64 serializedBlockSize);
+        public delegate void FetchBlockHeaderByHashTxsSizeHandler(ErrorCode errorCode, Header blockHeader, UInt64 blockHeight, HashList txHashes, UInt64 serializedBlockSize);
 
         private IntPtr nativeInstance_;
 
@@ -101,15 +101,15 @@ namespace Bitprim
         /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <param name="handler"> Callback which will be called when the block data is retrieved. </param>
-        public void FetchBlockByHashTxSizes(byte[] blockHash, FetchBlockByHashTxsSizeHandler handler)
+        /// <param name="handler"> Callback which will be called when the data is retrieved. </param>
+        public void FetchBlockHeaderByHashTxSizes(byte[] blockHash, FetchBlockHeaderByHashTxsSizeHandler handler)
         {
             var managedHash = new hash_t
             {
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_by_hash_txs_size(nativeInstance_, contextPtr, managedHash, FetchBlockByHashTxsSizeInternalHandler);
+            ChainNative.chain_fetch_block_header_by_hash_txs_size(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashTxsSizeInternalHandler);
         }
 
         /// <summary>
@@ -117,29 +117,29 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash. </param>
         /// <returns> Error code, block, block height, tx hashes, serialized block size. </returns>
-        public DisposableApiCallResult<GetBlockByHashTxSizeResult> GetBlockByHashTxSizes(byte[] blockHash)
+        public DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult> GetBlockHeaderByHashTxSizes(byte[] blockHash)
         {
             var managedHash = new hash_t
             {
                 hash = blockHash
             };
-            IntPtr block = IntPtr.Zero;
+            IntPtr blockHeader = IntPtr.Zero;
             UInt64 blockHeight = 0;
             IntPtr txHashes = IntPtr.Zero;
             UInt64 serializedBlockSize = 0;
-            ErrorCode result = ChainNative.chain_get_block_by_hash_txs_size
+            ErrorCode result = ChainNative.chain_get_block_header_by_hash_txs_size
             (
-                nativeInstance_, managedHash, ref block,
+                nativeInstance_, managedHash, ref blockHeader,
                 ref blockHeight, ref txHashes, ref serializedBlockSize
             );
             return result == ErrorCode.Success?
-                new DisposableApiCallResult<GetBlockByHashTxSizeResult>{ ErrorCode = result, Result = new GetBlockByHashTxSizeResult
+                new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>{ ErrorCode = result, Result = new GetBlockHeaderByHashTxSizeResult
                     {
-                        Block = new GetBlockDataResult<Block>{ BlockData =  new Block(block), BlockHeight = blockHeight },
+                        Block = new GetBlockDataResult<Header>{ BlockData =  new Header(blockHeader), BlockHeight = blockHeight },
                         TransactionHashes = new HashList(txHashes),
                         SerializedBlockSize = serializedBlockSize
                     }}:
-                new DisposableApiCallResult<GetBlockByHashTxSizeResult>{ ErrorCode = result, Result = null };
+                new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>{ ErrorCode = result, Result = null };
         }
 
         /// <summary>
@@ -763,16 +763,16 @@ namespace Bitprim
             }
         }
 
-        private static void FetchBlockByHashTxsSizeInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                                   IntPtr block, UInt64 blockHeight, IntPtr txHashes,
-                                                                   UInt64 blockSerializedSize)
+        private static void FetchBlockHeaderByHashTxsSizeInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+                                                                         IntPtr blockHeader, UInt64 blockHeight, IntPtr txHashes,
+                                                                         UInt64 blockSerializedSize)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
             {
-                var context = (contextHandle.Target as Tuple<FetchBlockByHashTxsSizeHandler, hash_t>);
-                FetchBlockByHashTxsSizeHandler handler = context.Item1;
-                handler(error, new Block(block), blockHeight, new HashList(txHashes), blockSerializedSize);
+                var context = (contextHandle.Target as Tuple<FetchBlockHeaderByHashTxsSizeHandler, hash_t>);
+                FetchBlockHeaderByHashTxsSizeHandler handler = context.Item1;
+                handler(error, new Header(blockHeader), blockHeight, new HashList(txHashes), blockSerializedSize);
             }
             finally
             {
