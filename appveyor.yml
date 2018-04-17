@@ -4,6 +4,7 @@ branches:
   only:
   - master
   - dev
+  - feature/CS-9
 
 platform:
   - x64
@@ -29,8 +30,8 @@ assembly_info:
 
 install:
   - "%PYTHON%/Scripts/pip.exe install conan --upgrade"
-  - icacls "%APPVEYOR_BUILD_FOLDER%"\bitprim.tests /grant Everyone:F
-  - icacls "%APPVEYOR_BUILD_FOLDER%"\bitprim.tests\* /grant Everyone:F
+  #- icacls "%APPVEYOR_BUILD_FOLDER%"\bitprim.tests /grant Everyone:F
+  #- icacls "%APPVEYOR_BUILD_FOLDER%"\bitprim.tests\* /grant Everyone:F
 
 build_script:
   - SET PATH=%PATH%;%PYTHON%/Scripts/
