@@ -19,6 +19,8 @@ namespace Bitprim
 
         #region Chain
 
+
+        
         /// <summary>
         /// Given a block hash, it queries the chain asynchronously for the block's height.
         /// Return right away and uses a callback to return the result.
@@ -76,7 +78,7 @@ namespace Bitprim
         /// <param name="blockHash">  32-byte array representation of the block hash.
         ///    Identifies it univocally. </param>
         /// <returns> The block height </returns>
-        public ApiCallResult<UInt64> GetBlockHeight(byte[] blockHash)
+        private ApiCallResult<UInt64> GetBlockHeight(byte[] blockHash)
         {
             UInt64 height = 0;
             var managedHash = new hash_t
@@ -90,8 +92,35 @@ namespace Bitprim
         /// <summary>
         /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
         /// </summary>
+        public async Task<ApiCallResult<ulong>> FetchLastHeightAsync()
+        {
+            var tcs = new TaskCompletionSource<ApiCallResult<ulong>>();
+
+            FetchLastHeight((code, height) =>
+            {
+                try
+                {
+                    tcs.TrySetResult(new ApiCallResult<ulong> { ErrorCode = code, Result = height} );
+                }
+                catch (OperationCanceledException)
+                {
+                    tcs.TrySetCanceled();
+                }
+                catch (Exception exc)
+                {
+                    tcs.TrySetException(exc);
+                }
+
+            });
+
+            return await tcs.Task.ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
+        /// </summary>
         /// <param name="handler"> Callback which will be called once the last height is retrieved. </param>
-        public void FetchLastHeight(Action<ErrorCode, UInt64> handler)
+        private void FetchLastHeight(Action<ErrorCode, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -103,7 +132,7 @@ namespace Bitprim
         /// It blocks until height is retrieved.
         /// </summary>
         /// <returns> Error code (0 = success) and height </returns>
-        public ApiCallResult<UInt64> GetLastHeight()
+        private ApiCallResult<UInt64> GetLastHeight()
         {
             UInt64 height = 0;
             ErrorCode result = ChainNative.chain_get_last_height(nativeInstance_, ref height);

@@ -22,9 +22,9 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchLastHeight()
+        public async Task TestFetchLastHeight()
         {
-            Tuple<ErrorCode,UInt64> errorAndHeight = GetLastHeight();
+            Tuple<ErrorCode,UInt64> errorAndHeight = await FetchLastHeight();
             Assert.Equal(ErrorCode.Success, errorAndHeight.Item1);
         }
 
@@ -144,10 +144,10 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchSpend()
+        public async Task TestFetchSpend()
         {
             var handlerDone = new AutoResetEvent(false);
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchSpend");
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchSpend");
 
             ErrorCode error = 0;
             Point point = null;
@@ -243,7 +243,7 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchTransaction()
+        public async Task TestFetchTransaction()
         {
             var handlerDone = new AutoResetEvent(false);
             ErrorCode error = 0;
@@ -251,7 +251,7 @@ namespace Bitprim.Tests
             UInt64 height = 0;
             UInt64 index = 0;
 
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransaction");
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransaction");
 
             Action<ErrorCode, Transaction, UInt64, UInt64> handler = delegate(ErrorCode theError, Transaction theTx, UInt64 theIndex, UInt64 theHeight)
             {
@@ -273,14 +273,14 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchTransactionPosition()
+        public async Task TestFetchTransactionPosition()
         {
             var handlerDone = new AutoResetEvent(false);
             ErrorCode error = 0;
             UInt64 height = 0;
             UInt64 index = 0;
 
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransactionPosition");
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransactionPosition");
 
             Action<ErrorCode, UInt64, UInt64> handler = delegate(ErrorCode theError, UInt64 theIndex, UInt64 theHeight)
             {
@@ -300,13 +300,13 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchBlockByHash170()
+        public async Task TestFetchBlockByHash170()
         {
             var handlerDone = new AutoResetEvent(false);
             ErrorCode error = 0;
             Block block = null;
 
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchBlockByHash170");
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchBlockByHash170");
 
             Action<ErrorCode, Block> handler = delegate(ErrorCode theError, Block theBlock)
             {
@@ -387,20 +387,10 @@ namespace Bitprim.Tests
             Assert.Equal("2009-01-12 03:30:25", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
-        private Tuple<ErrorCode, UInt64> GetLastHeight()
+        private async Task<Tuple<ErrorCode, UInt64>> FetchLastHeight()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            UInt64 height = 0;
-            Action<ErrorCode, UInt64> handler = delegate(ErrorCode theError, UInt64 theHeight)
-            {
-                error = theError;
-                height = theHeight;
-                handlerDone.Set();
-            };
-            executorFixture_.Executor.Chain.FetchLastHeight(handler);
-            handlerDone.WaitOne();
-            return new Tuple<ErrorCode, UInt64>(error, height);
+            var ret = await executorFixture_.Executor.Chain.FetchLastHeightAsync();
+            return new Tuple<ErrorCode, UInt64>(ret.ErrorCode, ret.Result);
         }
 
         private void CheckFirstNonCoinbaseTxFromHeight170(Transaction tx, string txHashHexStr)
@@ -490,18 +480,18 @@ namespace Bitprim.Tests
             Assert.Equal("[0411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3] checksig", script1.ToString(0));
         }
 
-        private void WaitUntilBlock(UInt64 desiredHeight, string callerName)
+        private async Task WaitUntilBlock(UInt64 desiredHeight, string callerName)
         {
             ErrorCode error = 0;
             UInt64 height = 0;            
             while(error == 0 && height < desiredHeight){
                 Console.WriteLine("--->" + callerName + " checking height: " + height);
-                Tuple<ErrorCode, UInt64> errorAndHeight = GetLastHeight();
+                var errorAndHeight = await FetchLastHeight();
                 error = errorAndHeight.Item1;
                 height = errorAndHeight.Item2;
                 if(height < desiredHeight)
                 {
-                    System.Threading.Thread.Sleep(10000);
+                    await Task.Delay(10000);
                 }
             }
             Assert.Equal(ErrorCode.Success, error);
