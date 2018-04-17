@@ -19,13 +19,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+      <Compile Include="..\bitprim\**/*.cs" />
+      <None Include="..\bitprim\docs\Doxyfile" Link="docs\Doxyfile" />  
+  </ItemGroup>
+
+
+  <ItemGroup>
     <!-- pack the target files -->
-    <Content Include="build\netstandard2.0\bitprim.targets" PackagePath="build\netstandard2.0\bitprim.targets" />
+    <Content Include="build\netstandard2.0\bitprim-bch.targets" PackagePath="build\netstandard2.0\bitprim-bch.targets" />
 	    
 	<Content Include="build\Common.targets" PackagePath="build\Common.targets" />
     
 	<!-- pack the conan file -->
-    <Content Include="..\conanfile.txt" PackagePath="content\conanfile.txt" />
+    <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="build\netstandard2.0\" />
+    <Folder Include="idiomatic\" />
+    <Folder Include="native\" />
+    <Folder Include="content\" />
+    <Folder Include="docs\" />
+    
   </ItemGroup>
 
 </Project>

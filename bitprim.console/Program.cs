@@ -1,9 +1,8 @@
-﻿using Bitprim;
-using System;
-using System.Runtime.InteropServices;
+﻿using System;
 using System.Threading;
+using Bitprim;
 
-namespace bitprim.ibd
+namespace bitprim.console
 {
     public class Program
     {

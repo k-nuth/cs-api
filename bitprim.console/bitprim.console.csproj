@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\bitprim\build\Common.targets"/>
+  <Import Project="..\bitprim-bch\build\Common.targets" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\bitprim\bitprim.csproj" />
-  </ItemGroup>
-
   <Target Name="CopyNativeLib" AfterTargets="Build">
     <CallTarget Targets="GetBitprimNodeCint" />
   </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\bitprim-bch\bitprim-bch.csproj" />
+  </ItemGroup>
 
   <!-- <Target Name="CopyNativeLib" AfterTargets="Build">
     <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition="Exists('libbitprim-node-cint.so')"/>
