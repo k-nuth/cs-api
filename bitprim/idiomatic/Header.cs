@@ -70,6 +70,17 @@ namespace Bitprim
         }
 
         /// <summary>
+        /// Hexadecimal string representation of the block's proof (which is a 256-bit number).
+        /// </summary>
+        public string ProofString
+        {
+            get
+            {
+                return new NativeString(HeaderNative.chain_header_proof_str(nativeInstance_)).ToString();
+            }
+        }
+
+        /// <summary>
         /// Difficulty threshold.
         /// </summary>
         public UInt32 Bits

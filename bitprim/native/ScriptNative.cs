@@ -24,7 +24,6 @@ public static class ScriptNative
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern IntPtr chain_script_type(IntPtr script);
 
-
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern UIntPtr /*size_t*/ chain_script_embedded_sigops(IntPtr script, IntPtr prevout_script);
 
