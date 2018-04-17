@@ -26,8 +26,40 @@ namespace Bitprim
         /// <param name="blockHash"> 32-byte array representation of the block hash.
         ///    Identifies it univocally.
         /// </param>
+        public async Task<ApiCallResult<ulong>> FetchBlockHeightAsync(byte[] blockHash)
+        {
+            var tcs = new TaskCompletionSource<ApiCallResult<ulong>>();
+
+            FetchBlockHeight(blockHash, (code, height) =>
+            {
+                try
+                {
+                    tcs.TrySetResult(new ApiCallResult<ulong> { ErrorCode = code, Result = height} );
+                }
+                catch (OperationCanceledException)
+                {
+                    tcs.TrySetCanceled();
+                }
+                catch (Exception exc)
+                {
+                    tcs.TrySetException(exc);
+                }
+
+            });
+
+            return await tcs.Task.ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        /// Given a block hash, it queries the chain asynchronously for the block's height.
+        /// Return right away and uses a callback to return the result.
+        /// </summary>
+        /// <param name="blockHash"> 32-byte array representation of the block hash.
+        ///    Identifies it univocally.
+        /// </param>
         /// <param name="handler"> Callback which will be invoked when the block height is found. </param>
-        public void FetchBlockHeight(byte[] blockHash, Action<ErrorCode, UInt64> handler)
+        private void FetchBlockHeight(byte[] blockHash, Action<ErrorCode, UInt64> handler)
         {
             var managedHash = new hash_t
             {

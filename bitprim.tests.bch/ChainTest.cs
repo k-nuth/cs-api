@@ -5,6 +5,7 @@ using System.Threading;
 using Xunit;
 using System.Net;
 using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Bitprim.Native;
 
@@ -129,26 +130,17 @@ namespace Bitprim.Tests
             }
         }
 
+      
+
         [Fact]
-        public void TestFetchBlockHeight()
+        public async Task TestFetchBlockHeightAsync()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            UInt64 height = 0;
-
-            Action<ErrorCode, UInt64> handler = delegate(ErrorCode theError, UInt64 theHeight)
-            {
-                error = theError;
-                height = theHeight;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/0
-            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            executorFixture_.Executor.Chain.FetchBlockHeight(hash, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.Equal<UInt64>(0, height);
+            var hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            var ret = await executorFixture_.Executor.Chain.FetchBlockHeightAsync(hash);
+            
+            Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+            Assert.Equal<UInt64>(0, ret.Result);
         }
 
         [Fact]
