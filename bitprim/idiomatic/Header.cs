@@ -76,7 +76,10 @@ namespace Bitprim
         {
             get
             {
-                return new NativeString(HeaderNative.chain_header_proof_str(nativeInstance_)).ToString();
+                using ( NativeString proofString = new NativeString(HeaderNative.chain_header_proof_str(nativeInstance_)) )
+                {
+                    return proofString.ToString();
+                }
             }
         }
 

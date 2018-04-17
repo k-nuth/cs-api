@@ -121,7 +121,10 @@ namespace Bitprim
         {
             get
             {
-                return new NativeString(BlockNative.chain_block_proof(nativeInstance_)).ToString();
+                using ( NativeString proofStr = new NativeString(BlockNative.chain_block_proof(nativeInstance_)) )
+                {
+                    return proofStr.ToString();
+                }
             }
         }
 
