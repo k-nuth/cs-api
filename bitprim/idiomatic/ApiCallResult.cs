@@ -19,9 +19,9 @@ namespace Bitprim
         }
     }
 
-    public sealed class GetBlockByHashTxSizeResult : IDisposable
+    public sealed class GetBlockHeaderByHashTxSizeResult : IDisposable
     {
-        public GetBlockDataResult<Block> Block { get; set; }
+        public GetBlockDataResult<Header> Block { get; set; }
         public Bitprim.HashList TransactionHashes { get; set; }
         public UInt64 SerializedBlockSize { get; set; }
 
