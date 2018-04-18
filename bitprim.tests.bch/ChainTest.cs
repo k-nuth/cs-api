@@ -93,25 +93,15 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchBlockByHash()
+        public async Task TestFetchBlockByHash()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Block block = null;
-
-            Action<ErrorCode, Block> handler = delegate(ErrorCode theError, Block theBlock)
-            {
-                error = theError;
-                block = theBlock;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/0
             byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            executorFixture_.Executor.Chain.FetchBlockByHash(hash, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            VerifyGenesisBlockHeader(block.Header);
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockByHashAsync(hash))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                VerifyGenesisBlockHeader(ret.Result.Header);
+            }
         }
 
         [Fact]
@@ -302,26 +292,16 @@ namespace Bitprim.Tests
         [Fact]
         public async Task TestFetchBlockByHash170()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Block block = null;
-
             await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchBlockByHash170");
 
-            Action<ErrorCode, Block> handler = delegate(ErrorCode theError, Block theBlock)
-            {
-                error = theError;
-                block = theBlock;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/170 - 2
             byte[] hash = Binary.HexStringToByteArray("00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee");
-            executorFixture_.Executor.Chain.FetchBlockByHash(hash, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.NotNull(block);
-            VerifyBlock170Header(block.Header);
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockByHashAsync(hash))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.NotNull(ret.Result);
+                VerifyBlock170Header(ret.Result.Header);
+            }
         }
 
         /*[Fact]

@@ -147,8 +147,37 @@ namespace Bitprim
         /// Given a block hash, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<Block>> FetchBlockByHashAsync(byte[] blockHash)
+        {
+            var tcs = new TaskCompletionSource<DisposableApiCallResult<Block>>();
+
+            FetchBlockByHash(blockHash, (code, block) =>
+            {
+                try
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<Block> { ErrorCode = code, Result = block} );
+                }
+                catch (OperationCanceledException)
+                {
+                    tcs.TrySetCanceled();
+                }
+                catch (Exception exc)
+                {
+                    tcs.TrySetException(exc);
+                }
+
+            });
+
+            return await tcs.Task.ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        /// Given a block hash, retrieve the full block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        public void FetchBlockByHash(byte[] blockHash, Action<ErrorCode, Block> handler)
+        private void FetchBlockByHash(byte[] blockHash, Action<ErrorCode, Block> handler)
         {
             var managedHash = new hash_t
             {

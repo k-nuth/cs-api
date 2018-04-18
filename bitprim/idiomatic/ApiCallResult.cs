@@ -4,13 +4,13 @@ namespace Bitprim
 {
     public class ApiCallResult<TResultData>
     {
-        public Bitprim.ErrorCode ErrorCode { get; set; }
+        public ErrorCode ErrorCode { get; set; }
         public TResultData Result { get; set; }
     }
 
     public sealed class DisposableApiCallResult<TResultData> : IDisposable where TResultData : IDisposable
     {
-        public Bitprim.ErrorCode ErrorCode { get; set; }
+        public ErrorCode ErrorCode { get; set; }
         public TResultData Result { get; set; }
 
         public void Dispose()
