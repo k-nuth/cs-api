@@ -165,58 +165,32 @@ namespace Bitprim.Tests
         [Fact]
         public async Task TestFetchTransaction()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Transaction tx = null;
-            UInt64 height = 0;
-            UInt64 index = 0;
-
             await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransaction");
 
-            Action<ErrorCode, Transaction, UInt64, UInt64> handler = delegate(ErrorCode theError, Transaction theTx, UInt64 theIndex, UInt64 theHeight)
-            {
-                error = theError;
-                tx = theTx;
-                height = theHeight;
-                index = theIndex;
-                handlerDone.Set();
-            };
             string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
             byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
-            executorFixture_.Executor.Chain.FetchTransaction(hash, true, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, height);
-            Assert.Equal<UInt64>(1, index);
-            CheckFirstNonCoinbaseTxFromHeight170(tx, txHashHexStr);
+            using (var ret = await executorFixture_.Executor.Chain.FetchTransactionAsync(hash, true))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, ret.Result.TxPosition.BlockHeight);
+                Assert.Equal<UInt64>(1, ret.Result.TxPosition.Index);
+                CheckFirstNonCoinbaseTxFromHeight170(ret.Result.Tx, txHashHexStr);
+            }
+            
         }
 
         [Fact]
         public async Task TestFetchTransactionPosition()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            UInt64 height = 0;
-            UInt64 index = 0;
-
             await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransactionPosition");
 
-            Action<ErrorCode, UInt64, UInt64> handler = delegate(ErrorCode theError, UInt64 theIndex, UInt64 theHeight)
-            {
-                error = theError;
-                index = theIndex;
-                height = theHeight;
-                handlerDone.Set();
-            };
             string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
             byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
-            executorFixture_.Executor.Chain.FetchTransactionPosition(hash, true, handler);
-            handlerDone.WaitOne();
+            var ret = await executorFixture_.Executor.Chain.FetchTransactionPositionAsync(hash, true);
 
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.Equal<UInt64>(1, index);
-            Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, height);
+            Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+            Assert.Equal<UInt64>(1, ret.Result.Index);
+            Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, ret.Result.BlockHeight);
         }
 
         [Fact]

@@ -1,5 +1,6 @@
 using Bitprim.Native;
 using System;
+using System.Net.Cache;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -755,9 +756,43 @@ namespace Bitprim
         /// Get a transaction by its hash, asynchronously.
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
+        /// <param name="requireConfirmed"> True if the transaction must belong to a block </param>
+        public async Task<DisposableApiCallResult<GetTxDataResult>> FetchTransactionAsync(byte[] txHash, bool requireConfirmed)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetTxDataResult> ret = null;
+
+                FetchTransaction(txHash, requireConfirmed, (code, transaction, index, height) =>
+                {
+                    ret = new DisposableApiCallResult<GetTxDataResult>
+                    {
+                        ErrorCode = code,
+                        Result = new GetTxDataResult
+                        {
+                            Tx = transaction,
+                            TxPosition = new GetTxPositionResult
+                            {
+                                Index = index, 
+                                BlockHeight = height
+                            }
+                        }
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+
+        /// <summary>
+        /// Get a transaction by its hash, asynchronously.
+        /// </summary>
+        /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <param name="handler"> Callback which will be invoked when the transaction is retrieved </param>
-        public void FetchTransaction(byte[] txHash, bool requireConfirmed, Action<ErrorCode, Transaction, UInt64, UInt64> handler)
+        private void FetchTransaction(byte[] txHash, bool requireConfirmed, Action<ErrorCode, Transaction, UInt64, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -773,7 +808,7 @@ namespace Bitprim
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <returns> Error code, full transaction, index inside block and height </returns>
-        public DisposableApiCallResult<GetTxDataResult> GetTransaction(byte[] txHash, bool requireConfirmed)
+        private DisposableApiCallResult<GetTxDataResult> GetTransaction(byte[] txHash, bool requireConfirmed)
         {
             IntPtr transaction = IntPtr.Zero;
             UInt64 index = 0;
@@ -799,8 +834,31 @@ namespace Bitprim
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
+        public async Task<ApiCallResult<GetTxPositionResult>> FetchTransactionPositionAsync(byte[] txHash, bool requireConfirmed)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                ApiCallResult<GetTxPositionResult> ret = null;
+                FetchTransactionPosition(txHash, requireConfirmed, (code, index, height) =>
+                {
+                    ret = new ApiCallResult<GetTxPositionResult>
+                    {
+                        ErrorCode = code,
+                        Result = new GetTxPositionResult{ Index = index, BlockHeight = height }
+                    };
+                });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a transaction hash, it fetches the height and position inside the block, asynchronously.
+        /// </summary>
+        /// <param name="txHash"> 32 bytes of transaction hash </param>
+        /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <param name="handler"> Callback which will be invoked when the transaction position is retrieved </param>
-        public void FetchTransactionPosition(byte[] txHash, bool requireConfirmed, Action<ErrorCode, UInt64, UInt64> handler)
+        private void FetchTransactionPosition(byte[] txHash, bool requireConfirmed, Action<ErrorCode, UInt64, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -816,7 +874,7 @@ namespace Bitprim
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <returns> Error code, index in block (zero based) and block height </returns>
-        public ApiCallResult<GetTxPositionResult> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
+        private ApiCallResult<GetTxPositionResult> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
         {
             UInt64 index = 0;
             UInt64 height = 0;
