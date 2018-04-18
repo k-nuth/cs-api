@@ -374,7 +374,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height. </param>
         /// <returns> Error code and block hash. </returns>
-        public ApiCallResult<byte[]> GetBlockHash(UInt64 height)
+        private ApiCallResult<byte[]> GetBlockHash(UInt64 height)
         {
             var blockHash = new hash_t();
             ErrorCode result = ChainNative.chain_get_block_hash(nativeInstance_, height, ref blockHash);
@@ -387,12 +387,36 @@ namespace Bitprim
 
         #region Block header
 
+
+        /// <summary>
+        /// Given a block hash, get the header from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<Header>> FetchBlockHeaderByHashAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<Header> ret = null;
+
+                FetchBlockHeaderByHash(blockHash, (code, header) =>
+                {
+                    ret = new DisposableApiCallResult<Header>
+                    {
+                        ErrorCode = code,
+                        Result = header
+                    };
+                });
+
+                return ret;
+            });
+        }
+
         /// <summary>
         /// Given a block hash, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the header is retrieved </param>
-        public void FetchBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header> handler)
+        private void FetchBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header> handler)
         {
             var managedHash = new hash_t
             {
@@ -407,7 +431,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Error code, full block header and block height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHash(byte[] blockHash)
+        private DisposableApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHash(byte[] blockHash)
         {
             IntPtr header = IntPtr.Zero;
             UInt64 height = 0;
@@ -422,6 +446,17 @@ namespace Bitprim
                 Result = new GetBlockDataResult<Header>{ BlockData = new Header(header), BlockHeight = height }
             };
         }
+        /*
+        /// <summary>
+        /// Given a block height, get the header from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<Header>>> FetchBlockHeaderByHeightAsync(UInt64 height)
+        {
+
+        }*/
+
+
 
         /// <summary>
         /// Given a block height, get the header from the block it identifies, asynchronously.

@@ -50,25 +50,15 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchBlockHeaderByHash()
+        public async Task TestFetchBlockHeaderByHash()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Header header = null;
-
-            Action<ErrorCode, Header> handler = delegate(ErrorCode theError, Header theHeader)
-            {
-                error = theError;
-                header = theHeader;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/0
             byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            executorFixture_.Executor.Chain.FetchBlockHeaderByHash(hash, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            VerifyGenesisBlockHeader(header);
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockHeaderByHashAsync(hash))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                VerifyGenesisBlockHeader(ret.Result);
+            }
         }
 
         [Fact]
