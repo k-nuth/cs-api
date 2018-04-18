@@ -4,13 +4,13 @@ namespace Bitprim
 {
     public class ApiCallResult<TResultData>
     {
-        public Bitprim.ErrorCode ErrorCode { get; set; }
+        public ErrorCode ErrorCode { get; set; }
         public TResultData Result { get; set; }
     }
 
     public sealed class DisposableApiCallResult<TResultData> : IDisposable where TResultData : IDisposable
     {
-        public Bitprim.ErrorCode ErrorCode { get; set; }
+        public ErrorCode ErrorCode { get; set; }
         public TResultData Result { get; set; }
 
         public void Dispose()
@@ -22,7 +22,7 @@ namespace Bitprim
     public sealed class GetBlockHeaderByHashTxSizeResult : IDisposable
     {
         public GetBlockDataResult<Header> Block { get; set; }
-        public Bitprim.HashList TransactionHashes { get; set; }
+        public HashList TransactionHashes { get; set; }
         public UInt64 SerializedBlockSize { get; set; }
 
         public void Dispose()

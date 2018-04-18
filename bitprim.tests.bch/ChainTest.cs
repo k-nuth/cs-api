@@ -5,6 +5,7 @@ using System.Threading;
 using Xunit;
 using System.Net;
 using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Bitprim.Native;
 
@@ -21,315 +22,170 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchLastHeight()
+        public async Task TestFetchLastHeight()
         {
-            Tuple<ErrorCode,UInt64> errorAndHeight = GetLastHeight();
+            Tuple<ErrorCode,UInt64> errorAndHeight = await FetchLastHeight();
             Assert.Equal(ErrorCode.Success, errorAndHeight.Item1);
         }
 
         [Fact]
-        public void TestFetchBlockHeaderByHeight()
-        {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Header header = null;
-
-            Action<ErrorCode, Header> handler = delegate(ErrorCode theError, Header theHeader)
-            {
-                error = theError;
-                header = theHeader;
-                handlerDone.Set();
-            };
-            //https://blockchain.info/es/block-height/0
-            executorFixture_.Executor.Chain.FetchBlockHeaderByHeight(0, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            VerifyGenesisBlockHeader(header);
-        }
-
-        [Fact]
-        public void TestFetchBlockHeaderByHash()
-        {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Header header = null;
-
-            Action<ErrorCode, Header> handler = delegate(ErrorCode theError, Header theHeader)
-            {
-                error = theError;
-                header = theHeader;
-                handlerDone.Set();
-            };
-            //https://blockchain.info/es/block-height/0
-            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            executorFixture_.Executor.Chain.FetchBlockHeaderByHash(hash, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            VerifyGenesisBlockHeader(header);
-        }
-
-        [Fact]
-        public void TestFetchBlockByHeight()
-        {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Block block = null;
-
-            Action<ErrorCode, Block> handler = delegate(ErrorCode theError, Block theBlock)
-            {
-                error = theError;
-                block = theBlock;
-                handlerDone.Set();
-            };
-            //https://blockchain.info/es/block-height/0
-            executorFixture_.Executor.Chain.FetchBlockByHeight(0, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            VerifyGenesisBlockHeader(block.Header);
-        }
-
-        [Fact]
-        public void TestFetchBlockByHash()
-        {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Block block = null;
-
-            Action<ErrorCode, Block> handler = delegate(ErrorCode theError, Block theBlock)
-            {
-                error = theError;
-                block = theBlock;
-                handlerDone.Set();
-            };
-            //https://blockchain.info/es/block-height/0
-            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            executorFixture_.Executor.Chain.FetchBlockByHash(hash, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            VerifyGenesisBlockHeader(block.Header);
-        }
-
-        [Fact]
-        public void TestGetBlockByHash()
+        public async Task TestFetchBlockHeaderByHeight()
         {
             //https://blockchain.info/es/block-height/0
-            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            using(DisposableApiCallResult<GetBlockDataResult<Block>> result = executorFixture_.Executor.Chain.GetBlockByHash(hash))
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockHeaderByHeightAsync(0))
             {
-                ErrorCode error = result.ErrorCode;
-                Block block = result.Result.BlockData;
-                UInt64 height = result.Result.BlockHeight;
-                Assert.Equal(ErrorCode.Success, error);
-                VerifyGenesisBlockHeader(block.Header);
-                Assert.Equal(0UL, height);
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                VerifyGenesisBlockHeader(ret.Result.BlockData);
             }
         }
 
         [Fact]
-        public void TestFetchBlockHeight()
+        public async Task TestFetchBlockHeaderByHash()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            UInt64 height = 0;
-
-            Action<ErrorCode, UInt64> handler = delegate(ErrorCode theError, UInt64 theHeight)
-            {
-                error = theError;
-                height = theHeight;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/0
             byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            executorFixture_.Executor.Chain.FetchBlockHeight(hash, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.Equal<UInt64>(0, height);
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockHeaderByHashAsync(hash))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                VerifyGenesisBlockHeader(ret.Result);
+            }
         }
 
         [Fact]
-        public void TestFetchSpend()
+        public async Task TestFetchBlockByHeight()
         {
-            var handlerDone = new AutoResetEvent(false);
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchSpend");
-
-            ErrorCode error = 0;
-            Point point = null;
-
-            Action<ErrorCode, Point> handler = delegate(ErrorCode theError, Point thePoint)
+            //https://blockchain.info/es/block-height/0
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
             {
-                error = theError;
-                point = thePoint;
-                handlerDone.Set();
-            };
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                VerifyGenesisBlockHeader(ret.Result.Header);
+            }
+        }
+
+        [Fact]
+        public async Task TestFetchBlockByHash()
+        {
+            //https://blockchain.info/es/block-height/0
+            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockByHashAsync(hash))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                VerifyGenesisBlockHeader(ret.Result.Header);
+            }
+        }
+
+        
+
+        [Fact]
+        public async Task TestFetchBlockHeightAsync()
+        {
+            //https://blockchain.info/es/block-height/0
+            var hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            var ret = await executorFixture_.Executor.Chain.FetchBlockHeightAsync(hash);
+            
+            Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+            Assert.Equal<UInt64>(0, ret.Result);
+        }
+
+        [Fact]
+        public async Task TestFetchSpend()
+        {
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchSpend");
+
             byte[] hash = Binary.HexStringToByteArray("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9");
             OutputPoint outputPoint = new OutputPoint(hash, 0);
-            executorFixture_.Executor.Chain.FetchSpend(outputPoint, handler);
-            handlerDone.WaitOne();
+            var ret = await executorFixture_.Executor.Chain.FetchSpendAsync(outputPoint);
 
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.NotNull(point);
-            Assert.Equal("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16", Binary.ByteArrayToHexString(point.Hash));
-            Assert.Equal<UInt32>(0, point.Index);
+            Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+            Assert.NotNull(ret.Result);
+            Assert.Equal("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16", Binary.ByteArrayToHexString(ret.Result.Hash));
+            Assert.Equal<UInt32>(0, ret.Result.Index);
         }
 
         [Fact]
-        public void TestFetchMerkleBlockByHash()
+        public async Task TestFetchMerkleBlockByHash()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            MerkleBlock merkleBlock = null;
-            UInt64 height = 0;
-
-            Action<ErrorCode, MerkleBlock, UInt64> handler = delegate(ErrorCode theError, MerkleBlock theBlock, UInt64 theHeight)
-            {
-                error = theError;
-                merkleBlock = theBlock;
-                height = theHeight;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/0
             byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            executorFixture_.Executor.Chain.FetchMerkleBlockByHash(hash, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.NotNull(merkleBlock);
-            Assert.Equal<UInt64>(0, height);
-            Assert.Equal<UInt64>(1, merkleBlock.TotalTransactionCount);
-            VerifyGenesisBlockHeader(merkleBlock.Header);
+            using (var ret = await executorFixture_.Executor.Chain.FetchMerkleBlockByHashAsync(hash))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.NotNull(ret.Result.BlockData);
+                Assert.Equal<UInt64>(0, ret.Result.BlockHeight);
+                Assert.Equal<UInt64>(1, ret.Result.BlockData.TotalTransactionCount);
+                VerifyGenesisBlockHeader(ret.Result.BlockData.Header);
+            }
         }
 
         [Fact]
-        public void TestFetchMerkleBlockByHeight()
+        public async Task TestFetchMerkleBlockByHeight()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            MerkleBlock merkleBlock = null;
-            UInt64 height = 0;
-
-            Action<ErrorCode, MerkleBlock, UInt64> handler = delegate(ErrorCode theError, MerkleBlock theBlock, UInt64 theHeight)
-            {
-                error = theError;
-                merkleBlock = theBlock;
-                height = theHeight;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/0
-            executorFixture_.Executor.Chain.FetchMerkleBlockByHeight(0, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.NotNull(merkleBlock);
-            Assert.Equal<UInt64>(0, height);
-            Assert.Equal<UInt64>(1, merkleBlock.TotalTransactionCount);
-            VerifyGenesisBlockHeader(merkleBlock.Header);
+            using (var ret = await executorFixture_.Executor.Chain.FetchMerkleBlockByHeightAsync(0))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.NotNull(ret.Result.BlockData);
+                Assert.Equal<UInt64>(0, ret.Result.BlockHeight);
+                Assert.Equal<UInt64>(1, ret.Result.BlockData.TotalTransactionCount);
+                VerifyGenesisBlockHeader(ret.Result.BlockData.Header);
+            }
         }
 
         [Fact]
-        public void TestFetchStealth()
+        public async Task TestFetchStealth()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            StealthCompactList list = null;
-
-            Action<ErrorCode, StealthCompactList> handler = delegate(ErrorCode theError, StealthCompactList theList)
+            using (var ret = await executorFixture_.Executor.Chain.FetchStealthAsync(new Binary("1111"), 0))
             {
-                error = theError;
-                list = theList;
-                handlerDone.Set();
-            };
-            executorFixture_.Executor.Chain.FetchStealth(new Binary("1111"), 0, handler);
-            handlerDone.WaitOne();
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.Equal<uint>(0, ret.Result.Count);
+            }
+           
+        }
+
+        [Fact]
+        public async Task TestFetchTransaction()
+        {
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransaction");
+
+            string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
+            byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
+            using (var ret = await executorFixture_.Executor.Chain.FetchTransactionAsync(hash, true))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, ret.Result.TxPosition.BlockHeight);
+                Assert.Equal<UInt64>(1, ret.Result.TxPosition.Index);
+                CheckFirstNonCoinbaseTxFromHeight170(ret.Result.Tx, txHashHexStr);
+            }
             
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.Equal<uint>(0, list.Count);
         }
 
         [Fact]
-        public void TestFetchTransaction()
+        public async Task TestFetchTransactionPosition()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Transaction tx = null;
-            UInt64 height = 0;
-            UInt64 index = 0;
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransactionPosition");
 
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransaction");
-
-            Action<ErrorCode, Transaction, UInt64, UInt64> handler = delegate(ErrorCode theError, Transaction theTx, UInt64 theIndex, UInt64 theHeight)
-            {
-                error = theError;
-                tx = theTx;
-                height = theHeight;
-                index = theIndex;
-                handlerDone.Set();
-            };
             string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
             byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
-            executorFixture_.Executor.Chain.FetchTransaction(hash, true, handler);
-            handlerDone.WaitOne();
+            var ret = await executorFixture_.Executor.Chain.FetchTransactionPositionAsync(hash, true);
 
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, height);
-            Assert.Equal<UInt64>(1, index);
-            CheckFirstNonCoinbaseTxFromHeight170(tx, txHashHexStr);
+            Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+            Assert.Equal<UInt64>(1, ret.Result.Index);
+            Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, ret.Result.BlockHeight);
         }
 
         [Fact]
-        public void TestFetchTransactionPosition()
+        public async Task TestFetchBlockByHash170()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            UInt64 height = 0;
-            UInt64 index = 0;
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchBlockByHash170");
 
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransactionPosition");
-
-            Action<ErrorCode, UInt64, UInt64> handler = delegate(ErrorCode theError, UInt64 theIndex, UInt64 theHeight)
-            {
-                error = theError;
-                index = theIndex;
-                height = theHeight;
-                handlerDone.Set();
-            };
-            string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
-            byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
-            executorFixture_.Executor.Chain.FetchTransactionPosition(hash, true, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.Equal<UInt64>(1, index);
-            Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, height);
-        }
-
-        [Fact]
-        public void TestFetchBlockByHash170()
-        {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Block block = null;
-
-            WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchBlockByHash170");
-
-            Action<ErrorCode, Block> handler = delegate(ErrorCode theError, Block theBlock)
-            {
-                error = theError;
-                block = theBlock;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/170 - 2
             byte[] hash = Binary.HexStringToByteArray("00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee");
-            executorFixture_.Executor.Chain.FetchBlockByHash(hash, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.NotNull(block);
-            VerifyBlock170Header(block.Header);
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockByHashAsync(hash))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.NotNull(ret.Result);
+                VerifyBlock170Header(ret.Result.Header);
+            }
         }
 
         /*[Fact]
@@ -395,20 +251,10 @@ namespace Bitprim.Tests
             Assert.Equal("2009-01-12 03:30:25", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
-        private Tuple<ErrorCode, UInt64> GetLastHeight()
+        private async Task<Tuple<ErrorCode, UInt64>> FetchLastHeight()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            UInt64 height = 0;
-            Action<ErrorCode, UInt64> handler = delegate(ErrorCode theError, UInt64 theHeight)
-            {
-                error = theError;
-                height = theHeight;
-                handlerDone.Set();
-            };
-            executorFixture_.Executor.Chain.FetchLastHeight(handler);
-            handlerDone.WaitOne();
-            return new Tuple<ErrorCode, UInt64>(error, height);
+            var ret = await executorFixture_.Executor.Chain.FetchLastHeightAsync();
+            return new Tuple<ErrorCode, UInt64>(ret.ErrorCode, ret.Result);
         }
 
         private void CheckFirstNonCoinbaseTxFromHeight170(Transaction tx, string txHashHexStr)
@@ -498,22 +344,41 @@ namespace Bitprim.Tests
             Assert.Equal("[0411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3] checksig", script1.ToString(0));
         }
 
-        private void WaitUntilBlock(UInt64 desiredHeight, string callerName)
+        private async Task WaitUntilBlock(UInt64 desiredHeight, string callerName)
         {
             ErrorCode error = 0;
             UInt64 height = 0;            
             while(error == 0 && height < desiredHeight){
                 Console.WriteLine("--->" + callerName + " checking height: " + height);
-                Tuple<ErrorCode, UInt64> errorAndHeight = GetLastHeight();
+                var errorAndHeight = await FetchLastHeight();
                 error = errorAndHeight.Item1;
                 height = errorAndHeight.Item2;
                 if(height < desiredHeight)
                 {
-                    System.Threading.Thread.Sleep(10000);
+                    await Task.Delay(10000);
                 }
             }
             Assert.Equal(ErrorCode.Success, error);
         }
 
+        
+        [Fact]
+        public async Task FetchBlockHeaderByHashTxSizesAsync()
+        {
+            var hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockHeaderByHashTxSizesAsync(hash))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                VerifyGenesisBlockHeader(ret.Result.Block.BlockData);
+            }
+        }
+
+        [Fact]
+        public async Task FetchBlockByHeightHashTimestampAsync()
+        {
+            var ret = await executorFixture_.Executor.Chain.FetchBlockByHeightHashTimestampAsync(0);
+            Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+            Assert.Equal("2009-01-03 18:15:05", ret.Result.BlockTimestamp.ToString("yyyy-MM-dd HH:mm:ss"));
+        }
     }
 }

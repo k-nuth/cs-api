@@ -6,18 +6,43 @@ using System.Threading;
 
 namespace Bitprim
 {
-
     /// <summary>
     /// Represents the Bitcoin blockchain; meant to offer its different interfaces (query, mining, network)
     /// </summary>
     public class Chain
     {
-        public delegate void FetchBlockByHeightHashTimestampHandler(ErrorCode errorCode, byte[] blockHash, DateTime blockDate, UInt64 blockHeight);
-        public delegate void FetchBlockHeaderByHashTxsSizeHandler(ErrorCode errorCode, Header blockHeader, UInt64 blockHeight, HashList txHashes, UInt64 serializedBlockSize);
+        private delegate void FetchBlockByHeightHashTimestampHandler(ErrorCode errorCode, byte[] blockHash, DateTime blockDate, UInt64 blockHeight);
+        private delegate void FetchBlockHeaderByHashTxsSizeHandler(ErrorCode errorCode, Header blockHeader, UInt64 blockHeight, HashList txHashes, UInt64 serializedBlockSize);
 
-        private IntPtr nativeInstance_;
+        private readonly IntPtr nativeInstance_;
 
         #region Chain
+
+        
+        /// <summary>
+        /// Given a block hash, it queries the chain asynchronously for the block's height.
+        /// Return right away and uses a callback to return the result.
+        /// </summary>
+        /// <param name="blockHash"> 32-byte array representation of the block hash.
+        ///    Identifies it univocally.
+        /// </param>
+        public async Task<ApiCallResult<ulong>> FetchBlockHeightAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                ApiCallResult<ulong> ret = null;
+                FetchBlockHeight(blockHash, (code, height) =>
+                {
+                    ret = new ApiCallResult<ulong>
+                    {
+                        ErrorCode = code, 
+                        Result = height
+                    };
+                });
+                return ret;
+            });
+        }
+
 
         /// <summary>
         /// Given a block hash, it queries the chain asynchronously for the block's height.
@@ -27,7 +52,7 @@ namespace Bitprim
         ///    Identifies it univocally.
         /// </param>
         /// <param name="handler"> Callback which will be invoked when the block height is found. </param>
-        public void FetchBlockHeight(byte[] blockHash, Action<ErrorCode, UInt64> handler)
+        private void FetchBlockHeight(byte[] blockHash, Action<ErrorCode, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -44,7 +69,7 @@ namespace Bitprim
         /// <param name="blockHash">  32-byte array representation of the block hash.
         ///    Identifies it univocally. </param>
         /// <returns> The block height </returns>
-        public ApiCallResult<UInt64> GetBlockHeight(byte[] blockHash)
+        private ApiCallResult<UInt64> GetBlockHeight(byte[] blockHash)
         {
             UInt64 height = 0;
             var managedHash = new hash_t
@@ -58,8 +83,28 @@ namespace Bitprim
         /// <summary>
         /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
         /// </summary>
+        public async Task<ApiCallResult<ulong>> FetchLastHeightAsync()
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                ApiCallResult<ulong> ret = null;
+                FetchLastHeight((code, height) =>
+                {
+                    ret = new ApiCallResult<ulong>
+                    {
+                        ErrorCode = code, 
+                        Result = height
+                    };
+                });
+                return ret;
+            });
+        }
+
+        /// <summary>
+        /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
+        /// </summary>
         /// <param name="handler"> Callback which will be called once the last height is retrieved. </param>
-        public void FetchLastHeight(Action<ErrorCode, UInt64> handler)
+        private void FetchLastHeight(Action<ErrorCode, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -71,7 +116,7 @@ namespace Bitprim
         /// It blocks until height is retrieved.
         /// </summary>
         /// <returns> Error code (0 = success) and height </returns>
-        public ApiCallResult<UInt64> GetLastHeight()
+        private ApiCallResult<UInt64> GetLastHeight()
         {
             UInt64 height = 0;
             ErrorCode result = ChainNative.chain_get_last_height(nativeInstance_, ref height);
@@ -86,8 +131,26 @@ namespace Bitprim
         /// Given a block hash, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<Block>> FetchBlockByHashAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<Block> ret = null;
+                FetchBlockByHash(blockHash, (code, block) =>
+                    {
+                        ret = new DisposableApiCallResult<Block> {ErrorCode = code, Result = block};
+                    });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a block hash, retrieve the full block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        public void FetchBlockByHash(byte[] blockHash, Action<ErrorCode, Block> handler)
+        private void FetchBlockByHash(byte[] blockHash, Action<ErrorCode, Block> handler)
         {
             var managedHash = new hash_t
             {
@@ -97,12 +160,61 @@ namespace Bitprim
             ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockByHashInternalHandler);
         }
 
+
+        /// <summary>
+        /// Given a block hash, get the full block it identifies, synchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
+        /// <returns> Error code and full block </returns>
+        private DisposableApiCallResult<GetBlockDataResult<Block>> GetBlockByHash(byte[] blockHash)
+        {
+            IntPtr block = IntPtr.Zero;
+            UInt64 height = 0;
+            var managedHash = new hash_t
+            {
+                hash = blockHash
+            };
+            ErrorCode result = ChainNative.chain_get_block_by_hash(nativeInstance_, managedHash, ref block, ref height);
+            return new DisposableApiCallResult<GetBlockDataResult<Block>>
+            {
+                ErrorCode = result,
+                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = height }
+            };
+        }
+
+
+        /// <summary>
+        /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>> FetchBlockHeaderByHashTxSizesAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult> ret = null;
+                FetchBlockHeaderByHashTxSizes(blockHash, (errorCode, header, height, hashes, size) =>
+                {
+                    ret = new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>
+                    {
+                        ErrorCode = errorCode,
+                        Result = new GetBlockHeaderByHashTxSizeResult
+                        {
+                            Block = new GetBlockDataResult<Header> {BlockData = header, BlockHeight = height},
+                            TransactionHashes = hashes,
+                            SerializedBlockSize = size
+                        }
+                    };
+                });
+                return ret;
+            });
+        }
+
         /// <summary>
         /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the data is retrieved. </param>
-        public void FetchBlockHeaderByHashTxSizes(byte[] blockHash, FetchBlockHeaderByHashTxsSizeHandler handler)
+        private void FetchBlockHeaderByHashTxSizes(byte[] blockHash, FetchBlockHeaderByHashTxsSizeHandler handler)
         {
             var managedHash = new hash_t
             {
@@ -117,7 +229,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash. </param>
         /// <returns> Error code, block, block height, tx hashes, serialized block size. </returns>
-        public DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult> GetBlockHeaderByHashTxSizes(byte[] blockHash)
+        private DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult> GetBlockHeaderByHashTxSizes(byte[] blockHash)
         {
             var managedHash = new hash_t
             {
@@ -142,33 +254,32 @@ namespace Bitprim
                 new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>{ ErrorCode = result, Result = null };
         }
 
+
         /// <summary>
-        /// Given a block hash, get the full block it identifies, synchronously.
+        /// Given a block height, retrieve the full block it identifies, asynchronously.
         /// </summary>
-        /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code and full block </returns>
-        public DisposableApiCallResult<GetBlockDataResult<Block>> GetBlockByHash(byte[] blockHash)
+        /// <param name="height"> Block height </param>
+        public async Task<DisposableApiCallResult<Block>> FetchBlockByHeightAsync(ulong height)
         {
-            IntPtr block = IntPtr.Zero;
-            UInt64 height = 0;
-            var managedHash = new hash_t
+            return await TaskHelper.ToTask(() =>
             {
-                hash = blockHash
-            };
-            ErrorCode result = ChainNative.chain_get_block_by_hash(nativeInstance_, managedHash, ref block, ref height);
-            return new DisposableApiCallResult<GetBlockDataResult<Block>>
-            {
-                ErrorCode = result,
-                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = height }
-            };
+                DisposableApiCallResult<Block> ret = null;
+                FetchBlockByHeight(height, (code, block) =>
+                    {
+                        ret = new DisposableApiCallResult<Block> {ErrorCode = code, Result = block};
+                    });
+                return ret;
+            });
+            
         }
+
 
         /// <summary>
         /// Given a block height, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        public void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block> handler)
+        private void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -176,11 +287,58 @@ namespace Bitprim
         }
 
         /// <summary>
+        /// Given a block height, get the full block it identifies, synchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        /// <returns> Error code and full block </returns>
+        private DisposableApiCallResult<GetBlockDataResult<Block>> GetBlockByHeight(UInt64 height)
+        {
+            IntPtr block = IntPtr.Zero;
+            UInt64 actualHeight = 0; //Should always match input height
+            ErrorCode result = ChainNative.chain_get_block_by_height(nativeInstance_, height, ref block, ref actualHeight);
+            return new DisposableApiCallResult<GetBlockDataResult<Block>>
+            {
+                ErrorCode = result,
+                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = actualHeight }
+            };
+        }
+
+
+        /// <summary>
+        /// Given a block height, retrieve only block hash and timestamp, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        public async Task<ApiCallResult<GetBlockHashTimestampResult>> FetchBlockByHeightHashTimestampAsync(ulong height)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                ApiCallResult<GetBlockHashTimestampResult> ret = null;
+
+                FetchBlockByHeightHashTimestamp(height, (errorCode, hash, date, blockHeight) =>
+                {
+                    ret = new ApiCallResult<GetBlockHashTimestampResult>
+                    {
+                        ErrorCode = errorCode,
+                        Result = new GetBlockHashTimestampResult
+                        {
+                            BlockHash = hash,
+                            BlockTimestamp = date
+                        }
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+
+        /// <summary>
         /// Given a block height, retrieve only block hash and timestamp, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be called when the block data is retrieved. </param>
-        public void FetchBlockByHeightHashTimestamp(UInt64 height, FetchBlockByHeightHashTimestampHandler handler)
+        private void FetchBlockByHeightHashTimestamp(UInt64 height, FetchBlockByHeightHashTimestampHandler handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -192,7 +350,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <returns> Error code, block hash and block timestamp. </returns>
-        public ApiCallResult<GetBlockHashTimestampResult> GetBlockByHeightHashTimestamp(UInt64 height)
+        private ApiCallResult<GetBlockHashTimestampResult> GetBlockByHeightHashTimestamp(UInt64 height)
         {
             var blockHash = new hash_t();
             UInt32 blockTimestamp = 0;
@@ -209,29 +367,14 @@ namespace Bitprim
             };
         }
 
-        /// <summary>
-        /// Given a block height, get the full block it identifies, synchronously.
-        /// </summary>
-        /// <param name="height"> Block height </param>
-        /// <returns> Error code and full block </returns>
-        public DisposableApiCallResult<GetBlockDataResult<Block>> GetBlockByHeight(UInt64 height)
-        {
-            IntPtr block = IntPtr.Zero;
-            UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode result = ChainNative.chain_get_block_by_height(nativeInstance_, height, ref block, ref actualHeight);
-            return new DisposableApiCallResult<GetBlockDataResult<Block>>
-            {
-                ErrorCode = result,
-                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = actualHeight }
-            };
-        }
+        
 
         /// <summary>
         /// Given a block height, get just the block hash, synchronously.
         /// </summary>
         /// <param name="height"> Block height. </param>
         /// <returns> Error code and block hash. </returns>
-        public ApiCallResult<byte[]> GetBlockHash(UInt64 height)
+        private ApiCallResult<byte[]> GetBlockHash(UInt64 height)
         {
             var blockHash = new hash_t();
             ErrorCode result = ChainNative.chain_get_block_hash(nativeInstance_, height, ref blockHash);
@@ -244,12 +387,36 @@ namespace Bitprim
 
         #region Block header
 
+
+        /// <summary>
+        /// Given a block hash, get the header from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<Header>> FetchBlockHeaderByHashAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<Header> ret = null;
+
+                FetchBlockHeaderByHash(blockHash, (code, header) =>
+                {
+                    ret = new DisposableApiCallResult<Header>
+                    {
+                        ErrorCode = code,
+                        Result = header
+                    };
+                });
+
+                return ret;
+            });
+        }
+
         /// <summary>
         /// Given a block hash, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the header is retrieved </param>
-        public void FetchBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header> handler)
+        private void FetchBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header> handler)
         {
             var managedHash = new hash_t
             {
@@ -264,7 +431,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Error code, full block header and block height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHash(byte[] blockHash)
+        private DisposableApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHash(byte[] blockHash)
         {
             IntPtr header = IntPtr.Zero;
             UInt64 height = 0;
@@ -279,13 +446,42 @@ namespace Bitprim
                 Result = new GetBlockDataResult<Header>{ BlockData = new Header(header), BlockHeight = height }
             };
         }
+        
+
+        /// <summary>
+        /// Given a block height, get the header from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<Header>>> FetchBlockHeaderByHeightAsync(UInt64 height)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetBlockDataResult<Header>> ret = null;
+
+                FetchBlockHeaderByHeight(height, (code, header) =>
+                {
+                    ret = new DisposableApiCallResult<GetBlockDataResult<Header>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<Header>
+                        {
+                            BlockData = header, BlockHeight = height
+                        }
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
 
         /// <summary>
         /// Given a block height, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be invoked when the block header is retrieved </param>
-        public void FetchBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header> handler)
+        private void FetchBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -297,7 +493,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <returns> Error code, full block header, and height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHeight(UInt64 height)
+        private DisposableApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHeight(UInt64 height)
         {
             IntPtr header = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
@@ -317,8 +513,35 @@ namespace Bitprim
         /// Given a block hash, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>> FetchMerkleBlockByHashAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> ret = null;
+
+                FetchMerkleBlockByHash(blockHash, (code, merkleBlock, height) =>
+                {
+                    ret = new DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<MerkleBlock>
+                        {
+                            BlockData = merkleBlock,
+                            BlockHeight = height
+                        }
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+        /// <summary>
+        /// Given a block hash, get the merkle block from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be invoked when the Merkle block is retrieved </param>
-        public void FetchMerkleBlockByHash(byte[] blockHash, Action<ErrorCode, MerkleBlock, UInt64> handler)
+        private void FetchMerkleBlockByHash(byte[] blockHash, Action<ErrorCode, MerkleBlock, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -333,7 +556,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Error code, full Merkle block and height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHash(byte[] blockHash)
+        private DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHash(byte[] blockHash)
         {
             IntPtr merkleBlock = IntPtr.Zero;
             UInt64 height = 0;
@@ -353,8 +576,37 @@ namespace Bitprim
         /// Given a block height, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>> FetchMerkleBlockByHeightAsync(UInt64 height)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> ret = null;
+
+                FetchMerkleBlockByHeight(height, (code, merkleBlock, actualHeight) =>
+                {
+                    ret = new DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<MerkleBlock>
+                        {
+                            BlockData = merkleBlock,
+                            BlockHeight = actualHeight
+                        }
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+
+        /// <summary>
+        /// Given a block height, get the merkle block from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Desired block height </param>
         /// <param name="handler"> Callback which will be invoked when the Merkle block is retrieved </param>
-        public void FetchMerkleBlockByHeight(UInt64 height, Action<ErrorCode, MerkleBlock, UInt64> handler)
+        private void FetchMerkleBlockByHeight(UInt64 height, Action<ErrorCode, MerkleBlock, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -366,7 +618,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <returns> Error code, full Merkle block and height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHeight(UInt64 height)
+        private DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHeight(UInt64 height)
         {
             IntPtr merkleBlock = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
@@ -386,8 +638,30 @@ namespace Bitprim
         /// Given a block hash, get the compact block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<CompactBlock>> FetchCompactBlockByHash(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<CompactBlock> ret = null;
+                FetchCompactBlockByHash(blockHash, (code, compactBlock) =>
+                {
+                    ret = new DisposableApiCallResult<CompactBlock>
+                    {
+                        ErrorCode = code,
+                        Result = compactBlock
+                    };
+                });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a block hash, get the compact block from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        public void FetchCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock> handler)
+        private void FetchCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock> handler)
         {
             var managedHash = new hash_t
             {
@@ -402,7 +676,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Error code, full compact block and height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHash(byte[] blockHash)
+        private DisposableApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHash(byte[] blockHash)
         {
             IntPtr compactBlock = IntPtr.Zero;
             UInt64 height = 0;
@@ -422,8 +696,34 @@ namespace Bitprim
         /// Given a block height, get the compact block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> FetchCompactBlockByHeightAsync(UInt64 height)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetBlockDataResult<CompactBlock>> ret = null;
+                FetchCompactBlockByHeight(height, (code, compactBlock) =>
+                {
+                    ret = new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<CompactBlock>
+                        {
+                            BlockData = compactBlock,
+                            BlockHeight = height
+                        }
+                    };
+                });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a block height, get the compact block from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Desired block height </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        public void FetchCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock> handler)
+        private void FetchCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -435,7 +735,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <returns> Error code, full compact block and height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHeight(UInt64 height)
+        private DisposableApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHeight(UInt64 height)
         {
             IntPtr compactBlock = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
@@ -455,9 +755,43 @@ namespace Bitprim
         /// Get a transaction by its hash, asynchronously.
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
+        /// <param name="requireConfirmed"> True if the transaction must belong to a block </param>
+        public async Task<DisposableApiCallResult<GetTxDataResult>> FetchTransactionAsync(byte[] txHash, bool requireConfirmed)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetTxDataResult> ret = null;
+
+                FetchTransaction(txHash, requireConfirmed, (code, transaction, index, height) =>
+                {
+                    ret = new DisposableApiCallResult<GetTxDataResult>
+                    {
+                        ErrorCode = code,
+                        Result = new GetTxDataResult
+                        {
+                            Tx = transaction,
+                            TxPosition = new GetTxPositionResult
+                            {
+                                Index = index, 
+                                BlockHeight = height
+                            }
+                        }
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+
+        /// <summary>
+        /// Get a transaction by its hash, asynchronously.
+        /// </summary>
+        /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <param name="handler"> Callback which will be invoked when the transaction is retrieved </param>
-        public void FetchTransaction(byte[] txHash, bool requireConfirmed, Action<ErrorCode, Transaction, UInt64, UInt64> handler)
+        private void FetchTransaction(byte[] txHash, bool requireConfirmed, Action<ErrorCode, Transaction, UInt64, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -473,7 +807,7 @@ namespace Bitprim
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <returns> Error code, full transaction, index inside block and height </returns>
-        public DisposableApiCallResult<GetTxDataResult> GetTransaction(byte[] txHash, bool requireConfirmed)
+        private DisposableApiCallResult<GetTxDataResult> GetTransaction(byte[] txHash, bool requireConfirmed)
         {
             IntPtr transaction = IntPtr.Zero;
             UInt64 index = 0;
@@ -499,8 +833,31 @@ namespace Bitprim
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
+        public async Task<ApiCallResult<GetTxPositionResult>> FetchTransactionPositionAsync(byte[] txHash, bool requireConfirmed)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                ApiCallResult<GetTxPositionResult> ret = null;
+                FetchTransactionPosition(txHash, requireConfirmed, (code, index, height) =>
+                {
+                    ret = new ApiCallResult<GetTxPositionResult>
+                    {
+                        ErrorCode = code,
+                        Result = new GetTxPositionResult{ Index = index, BlockHeight = height }
+                    };
+                });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a transaction hash, it fetches the height and position inside the block, asynchronously.
+        /// </summary>
+        /// <param name="txHash"> 32 bytes of transaction hash </param>
+        /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <param name="handler"> Callback which will be invoked when the transaction position is retrieved </param>
-        public void FetchTransactionPosition(byte[] txHash, bool requireConfirmed, Action<ErrorCode, UInt64, UInt64> handler)
+        private void FetchTransactionPosition(byte[] txHash, bool requireConfirmed, Action<ErrorCode, UInt64, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -516,7 +873,7 @@ namespace Bitprim
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <returns> Error code, index in block (zero based) and block height </returns>
-        public ApiCallResult<GetTxPositionResult> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
+        private ApiCallResult<GetTxPositionResult> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
         {
             UInt64 index = 0;
             UInt64 height = 0;
@@ -540,8 +897,27 @@ namespace Bitprim
         /// Fetch the transaction input which spends the indicated output, asynchronously.
         /// </summary>
         /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
+        public async Task<ApiCallResult<Point>> FetchSpendAsync(OutputPoint outputPoint)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                ApiCallResult<Point> ret = null;
+
+                FetchSpend(outputPoint, (code, point) =>
+                    {
+                        ret = new ApiCallResult<Point> {ErrorCode = code, Result = point};
+                    });
+
+                return ret;
+            });
+        }
+
+        /// <summary>
+        /// Fetch the transaction input which spends the indicated output, asynchronously.
+        /// </summary>
+        /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
         /// <param name="handler"> Callback which will be called when spend is retrieved </param>
-        public void FetchSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler)
+        private void FetchSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler)
         {
             IntPtr contextPtr = CreateContext(handler, outputPoint);
             ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, FetchSpendInternalHandler);
@@ -552,7 +928,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
         /// <returns> Error code and output point </returns>
-        public ApiCallResult<Point> GetSpend(OutputPoint outputPoint)
+        private ApiCallResult<Point> GetSpend(OutputPoint outputPoint)
         {
             //TODO When node-cint wraps a get function for this, call that instead
             var handlerDone = new AutoResetEvent(false);
@@ -579,8 +955,34 @@ namespace Bitprim
         /// <param name="address"> Bitcoin payment address to search </param>
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
+        public async Task<DisposableApiCallResult<HistoryCompactList>> FetchHistoryAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<HistoryCompactList> ret = null;
+
+                FetchHistory(address, limit, fromHeight, (code, history) =>
+                {
+                    ret = new DisposableApiCallResult<HistoryCompactList>
+                    {
+                        ErrorCode = code, 
+                        Result = history
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Get a list of output points, values, and spends for a given payment address (asynchronously)
+        /// </summary>
+        /// <param name="address"> Bitcoin payment address to search </param>
+        /// <param name="limit"> Maximum amount of results to fetch </param>
+        /// <param name="fromHeight"> Starting point to search for transactions </param>
         /// <param name="handler"> Callback which will be called when the history is retrieved </param>
-        public void FetchHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HistoryCompactList> handler)
+        private void FetchHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HistoryCompactList> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -594,7 +996,7 @@ namespace Bitprim
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
         /// <returns> Error code, HistoryCompactList </returns>
-        public DisposableApiCallResult<HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
+        private DisposableApiCallResult<HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
         {
             IntPtr history = IntPtr.Zero;
             ErrorCode errorCode = ChainNative.chain_get_history(nativeInstance_, address.NativeInstance, limit, fromHeight, ref history);
@@ -611,8 +1013,34 @@ namespace Bitprim
         /// </summary>
         /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
         /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
+        public async Task<DisposableApiCallResult<StealthCompactList>> FetchStealthAsync(Binary filter, UInt64 fromHeight)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<StealthCompactList> ret = null;
+
+                FetchStealth(filter, fromHeight, (code, list) =>
+                {
+                    ret = new DisposableApiCallResult<StealthCompactList>()
+                    {
+                        ErrorCode = code,
+                        Result = list
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Get metadata on potential payment transactions by stealth filter. Given a filter and a
+        /// height in the chain, it queries the chain for transactions matching the given filter.
+        /// </summary>
+        /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
+        /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
         /// <param name="handler"> Callback which will be called when the stealth list is retrieved </param>
-        public void FetchStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
+        private void FetchStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
         {
             IntPtr contextPtr = CreateContext(handler, filter);
             ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, FetchStealthInternalHandler);
@@ -626,8 +1054,32 @@ namespace Bitprim
         /// Given a list of indexes, fetch a header reader for them, asynchronously
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
+        public async Task<DisposableApiCallResult<HeaderReader>> FetchBlockLocatorAsync(BlockIndexList indexes)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<HeaderReader> ret = null;
+
+                FetchBlockLocator(indexes, (code, headerReader) =>
+                {
+                    ret = new DisposableApiCallResult<HeaderReader>
+                    {
+                        ErrorCode = code, 
+                        Result = headerReader
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a list of indexes, fetch a header reader for them, asynchronously
+        /// </summary>
+        /// <param name="indexes"> Block indexes </param>
         /// <param name="handler"> Callback which will called when the reader is retrieved </param>
-        public void FetchBlockLocator(BlockIndexList indexes, Action<ErrorCode, HeaderReader> handler)
+        private void FetchBlockLocator(BlockIndexList indexes, Action<ErrorCode, HeaderReader> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -639,7 +1091,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
         /// <returns> Error code, HeaderReader </returns>
-        public DisposableApiCallResult<HeaderReader> GetBlockLocator(BlockIndexList indexes)
+        private DisposableApiCallResult<HeaderReader> GetBlockLocator(BlockIndexList indexes)
         {
             IntPtr headerReader = IntPtr.Zero;
             ErrorCode errorCode = ChainNative.chain_get_block_locator(nativeInstance_, indexes.NativeInstance, ref headerReader);
@@ -654,8 +1106,22 @@ namespace Bitprim
         /// Given a block, organize it (async).
         /// </summary>
         /// <param name="block"> The block to organize </param>
+        public async Task<ErrorCode> OrganizeBlockAsync(Block block)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                var ret = ErrorCode.Unknown;
+                OrganizeBlock(block, errorCode => { ret = errorCode; });
+                return ret;
+            });
+        }
+
+        /// <summary>
+        /// Given a block, organize it (async).
+        /// </summary>
+        /// <param name="block"> The block to organize </param>
         /// <param name="handler"> Callback which will be called when organization is complete. </param>
-        public void OrganizeBlock(Block block, Action<int> handler)
+        private void OrganizeBlock(Block block, Action<ErrorCode> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -667,7 +1133,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="block"> The block to organize. </param>
         /// <returns> Error code </returns>
-        public ErrorCode OrganizeBlockSync(Block block)
+        private ErrorCode OrganizeBlockSync(Block block)
         {
             return ChainNative.chain_organize_block_sync(nativeInstance_, block.NativeInstance);
         }
@@ -676,8 +1142,23 @@ namespace Bitprim
         /// Given a transaction, organize it (async).
         /// </summary>
         /// <param name="transaction"> The transaction to organize. </param>
+        public async Task<ErrorCode> OrganizeTransactionAsync(Transaction transaction)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                var ret = ErrorCode.Unknown;
+                OrganizeTransaction(transaction, errorCode => { ret = errorCode; });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a transaction, organize it (async).
+        /// </summary>
+        /// <param name="transaction"> The transaction to organize. </param>
         /// <param name="handler"> Callback which will be called when organization is complete. </param>
-        public void OrganizeTransaction(Transaction transaction, Action<int> handler)
+        private void OrganizeTransaction(Transaction transaction, Action<ErrorCode> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -689,7 +1170,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="transaction"> The transaction to organize </param>
         /// <returns> Error code </returns>
-        public ErrorCode OrganizeTransactionSync(Transaction transaction)
+        private ErrorCode OrganizeTransactionSync(Transaction transaction)
         {
             return ChainNative.chain_organize_transaction_sync(nativeInstance_, transaction.NativeInstance);
         }
@@ -702,8 +1183,30 @@ namespace Bitprim
         /// Determine if a transaction is valid for submission to the blockchain.
         /// </summary>
         /// <param name="transaction"> Transaction to validate </param>
+        public async Task<ApiCallResult<string>> ValidateTransactionAsync(Transaction transaction)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                ApiCallResult<string> ret = null;
+                ValidateTransaction(transaction, (code, message) =>
+                {
+                    ret = new ApiCallResult<string>
+                    {
+                        ErrorCode = code,
+                        Result = message
+                    };
+                });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Determine if a transaction is valid for submission to the blockchain.
+        /// </summary>
+        /// <param name="transaction"> Transaction to validate </param>
         /// <param name="handler"> Callback which will be called when validation is complete. </param>
-        public void ValidateTransaction(Transaction transaction, Action handler)
+        private void ValidateTransaction(Transaction transaction, Action<ErrorCode,string> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -712,7 +1215,6 @@ namespace Bitprim
 
         /// <summary>
         /// Determine if the node is synchronized (i.e. has the latest copy of the blockchain/is at top height)
-        /// Criterion: no nodes from the last 48 hs.
         /// </summary>
         public bool IsStale
         {

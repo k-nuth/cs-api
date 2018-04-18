@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Bitprim;
 
 namespace bitprim.console
@@ -9,6 +10,11 @@ namespace bitprim.console
         private static bool running_;
 
         static void Main(string[] args)
+        {
+            InternalMain(args).GetAwaiter().GetResult();
+        }
+
+        static async Task InternalMain(string[] args)
         {
             try
             {
@@ -30,7 +36,7 @@ namespace bitprim.console
                 running_ = true;
                 while (running_)
                 {
-                    var lastHeight = executor.Chain.GetLastHeight();
+                    var lastHeight = await executor.Chain.FetchLastHeightAsync();
                     Console.WriteLine("Current height in local copy: " + lastHeight);
                     Thread.Sleep(5000);
                 }
