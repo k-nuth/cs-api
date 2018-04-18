@@ -513,8 +513,35 @@ namespace Bitprim
         /// Given a block hash, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>> FetchMerkleBlockByHashAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> ret = null;
+
+                FetchMerkleBlockByHash(blockHash, (code, merkleBlock, height) =>
+                {
+                    ret = new DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<MerkleBlock>
+                        {
+                            BlockData = merkleBlock,
+                            BlockHeight = height
+                        }
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+        /// <summary>
+        /// Given a block hash, get the merkle block from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be invoked when the Merkle block is retrieved </param>
-        public void FetchMerkleBlockByHash(byte[] blockHash, Action<ErrorCode, MerkleBlock, UInt64> handler)
+        private void FetchMerkleBlockByHash(byte[] blockHash, Action<ErrorCode, MerkleBlock, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -529,7 +556,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Error code, full Merkle block and height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHash(byte[] blockHash)
+        private DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHash(byte[] blockHash)
         {
             IntPtr merkleBlock = IntPtr.Zero;
             UInt64 height = 0;

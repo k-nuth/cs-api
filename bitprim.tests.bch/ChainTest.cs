@@ -114,30 +114,18 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchMerkleBlockByHash()
+        public async Task TestFetchMerkleBlockByHash()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            MerkleBlock merkleBlock = null;
-            UInt64 height = 0;
-
-            Action<ErrorCode, MerkleBlock, UInt64> handler = delegate(ErrorCode theError, MerkleBlock theBlock, UInt64 theHeight)
-            {
-                error = theError;
-                merkleBlock = theBlock;
-                height = theHeight;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/0
             byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            executorFixture_.Executor.Chain.FetchMerkleBlockByHash(hash, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.NotNull(merkleBlock);
-            Assert.Equal<UInt64>(0, height);
-            Assert.Equal<UInt64>(1, merkleBlock.TotalTransactionCount);
-            VerifyGenesisBlockHeader(merkleBlock.Header);
+            using (var ret = await executorFixture_.Executor.Chain.FetchMerkleBlockByHashAsync(hash))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.NotNull(ret.Result.BlockData);
+                Assert.Equal<UInt64>(0, ret.Result.BlockHeight);
+                Assert.Equal<UInt64>(1, ret.Result.BlockData.TotalTransactionCount);
+                VerifyGenesisBlockHeader(ret.Result.BlockData.Header);
+            }
         }
 
         [Fact]
