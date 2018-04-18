@@ -1107,8 +1107,22 @@ namespace Bitprim
         /// Given a block, organize it (async).
         /// </summary>
         /// <param name="block"> The block to organize </param>
+        public async Task<ErrorCode> OrganizeBlockAsync(Block block)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                var ret = ErrorCode.Unknown;
+                OrganizeBlock(block, errorCode => { ret = errorCode; });
+                return ret;
+            });
+        }
+
+        /// <summary>
+        /// Given a block, organize it (async).
+        /// </summary>
+        /// <param name="block"> The block to organize </param>
         /// <param name="handler"> Callback which will be called when organization is complete. </param>
-        public void OrganizeBlock(Block block, Action<int> handler)
+        private void OrganizeBlock(Block block, Action<ErrorCode> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -1120,7 +1134,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="block"> The block to organize. </param>
         /// <returns> Error code </returns>
-        public ErrorCode OrganizeBlockSync(Block block)
+        private ErrorCode OrganizeBlockSync(Block block)
         {
             return ChainNative.chain_organize_block_sync(nativeInstance_, block.NativeInstance);
         }
@@ -1129,8 +1143,23 @@ namespace Bitprim
         /// Given a transaction, organize it (async).
         /// </summary>
         /// <param name="transaction"> The transaction to organize. </param>
+        public async Task<ErrorCode> OrganizeTransactionAsync(Transaction transaction)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                var ret = ErrorCode.Unknown;
+                OrganizeTransaction(transaction, errorCode => { ret = errorCode; });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a transaction, organize it (async).
+        /// </summary>
+        /// <param name="transaction"> The transaction to organize. </param>
         /// <param name="handler"> Callback which will be called when organization is complete. </param>
-        public void OrganizeTransaction(Transaction transaction, Action<int> handler)
+        private void OrganizeTransaction(Transaction transaction, Action<ErrorCode> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -1142,7 +1171,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="transaction"> The transaction to organize </param>
         /// <returns> Error code </returns>
-        public ErrorCode OrganizeTransactionSync(Transaction transaction)
+        private ErrorCode OrganizeTransactionSync(Transaction transaction)
         {
             return ChainNative.chain_organize_transaction_sync(nativeInstance_, transaction.NativeInstance);
         }
