@@ -638,8 +638,30 @@ namespace Bitprim
         /// Given a block hash, get the compact block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<CompactBlock>> FetchCompactBlockByHash(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<CompactBlock> ret = null;
+                FetchCompactBlockByHash(blockHash, (code, compactBlock) =>
+                {
+                    ret = new DisposableApiCallResult<CompactBlock>
+                    {
+                        ErrorCode = code,
+                        Result = compactBlock
+                    };
+                });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a block hash, get the compact block from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        public void FetchCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock> handler)
+        private void FetchCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock> handler)
         {
             var managedHash = new hash_t
             {
@@ -654,7 +676,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Error code, full compact block and height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHash(byte[] blockHash)
+        private DisposableApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHash(byte[] blockHash)
         {
             IntPtr compactBlock = IntPtr.Zero;
             UInt64 height = 0;
@@ -674,8 +696,34 @@ namespace Bitprim
         /// Given a block height, get the compact block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> FetchCompactBlockByHeightAsync(UInt64 height)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetBlockDataResult<CompactBlock>> ret = null;
+                FetchCompactBlockByHeight(height, (code, compactBlock) =>
+                {
+                    ret = new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<CompactBlock>
+                        {
+                            BlockData = compactBlock,
+                            BlockHeight = height
+                        }
+                    };
+                });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a block height, get the compact block from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Desired block height </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        public void FetchCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock> handler)
+        private void FetchCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -687,7 +735,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <returns> Error code, full compact block and height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHeight(UInt64 height)
+        private DisposableApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHeight(UInt64 height)
         {
             IntPtr compactBlock = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
