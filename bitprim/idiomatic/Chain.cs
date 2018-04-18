@@ -6,7 +6,6 @@ using System.Threading;
 
 namespace Bitprim
 {
-
     /// <summary>
     /// Represents the Bitcoin blockchain; meant to offer its different interfaces (query, mining, network)
     /// </summary>
@@ -19,7 +18,6 @@ namespace Bitprim
 
         #region Chain
 
-
         
         /// <summary>
         /// Given a block hash, it queries the chain asynchronously for the block's height.
@@ -30,26 +28,19 @@ namespace Bitprim
         /// </param>
         public async Task<ApiCallResult<ulong>> FetchBlockHeightAsync(byte[] blockHash)
         {
-            var tcs = new TaskCompletionSource<ApiCallResult<ulong>>();
-
-            FetchBlockHeight(blockHash, (code, height) =>
+            return await TaskHelper.ToTask(() =>
             {
-                try
+                ApiCallResult<ulong> ret = null;
+                FetchBlockHeight(blockHash, (code, height) =>
                 {
-                    tcs.TrySetResult(new ApiCallResult<ulong> { ErrorCode = code, Result = height} );
-                }
-                catch (OperationCanceledException)
-                {
-                    tcs.TrySetCanceled();
-                }
-                catch (Exception exc)
-                {
-                    tcs.TrySetException(exc);
-                }
-
+                    ret = new ApiCallResult<ulong>
+                    {
+                        ErrorCode = code, 
+                        Result = height
+                    };
+                });
+                return ret;
             });
-
-            return await tcs.Task.ConfigureAwait(false);
         }
 
 
@@ -94,26 +85,19 @@ namespace Bitprim
         /// </summary>
         public async Task<ApiCallResult<ulong>> FetchLastHeightAsync()
         {
-            var tcs = new TaskCompletionSource<ApiCallResult<ulong>>();
-
-            FetchLastHeight((code, height) =>
+            return await TaskHelper.ToTask(() =>
             {
-                try
+                ApiCallResult<ulong> ret = null;
+                FetchLastHeight((code, height) =>
                 {
-                    tcs.TrySetResult(new ApiCallResult<ulong> { ErrorCode = code, Result = height} );
-                }
-                catch (OperationCanceledException)
-                {
-                    tcs.TrySetCanceled();
-                }
-                catch (Exception exc)
-                {
-                    tcs.TrySetException(exc);
-                }
-
+                    ret = new ApiCallResult<ulong>
+                    {
+                        ErrorCode = code, 
+                        Result = height
+                    };
+                });
+                return ret;
             });
-
-            return await tcs.Task.ConfigureAwait(false);
         }
 
         /// <summary>
@@ -149,26 +133,15 @@ namespace Bitprim
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         public async Task<DisposableApiCallResult<Block>> FetchBlockByHashAsync(byte[] blockHash)
         {
-            var tcs = new TaskCompletionSource<DisposableApiCallResult<Block>>();
-
-            FetchBlockByHash(blockHash, (code, block) =>
+            return await TaskHelper.ToTask(() =>
             {
-                try
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<Block> { ErrorCode = code, Result = block} );
-                }
-                catch (OperationCanceledException)
-                {
-                    tcs.TrySetCanceled();
-                }
-                catch (Exception exc)
-                {
-                    tcs.TrySetException(exc);
-                }
-
+                DisposableApiCallResult<Block> ret = null;
+                FetchBlockByHash(blockHash, (code, block) =>
+                    {
+                        ret = new DisposableApiCallResult<Block> {ErrorCode = code, Result = block};
+                    });
+                return ret;
             });
-
-            return await tcs.Task.ConfigureAwait(false);
         }
 
 
@@ -216,40 +189,25 @@ namespace Bitprim
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         public async Task<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>> FetchBlockHeaderByHashTxSizesAsync(byte[] blockHash)
         {
-            var tcs = new TaskCompletionSource<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>>();
-
-            FetchBlockHeaderByHashTxSizes(blockHash, (errorCode, header, height, hashes, size) => 
+            return await TaskHelper.ToTask(() =>
             {
-                try
+                DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult> ret = null;
+                FetchBlockHeaderByHashTxSizes(blockHash, (errorCode, header, height, hashes, size) =>
                 {
-                    tcs.TrySetResult(
-                        new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>
+                    ret = new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>
+                    {
+                        ErrorCode = errorCode,
+                        Result = new GetBlockHeaderByHashTxSizeResult
                         {
-                            ErrorCode = errorCode,
-                            Result = new GetBlockHeaderByHashTxSizeResult
-                            {
-                                Block = new GetBlockDataResult<Header> {BlockData = header, BlockHeight = height},
-                                TransactionHashes = hashes,
-                                SerializedBlockSize = size
-                            }
+                            Block = new GetBlockDataResult<Header> {BlockData = header, BlockHeight = height},
+                            TransactionHashes = hashes,
+                            SerializedBlockSize = size
                         }
-                        );
-                }
-                catch (OperationCanceledException)
-                {
-                    tcs.TrySetCanceled();
-                }
-                catch (Exception exc)
-                {
-                    tcs.TrySetException(exc);
-                }
-
+                    };
+                });
+                return ret;
             });
-
-            return await tcs.Task.ConfigureAwait(false);
         }
-
-
 
         /// <summary>
         /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
@@ -303,26 +261,16 @@ namespace Bitprim
         /// <param name="height"> Block height </param>
         public async Task<DisposableApiCallResult<Block>> FetchBlockByHeightAsync(ulong height)
         {
-            var tcs = new TaskCompletionSource<DisposableApiCallResult<Block>>();
-
-            FetchBlockByHeight(height, (code, block) =>
+            return await TaskHelper.ToTask(() =>
             {
-                try
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<Block> { ErrorCode = code, Result = block} );
-                }
-                catch (OperationCanceledException)
-                {
-                    tcs.TrySetCanceled();
-                }
-                catch (Exception exc)
-                {
-                    tcs.TrySetException(exc);
-                }
-
+                DisposableApiCallResult<Block> ret = null;
+                FetchBlockByHeight(height, (code, block) =>
+                    {
+                        ret = new DisposableApiCallResult<Block> {ErrorCode = code, Result = block};
+                    });
+                return ret;
             });
-
-            return await tcs.Task.ConfigureAwait(false);
+            
         }
 
 
@@ -354,6 +302,11 @@ namespace Bitprim
                 Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = actualHeight }
             };
         }
+
+
+
+
+
 
 
         /// <summary>
