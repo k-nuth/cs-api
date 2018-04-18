@@ -130,29 +130,17 @@ namespace Bitprim.Tests
 
 
         [Fact]
-        public void TestFetchMerkleBlockByHeight()
+        public async Task TestFetchMerkleBlockByHeight()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            MerkleBlock merkleBlock = null;
-            UInt64 height = 0;
-
-            Action<ErrorCode, MerkleBlock, UInt64> handler = delegate(ErrorCode theError, MerkleBlock theBlock, UInt64 theHeight)
-            {
-                error = theError;
-                merkleBlock = theBlock;
-                height = theHeight;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/0
-            executorFixture_.Executor.Chain.FetchMerkleBlockByHeight(0, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.NotNull(merkleBlock);
-            Assert.Equal<UInt64>(0, height);
-            Assert.Equal<UInt64>(1, merkleBlock.TotalTransactionCount);
-            VerifyGenesisBlockHeader(merkleBlock.Header);
+            using (var ret = await executorFixture_.Executor.Chain.FetchMerkleBlockByHeightAsync(0))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.NotNull(ret.Result.BlockData);
+                Assert.Equal<UInt64>(0, ret.Result.BlockHeight);
+                Assert.Equal<UInt64>(1, ret.Result.BlockData.TotalTransactionCount);
+                VerifyGenesisBlockHeader(ret.Result.BlockData.Header);
+            }
         }
 
         [Fact]

@@ -576,8 +576,37 @@ namespace Bitprim
         /// Given a block height, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>> FetchMerkleBlockByHeightAsync(UInt64 height)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> ret = null;
+
+                FetchMerkleBlockByHeight(height, (code, merkleBlock, actualHeight) =>
+                {
+                    ret = new DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<MerkleBlock>
+                        {
+                            BlockData = merkleBlock,
+                            BlockHeight = actualHeight
+                        }
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+
+        /// <summary>
+        /// Given a block height, get the merkle block from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Desired block height </param>
         /// <param name="handler"> Callback which will be invoked when the Merkle block is retrieved </param>
-        public void FetchMerkleBlockByHeight(UInt64 height, Action<ErrorCode, MerkleBlock, UInt64> handler)
+        private void FetchMerkleBlockByHeight(UInt64 height, Action<ErrorCode, MerkleBlock, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -589,7 +618,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <returns> Error code, full Merkle block and height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHeight(UInt64 height)
+        private DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHeight(UInt64 height)
         {
             IntPtr merkleBlock = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
