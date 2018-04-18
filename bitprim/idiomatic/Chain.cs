@@ -187,12 +187,76 @@ namespace Bitprim
             ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockByHashInternalHandler);
         }
 
+
+        /// <summary>
+        /// Given a block hash, get the full block it identifies, synchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
+        /// <returns> Error code and full block </returns>
+        private DisposableApiCallResult<GetBlockDataResult<Block>> GetBlockByHash(byte[] blockHash)
+        {
+            IntPtr block = IntPtr.Zero;
+            UInt64 height = 0;
+            var managedHash = new hash_t
+            {
+                hash = blockHash
+            };
+            ErrorCode result = ChainNative.chain_get_block_by_hash(nativeInstance_, managedHash, ref block, ref height);
+            return new DisposableApiCallResult<GetBlockDataResult<Block>>
+            {
+                ErrorCode = result,
+                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = height }
+            };
+        }
+
+
+        /// <summary>
+        /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>> FetchBlockHeaderByHashTxSizesAsync(byte[] blockHash)
+        {
+            var tcs = new TaskCompletionSource<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>>();
+
+            FetchBlockHeaderByHashTxSizes(blockHash, (errorCode, header, height, hashes, size) => 
+            {
+                try
+                {
+                    tcs.TrySetResult(
+                        new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>
+                        {
+                            ErrorCode = errorCode,
+                            Result = new GetBlockHeaderByHashTxSizeResult
+                            {
+                                Block = new GetBlockDataResult<Header> {BlockData = header, BlockHeight = height},
+                                TransactionHashes = hashes,
+                                SerializedBlockSize = size
+                            }
+                        }
+                        );
+                }
+                catch (OperationCanceledException)
+                {
+                    tcs.TrySetCanceled();
+                }
+                catch (Exception exc)
+                {
+                    tcs.TrySetException(exc);
+                }
+
+            });
+
+            return await tcs.Task.ConfigureAwait(false);
+        }
+
+
+
         /// <summary>
         /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the data is retrieved. </param>
-        public void FetchBlockHeaderByHashTxSizes(byte[] blockHash, FetchBlockHeaderByHashTxsSizeHandler handler)
+        private void FetchBlockHeaderByHashTxSizes(byte[] blockHash, FetchBlockHeaderByHashTxsSizeHandler handler)
         {
             var managedHash = new hash_t
             {
@@ -207,7 +271,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash. </param>
         /// <returns> Error code, block, block height, tx hashes, serialized block size. </returns>
-        public DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult> GetBlockHeaderByHashTxSizes(byte[] blockHash)
+        private DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult> GetBlockHeaderByHashTxSizes(byte[] blockHash)
         {
             var managedHash = new hash_t
             {
@@ -232,26 +296,7 @@ namespace Bitprim
                 new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>{ ErrorCode = result, Result = null };
         }
 
-        /// <summary>
-        /// Given a block hash, get the full block it identifies, synchronously.
-        /// </summary>
-        /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code and full block </returns>
-        public DisposableApiCallResult<GetBlockDataResult<Block>> GetBlockByHash(byte[] blockHash)
-        {
-            IntPtr block = IntPtr.Zero;
-            UInt64 height = 0;
-            var managedHash = new hash_t
-            {
-                hash = blockHash
-            };
-            ErrorCode result = ChainNative.chain_get_block_by_hash(nativeInstance_, managedHash, ref block, ref height);
-            return new DisposableApiCallResult<GetBlockDataResult<Block>>
-            {
-                ErrorCode = result,
-                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = height }
-            };
-        }
+       
 
         /// <summary>
         /// Given a block height, retrieve the full block it identifies, asynchronously.

@@ -104,21 +104,7 @@ namespace Bitprim.Tests
             }
         }
 
-        [Fact]
-        public void TestGetBlockByHash()
-        {
-            //https://blockchain.info/es/block-height/0
-            byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            using(DisposableApiCallResult<GetBlockDataResult<Block>> result = executorFixture_.Executor.Chain.GetBlockByHash(hash))
-            {
-                ErrorCode error = result.ErrorCode;
-                Block block = result.Result.BlockData;
-                UInt64 height = result.Result.BlockHeight;
-                Assert.Equal(ErrorCode.Success, error);
-                VerifyGenesisBlockHeader(block.Header);
-                Assert.Equal(0UL, height);
-            }
-        }
+      
 
         [Fact]
         public async Task TestFetchBlockHeightAsync()
@@ -475,5 +461,15 @@ namespace Bitprim.Tests
             Assert.Equal(ErrorCode.Success, error);
         }
 
+        [Fact]
+        public async Task FetchBlockHeaderByHashTxSizesAsync()
+        {
+            var hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockHeaderByHashTxSizesAsync(hash))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                VerifyGenesisBlockHeader(ret.Result.Block.BlockData);
+            }
+        }
     }
 }

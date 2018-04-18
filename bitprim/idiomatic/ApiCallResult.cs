@@ -22,7 +22,7 @@ namespace Bitprim
     public sealed class GetBlockHeaderByHashTxSizeResult : IDisposable
     {
         public GetBlockDataResult<Header> Block { get; set; }
-        public Bitprim.HashList TransactionHashes { get; set; }
+        public HashList TransactionHashes { get; set; }
         public UInt64 SerializedBlockSize { get; set; }
 
         public void Dispose()
