@@ -1,6 +1,5 @@
 using System;
 using Bitprim.Native;
-using System.Collections;
 
 namespace Bitprim
 {

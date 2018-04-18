@@ -4,7 +4,6 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
     /// <summary>
     /// Controls the execution of the Bitprim bitcoin node.
     /// </summary>
