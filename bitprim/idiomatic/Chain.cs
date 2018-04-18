@@ -296,19 +296,65 @@ namespace Bitprim
                 new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>{ ErrorCode = result, Result = null };
         }
 
-       
+
+        /// <summary>
+        /// Given a block height, retrieve the full block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        public async Task<DisposableApiCallResult<Block>> FetchBlockByHeightAsync(ulong height)
+        {
+            var tcs = new TaskCompletionSource<DisposableApiCallResult<Block>>();
+
+            FetchBlockByHeight(height, (code, block) =>
+            {
+                try
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<Block> { ErrorCode = code, Result = block} );
+                }
+                catch (OperationCanceledException)
+                {
+                    tcs.TrySetCanceled();
+                }
+                catch (Exception exc)
+                {
+                    tcs.TrySetException(exc);
+                }
+
+            });
+
+            return await tcs.Task.ConfigureAwait(false);
+        }
+
 
         /// <summary>
         /// Given a block height, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        public void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block> handler)
+        private void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, FetchBlockByHeightInternalHandler);
         }
+
+        /// <summary>
+        /// Given a block height, get the full block it identifies, synchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        /// <returns> Error code and full block </returns>
+        private DisposableApiCallResult<GetBlockDataResult<Block>> GetBlockByHeight(UInt64 height)
+        {
+            IntPtr block = IntPtr.Zero;
+            UInt64 actualHeight = 0; //Should always match input height
+            ErrorCode result = ChainNative.chain_get_block_by_height(nativeInstance_, height, ref block, ref actualHeight);
+            return new DisposableApiCallResult<GetBlockDataResult<Block>>
+            {
+                ErrorCode = result,
+                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = actualHeight }
+            };
+        }
+
 
         /// <summary>
         /// Given a block height, retrieve only block hash and timestamp, asynchronously.
@@ -344,22 +390,7 @@ namespace Bitprim
             };
         }
 
-        /// <summary>
-        /// Given a block height, get the full block it identifies, synchronously.
-        /// </summary>
-        /// <param name="height"> Block height </param>
-        /// <returns> Error code and full block </returns>
-        public DisposableApiCallResult<GetBlockDataResult<Block>> GetBlockByHeight(UInt64 height)
-        {
-            IntPtr block = IntPtr.Zero;
-            UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode result = ChainNative.chain_get_block_by_height(nativeInstance_, height, ref block, ref actualHeight);
-            return new DisposableApiCallResult<GetBlockDataResult<Block>>
-            {
-                ErrorCode = result,
-                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = actualHeight }
-            };
-        }
+        
 
         /// <summary>
         /// Given a block height, get just the block hash, synchronously.

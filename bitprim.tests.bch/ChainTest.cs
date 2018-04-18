@@ -72,24 +72,14 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchBlockByHeight()
+        public async Task TestFetchBlockByHeight()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Block block = null;
-
-            Action<ErrorCode, Block> handler = delegate(ErrorCode theError, Block theBlock)
-            {
-                error = theError;
-                block = theBlock;
-                handlerDone.Set();
-            };
             //https://blockchain.info/es/block-height/0
-            executorFixture_.Executor.Chain.FetchBlockByHeight(0, handler);
-            handlerDone.WaitOne();
-
-            Assert.Equal(ErrorCode.Success, error);
-            VerifyGenesisBlockHeader(block.Header);
+            using (var ret = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                VerifyGenesisBlockHeader(ret.Result.Header);
+            }
         }
 
         [Fact]
