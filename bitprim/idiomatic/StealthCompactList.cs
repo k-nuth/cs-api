@@ -1,10 +1,8 @@
 using System;
 using Bitprim.Native;
-using System.Collections;
 
 namespace Bitprim
 {
-
     public class StealthCompactList : NativeList<StealthCompact>
     {
         public override IntPtr CreateNativeList()

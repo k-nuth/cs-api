@@ -1014,8 +1014,34 @@ namespace Bitprim
         /// </summary>
         /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
         /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
+        public async Task<DisposableApiCallResult<StealthCompactList>> FetchStealthAsync(Binary filter, UInt64 fromHeight)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<StealthCompactList> ret = null;
+
+                FetchStealth(filter, fromHeight, (code, list) =>
+                {
+                    ret = new DisposableApiCallResult<StealthCompactList>()
+                    {
+                        ErrorCode = code,
+                        Result = list
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Get metadata on potential payment transactions by stealth filter. Given a filter and a
+        /// height in the chain, it queries the chain for transactions matching the given filter.
+        /// </summary>
+        /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
+        /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
         /// <param name="handler"> Callback which will be called when the stealth list is retrieved </param>
-        public void FetchStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
+        private void FetchStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
         {
             IntPtr contextPtr = CreateContext(handler, filter);
             ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, FetchStealthInternalHandler);

@@ -133,23 +133,14 @@ namespace Bitprim.Tests
         }
 
         [Fact]
-        public void TestFetchStealth()
+        public async Task TestFetchStealth()
         {
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            StealthCompactList list = null;
-
-            Action<ErrorCode, StealthCompactList> handler = delegate(ErrorCode theError, StealthCompactList theList)
+            using (var ret = await executorFixture_.Executor.Chain.FetchStealthAsync(new Binary("1111"), 0))
             {
-                error = theError;
-                list = theList;
-                handlerDone.Set();
-            };
-            executorFixture_.Executor.Chain.FetchStealth(new Binary("1111"), 0, handler);
-            handlerDone.WaitOne();
-            
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.Equal<uint>(0, list.Count);
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.Equal<uint>(0, ret.Result.Count);
+            }
+           
         }
 
         [Fact]
