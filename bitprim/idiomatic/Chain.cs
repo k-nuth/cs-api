@@ -1,6 +1,5 @@
 using Bitprim.Native;
 using System;
-using System.Net.Cache;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -15,7 +14,7 @@ namespace Bitprim
         public delegate void FetchBlockByHeightHashTimestampHandler(ErrorCode errorCode, byte[] blockHash, DateTime blockDate, UInt64 blockHeight);
         private delegate void FetchBlockHeaderByHashTxsSizeHandler(ErrorCode errorCode, Header blockHeader, UInt64 blockHeight, HashList txHashes, UInt64 serializedBlockSize);
 
-        private IntPtr nativeInstance_;
+        private readonly IntPtr nativeInstance_;
 
         #region Chain
 
@@ -1184,8 +1183,30 @@ namespace Bitprim
         /// Determine if a transaction is valid for submission to the blockchain.
         /// </summary>
         /// <param name="transaction"> Transaction to validate </param>
+        public async Task<ApiCallResult<string>> ValidateTransactionAsync(Transaction transaction)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                ApiCallResult<string> ret = null;
+                ValidateTransaction(transaction, (code, message) =>
+                {
+                    ret = new ApiCallResult<string>
+                    {
+                        ErrorCode = code,
+                        Result = message
+                    };
+                });
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Determine if a transaction is valid for submission to the blockchain.
+        /// </summary>
+        /// <param name="transaction"> Transaction to validate </param>
         /// <param name="handler"> Callback which will be called when validation is complete. </param>
-        public void ValidateTransaction(Transaction transaction, Action handler)
+        private void ValidateTransaction(Transaction transaction, Action<ErrorCode,string> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -1194,7 +1215,6 @@ namespace Bitprim
 
         /// <summary>
         /// Determine if the node is synchronized (i.e. has the latest copy of the blockchain/is at top height)
-        /// Criterion: no nodes from the last 48 hs.
         /// </summary>
         public bool IsStale
         {
