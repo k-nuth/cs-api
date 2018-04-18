@@ -13,6 +13,10 @@ public static class HeaderNative
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern UInt32 chain_header_bits(IntPtr header);
 
+    //Note: Returned memory must be freed manually using platform_free
+    [DllImport(Constants.BITPRIM_C_LIBRARY)]
+    public static extern IntPtr chain_header_proof_str(IntPtr header);
+
     [DllImport(Constants.BITPRIM_C_LIBRARY)]
     public static extern UInt32 chain_header_nonce(IntPtr header);
 
