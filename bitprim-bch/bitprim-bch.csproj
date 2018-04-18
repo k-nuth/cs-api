@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <Folder Include="build\netstandard2.0\" />
+    <Folder Include="idiomatic\" />
     <Folder Include="native\" />
     <Folder Include="content\" />
     <Folder Include="docs\" />

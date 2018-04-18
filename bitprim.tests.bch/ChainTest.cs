@@ -462,5 +462,13 @@ namespace Bitprim.Tests
                 VerifyGenesisBlockHeader(ret.Result.Block.BlockData);
             }
         }
+
+        [Fact]
+        public async Task FetchBlockByHeightHashTimestampAsync()
+        {
+            var ret = await executorFixture_.Executor.Chain.FetchBlockByHeightHashTimestampAsync(0);
+            Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+            Assert.Equal("2009-01-03 18:15:05", ret.Result.BlockTimestamp.ToString("yyyy-MM-dd HH:mm:ss"));
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace Bitprim
     public class Chain
     {
         public delegate void FetchBlockByHeightHashTimestampHandler(ErrorCode errorCode, byte[] blockHash, DateTime blockDate, UInt64 blockHeight);
-        public delegate void FetchBlockHeaderByHashTxsSizeHandler(ErrorCode errorCode, Header blockHeader, UInt64 blockHeight, HashList txHashes, UInt64 serializedBlockSize);
+        private delegate void FetchBlockHeaderByHashTxsSizeHandler(ErrorCode errorCode, Header blockHeader, UInt64 blockHeight, HashList txHashes, UInt64 serializedBlockSize);
 
         private IntPtr nativeInstance_;
 
@@ -304,8 +304,32 @@ namespace Bitprim
         }
 
 
+        /// <summary>
+        /// Given a block height, retrieve only block hash and timestamp, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        public async Task<ApiCallResult<GetBlockHashTimestampResult>> FetchBlockByHeightHashTimestampAsync(ulong height)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                ApiCallResult<GetBlockHashTimestampResult> ret = null;
 
+                FetchBlockByHeightHashTimestamp(height, (errorCode, hash, date, blockHeight) =>
+                {
+                    ret = new ApiCallResult<GetBlockHashTimestampResult>
+                    {
+                        ErrorCode = errorCode,
+                        Result = new GetBlockHashTimestampResult
+                        {
+                            BlockHash = hash,
+                            BlockTimestamp = date
+                        }
+                    };
+                });
 
+                return ret;
+            });
+        }
 
 
 
@@ -314,7 +338,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be called when the block data is retrieved. </param>
-        public void FetchBlockByHeightHashTimestamp(UInt64 height, FetchBlockByHeightHashTimestampHandler handler)
+        private void FetchBlockByHeightHashTimestamp(UInt64 height, FetchBlockByHeightHashTimestampHandler handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -326,7 +350,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <returns> Error code, block hash and block timestamp. </returns>
-        public ApiCallResult<GetBlockHashTimestampResult> GetBlockByHeightHashTimestamp(UInt64 height)
+        private ApiCallResult<GetBlockHashTimestampResult> GetBlockByHeightHashTimestamp(UInt64 height)
         {
             var blockHash = new hash_t();
             UInt32 blockTimestamp = 0;
