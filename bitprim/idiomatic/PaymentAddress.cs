@@ -54,7 +54,10 @@ namespace Bitprim
         {
             get
             {
-                return new NativeString(PaymentAddressNative.chain_payment_address_encoded(nativeInstance_)).ToString();
+                using ( NativeString addressString = new NativeString(PaymentAddressNative.chain_payment_address_encoded(nativeInstance_)) )
+                {
+                    return addressString.ToString();
+                }
             }
         }
 
