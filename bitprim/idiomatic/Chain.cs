@@ -898,8 +898,27 @@ namespace Bitprim
         /// Fetch the transaction input which spends the indicated output, asynchronously.
         /// </summary>
         /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
+        public async Task<ApiCallResult<Point>> FetchSpendAsync(OutputPoint outputPoint)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                ApiCallResult<Point> ret = null;
+
+                FetchSpend(outputPoint, (code, point) =>
+                    {
+                        ret = new ApiCallResult<Point> {ErrorCode = code, Result = point};
+                    });
+
+                return ret;
+            });
+        }
+
+        /// <summary>
+        /// Fetch the transaction input which spends the indicated output, asynchronously.
+        /// </summary>
+        /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
         /// <param name="handler"> Callback which will be called when spend is retrieved </param>
-        public void FetchSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler)
+        private void FetchSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler)
         {
             IntPtr contextPtr = CreateContext(handler, outputPoint);
             ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, FetchSpendInternalHandler);
@@ -910,7 +929,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
         /// <returns> Error code and output point </returns>
-        public ApiCallResult<Point> GetSpend(OutputPoint outputPoint)
+        private ApiCallResult<Point> GetSpend(OutputPoint outputPoint)
         {
             //TODO When node-cint wraps a get function for this, call that instead
             var handlerDone = new AutoResetEvent(false);
@@ -937,8 +956,34 @@ namespace Bitprim
         /// <param name="address"> Bitcoin payment address to search </param>
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
+        public async Task<DisposableApiCallResult<HistoryCompactList>> FetchHistoryAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<HistoryCompactList> ret = null;
+
+                FetchHistory(address, limit, fromHeight, (code, history) =>
+                {
+                    ret = new DisposableApiCallResult<HistoryCompactList>
+                    {
+                        ErrorCode = code, 
+                        Result = history
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Get a list of output points, values, and spends for a given payment address (asynchronously)
+        /// </summary>
+        /// <param name="address"> Bitcoin payment address to search </param>
+        /// <param name="limit"> Maximum amount of results to fetch </param>
+        /// <param name="fromHeight"> Starting point to search for transactions </param>
         /// <param name="handler"> Callback which will be called when the history is retrieved </param>
-        public void FetchHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HistoryCompactList> handler)
+        private void FetchHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HistoryCompactList> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -952,7 +997,7 @@ namespace Bitprim
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
         /// <returns> Error code, HistoryCompactList </returns>
-        public DisposableApiCallResult<HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
+        private DisposableApiCallResult<HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
         {
             IntPtr history = IntPtr.Zero;
             ErrorCode errorCode = ChainNative.chain_get_history(nativeInstance_, address.NativeInstance, limit, fromHeight, ref history);

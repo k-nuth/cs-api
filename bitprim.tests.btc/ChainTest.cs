@@ -90,27 +90,16 @@ namespace Bitprim.Tests
         [Fact]
         public async Task TestFetchSpend()
         {
-            var handlerDone = new AutoResetEvent(false);
             await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchSpend");
 
-            ErrorCode error = 0;
-            Point point = null;
-
-            Action<ErrorCode, Point> handler = delegate(ErrorCode theError, Point thePoint)
-            {
-                error = theError;
-                point = thePoint;
-                handlerDone.Set();
-            };
             byte[] hash = Binary.HexStringToByteArray("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9");
             OutputPoint outputPoint = new OutputPoint(hash, 0);
-            executorFixture_.Executor.Chain.FetchSpend(outputPoint, handler);
-            handlerDone.WaitOne();
+            var ret = await executorFixture_.Executor.Chain.FetchSpendAsync(outputPoint);
 
-            Assert.Equal(ErrorCode.Success, error);
-            Assert.NotNull(point);
-            Assert.Equal("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16", Binary.ByteArrayToHexString(point.Hash));
-            Assert.Equal<UInt32>(0, point.Index);
+            Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+            Assert.NotNull(ret.Result);
+            Assert.Equal("f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16", Binary.ByteArrayToHexString(ret.Result.Hash));
+            Assert.Equal<UInt32>(0, ret.Result.Index);
         }
 
         [Fact]
