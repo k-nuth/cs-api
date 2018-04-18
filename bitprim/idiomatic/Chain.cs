@@ -446,15 +446,33 @@ namespace Bitprim
                 Result = new GetBlockDataResult<Header>{ BlockData = new Header(header), BlockHeight = height }
             };
         }
-        /*
+        
+
         /// <summary>
         /// Given a block height, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
         public async Task<DisposableApiCallResult<GetBlockDataResult<Header>>> FetchBlockHeaderByHeightAsync(UInt64 height)
         {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetBlockDataResult<Header>> ret = null;
 
-        }*/
+                FetchBlockHeaderByHeight(height, (code, header) =>
+                {
+                    ret = new DisposableApiCallResult<GetBlockDataResult<Header>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<Header>
+                        {
+                            BlockData = header, BlockHeight = height
+                        }
+                    };
+                });
+
+                return ret;
+            });
+        }
 
 
 
@@ -463,7 +481,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be invoked when the block header is retrieved </param>
-        public void FetchBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header> handler)
+        private void FetchBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -475,7 +493,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <returns> Error code, full block header, and height </returns>
-        public DisposableApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHeight(UInt64 height)
+        private DisposableApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHeight(UInt64 height)
         {
             IntPtr header = IntPtr.Zero;
             UInt64 actualHeight = 0; //Should always match input height
