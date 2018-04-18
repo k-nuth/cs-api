@@ -1055,8 +1055,32 @@ namespace Bitprim
         /// Given a list of indexes, fetch a header reader for them, asynchronously
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
+        public async Task<DisposableApiCallResult<HeaderReader>> FetchBlockLocatorAsync(BlockIndexList indexes)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<HeaderReader> ret = null;
+
+                FetchBlockLocator(indexes, (code, headerReader) =>
+                {
+                    ret = new DisposableApiCallResult<HeaderReader>
+                    {
+                        ErrorCode = code, 
+                        Result = headerReader
+                    };
+                });
+
+                return ret;
+            });
+        }
+
+
+        /// <summary>
+        /// Given a list of indexes, fetch a header reader for them, asynchronously
+        /// </summary>
+        /// <param name="indexes"> Block indexes </param>
         /// <param name="handler"> Callback which will called when the reader is retrieved </param>
-        public void FetchBlockLocator(BlockIndexList indexes, Action<ErrorCode, HeaderReader> handler)
+        private void FetchBlockLocator(BlockIndexList indexes, Action<ErrorCode, HeaderReader> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -1068,7 +1092,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
         /// <returns> Error code, HeaderReader </returns>
-        public DisposableApiCallResult<HeaderReader> GetBlockLocator(BlockIndexList indexes)
+        private DisposableApiCallResult<HeaderReader> GetBlockLocator(BlockIndexList indexes)
         {
             IntPtr headerReader = IntPtr.Zero;
             ErrorCode errorCode = ChainNative.chain_get_block_locator(nativeInstance_, indexes.NativeInstance, ref headerReader);
