@@ -1,13 +1,9 @@
-using Bitprim;
 using System;
-using System.Text;
-using System.Threading;
 using Xunit;
 using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Bitprim.Native;
 
 namespace Bitprim.Tests
 {
@@ -47,7 +43,7 @@ namespace Bitprim.Tests
             using (var ret = await executorFixture_.Executor.Chain.FetchBlockHeaderByHashAsync(hash))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
-                VerifyGenesisBlockHeader(ret.Result);
+                VerifyGenesisBlockHeader(ret.Result.BlockData);
             }
         }
 
@@ -58,7 +54,7 @@ namespace Bitprim.Tests
             using (var ret = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
-                VerifyGenesisBlockHeader(ret.Result.Header);
+                VerifyGenesisBlockHeader(ret.Result.BlockData.Header);
             }
         }
 
@@ -70,7 +66,7 @@ namespace Bitprim.Tests
             using (var ret = await executorFixture_.Executor.Chain.FetchBlockByHashAsync(hash))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
-                VerifyGenesisBlockHeader(ret.Result.Header);
+                VerifyGenesisBlockHeader(ret.Result.BlockData.Header);
             }
         }
 
@@ -184,7 +180,7 @@ namespace Bitprim.Tests
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 Assert.NotNull(ret.Result);
-                VerifyBlock170Header(ret.Result.Header);
+                VerifyBlock170Header(ret.Result.BlockData.Header);
             }
         }
 
