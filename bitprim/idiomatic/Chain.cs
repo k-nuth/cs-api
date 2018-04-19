@@ -26,14 +26,14 @@ namespace Bitprim
         /// <param name="blockHash"> 32-byte array representation of the block hash.
         ///    Identifies it univocally.
         /// </param>
-        public async Task<ApiCallResult<ulong>> FetchBlockHeightAsync(byte[] blockHash)
+        public async Task<ApiCallResult<UInt64>> FetchBlockHeightAsync(byte[] blockHash)
         {
             return await TaskHelper.ToTask(() =>
             {
-                ApiCallResult<ulong> ret = null;
+                ApiCallResult<UInt64> ret = null;
                 FetchBlockHeight(blockHash, (code, height) =>
                 {
-                    ret = new ApiCallResult<ulong>
+                    ret = new ApiCallResult<UInt64>
                     {
                         ErrorCode = code, 
                         Result = height
@@ -83,14 +83,14 @@ namespace Bitprim
         /// <summary>
         /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
         /// </summary>
-        public async Task<ApiCallResult<ulong>> FetchLastHeightAsync()
+        public async Task<ApiCallResult<UInt64>> FetchLastHeightAsync()
         {
             return await TaskHelper.ToTask(() =>
             {
-                ApiCallResult<ulong> ret = null;
+                ApiCallResult<UInt64> ret = null;
                 FetchLastHeight((code, height) =>
                 {
-                    ret = new ApiCallResult<ulong>
+                    ret = new ApiCallResult<UInt64>
                     {
                         ErrorCode = code, 
                         Result = height
@@ -131,14 +131,22 @@ namespace Bitprim
         /// Given a block hash, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        public async Task<DisposableApiCallResult<Block>> FetchBlockByHashAsync(byte[] blockHash)
+        public async Task<DisposableApiCallResult<GetBlockDataResult<Block>>> FetchBlockByHashAsync(byte[] blockHash)
         {
             return await TaskHelper.ToTask(() =>
             {
-                DisposableApiCallResult<Block> ret = null;
-                FetchBlockByHash(blockHash, (code, block) =>
+                DisposableApiCallResult<GetBlockDataResult<Block>> ret = null;
+                FetchBlockByHash(blockHash, (code, block,height) =>
                     {
-                        ret = new DisposableApiCallResult<Block> {ErrorCode = code, Result = block};
+                        ret = new DisposableApiCallResult<GetBlockDataResult<Block>>
+                        {
+                            ErrorCode = code, 
+                            Result = new GetBlockDataResult<Block>
+                            {
+                                BlockData = block,
+                                BlockHeight = height
+                            }
+                        };
                     });
                 return ret;
             });
@@ -150,7 +158,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        private void FetchBlockByHash(byte[] blockHash, Action<ErrorCode, Block> handler)
+        private void FetchBlockByHash(byte[] blockHash, Action<ErrorCode, Block, UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -259,14 +267,22 @@ namespace Bitprim
         /// Given a block height, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
-        public async Task<DisposableApiCallResult<Block>> FetchBlockByHeightAsync(ulong height)
+        public async Task<DisposableApiCallResult<GetBlockDataResult<Block>>> FetchBlockByHeightAsync(UInt64 height)
         {
             return await TaskHelper.ToTask(() =>
             {
-                DisposableApiCallResult<Block> ret = null;
-                FetchBlockByHeight(height, (code, block) =>
+                DisposableApiCallResult<GetBlockDataResult<Block>> ret = null;
+                FetchBlockByHeight(height, (code, block,blockHeight) =>
                     {
-                        ret = new DisposableApiCallResult<Block> {ErrorCode = code, Result = block};
+                        ret = new DisposableApiCallResult<GetBlockDataResult<Block>>
+                        {
+                            ErrorCode = code, 
+                            Result = new GetBlockDataResult<Block>()
+                            {
+                                BlockData = block,
+                                BlockHeight = blockHeight
+                            }
+                        };
                     });
                 return ret;
             });
@@ -279,7 +295,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        private void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block> handler)
+        private void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block,UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -308,7 +324,7 @@ namespace Bitprim
         /// Given a block height, retrieve only block hash and timestamp, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
-        public async Task<ApiCallResult<GetBlockHashTimestampResult>> FetchBlockByHeightHashTimestampAsync(ulong height)
+        public async Task<ApiCallResult<GetBlockHashTimestampResult>> FetchBlockByHeightHashTimestampAsync(UInt64 height)
         {
             return await TaskHelper.ToTask(() =>
             {
@@ -392,18 +408,22 @@ namespace Bitprim
         /// Given a block hash, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        public async Task<DisposableApiCallResult<Header>> FetchBlockHeaderByHashAsync(byte[] blockHash)
+        public async Task<DisposableApiCallResult<GetBlockDataResult<Header>>> FetchBlockHeaderByHashAsync(byte[] blockHash)
         {
             return await TaskHelper.ToTask(() =>
             {
-                DisposableApiCallResult<Header> ret = null;
+                DisposableApiCallResult<GetBlockDataResult<Header>> ret = null;
 
-                FetchBlockHeaderByHash(blockHash, (code, header) =>
+                FetchBlockHeaderByHash(blockHash, (code, header,height) =>
                 {
-                    ret = new DisposableApiCallResult<Header>
+                    ret = new DisposableApiCallResult<GetBlockDataResult<Header>>
                     {
                         ErrorCode = code,
-                        Result = header
+                        Result = new GetBlockDataResult<Header>
+                        {
+                            BlockData = header,
+                            BlockHeight = height
+                        }
                     };
                 });
 
@@ -416,7 +436,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the header is retrieved </param>
-        private void FetchBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header> handler)
+        private void FetchBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header,UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -458,14 +478,15 @@ namespace Bitprim
             {
                 DisposableApiCallResult<GetBlockDataResult<Header>> ret = null;
 
-                FetchBlockHeaderByHeight(height, (code, header) =>
+                FetchBlockHeaderByHeight(height, (code, header, blockHeight) =>
                 {
                     ret = new DisposableApiCallResult<GetBlockDataResult<Header>>
                     {
                         ErrorCode = code,
                         Result = new GetBlockDataResult<Header>
                         {
-                            BlockData = header, BlockHeight = height
+                            BlockData = header, 
+                            BlockHeight = blockHeight
                         }
                     };
                 });
@@ -481,7 +502,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be invoked when the block header is retrieved </param>
-        private void FetchBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header> handler)
+        private void FetchBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header,UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -638,17 +659,21 @@ namespace Bitprim
         /// Given a block hash, get the compact block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        public async Task<DisposableApiCallResult<CompactBlock>> FetchCompactBlockByHash(byte[] blockHash)
+        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> FetchCompactBlockByHash(byte[] blockHash)
         {
             return await TaskHelper.ToTask(() =>
             {
-                DisposableApiCallResult<CompactBlock> ret = null;
-                FetchCompactBlockByHash(blockHash, (code, compactBlock) =>
+                DisposableApiCallResult<GetBlockDataResult<CompactBlock>> ret = null;
+                FetchCompactBlockByHash(blockHash, (code, compactBlock,height) =>
                 {
-                    ret = new DisposableApiCallResult<CompactBlock>
+                    ret = new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
                     {
                         ErrorCode = code,
-                        Result = compactBlock
+                        Result = new GetBlockDataResult<CompactBlock>
+                        {
+                            BlockData = compactBlock,
+                            BlockHeight = height
+                        }
                     };
                 });
                 return ret;
@@ -661,7 +686,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        private void FetchCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock> handler)
+        private void FetchCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock,UInt64> handler)
         {
             var managedHash = new hash_t
             {
@@ -701,7 +726,7 @@ namespace Bitprim
             return await TaskHelper.ToTask(() =>
             {
                 DisposableApiCallResult<GetBlockDataResult<CompactBlock>> ret = null;
-                FetchCompactBlockByHeight(height, (code, compactBlock) =>
+                FetchCompactBlockByHeight(height, (code, compactBlock, blockHeight) =>
                 {
                     ret = new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
                     {
@@ -709,7 +734,7 @@ namespace Bitprim
                         Result = new GetBlockDataResult<CompactBlock>
                         {
                             BlockData = compactBlock,
-                            BlockHeight = height
+                            BlockHeight = blockHeight
                         }
                     };
                 });
@@ -723,7 +748,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        private void FetchCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock> handler)
+        private void FetchCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock,UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
@@ -1249,15 +1274,14 @@ namespace Bitprim
             return (IntPtr)contextHandle;
         }
 
-        private static void FetchBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                            IntPtr block, UInt64 height)
+        private static void FetchBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr block, UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
             {
-                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Block>, hash_t>);
-                Action<ErrorCode, Block> handler = context.Item1;
-                handler(error, new Block(block));
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Block,UInt64>, hash_t>);
+                Action<ErrorCode, Block,UInt64> handler = context.Item1;
+                handler(error, new Block(block),height);
             }
             finally
             {
@@ -1308,8 +1332,8 @@ namespace Bitprim
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
-                Action<ErrorCode, Block> handler = (handlerHandle.Target as Action<ErrorCode, Block>);
-                handler(error, new Block(block));
+                Action<ErrorCode, Block,UInt64> handler = (handlerHandle.Target as Action<ErrorCode, Block,UInt64>);
+                handler(error, new Block(block),height);
             }
             finally
             {
@@ -1323,9 +1347,9 @@ namespace Bitprim
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
             {
-                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Header>, hash_t>);
-                Action<ErrorCode, Header> handler = context.Item1;
-                handler(error, new Header(header));
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Header,UInt64>, hash_t>);
+                Action<ErrorCode, Header,UInt64> handler = context.Item1;
+                handler(error, new Header(header),height);
             }
             finally
             {
@@ -1339,8 +1363,8 @@ namespace Bitprim
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
-                var handler = (handlerHandle.Target as Action<ErrorCode, Header>);
-                handler(error, new Header(header));
+                var handler = (handlerHandle.Target as Action<ErrorCode, Header,UInt64>);
+                handler(error, new Header(header),height);
             }
             finally
             {
@@ -1385,9 +1409,9 @@ namespace Bitprim
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
             {
-                var context = (contextHandle.Target as Tuple<Action<ErrorCode, CompactBlock>, hash_t>);
-                Action<ErrorCode, CompactBlock> handler = context.Item1;
-                handler(error, new CompactBlock(compactBlock));
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, CompactBlock,UInt64>, hash_t>);
+                Action<ErrorCode, CompactBlock,UInt64> handler = context.Item1;
+                handler(error, new CompactBlock(compactBlock),height);
             }
             finally
             {
@@ -1401,8 +1425,8 @@ namespace Bitprim
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
-                var handler = (handlerHandle.Target as Action<ErrorCode, CompactBlock>);
-                handler(error, new CompactBlock(compactBlock));
+                var handler = (handlerHandle.Target as Action<ErrorCode, CompactBlock, UInt64>);
+                handler(error, new CompactBlock(compactBlock), height);
             }
             finally
             {
