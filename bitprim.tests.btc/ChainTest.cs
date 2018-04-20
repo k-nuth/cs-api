@@ -1,13 +1,9 @@
-using Bitprim;
 using System;
-using System.Text;
-using System.Threading;
 using Xunit;
 using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Bitprim.Native;
 
 namespace Bitprim.Tests
 {

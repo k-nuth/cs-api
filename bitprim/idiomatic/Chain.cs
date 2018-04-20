@@ -14,10 +14,62 @@ namespace Bitprim
         private delegate void FetchBlockHeaderByHashTxsSizeHandler(ErrorCode errorCode, Header blockHeader, UInt64 blockHeight, HashList txHashes, UInt64 serializedBlockSize);
 
         private readonly IntPtr nativeInstance_;
+        
+        private readonly ChainNative.FetchBlockHandler internalFetchBlockHandler_;
+        private readonly ChainNative.FetchBlockHandler internalFetchBlockHandlerByHash_;
+        private readonly ChainNative.FetchBlockHeightHandler internalFetchBlockHeightHandler_;
+        private readonly ChainNative.FetchLastHeightHandler internalFetchLastHeightHandler_;
+        private readonly ChainNative.FetchBlockHeaderByHashTxsSizeHandler internalFetchBlockHeaderByHashTxsSizeHandler_;
+        private readonly ChainNative.FetchBlockHeightTimestampHandler internalFetchBlockHeightTimestampHandler_;
+        private readonly ChainNative.FetchBlockHeaderHandler internalFetchBlockHeaderHandler_;
+        private readonly ChainNative.FetchBlockHeaderHandler internalFetchBlockHeaderHandlerByHash_;
+        private readonly ChainNative.MerkleBlockFetchHandler internalMerkleBlockFetchHandler_;
+        private readonly ChainNative.MerkleBlockFetchHandler internalMerkleBlockFetchHandlerByHash_;
+        private readonly ChainNative.ValidateTxHandler internalValidateTxHandler_;
+        private readonly ChainNative.ResultHandler internalResultHandler_;
+        private readonly ChainNative.BlockLocatorFetchHandler internalBlockLocatorFetchHandler_;
+        private readonly ChainNative.FetchSpendHandler internalFetchSpendHandler_;
+        private readonly ChainNative.FetchHistoryHandler internalFetchHistoryHandler_;
+        private readonly ChainNative.FetchStealthHandler internalFetchStealthHandler_;
+        private readonly ChainNative.FetchCompactBlockHandler internalFetchCompactBlockHandler_;
+        private readonly ChainNative.FetchTransactionHandler internalFetchTransactionHandler_;
+        private readonly ChainNative.FetchTransactionPositionHandler internalFetchTransactionPositionHandler_;
+
+        internal Chain(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+
+            internalFetchBlockHandler_ = FetchBlockInternalHandler;
+            internalFetchBlockHandlerByHash_ = FetchBlockByHashInternalHandler;
+            internalFetchBlockHeightHandler_ = FetchBlockHeightInternalHandler;
+            internalFetchLastHeightHandler_ = FetchLastHeightInternalHandler;
+            internalFetchBlockHeaderByHashTxsSizeHandler_ = FetchBlockHeaderByHashTxsSizeInternalHandler;
+            internalFetchBlockHeightTimestampHandler_ = FetchBlockByHeightHashTimestampInternalHandler;
+            internalFetchBlockHeaderHandler_ = FetchBlockHeaderInternalHandler;
+            internalFetchBlockHeaderHandlerByHash_ = FetchBlockHeaderByHashInternalHandler;
+            internalMerkleBlockFetchHandler_ = FetchMerkleBlockInternalHandler;
+            internalMerkleBlockFetchHandlerByHash_ = FetchMerkleBlockByHashInternalHandler;
+            internalValidateTxHandler_ = ValidateTransactionInternalHandler;
+            internalResultHandler_ = ResultInternalHandler;
+            internalBlockLocatorFetchHandler_ = FetchBlockLocatorInternalHandler;
+            internalFetchSpendHandler_ = FetchSpendInternalHandler;
+            internalFetchHistoryHandler_ = FetchHistoryInternalHandler;
+            internalFetchStealthHandler_ = FetchStealthInternalHandler;
+            internalFetchCompactBlockHandler_ = FetchCompactBlockInternalHandler;
+            internalFetchTransactionHandler_ = FetchTransactionByHashInternalHandler;
+            internalFetchTransactionPositionHandler_ = FetchTransactionPositionInternalHandler;
+        }
+
+        internal IntPtr NativeInstance
+        {
+            get
+            {
+                return nativeInstance_;
+            }
+        }
 
         #region Chain
 
-        
         /// <summary>
         /// Given a block hash, it queries the chain asynchronously for the block's height.
         /// Return right away and uses a callback to return the result.
@@ -58,11 +110,10 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_height(nativeInstance_, contextPtr, managedHash, FetchBlockHeightInternalHandler);
+            ChainNative.chain_fetch_block_height(nativeInstance_, contextPtr, managedHash,internalFetchBlockHeightHandler_ );
         }
 
-        
-
+       
         /// <summary>
         /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
         /// </summary>
@@ -91,11 +142,10 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_last_height(nativeInstance_, handlerPtr, FetchLastHeightInternalHandler);
+            ChainNative.chain_fetch_last_height(nativeInstance_, handlerPtr, internalFetchLastHeightHandler_);
         }
 
         
-
         #endregion //Chain
 
         #region Block
@@ -138,10 +188,47 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockByHashInternalHandler);
+            ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, internalFetchBlockHandlerByHash_);
+        }
+
+        /// <summary>
+        /// Given a block height, retrieve the full block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<Block>>> FetchBlockByHeightAsync(UInt64 height)
+        {
+            return await TaskHelper.ToTask(() =>
+            {
+                DisposableApiCallResult<GetBlockDataResult<Block>> ret = null;
+                FetchBlockByHeight(height, (code, block,blockHeight) =>
+                {
+                    ret = new DisposableApiCallResult<GetBlockDataResult<Block>>
+                    {
+                        ErrorCode = code, 
+                        Result = new GetBlockDataResult<Block>()
+                        {
+                            BlockData = block,
+                            BlockHeight = blockHeight
+                        }
+                    };
+                });
+                return ret;
+            });
+            
         }
 
 
+        /// <summary>
+        /// Given a block height, retrieve the full block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
+        private void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block,UInt64> handler)
+        {
+            GCHandle handlerHandle = GCHandle.Alloc(handler);
+            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, internalFetchBlockHandler_);
+        }
         
 
         /// <summary>
@@ -182,49 +269,7 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_header_by_hash_txs_size(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashTxsSizeInternalHandler);
-        }
-
-        
-
-
-        /// <summary>
-        /// Given a block height, retrieve the full block it identifies, asynchronously.
-        /// </summary>
-        /// <param name="height"> Block height </param>
-        public async Task<DisposableApiCallResult<GetBlockDataResult<Block>>> FetchBlockByHeightAsync(UInt64 height)
-        {
-            return await TaskHelper.ToTask(() =>
-            {
-                DisposableApiCallResult<GetBlockDataResult<Block>> ret = null;
-                FetchBlockByHeight(height, (code, block,blockHeight) =>
-                    {
-                        ret = new DisposableApiCallResult<GetBlockDataResult<Block>>
-                        {
-                            ErrorCode = code, 
-                            Result = new GetBlockDataResult<Block>()
-                            {
-                                BlockData = block,
-                                BlockHeight = blockHeight
-                            }
-                        };
-                    });
-                return ret;
-            });
-            
-        }
-
-
-        /// <summary>
-        /// Given a block height, retrieve the full block it identifies, asynchronously.
-        /// </summary>
-        /// <param name="height"> Block height </param>
-        /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        private void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block,UInt64> handler)
-        {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, FetchBlockByHeightInternalHandler);
+            ChainNative.chain_fetch_block_header_by_hash_txs_size(nativeInstance_, contextPtr, managedHash,internalFetchBlockHeaderByHashTxsSizeHandler_ );
         }
 
         
@@ -267,7 +312,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_by_height_timestamp(nativeInstance_, handlerPtr, height, FetchBlockByHeightHashTimestampInternalHandler);
+            ChainNative.chain_fetch_block_by_height_timestamp(nativeInstance_, handlerPtr, height, internalFetchBlockHeightTimestampHandler_);
         }
 
      
@@ -316,11 +361,10 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashInternalHandler);
+            ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, internalFetchBlockHeaderHandlerByHash_);
         }
 
-        
-
+       
         /// <summary>
         /// Given a block height, get the header from the block it identifies, asynchronously.
         /// </summary>
@@ -359,7 +403,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, FetchBlockHeaderbyHeightInternalHandler);
+            ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height,internalFetchBlockHeaderHandler_ );
         }
 
         
@@ -407,7 +451,7 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchMerkleBlockByHashInternalHandler);
+            ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, internalMerkleBlockFetchHandlerByHash_);
         }
 
         
@@ -450,7 +494,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, FetchMerkleBlockByHeightInternalHandler);
+            ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, internalMerkleBlockFetchHandler_);
         }
 
         #endregion //Merkle Block
@@ -495,7 +539,7 @@ namespace Bitprim
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchCompactBlockByHashInternalHandler);
+            ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, internalFetchCompactBlockHandler_);
         }
 
         
@@ -535,7 +579,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, FetchCompactBlockByHeightInternalHandler);
+            ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height,internalFetchCompactBlockHandler_ );
         }
 
         
@@ -591,7 +635,7 @@ namespace Bitprim
                 hash = txHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, FetchTransactionByHashInternalHandler);
+            ChainNative.chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, internalFetchTransactionHandler_);
         }
 
         
@@ -632,7 +676,7 @@ namespace Bitprim
                 hash = txHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, FetchTransactionPositionInternalHandler);
+            ChainNative.chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0,internalFetchTransactionPositionHandler_ );
         }
 
         #endregion //Transaction
@@ -666,7 +710,7 @@ namespace Bitprim
         private void FetchSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler)
         {
             IntPtr contextPtr = CreateContext(handler, outputPoint);
-            ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, FetchSpendInternalHandler);
+            ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, internalFetchSpendHandler_);
         }
 
         
@@ -711,7 +755,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, FetchHistoryInternalHandler);
+            ChainNative.chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalFetchHistoryHandler_);
         }
 
         
@@ -756,7 +800,7 @@ namespace Bitprim
         private void FetchStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
         {
             IntPtr contextPtr = CreateContext(handler, filter);
-            ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, FetchStealthInternalHandler);
+            ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, internalFetchStealthHandler_);
         }
 
         #endregion //Stealth
@@ -796,7 +840,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, FetchBlockLocatorInternalHandler);
+            ChainNative.chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, internalBlockLocatorFetchHandler_);
         }
 
         
@@ -828,7 +872,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, ResultInternalHandler);
+            ChainNative.chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, internalResultHandler_);
         }
 
         
@@ -856,7 +900,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance, ResultInternalHandler);
+            ChainNative.chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance,internalResultHandler_ );
         }
 
 
@@ -895,7 +939,7 @@ namespace Bitprim
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_validate_tx(nativeInstance_, handlerPtr, transaction.NativeInstance, ValidateTransactionInternalHandler);
+            ChainNative.chain_validate_tx(nativeInstance_, handlerPtr, transaction.NativeInstance,internalValidateTxHandler_ );
         }
 
         /// <summary>
@@ -911,28 +955,17 @@ namespace Bitprim
 
         #endregion //Misc
 
-        internal Chain(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
-
-        private IntPtr CreateContext<C, P>(C callback, P parameters)
+       
+        private IntPtr CreateContext<TC, TP>(TC callback, TP parameters)
         {
             // Both the callback and its parameters need to hold garbage collection off until
             // the callback is called, so a GCHandle is taken for an object containing both of them:
             // that is the context
-            var context = new Tuple<C, P>(callback, parameters);
-            GCHandle contextHandle = GCHandle.Alloc(context);
+            var context = new Tuple<TC, TP>(callback, parameters);
+            var contextHandle = GCHandle.Alloc(context);
             return (IntPtr)contextHandle;
         }
+
 
         private static void FetchBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr block, UInt64 height)
         {
@@ -949,9 +982,21 @@ namespace Bitprim
             }
         }
 
-        private static void FetchBlockHeaderByHashTxsSizeInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                                         IntPtr blockHeader, UInt64 blockHeight, IntPtr txHashes,
-                                                                         UInt64 blockSerializedSize)
+        private static void FetchBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,IntPtr block, UInt64 height)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                Action<ErrorCode, Block,UInt64> handler = (handlerHandle.Target as Action<ErrorCode, Block,UInt64>);
+                handler(error, new Block(block),height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchBlockHeaderByHashTxsSizeInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,IntPtr blockHeader, UInt64 blockHeight, IntPtr txHashes,UInt64 blockSerializedSize)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
@@ -966,8 +1011,7 @@ namespace Bitprim
             }
         }
 
-        private static void FetchBlockByHeightHashTimestampInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
-                                                                           hash_t blockHash, UInt32 timestamp, UInt64 height)
+        private static void FetchBlockByHeightHashTimestampInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,hash_t blockHash, UInt32 timestamp, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
             try
@@ -986,23 +1030,8 @@ namespace Bitprim
             }
         }
 
-        private static void FetchBlockByHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
-                                                              IntPtr block, UInt64 height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            try
-            {
-                Action<ErrorCode, Block,UInt64> handler = (handlerHandle.Target as Action<ErrorCode, Block,UInt64>);
-                handler(error, new Block(block),height);
-            }
-            finally
-            {
-                handlerHandle.Free();
-            }
-        }
-
         private static void FetchBlockHeaderByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                                  IntPtr header, UInt64 height)
+            IntPtr header, UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
@@ -1017,8 +1046,7 @@ namespace Bitprim
             }
         }
 
-        private static void FetchBlockHeaderbyHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
-                                                                    IntPtr header, UInt64 height)
+        private static void FetchBlockHeaderInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,IntPtr header, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
             try
@@ -1032,8 +1060,7 @@ namespace Bitprim
             }
         }
 
-        private static void FetchBlockHeightInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                            UInt64 height)
+        private static void FetchBlockHeightInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
@@ -1048,8 +1075,7 @@ namespace Bitprim
             }
         }
 
-        private static void FetchBlockLocatorInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
-                                                             IntPtr headerReader)
+        private static void FetchBlockLocatorInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,IntPtr headerReader)
         {
             GCHandle handlerHandle = (GCHandle)context;
             try
@@ -1063,24 +1089,7 @@ namespace Bitprim
             }
         }
 
-        private static void FetchCompactBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                                   IntPtr compactBlock, UInt64 height)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            try
-            {
-                var context = (contextHandle.Target as Tuple<Action<ErrorCode, CompactBlock,UInt64>, hash_t>);
-                Action<ErrorCode, CompactBlock,UInt64> handler = context.Item1;
-                handler(error, new CompactBlock(compactBlock),height);
-            }
-            finally
-            {
-                contextHandle.Free();
-            }
-        }
-
-        private static void FetchCompactBlockByHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
-                                                             IntPtr compactBlock, UInt64 height)
+        private static void FetchCompactBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,IntPtr compactBlock, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
             try
@@ -1094,8 +1103,7 @@ namespace Bitprim
             }
         }
 
-        private static void FetchHistoryInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
-                                                                IntPtr history)
+        private static void FetchHistoryInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,IntPtr history)
         {
             GCHandle handlerHandle = (GCHandle)context;
             try
@@ -1109,14 +1117,13 @@ namespace Bitprim
             }
         }
 
-        private static void FetchLastHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
-                                                                   UIntPtr height)
+        private static void FetchLastHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
                 var handler = (handlerHandle.Target as Action<ErrorCode, UInt64>);
-                handler(error, (UInt64)height);
+                handler(error, height);
             }
             finally
             {
@@ -1125,7 +1132,7 @@ namespace Bitprim
         }
 
         private static void FetchMerkleBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                                  IntPtr merkleBlock, UInt64 height)
+            IntPtr merkleBlock, UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
@@ -1140,13 +1147,12 @@ namespace Bitprim
             }
         }
 
-        private static void FetchMerkleBlockByHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
-                                                                    IntPtr merkleBlock, UInt64 height)
+        private static void FetchMerkleBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,IntPtr merkleBlock, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
-                var handler = (handlerHandle.Target as Action<ErrorCode, MerkleBlock, UInt64>);
+                var handler = handlerHandle.Target as Action<ErrorCode, MerkleBlock, UInt64>;
                 handler(error, new MerkleBlock(merkleBlock), height);
             }
             finally
@@ -1155,8 +1161,7 @@ namespace Bitprim
             }
         }
 
-        private static void FetchSpendInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                      IntPtr inputPoint)
+        private static void FetchSpendInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,IntPtr inputPoint)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
@@ -1171,8 +1176,7 @@ namespace Bitprim
             }
         }
 
-        private static void FetchStealthInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                        IntPtr stealth)
+        private static void FetchStealthInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,IntPtr stealth)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
@@ -1187,8 +1191,7 @@ namespace Bitprim
             }
         }
 
-        private static void FetchTransactionByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                                  IntPtr transaction, UInt64 index, UInt64 height)
+        private static void FetchTransactionByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,IntPtr transaction, UInt64 index, UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
@@ -1203,10 +1206,7 @@ namespace Bitprim
             }
         }
 
-
-
-        private static void FetchTransactionPositionInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-                                                                    UInt64 index, UInt64 height)
+        private static void FetchTransactionPositionInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,UInt64 index, UInt64 height)
         {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
@@ -1235,8 +1235,7 @@ namespace Bitprim
             }
         }
 
-        private static void ValidateTransactionInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
-                                                               string message)
+        private static void ValidateTransactionInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,string message)
         {
             GCHandle handlerHandle = (GCHandle)context;
             try
@@ -1251,5 +1250,4 @@ namespace Bitprim
         }
 
     }
-
 }
