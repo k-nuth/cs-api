@@ -2,7 +2,6 @@ using Bitprim.Native;
 using System;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-using System.Threading;
 
 namespace Bitprim
 {
@@ -62,23 +61,7 @@ namespace Bitprim
             ChainNative.chain_fetch_block_height(nativeInstance_, contextPtr, managedHash, FetchBlockHeightInternalHandler);
         }
 
-        /// <summary>
-        /// Given a block hash, it queries the chain asynchronously for the block's height.
-        /// Blocks until block height is retrieved.
-        /// </summary>
-        /// <param name="blockHash">  32-byte array representation of the block hash.
-        ///    Identifies it univocally. </param>
-        /// <returns> The block height </returns>
-        private ApiCallResult<UInt64> GetBlockHeight(byte[] blockHash)
-        {
-            UInt64 height = 0;
-            var managedHash = new hash_t
-            {
-                hash = blockHash
-            };
-            ErrorCode result = ChainNative.chain_get_block_height(nativeInstance_, managedHash, ref height);
-            return new ApiCallResult<UInt64>{ ErrorCode = result, Result = height };
-        }
+        
 
         /// <summary>
         /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
@@ -111,17 +94,7 @@ namespace Bitprim
             ChainNative.chain_fetch_last_height(nativeInstance_, handlerPtr, FetchLastHeightInternalHandler);
         }
 
-        /// <summary>
-        /// Gets the height of the highest block in the local copy of the blockchain, synchronously.
-        /// It blocks until height is retrieved.
-        /// </summary>
-        /// <returns> Error code (0 = success) and height </returns>
-        private ApiCallResult<UInt64> GetLastHeight()
-        {
-            UInt64 height = 0;
-            ErrorCode result = ChainNative.chain_get_last_height(nativeInstance_, ref height);
-            return new ApiCallResult<UInt64>{ ErrorCode = result, Result = height };
-        }
+        
 
         #endregion //Chain
 
@@ -169,27 +142,7 @@ namespace Bitprim
         }
 
 
-        /// <summary>
-        /// Given a block hash, get the full block it identifies, synchronously.
-        /// </summary>
-        /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code and full block </returns>
-        private DisposableApiCallResult<GetBlockDataResult<Block>> GetBlockByHash(byte[] blockHash)
-        {
-            IntPtr block = IntPtr.Zero;
-            UInt64 height = 0;
-            var managedHash = new hash_t
-            {
-                hash = blockHash
-            };
-            ErrorCode result = ChainNative.chain_get_block_by_hash(nativeInstance_, managedHash, ref block, ref height);
-            return new DisposableApiCallResult<GetBlockDataResult<Block>>
-            {
-                ErrorCode = result,
-                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = height }
-            };
-        }
-
+        
 
         /// <summary>
         /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
@@ -232,35 +185,7 @@ namespace Bitprim
             ChainNative.chain_fetch_block_header_by_hash_txs_size(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashTxsSizeInternalHandler);
         }
 
-        /// <summary>
-        /// Given a block hash, retrieve block header, tx hashes and serialized block size, synchronously.
-        /// </summary>
-        /// <param name="blockHash"> 32 bytes of the block hash. </param>
-        /// <returns> Error code, block, block height, tx hashes, serialized block size. </returns>
-        private DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult> GetBlockHeaderByHashTxSizes(byte[] blockHash)
-        {
-            var managedHash = new hash_t
-            {
-                hash = blockHash
-            };
-            IntPtr blockHeader = IntPtr.Zero;
-            UInt64 blockHeight = 0;
-            IntPtr txHashes = IntPtr.Zero;
-            UInt64 serializedBlockSize = 0;
-            ErrorCode result = ChainNative.chain_get_block_header_by_hash_txs_size
-            (
-                nativeInstance_, managedHash, ref blockHeader,
-                ref blockHeight, ref txHashes, ref serializedBlockSize
-            );
-            return result == ErrorCode.Success?
-                new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>{ ErrorCode = result, Result = new GetBlockHeaderByHashTxSizeResult
-                    {
-                        Block = new GetBlockDataResult<Header>{ BlockData =  new Header(blockHeader), BlockHeight = blockHeight },
-                        TransactionHashes = new HashList(txHashes),
-                        SerializedBlockSize = serializedBlockSize
-                    }}:
-                new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>{ ErrorCode = result, Result = null };
-        }
+        
 
 
         /// <summary>
@@ -302,23 +227,7 @@ namespace Bitprim
             ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, FetchBlockByHeightInternalHandler);
         }
 
-        /// <summary>
-        /// Given a block height, get the full block it identifies, synchronously.
-        /// </summary>
-        /// <param name="height"> Block height </param>
-        /// <returns> Error code and full block </returns>
-        private DisposableApiCallResult<GetBlockDataResult<Block>> GetBlockByHeight(UInt64 height)
-        {
-            IntPtr block = IntPtr.Zero;
-            UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode result = ChainNative.chain_get_block_by_height(nativeInstance_, height, ref block, ref actualHeight);
-            return new DisposableApiCallResult<GetBlockDataResult<Block>>
-            {
-                ErrorCode = result,
-                Result = new GetBlockDataResult<Block>{ BlockData = new Block(block), BlockHeight = actualHeight }
-            };
-        }
-
+        
 
         /// <summary>
         /// Given a block height, retrieve only block hash and timestamp, asynchronously.
@@ -361,43 +270,7 @@ namespace Bitprim
             ChainNative.chain_fetch_block_by_height_timestamp(nativeInstance_, handlerPtr, height, FetchBlockByHeightHashTimestampInternalHandler);
         }
 
-        /// <summary>
-        /// Given a block height, retrieve only its block hash and timestamp, synchronously.
-        /// </summary>
-        /// <param name="height"> Block height </param>
-        /// <returns> Error code, block hash and block timestamp. </returns>
-        private ApiCallResult<GetBlockHashTimestampResult> GetBlockByHeightHashTimestamp(UInt64 height)
-        {
-            var blockHash = new hash_t();
-            UInt32 blockTimestamp = 0;
-            UInt64 blockHeight = 0;
-            ErrorCode result = ChainNative.chain_get_block_by_height_timestamp(nativeInstance_, height, ref blockHash, ref blockTimestamp, ref blockHeight);
-            return new ApiCallResult<GetBlockHashTimestampResult>
-            {
-                ErrorCode = result,
-                Result = new GetBlockHashTimestampResult
-                {
-                    BlockHash = blockHash.hash,
-                    BlockTimestamp = DateTimeOffset.FromUnixTimeSeconds(blockTimestamp).UtcDateTime
-                }
-            };
-        }
-
-        
-
-        /// <summary>
-        /// Given a block height, get just the block hash, synchronously.
-        /// </summary>
-        /// <param name="height"> Block height. </param>
-        /// <returns> Error code and block hash. </returns>
-        private ApiCallResult<byte[]> GetBlockHash(UInt64 height)
-        {
-            var blockHash = new hash_t();
-            ErrorCode result = ChainNative.chain_get_block_hash(nativeInstance_, height, ref blockHash);
-            return result == ErrorCode.Success?
-                new ApiCallResult<byte[]>{ ErrorCode = result, Result = blockHash.hash }:
-                new ApiCallResult<byte[]>{ ErrorCode = result, Result = null };
-        }
+     
 
         #endregion //Block
 
@@ -446,26 +319,6 @@ namespace Bitprim
             ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashInternalHandler);
         }
 
-        /// <summary>
-        /// Given a block hash, get the header from the block it identifies, synchronously.
-        /// </summary>
-        /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code, full block header and block height </returns>
-        private DisposableApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHash(byte[] blockHash)
-        {
-            IntPtr header = IntPtr.Zero;
-            UInt64 height = 0;
-            var managedHash = new hash_t
-            {
-                hash = blockHash
-            };
-            ErrorCode result = ChainNative.chain_get_block_header_by_hash(nativeInstance_, managedHash, ref header, ref height);
-            return new DisposableApiCallResult<GetBlockDataResult<Header>>
-            {
-                ErrorCode = result,
-                Result = new GetBlockDataResult<Header>{ BlockData = new Header(header), BlockHeight = height }
-            };
-        }
         
 
         /// <summary>
@@ -509,22 +362,7 @@ namespace Bitprim
             ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, FetchBlockHeaderbyHeightInternalHandler);
         }
 
-        /// <summary>
-        /// Given a block height, get the header from the block it identifies, synchronously.
-        /// </summary>
-        /// <param name="height"> Block height </param>
-        /// <returns> Error code, full block header, and height </returns>
-        private DisposableApiCallResult<GetBlockDataResult<Header>> GetBlockHeaderByHeight(UInt64 height)
-        {
-            IntPtr header = IntPtr.Zero;
-            UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode result = ChainNative.chain_get_block_header_by_height(nativeInstance_, height, ref header, ref actualHeight);
-            return new DisposableApiCallResult<GetBlockDataResult<Header>>
-            {
-                ErrorCode = result,
-                Result = new GetBlockDataResult<Header>{ BlockData = new Header(header), BlockHeight = actualHeight }
-            };
-        }
+        
 
         #endregion //Block header
 
@@ -572,26 +410,7 @@ namespace Bitprim
             ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchMerkleBlockByHashInternalHandler);
         }
 
-        /// <summary>
-        /// Given a block hash, get the merkle block from the block it identifies, synchronously.
-        /// </summary>
-        /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code, full Merkle block and height </returns>
-        private DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHash(byte[] blockHash)
-        {
-            IntPtr merkleBlock = IntPtr.Zero;
-            UInt64 height = 0;
-            var managedHash = new hash_t
-            {
-                hash = blockHash
-            };
-            ErrorCode result = ChainNative.chain_get_merkle_block_by_hash(nativeInstance_, managedHash, ref merkleBlock, ref height);
-            return new DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>
-            {
-                ErrorCode = result,
-                Result = new GetBlockDataResult<MerkleBlock>{ BlockData = new MerkleBlock(merkleBlock), BlockHeight = height }
-            };
-        }
+        
 
         /// <summary>
         /// Given a block height, get the merkle block from the block it identifies, asynchronously.
@@ -632,23 +451,6 @@ namespace Bitprim
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, FetchMerkleBlockByHeightInternalHandler);
-        }
-
-        /// <summary>
-        /// Given a block height, get the merkle block from the block it identifies, synchronously.
-        /// </summary>
-        /// <param name="height"> Desired block height </param>
-        /// <returns> Error code, full Merkle block and height </returns>
-        private DisposableApiCallResult<GetBlockDataResult<MerkleBlock>> GetMerkleBlockByHeight(UInt64 height)
-        {
-            IntPtr merkleBlock = IntPtr.Zero;
-            UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode result = ChainNative.chain_get_merkle_block_by_height(nativeInstance_, height, ref merkleBlock, ref actualHeight);
-            return new DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>
-            {
-                ErrorCode = result,
-                Result = new GetBlockDataResult<MerkleBlock>{ BlockData = new MerkleBlock(merkleBlock), BlockHeight = actualHeight }
-            };
         }
 
         #endregion //Merkle Block
@@ -696,26 +498,7 @@ namespace Bitprim
             ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchCompactBlockByHashInternalHandler);
         }
 
-        /// <summary>
-        /// Given a block hash, get the compact block from the block it identifies, synchronously.
-        /// </summary>
-        /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code, full compact block and height </returns>
-        private DisposableApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHash(byte[] blockHash)
-        {
-            IntPtr compactBlock = IntPtr.Zero;
-            UInt64 height = 0;
-            var managedHash = new hash_t
-            {
-                hash = blockHash
-            };
-            ErrorCode errorCode = ChainNative.chain_get_compact_block_by_hash(nativeInstance_, managedHash, ref compactBlock, ref height);
-            return new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
-            {
-                ErrorCode = errorCode,
-                Result = new GetBlockDataResult<CompactBlock>{ BlockData = new CompactBlock(compactBlock), BlockHeight = height }
-            };
-        }
+        
 
         /// <summary>
         /// Given a block height, get the compact block from the block it identifies, asynchronously.
@@ -755,22 +538,7 @@ namespace Bitprim
             ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, FetchCompactBlockByHeightInternalHandler);
         }
 
-        /// <summary>
-        /// Given a block height, get the compact block from the block it identifies, synchronously.
-        /// </summary>
-        /// <param name="height"> Desired block height </param>
-        /// <returns> Error code, full compact block and height </returns>
-        private DisposableApiCallResult<GetBlockDataResult<CompactBlock>> GetCompactBlockByHeight(UInt64 height)
-        {
-            IntPtr compactBlock = IntPtr.Zero;
-            UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode errorCode = ChainNative.chain_get_compact_block_by_height(nativeInstance_, height, ref compactBlock, ref actualHeight);
-            return new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
-            {
-                ErrorCode = errorCode,
-                Result = new GetBlockDataResult<CompactBlock>{ BlockData = new CompactBlock(compactBlock), BlockHeight = actualHeight }
-            };
-        }
+        
 
         #endregion //Compact block
 
@@ -826,32 +594,7 @@ namespace Bitprim
             ChainNative.chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, FetchTransactionByHashInternalHandler);
         }
 
-        /// <summary>
-        /// Get a transaction by its hash, synchronously.
-        /// </summary>
-        /// <param name="txHash"> 32 bytes of transaction hash </param>
-        /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
-        /// <returns> Error code, full transaction, index inside block and height </returns>
-        private DisposableApiCallResult<GetTxDataResult> GetTransaction(byte[] txHash, bool requireConfirmed)
-        {
-            IntPtr transaction = IntPtr.Zero;
-            UInt64 index = 0;
-            UInt64 height = 0;
-            var managedHash = new hash_t
-            {
-                hash = txHash
-            };
-            ErrorCode errorCode = ChainNative.chain_get_transaction(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref transaction, ref index, ref height);
-            return new DisposableApiCallResult<GetTxDataResult>
-            {
-                ErrorCode = errorCode,
-                Result = new GetTxDataResult
-                {
-                     Tx = new Transaction(transaction),
-                     TxPosition = new GetTxPositionResult{ Index = index, BlockHeight = height }
-                }
-            };
-        }
+        
 
         /// <summary>
         /// Given a transaction hash, it fetches the height and position inside the block, asynchronously.
@@ -892,28 +635,6 @@ namespace Bitprim
             ChainNative.chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, FetchTransactionPositionInternalHandler);
         }
 
-        /// <summary>
-        /// Given a transaction hash, it fetches the height and position inside the block, synchronously.
-        /// </summary>
-        /// <param name="txHash"> 32 bytes of transaction hash </param>
-        /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
-        /// <returns> Error code, index in block (zero based) and block height </returns>
-        private ApiCallResult<GetTxPositionResult> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
-        {
-            UInt64 index = 0;
-            UInt64 height = 0;
-            var managedHash = new hash_t
-            {
-                hash = txHash
-            };
-            ErrorCode errorCode = ChainNative.chain_get_transaction_position(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref index, ref height);
-            return new ApiCallResult<GetTxPositionResult>
-            {
-                ErrorCode = errorCode,
-                Result = new GetTxPositionResult{ Index = index, BlockHeight = height }
-            };
-        }
-
         #endregion //Transaction
 
         #region Spend
@@ -948,28 +669,7 @@ namespace Bitprim
             ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, FetchSpendInternalHandler);
         }
 
-        /// <summary>
-        /// Get the transaction input which spends the indicated output, synchronously.
-        /// </summary>
-        /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
-        /// <returns> Error code and output point </returns>
-        private ApiCallResult<Point> GetSpend(OutputPoint outputPoint)
-        {
-            //TODO When node-cint wraps a get function for this, call that instead
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Point point = null;
-            Action<ErrorCode, Point> handler = delegate(ErrorCode theError, Point thePoint)
-            {
-                error = theError;
-                point = thePoint;
-                handlerDone.Set();
-            };
-            FetchSpend(outputPoint, handler);
-            handlerDone.WaitOne();
-            return new ApiCallResult<Point>{ ErrorCode = error, Result = point };
-        }
-
+        
         #endregion //Spend
 
         #region History
@@ -1014,19 +714,7 @@ namespace Bitprim
             ChainNative.chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, FetchHistoryInternalHandler);
         }
 
-        /// <summary>
-        /// Get a list of output points, values, and spends for a given payment address (synchronously)
-        /// </summary>
-        /// <param name="address"> Bitcoin payment address to search </param>
-        /// <param name="limit"> Maximum amount of results to fetch </param>
-        /// <param name="fromHeight"> Starting point to search for transactions </param>
-        /// <returns> Error code, HistoryCompactList </returns>
-        private DisposableApiCallResult<HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
-        {
-            IntPtr history = IntPtr.Zero;
-            ErrorCode errorCode = ChainNative.chain_get_history(nativeInstance_, address.NativeInstance, limit, fromHeight, ref history);
-            return new DisposableApiCallResult<HistoryCompactList>{ ErrorCode = errorCode, Result = new HistoryCompactList(history) };
-        }
+        
 
         #endregion //History
 
@@ -1111,17 +799,7 @@ namespace Bitprim
             ChainNative.chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, FetchBlockLocatorInternalHandler);
         }
 
-        /// <summary>
-        /// Given a list of indexes, fetch a header reader for them, synchronously
-        /// </summary>
-        /// <param name="indexes"> Block indexes </param>
-        /// <returns> Error code, HeaderReader </returns>
-        private DisposableApiCallResult<HeaderReader> GetBlockLocator(BlockIndexList indexes)
-        {
-            IntPtr headerReader = IntPtr.Zero;
-            ErrorCode errorCode = ChainNative.chain_get_block_locator(nativeInstance_, indexes.NativeInstance, ref headerReader);
-            return new DisposableApiCallResult<HeaderReader>{ ErrorCode = errorCode, Result = new HeaderReader(headerReader) };
-        }
+        
 
         #endregion //Block indexes
 
@@ -1153,16 +831,7 @@ namespace Bitprim
             ChainNative.chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, ResultInternalHandler);
         }
 
-        /// <summary>
-        /// Given a block, organize it (sync).
-        /// </summary>
-        /// <param name="block"> The block to organize. </param>
-        /// <returns> Error code </returns>
-        private ErrorCode OrganizeBlockSync(Block block)
-        {
-            return ChainNative.chain_organize_block_sync(nativeInstance_, block.NativeInstance);
-        }
-
+        
         /// <summary>
         /// Given a transaction, organize it (async).
         /// </summary>
@@ -1190,15 +859,6 @@ namespace Bitprim
             ChainNative.chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance, ResultInternalHandler);
         }
 
-        /// <summary>
-        /// Given a transaction, organize it (sync)
-        /// </summary>
-        /// <param name="transaction"> The transaction to organize </param>
-        /// <returns> Error code </returns>
-        private ErrorCode OrganizeTransactionSync(Transaction transaction)
-        {
-            return ChainNative.chain_organize_transaction_sync(nativeInstance_, transaction.NativeInstance);
-        }
 
         #endregion //Organizers
 
@@ -1543,20 +1203,7 @@ namespace Bitprim
             }
         }
 
-        private static void FetchTransactionByHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error,
-                                                                    IntPtr transaction, UInt64 index, UInt64 height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            try
-            {
-                var handler = (handlerHandle.Target as Action<ErrorCode, Transaction, UInt64, UInt64>);
-                handler(error, new Transaction(transaction), index, height);
-            }
-            finally
-            {
-                handlerHandle.Free();
-            }
-        }
+
 
         private static void FetchTransactionPositionInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
                                                                     UInt64 index, UInt64 height)
