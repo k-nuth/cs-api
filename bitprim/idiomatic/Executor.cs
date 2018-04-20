@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Bitprim.Logging;
 using Bitprim.Native;
 
 namespace Bitprim
@@ -9,6 +10,9 @@ namespace Bitprim
     /// </summary>
     public class Executor : IDisposable
     {
+        private static readonly ILog Logger = LogProvider.For<Executor>();
+        
+        
         public delegate bool BlockHandler(ErrorCode e, UInt64 u, BlockList incoming, BlockList outgoing);
         public delegate bool TransactionHandler(ErrorCode e, Transaction newTx);
 
@@ -112,6 +116,7 @@ namespace Bitprim
         /// <returns>True iif local chain init succeeded</returns>
         public bool InitChain()
         {
+            Logger.Debug("Calling executor_initchain");
             return ExecutorNative.executor_initchain(nativeInstance_) != 0;
         }
 
