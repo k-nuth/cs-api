@@ -11,7 +11,7 @@ namespace Bitprim
             return BlockIndexesNative.chain_block_indexes_construct_default();
         }
 
-        public override uint GetNthNativeElement(int n)
+        public override uint GetNthNativeElement(uint n)
         {
             return (uint) BlockIndexesNative.chain_block_indexes_nth(NativeInstance, (UIntPtr)n);
         }
@@ -28,7 +28,7 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Logger.Log("Destroying block index list " + NativeInstance.ToString("X"));
+            //Logger.Log("Destroying block index list " + NativeInstance.ToString("X"));
             BlockIndexesNative.chain_block_indexes_destruct(NativeInstance);
         }
 

@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Bitprim
 {
-
-    public abstract class NativeList<T> : IDisposable
+    public abstract class NativeList<T> : IEnumerable<T>, IDisposable
     {
         private IntPtr nativeInstance_;
 
@@ -18,9 +18,22 @@ namespace Bitprim
             nativeInstance_ = nativeInstance;
         }
 
+        public IEnumerator<T> GetEnumerator()  
+        {
+            for (uint i = 0; i < GetCount() ; i++)
+            {
+                yield return this[i];
+            }
+        }  
+
         ~NativeList()
         {
             Dispose(false);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         public void Dispose()
@@ -39,18 +52,14 @@ namespace Bitprim
             DestroyNativeList();
         }
 
-        abstract public IntPtr CreateNativeList();
-        abstract public T GetNthNativeElement(int n);
-        abstract public uint GetCount();
-        abstract public void AddElement(T element);
-        abstract public void DestroyNativeList();
+        public abstract IntPtr CreateNativeList();
+        public abstract T GetNthNativeElement(uint n);
+        public abstract uint GetCount();
+        public abstract void AddElement(T element);
+        public abstract void DestroyNativeList();
 
-        public IEnumerator GetEnumerator()
-        {
-            return new NativeListEnumerator<T>(this);
-        }
-
-        public T this[int index]
+     
+        public T this[uint index]
         {
             get
             {
@@ -79,36 +88,4 @@ namespace Bitprim
             }
         }
     }
-
-    public class NativeListEnumerator<T> : IEnumerator
-    {
-        private int counter_;
-        private NativeList<T> nativeList_;
-
-        public bool MoveNext()
-        {
-            counter_++;
-            return counter_ != nativeList_.Count;
-        }
-
-        public object Current
-        {
-            get
-            {
-                return nativeList_[counter_];
-            }
-        }
-
-        public void Reset()
-        {
-            counter_ = -1;
-        }
-
-        internal NativeListEnumerator(NativeList<T> nativeList)
-        {
-            nativeList_ = nativeList;
-            Reset();
-        }
-    }
-
 }

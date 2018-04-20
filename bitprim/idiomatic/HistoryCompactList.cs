@@ -13,7 +13,7 @@ namespace Bitprim
             throw new NotImplementedException();
         }
 
-        public override HistoryCompact GetNthNativeElement(int n)
+        public override HistoryCompact GetNthNativeElement(uint n)
         {
             return new HistoryCompact(HistoryCompactListNative.chain_history_compact_list_nth(NativeInstance, (UInt64)n), false);
         }
@@ -31,7 +31,7 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Logger.Log("Destroying history compact list " + NativeInstance.ToString("X"));
+            //Logger.Log("Destroying history compact list " + NativeInstance.ToString("X"));
             HistoryCompactListNative.chain_history_compact_list_destruct(NativeInstance);
         }
 
