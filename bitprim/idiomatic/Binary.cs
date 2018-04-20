@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using Bitprim.Native;
+using Bitprim.Logging;
 
 namespace Bitprim
 {
@@ -10,6 +11,8 @@ namespace Bitprim
     /// </summary>
     public class Binary : IDisposable
     {
+        private static readonly ILog Logger = LogProvider.For<Binary>();
+        
         private IntPtr nativeInstance_;
 
         /// <summary>

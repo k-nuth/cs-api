@@ -6,6 +6,7 @@ branches:
   only:
   - master
   - dev
+  - feature/CS-37
 
 configuration:
 - Release
