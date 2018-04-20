@@ -14,7 +14,7 @@ namespace Bitprim
             return HashListNative.chain_hash_list_construct_default();
         }
 
-        public override byte[] GetNthNativeElement(int n)
+        public override byte[] GetNthNativeElement(uint n)
         {
             var managedHash = new hash_t();
             HashListNative.chain_hash_list_nth_out(NativeInstance, (UIntPtr)n, ref managedHash);

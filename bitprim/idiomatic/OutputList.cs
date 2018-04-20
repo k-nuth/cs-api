@@ -14,7 +14,7 @@ namespace Bitprim
             return OutputListNative.chain_output_list_construct_default();
         }
 
-        public override Output GetNthNativeElement(int n)
+        public override Output GetNthNativeElement(uint n)
         {
             return new Output(OutputListNative.chain_output_list_nth(NativeInstance, (UIntPtr) n), false);
         }

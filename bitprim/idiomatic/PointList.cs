@@ -11,7 +11,7 @@ namespace Bitprim
             return PointListNative.chain_point_list_construct_default();
         }
 
-        public override Point GetNthNativeElement(int n)
+        public override Point GetNthNativeElement(uint n)
         {
             return new Point(PointListNative.chain_point_list_nth(NativeInstance, (UIntPtr) n));
         }
@@ -28,7 +28,7 @@ namespace Bitprim
 
         public override void DestroyNativeList()
         {
-            Logger.Log("Destroying point list " + NativeInstance.ToString("X"));
+            //Logger.Log("Destroying point list " + NativeInstance.ToString("X"));
             PointListNative.chain_point_list_destruct(NativeInstance);
         }
 
