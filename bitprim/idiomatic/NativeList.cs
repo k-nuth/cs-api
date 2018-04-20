@@ -22,7 +22,7 @@ namespace Bitprim
         {
             for (uint i = 0; i < GetCount() ; i++)
             {
-                yield return this[i];
+                yield return GetNthNativeElement(i);
             }
         }  
 
