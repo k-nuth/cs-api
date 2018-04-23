@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Bitprim.Logging;
 using Bitprim.Native;
 
@@ -12,15 +13,16 @@ namespace Bitprim
     {
         private static readonly ILog Logger = LogProvider.For<Executor>();
         
-        
         public delegate bool BlockHandler(ErrorCode e, UInt64 u, BlockList incoming, BlockList outgoing);
         public delegate bool TransactionHandler(ErrorCode e, Transaction newTx);
 
         private Chain chain_;
-        private IntPtr nativeInstance_;
-        private ExecutorNative.ReorganizeHandler internalBlockHandler_;
-        private ExecutorNative.RunNodeHandler internalRunNodeHandler_;
-        private ExecutorNative.TransactionHandler internalTxHandler_;
+        private readonly IntPtr nativeInstance_;
+        private readonly ExecutorNative.ReorganizeHandler internalBlockHandler_;
+        private readonly ExecutorNative.RunNodeHandler internalRunNodeHandler_;
+        private readonly ExecutorNative.TransactionHandler internalTxHandler_;
+
+        private bool running_;
 
         /// <summary>
         /// Create an executor object. Only for internal use, to instantiate delegates.
@@ -28,9 +30,9 @@ namespace Bitprim
         private Executor()
         {
             //TODO(fernando): create the delegate object only when it is necessary
-            internalBlockHandler_ = new ExecutorNative.ReorganizeHandler(InternalBlockHandler);
-            internalRunNodeHandler_ = new ExecutorNative.RunNodeHandler(InternalRunNodeHandler);
-            internalTxHandler_ = new ExecutorNative.TransactionHandler(InternalTransactionHandler);
+            internalBlockHandler_ = InternalBlockHandler;
+            internalRunNodeHandler_ = InternalRunNodeHandler;
+            internalTxHandler_ = InternalTransactionHandler;
         }
 
         /// <summary>
@@ -125,13 +127,73 @@ namespace Bitprim
         /// The call returns right away, and the handler is invoked
         /// when the node actually starts running.
         /// </summary>
+        /// <returns> Error code (0 = success) </returns>
+        public async Task<int> RunAsync()
+        {
+            return await TaskHelper.ToTask<int>(tcs =>
+            {
+                Run(i =>
+                {
+                    tcs.TrySetResult(i);
+                });   
+            });
+        }
+
+        /// <summary>
+        /// Starts running the node; blockchain starts synchronizing (downloading).
+        /// The call returns right away, and the handler is invoked
+        /// when the node actually starts running.
+        /// </summary>
         /// <param name="handler"> Callback which will be invoked when node starts running. </param>
         /// <returns> Error code (0 = success) </returns>
-        public int Run(Action<int> handler)
+        private void Run(Action<int> handler)
         {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
-            int result = ExecutorNative.executor_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
+            var handlerHandle = GCHandle.Alloc(handler);
+            var handlerPtr = (IntPtr)handlerHandle;
+            ExecutorNative.executor_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
+        }
+
+
+        /// <summary>
+        /// Initialize if necessary and starts running the node; blockchain starts synchronizing (downloading).
+        /// The call returns right away, and the handler is invoked
+        /// when the node actually starts running.
+        /// </summary>
+        /// <returns> Error code (0 = success) </returns>
+        public async Task<int> InitAndRunAsync()
+        {
+            return await TaskHelper.ToTask<int>(tcs =>
+            {
+                InitAndRun(i =>
+                {
+                    tcs.TrySetResult(i);
+                });
+            });
+        }
+
+        /// <summary>
+        /// Initialize if necessary and starts running the node; blockchain starts synchronizing (downloading).
+        /// The call returns right away, and the handler is invoked
+        /// when the node actually starts running.
+        /// </summary>
+        /// <param name="handler"> Callback which will be invoked when node starts running. </param>
+        /// <returns> Error code (0 = success) </returns>
+        private void InitAndRun(Action<int> handler)
+        {
+            var handlerHandle = GCHandle.Alloc(handler);
+            var handlerPtr = (IntPtr)handlerHandle;
+            ExecutorNative.executor_init_and_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
+        }
+
+
+        /// <summary>
+        /// Starts running the node; blockchain start synchronizing (downloading).
+        /// Call blocks until node starts running.
+        /// </summary>
+        /// <returns> Error code (0 = success) </returns>
+        private int RunWait()
+        {
+            int result = ExecutorNative.executor_run_wait(nativeInstance_);
             if(result == 0)
             {
                 chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
@@ -139,14 +201,15 @@ namespace Bitprim
             return result;
         }
 
+
         /// <summary>
-        /// Starts running the node; blockchain start synchronizing (downloading).
+        /// Initialize if necessary and starts running the node; blockchain start synchronizing (downloading).
         /// Call blocks until node starts running.
         /// </summary>
         /// <returns> Error code (0 = success) </returns>
-        public int RunWait()
+        private int InitAndRunWait()
         {
-            int result = ExecutorNative.executor_run_wait(nativeInstance_);
+            int result = ExecutorNative.executor_init_and_run_wait(nativeInstance_);
             if(result == 0)
             {
                 chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
@@ -182,8 +245,8 @@ namespace Bitprim
         /// </param>
         public void SubscribeToBlockChain(BlockHandler handler)
         {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            var handlerHandle = GCHandle.Alloc(handler);
+            var handlerPtr = (IntPtr)handlerHandle;
             ExecutorNative.chain_subscribe_blockchain(nativeInstance_, Chain.NativeInstance, handlerPtr, internalBlockHandler_);
         }
 
@@ -193,8 +256,8 @@ namespace Bitprim
         /// <param name="handler"> Callback which will be called when a transaction is added. </param>
         public void SubscribeToTransaction(TransactionHandler handler)
         {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            var handlerHandle = GCHandle.Alloc(handler);
+            var handlerPtr = (IntPtr)handlerHandle;
             ExecutorNative.chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, internalTxHandler_);
         }
 
@@ -205,7 +268,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            if( ExecutorNative.executor_stopped(nativeInstance_) != 0 )
+            if(running_ && ExecutorNative.executor_stopped(nativeInstance_) != 0 )
             {
                 ExecutorNative.executor_stop(nativeInstance_);
             }
@@ -214,53 +277,98 @@ namespace Bitprim
 
         private static int InternalBlockHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing)
         {
-            GCHandle handlerHandle = (GCHandle)context;
-            if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
-            {
-                handlerHandle.Free();
-                return 0;
-            }
-            var incomingBlocks = incoming != IntPtr.Zero? new BlockList(incoming) : null;
-            var outgoingBlocks = outgoing != IntPtr.Zero? new BlockList(outgoing) : null;
-            var handler = (handlerHandle.Target as BlockHandler);
-            bool keepSubscription = handler(error, u, incomingBlocks, outgoingBlocks);
-            
-            incomingBlocks?.Dispose();
-            outgoingBlocks?.Dispose();
+            var handlerHandle = (GCHandle)context;
+            var closed = false;
+            var keepSubscription = false;
 
-            if ( ! keepSubscription )
+            try
             {
-                handlerHandle.Free();
+                if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
+                {
+                    handlerHandle.Free();
+                    closed = true;
+                    return 0;
+                }
+
+                var incomingBlocks = incoming != IntPtr.Zero? new BlockList(incoming) : null;
+                var outgoingBlocks = outgoing != IntPtr.Zero? new BlockList(outgoing) : null;
+                var handler = (handlerHandle.Target as BlockHandler);
+                
+                keepSubscription = handler(error, u, incomingBlocks, outgoingBlocks);
+            
+                incomingBlocks?.Dispose();
+                outgoingBlocks?.Dispose();
+
+                if ( ! keepSubscription )
+                {
+                    handlerHandle.Free();
+                    closed = true;
+                }
+                return keepSubscription ? 1 : 0;
             }
-            return keepSubscription ? 1 : 0;
+            finally
+            {
+                if (!keepSubscription && !closed)
+                {
+                    handlerHandle.Free();
+                }
+            }
         }
 
-        private static void InternalRunNodeHandler(IntPtr handlerPtr, int error)
+        private  void InternalRunNodeHandler(IntPtr executor,IntPtr handlerPtr, int error)
         {
-            GCHandle handlerHandle = (GCHandle)handlerPtr;
-            Action<int> handler = (handlerHandle.Target as Action<int>);
-            handler(error);
-            handlerHandle.Free();
+            var handlerHandle = (GCHandle)handlerPtr;
+            var handler = (handlerHandle.Target as Action<int>);
+            try
+            {
+                if (error == 0)
+                {
+                    chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+                    running_ = true;
+                }
+                handler(error);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
         }
 
         private static int InternalTransactionHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction)
         {
-            GCHandle handlerHandle = (GCHandle)context;
-            if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
-            {
-                handlerHandle.Free();
-                return 0;
-            }
-            var newTransaction = transaction != IntPtr.Zero? new Transaction(transaction) : null;
-            var handler = (handlerHandle.Target as TransactionHandler);
-            bool keepSubscription = handler(error, newTransaction);
-            if( ! keepSubscription )
-            {
-                handlerHandle.Free();
-            }
-            return keepSubscription ? 1 : 0;
-        }
+            var handlerHandle = (GCHandle)context;
+            var closed = false;
+            var keepSubscription = false;
 
+            try
+            {
+                if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
+                {
+                    handlerHandle.Free();
+                    closed = true;
+                    return 0;
+                }
+                
+                var newTransaction = transaction != IntPtr.Zero? new Transaction(transaction) : null;
+                var handler = (handlerHandle.Target as TransactionHandler);
+                
+                keepSubscription = handler(error, newTransaction);
+                
+                if( ! keepSubscription )
+                {
+                    handlerHandle.Free();
+                    closed = true;
+                }
+                return keepSubscription ? 1 : 0;
+            }
+            finally
+            {
+                if (!keepSubscription && !closed)
+                {
+                    handlerHandle.Free();
+                }       
+            }
+        }
     }
 
 }

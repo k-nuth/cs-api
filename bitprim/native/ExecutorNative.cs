@@ -7,7 +7,7 @@ namespace Bitprim.Native
     {
         //Delegates for callbacks
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void RunNodeHandler(IntPtr ctx, int error);
+        public delegate void RunNodeHandler(IntPtr executor,IntPtr ctx, int error);
 
         //typedef int (*reorganize_handler_t)(chain_t, void*, error_code_t, uint64_t /*size_t*/, block_list_t, block_list_t);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -22,10 +22,16 @@ namespace Bitprim.Native
         public static extern int executor_initchain(IntPtr exec);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern int executor_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
+        public static extern void executor_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern int executor_run_wait(IntPtr exec);
+
+        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        public static extern void executor_init_and_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
+
+        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        public static extern int executor_init_and_run_wait(IntPtr exec);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr executor_construct_fd([MarshalAs(UnmanagedType.LPStr)]string path, int sout, int serr);

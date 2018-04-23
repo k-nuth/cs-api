@@ -15,7 +15,7 @@ public class ExecutorFixture : IDisposable
         {
             throw new InvalidOperationException("Executor::InitChain failed, check log");
         }
-        int runResult = exec_.RunWait();
+        int runResult = exec_.RunAsync().GetAwaiter().GetResult();
         if(runResult != 0)
         {
             throw new InvalidOperationException("Executor::RunWait failed, check log");
