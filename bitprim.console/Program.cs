@@ -29,13 +29,13 @@ namespace bitprim.console
                 Log.Information("Initializing...");
                 using (var executor = new Executor(""))
                 {
-                    bool ok = executor.InitChain();
+                    /*bool ok = executor.InitChain();
                     if (!ok)
                     {
                         throw new ApplicationException("Executor::InitChain failed; check log");
-                    }
+                    }*/
 
-                    var result = await executor.RunAsync();
+                    var result = await executor.InitAndRunAsync();
                     if (result != 0)
                     {
                         throw new ApplicationException("Executor::RunWait failed; error code: " + result);
