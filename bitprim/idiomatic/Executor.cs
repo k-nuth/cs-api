@@ -186,37 +186,7 @@ namespace Bitprim
         }
 
 
-        /// <summary>
-        /// Starts running the node; blockchain start synchronizing (downloading).
-        /// Call blocks until node starts running.
-        /// </summary>
-        /// <returns> Error code (0 = success) </returns>
-        private int RunWait()
-        {
-            int result = ExecutorNative.executor_run_wait(nativeInstance_);
-            if(result == 0)
-            {
-                chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
-            }
-            return result;
-        }
-
-
-        /// <summary>
-        /// Initialize if necessary and starts running the node; blockchain start synchronizing (downloading).
-        /// Call blocks until node starts running.
-        /// </summary>
-        /// <returns> Error code (0 = success) </returns>
-        private int InitAndRunWait()
-        {
-            int result = ExecutorNative.executor_init_and_run_wait(nativeInstance_);
-            if(result == 0)
-            {
-                chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
-            }
-            return result;
-        }
-
+       
         /// <summary>
         /// Stops the node; that includes all activies, such as synchronization and networking.
         /// </summary>

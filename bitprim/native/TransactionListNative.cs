@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class TransactionListNative
+    internal static class TransactionListNative
     {
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr chain_transaction_list_construct_default();

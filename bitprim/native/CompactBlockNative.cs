@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class CompactBlockNative
+    internal static class CompactBlockNative
     {
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern Header compact_block_header(IntPtr block);

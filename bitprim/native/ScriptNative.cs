@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class ScriptNative
+    internal static class ScriptNative
     {
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern int /*bool*/ chain_script_is_valid(IntPtr script);

@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class MerkleBlockNative
+    internal static class MerkleBlockNative
     {
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]

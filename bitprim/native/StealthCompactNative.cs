@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class StealthCompactNative
+    internal static class StealthCompactNative
     {
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern byte[] stealth_compact_get_ephemeral_public_key_hash(IntPtr stealth);

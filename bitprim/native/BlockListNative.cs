@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class BlockListNative
+    internal static class BlockListNative
     {
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr chain_block_list_construct_default();

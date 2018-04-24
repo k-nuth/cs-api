@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class HistoryCompactListNative
+    internal static class HistoryCompactListNative
     {
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]

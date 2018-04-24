@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class BlockNative
+    internal static class BlockNative
     {
 
         //Note: The user is responsible for releasing memory
