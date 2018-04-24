@@ -5,13 +5,13 @@ namespace Bitprim
 {
     public static class TaskHelper
     {
-        public static async Task<T> ToTask<T>(Func<T> action)
+        public static async Task<T> ToTask<T>(Action<TaskCompletionSource<T>> action)
         {
             var tcs = new TaskCompletionSource<T>();
 
             try
             {
-                tcs.TrySetResult(action());
+                action(tcs);   
             }
             catch (OperationCanceledException)
             {

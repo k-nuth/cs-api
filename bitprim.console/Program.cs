@@ -25,16 +25,17 @@ namespace bitprim.console
 
             try
             {
-                Console.CancelKeyPress += new ConsoleCancelEventHandler(OnSigInterrupt);
+                Console.CancelKeyPress += OnSigInterrupt;
                 Log.Information("Initializing...");
                 using (var executor = new Executor(""))
                 {
-                    bool ok = executor.InitChain();
+                    /*bool ok = executor.InitChain();
                     if (!ok)
                     {
                         throw new ApplicationException("Executor::InitChain failed; check log");
-                    }
-                    int result = executor.RunWait();
+                    }*/
+
+                    var result = await executor.InitAndRunAsync();
                     if (result != 0)
                     {
                         throw new ApplicationException("Executor::RunWait failed; error code: " + result);

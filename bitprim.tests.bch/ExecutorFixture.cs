@@ -3,39 +3,40 @@ using System;
 namespace Bitprim.Tests
 {
 
-public class ExecutorFixture : IDisposable
-{
-    private Executor exec_;
-
-    public ExecutorFixture()
+    public class ExecutorFixture : IDisposable
     {
-        exec_ = new Executor("");
-        bool initChainOk = exec_.InitChain();
-        if(!initChainOk)
+        private Executor exec_;
+
+        public ExecutorFixture()
         {
-            throw new InvalidOperationException("Executor::InitChain failed, check log");
+            exec_ = new Executor("");
+            bool initChainOk = exec_.InitChain();
+            if (!initChainOk)
+            {
+                throw new InvalidOperationException("Executor::InitChain failed, check log");
+            }
+            int runResult = exec_.RunAsync().GetAwaiter().GetResult();
+            if (runResult != 0)
+            {
+                throw new InvalidOperationException("Executor::RunWait failed, check log");
+            }
         }
-        int runResult = exec_.RunWait();
-        if(runResult != 0)
+
+        public Executor Executor
         {
-            throw new InvalidOperationException("Executor::RunWait failed, check log");
+            get
+            {
+                return exec_;
+            }
+        }
+
+        public void Dispose()
+        {
+            exec_.Stop();
+            exec_.Dispose();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
     }
-
-    public Executor Executor
-    {
-        get
-        {
-            return exec_;
-        }
-    }
-
-    public void Dispose()
-    {
-        exec_.Stop();
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-    }
-}
 
 }
