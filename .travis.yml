@@ -6,6 +6,7 @@ branches:
   only:
   - master
   - dev
+  - feature/CS-40
 
 configuration:
 - Release
@@ -28,6 +29,8 @@ linux: &linux
    sudo: required
    language: python
    python: "3.6"
+   services:
+    - docker
 
 osx: &osx
    os: osx
@@ -40,9 +43,8 @@ dotnet: 2.1.4
 
 matrix:
    include:
-      - <<: *linux
-        compiler: gcc 
-        env: UPDATE_DOCS=false
+      - <<: *linux 
+        env: UPDATE_DOCS=false CONAN_GCC_VERSIONS=4.9 CONAN_DOCKER_IMAGE=lasote/conangcc49
 
       - <<: *linux
         compiler: gcc 
