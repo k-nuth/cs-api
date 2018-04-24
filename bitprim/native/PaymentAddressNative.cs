@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class PaymentAddressNative
+    internal static class PaymentAddressNative
     {
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern byte chain_payment_address_version(IntPtr payment_address);

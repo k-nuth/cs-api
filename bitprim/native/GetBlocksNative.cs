@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-    public static class GetBlocksNative
+    internal static class GetBlocksNative
     {
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern byte[] chain_get_blocks_stop_hash(IntPtr get_b);

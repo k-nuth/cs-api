@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class BinaryNative
+    internal static class BinaryNative
     {
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]

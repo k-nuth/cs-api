@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Bitprim
 {
-    public static class TaskHelper
+    internal static class TaskHelper
     {
         public static async Task<T> ToTask<T>(Action<TaskCompletionSource<T>> action)
         {

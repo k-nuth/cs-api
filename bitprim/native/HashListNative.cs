@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class HashListNative
+    internal static class HashListNative
     {
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr chain_hash_list_construct_default();

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-    public static class ExecutorNative
+    internal static class ExecutorNative
     {
         //Delegates for callbacks
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -25,13 +25,7 @@ namespace Bitprim.Native
         public static extern void executor_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern int executor_run_wait(IntPtr exec);
-
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void executor_init_and_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
-
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern int executor_init_and_run_wait(IntPtr exec);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr executor_construct_fd([MarshalAs(UnmanagedType.LPStr)]string path, int sout, int serr);

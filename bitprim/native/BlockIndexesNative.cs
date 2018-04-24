@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class BlockIndexesNative
+    internal static class BlockIndexesNative
     {
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]

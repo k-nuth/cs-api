@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class InputListNative
+    internal static class InputListNative
     {
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr chain_input_list_construct_default();

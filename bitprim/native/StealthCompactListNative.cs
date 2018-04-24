@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native
 {
-
-    public static class StealthCompactListNative
+    internal static class StealthCompactListNative
     {
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
