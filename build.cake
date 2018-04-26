@@ -121,24 +121,31 @@ Task("UpdateVersionInfo")
 
 Task("DeployNuget")
     .IsDependentOn("UpdateVersionInfo")
-    .WithCriteria(publishToNuget == "true")
+    .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
     {
-        var files = System.IO.File
+
+        Information("Publish to nuget:" + publishToNuget);
+        Information("Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
+        
+        if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]"))
+        {
+            var files = System.IO.File
             .ReadAllLines(outputDir + "artifacts")
             .Select(l => l.Split(':'))
             .Select(l => l[1])
             .ToList();
 
-        foreach (string f in files)
-        {
-            Information("Pushing to nuget " + f);
-            NuGetPush(
-                outputDir + f,
-                new NuGetPushSettings {
-                    ApiKey = EnvironmentVariable("NUGET_API_KEY"),
-                    Source = "https://www.nuget.org/api/v2/package"
-                });
+            foreach (string f in files)
+            {
+                Information("Pushing to nuget " + f);
+                NuGetPush(
+                    outputDir + f,
+                    new NuGetPushSettings {
+                        ApiKey = EnvironmentVariable("NUGET_API_KEY"),
+                        Source = "https://www.nuget.org/api/v2/package"
+                    });
+            }
         }
         
     });
