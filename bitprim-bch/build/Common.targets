@@ -6,7 +6,7 @@
     <Exec Command="conan remote update bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="$(ConanRemoteList.Contains('bitprim'))" />
     <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.9.1@bitprim/testing;[generators];cmake;[options];bitprim-node-cint:shared=True;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.9.1@bitprim/stable;[generators];cmake;[options];bitprim-node-cint:shared=True;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
     <Message Text="Operating System: $(OS)"/>
     <Exec Command="conan install . --install-folder=."/>
