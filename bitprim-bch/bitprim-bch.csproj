@@ -20,7 +20,9 @@
 
   <ItemGroup>
       <Compile Include="..\bitprim\**/*.cs" />
-      <None Include="..\bitprim\docs\Doxyfile" Link="docs\Doxyfile" />  
+      <None Include="..\bitprim\docs\Doxyfile" Link="docs\Doxyfile" />
+      <Content Include="..\bitprim\conan\conan_channel" Link="conan\conan_channel" />  
+      <Content Include="..\bitprim\conan\conan_version" Link="conan\conan_version" />  
   </ItemGroup>
 
 
@@ -40,6 +42,8 @@
     <Folder Include="native\" />
     <Folder Include="content\" />
     <Folder Include="docs\" />
+    <Folder Include="conan\" />
+    
     
   </ItemGroup>
 
