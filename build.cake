@@ -13,6 +13,9 @@ var platform = "/property:Platform=x64";
 
 var publishToNuget = EnvironmentVariable("PUBLISH_TO_NUGET") ?? "false";
 
+var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
+
+
 Task("Clean")
     .Does(() => {
         
@@ -126,9 +129,11 @@ Task("DeployNuget")
     {
 
         Information("Publish to nuget:" + publishToNuget);
+        Information("Skip nuget:" + skipNuget); 
         Information("Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
         
-        if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]"))
+        
+        if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]") && skipNuget == "false")
         {
             var files = System.IO.File
             .ReadAllLines(outputDir + "artifacts")
