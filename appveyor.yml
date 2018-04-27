@@ -4,6 +4,7 @@ branches:
   only:
   - master
   - dev
+  - feature/CS-36
 
 platform:
   - x64
