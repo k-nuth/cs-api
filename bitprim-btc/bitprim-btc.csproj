@@ -22,8 +22,6 @@
   <ItemGroup>
       <Compile Include="..\bitprim\**/*.cs" />
       <None Include="..\bitprim\docs\Doxyfile" Link="docs\Doxyfile" />  
-      <Content Include="..\bitprim\conan\conan_channel" Link="conan\conan_channel" />  
-      <Content Include="..\bitprim\conan\conan_version" Link="conan\conan_version" />
   </ItemGroup>
 
 
@@ -35,7 +33,8 @@
     
 	  <!-- pack the conan file -->
     <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" />
-  
+    <Content Include="..\bitprim\conan\conan_channel" Link="content\conan_channel" PackagePath="content\" />  
+    <Content Include="..\bitprim\conan\conan_version" Link="content\conan_version" PackagePath="content\" /> 
   </ItemGroup>
 
   <ItemGroup>
@@ -44,14 +43,10 @@
     <Folder Include="native\" />
     <Folder Include="content\" />
     <Folder Include="docs\" />
-    <Folder Include="conan\" />
-    
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
   </ItemGroup>
-
-  
 
 </Project>

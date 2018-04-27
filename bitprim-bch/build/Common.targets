@@ -22,14 +22,14 @@
   
 
     <ReadLinesFromFile  
-            File="conan\conan_channel">  
+            File="conan_channel">  
             <Output  
                 TaskParameter="Lines"  
               PropertyName="CONAN_CHANNEL" Condition="'$(CONAN_CHANNEL)' == ''" />  
     </ReadLinesFromFile>
 
     <ReadLinesFromFile  
-            File="conan\conan_version">  
+            File="conan_version">  
             <Output  
                 TaskParameter="Lines"  
               PropertyName="CONAN_VERSION" Condition="'$(CONAN_VERSION)' == ''"/>  
