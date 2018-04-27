@@ -1,6 +1,5 @@
 using System;
 using Bitprim.Native;
-using System.Collections;
 
 namespace Bitprim
 {
@@ -15,9 +14,11 @@ namespace Bitprim
             return HashListNative.chain_hash_list_construct_default();
         }
 
-        public override byte[] GetNthNativeElement(int n)
+        public override byte[] GetNthNativeElement(uint n)
         {
-            return HashListNative.chain_hash_list_nth(NativeInstance, (UIntPtr)n);
+            var managedHash = new hash_t();
+            HashListNative.chain_hash_list_nth_out(NativeInstance, (UIntPtr)n, ref managedHash);
+            return managedHash.hash;
         }
 
         public override uint GetCount()

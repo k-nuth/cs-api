@@ -1,0 +1,18 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="GetBitprimNodeCint">
+    <Exec Command="conan remote list" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="ConanRemoteList" />
+    </Exec>
+    <Exec Command="conan remote update bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="$(ConanRemoteList.Contains('bitprim'))" />
+    <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
+    <WriteLinesToFile
+      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.9.1@bitprim/testing;[generators];cmake;[options];bitprim-node-cint:shared=True;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      Overwrite="true"/>
+    <Message Text="Operating System: $(OS)"/>
+    <Exec Command="conan install . --install-folder=."/>
+    <Message Text="OS = $(OS)" />
+    <Copy SourceFiles="bitprim-node-cint.dll" DestinationFiles="$(OutDir)libbitprim-node-cint.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
+    <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition="Exists('libbitprim-node-cint.so')"/>
+    <Copy SourceFiles="libbitprim-node-cint.dylib" DestinationFiles="$(OutDir)libbitprim-node-cint.dylib" Condition="Exists('libbitprim-node-cint.dylib')"/>
+  </Target>
+</Project>

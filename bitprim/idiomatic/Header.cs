@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using Bitprim.Native;
 
 namespace Bitprim
@@ -66,6 +65,20 @@ namespace Bitprim
                 var managedHash = new hash_t();
                 HeaderNative.chain_header_previous_block_hash_out(nativeInstance_, ref managedHash);
                 return managedHash.hash;
+            }
+        }
+
+        /// <summary>
+        /// Hexadecimal string representation of the block's proof (which is a 256-bit number).
+        /// </summary>
+        public string ProofString
+        {
+            get
+            {
+                using ( NativeString proofString = new NativeString(HeaderNative.chain_header_proof_str(nativeInstance_)) )
+                {
+                    return proofString.ToString();
+                }
             }
         }
 

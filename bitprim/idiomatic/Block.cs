@@ -1,6 +1,5 @@
 using Bitprim.Native;
 using System;
-using System.Runtime.InteropServices;
 
 namespace Bitprim
 {
@@ -11,6 +10,7 @@ namespace Bitprim
     public class Block : IDisposable
     {
         private bool ownsNativeObject_;
+        private Header header_;
         private IntPtr nativeInstance_;
 
         ~Block()
@@ -112,7 +112,7 @@ namespace Bitprim
         {
             get
             {
-                return new Header(BlockNative.chain_block_header(nativeInstance_), false);
+                return header_;
             }
         }
 
@@ -120,7 +120,10 @@ namespace Bitprim
         {
             get
             {
-                return new NativeString(BlockNative.chain_block_proof(nativeInstance_)).ToString();
+                using ( NativeString proofStr = new NativeString(BlockNative.chain_block_proof(nativeInstance_)) )
+                {
+                    return proofStr.ToString();
+                }
             }
         }
 
@@ -280,6 +283,7 @@ namespace Bitprim
         {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
+            header_ = new Header(BlockNative.chain_block_header(nativeInstance_), false);
         }
 
         internal IntPtr NativeInstance

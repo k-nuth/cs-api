@@ -1,6 +1,5 @@
 using System;
 using Bitprim.Native;
-using System.Collections;
 
 namespace Bitprim
 {
@@ -15,7 +14,7 @@ namespace Bitprim
             return InputListNative.chain_input_list_construct_default();
         }
 
-        public override Input GetNthNativeElement(int n)
+        public override Input GetNthNativeElement(uint n)
         {
             return new Input(InputListNative.chain_input_list_nth(NativeInstance, (UIntPtr)n), false);
         }

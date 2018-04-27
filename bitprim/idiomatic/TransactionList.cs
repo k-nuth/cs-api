@@ -1,6 +1,5 @@
 using System;
 using Bitprim.Native;
-using System.Collections;
 
 namespace Bitprim
 {
@@ -12,7 +11,7 @@ namespace Bitprim
             return TransactionListNative.chain_transaction_list_construct_default();
         }
 
-        public override Transaction GetNthNativeElement(int n)
+        public override Transaction GetNthNativeElement(uint n)
         {
             return new Transaction(TransactionListNative.chain_transaction_list_nth(NativeInstance, (UIntPtr) n), false);
         }

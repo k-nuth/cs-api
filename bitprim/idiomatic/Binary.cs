@@ -10,7 +10,6 @@ namespace Bitprim
     /// </summary>
     public class Binary : IDisposable
     {
-
         private IntPtr nativeInstance_;
 
         /// <summary>

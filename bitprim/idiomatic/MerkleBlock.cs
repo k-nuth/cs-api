@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using Bitprim.Native;
 
 namespace Bitprim
@@ -10,6 +9,7 @@ namespace Bitprim
     /// </summary>
     public class MerkleBlock : IDisposable
     {
+        private Header header_;
         private IntPtr nativeInstance_;
 
         ~MerkleBlock()
@@ -47,7 +47,7 @@ namespace Bitprim
         {
             get
             {
-                return new Header(MerkleBlockNative.chain_merkle_block_header(nativeInstance_), false);
+                return header_;
             }
         }
 
@@ -100,6 +100,7 @@ namespace Bitprim
         internal MerkleBlock(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
+            header_ = new Header(MerkleBlockNative.chain_merkle_block_header(nativeInstance_), false);
         }
 
         protected virtual void Dispose(bool disposing)

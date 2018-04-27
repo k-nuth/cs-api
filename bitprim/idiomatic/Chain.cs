@@ -2,17 +2,71 @@ using Bitprim.Native;
 using System;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-using System.Threading;
 
 namespace Bitprim
 {
-
     /// <summary>
     /// Represents the Bitcoin blockchain; meant to offer its different interfaces (query, mining, network)
     /// </summary>
     public class Chain
     {
-        private IntPtr nativeInstance_;
+        private delegate void FetchBlockByHeightHashTimestampHandler(ErrorCode errorCode, byte[] blockHash, DateTime blockDate, UInt64 blockHeight);
+        private delegate void FetchBlockHeaderByHashTxsSizeHandler(ErrorCode errorCode, Header blockHeader, UInt64 blockHeight, HashList txHashes, UInt64 serializedBlockSize);
+
+        private readonly IntPtr nativeInstance_;
+
+        private readonly ChainNative.FetchBlockHandler internalFetchBlockHandler_;
+        private readonly ChainNative.FetchBlockHandler internalFetchBlockHandlerByHash_;
+        private readonly ChainNative.FetchBlockHeightHandler internalFetchBlockHeightHandler_;
+        private readonly ChainNative.FetchLastHeightHandler internalFetchLastHeightHandler_;
+        private readonly ChainNative.FetchBlockHeaderByHashTxsSizeHandler internalFetchBlockHeaderByHashTxsSizeHandler_;
+        private readonly ChainNative.FetchBlockHeightTimestampHandler internalFetchBlockHeightTimestampHandler_;
+        private readonly ChainNative.FetchBlockHeaderHandler internalFetchBlockHeaderHandler_;
+        private readonly ChainNative.FetchBlockHeaderHandler internalFetchBlockHeaderHandlerByHash_;
+        private readonly ChainNative.MerkleBlockFetchHandler internalMerkleBlockFetchHandler_;
+        private readonly ChainNative.MerkleBlockFetchHandler internalMerkleBlockFetchHandlerByHash_;
+        private readonly ChainNative.ValidateTxHandler internalValidateTxHandler_;
+        private readonly ChainNative.ResultHandler internalResultHandler_;
+        private readonly ChainNative.BlockLocatorFetchHandler internalBlockLocatorFetchHandler_;
+        private readonly ChainNative.FetchSpendHandler internalFetchSpendHandler_;
+        private readonly ChainNative.FetchHistoryHandler internalFetchHistoryHandler_;
+        private readonly ChainNative.FetchStealthHandler internalFetchStealthHandler_;
+        private readonly ChainNative.FetchCompactBlockHandler internalFetchCompactBlockHandler_;
+        private readonly ChainNative.FetchTransactionHandler internalFetchTransactionHandler_;
+        private readonly ChainNative.FetchTransactionPositionHandler internalFetchTransactionPositionHandler_;
+
+        internal Chain(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+
+            internalFetchBlockHandler_ = FetchBlockInternalHandler;
+            internalFetchBlockHandlerByHash_ = FetchBlockByHashInternalHandler;
+            internalFetchBlockHeightHandler_ = FetchBlockHeightInternalHandler;
+            internalFetchLastHeightHandler_ = FetchLastHeightInternalHandler;
+            internalFetchBlockHeaderByHashTxsSizeHandler_ = FetchBlockHeaderByHashTxsSizeInternalHandler;
+            internalFetchBlockHeightTimestampHandler_ = FetchBlockByHeightHashTimestampInternalHandler;
+            internalFetchBlockHeaderHandler_ = FetchBlockHeaderInternalHandler;
+            internalFetchBlockHeaderHandlerByHash_ = FetchBlockHeaderByHashInternalHandler;
+            internalMerkleBlockFetchHandler_ = FetchMerkleBlockInternalHandler;
+            internalMerkleBlockFetchHandlerByHash_ = FetchMerkleBlockByHashInternalHandler;
+            internalValidateTxHandler_ = ValidateTransactionInternalHandler;
+            internalResultHandler_ = ResultInternalHandler;
+            internalBlockLocatorFetchHandler_ = FetchBlockLocatorInternalHandler;
+            internalFetchSpendHandler_ = FetchSpendInternalHandler;
+            internalFetchHistoryHandler_ = FetchHistoryInternalHandler;
+            internalFetchStealthHandler_ = FetchStealthInternalHandler;
+            internalFetchCompactBlockHandler_ = FetchCompactBlockInternalHandler;
+            internalFetchTransactionHandler_ = FetchTransactionByHashInternalHandler;
+            internalFetchTransactionPositionHandler_ = FetchTransactionPositionInternalHandler;
+        }
+
+        internal IntPtr NativeInstance
+        {
+            get
+            {
+                return nativeInstance_;
+            }
+        }
 
         #region Chain
 
@@ -23,57 +77,70 @@ namespace Bitprim
         /// <param name="blockHash"> 32-byte array representation of the block hash.
         ///    Identifies it univocally.
         /// </param>
+        public async Task<ApiCallResult<UInt64>> FetchBlockHeightAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask<ApiCallResult<UInt64>>(tcs =>
+            {
+                FetchBlockHeight(blockHash, (code, height) =>
+                {
+                    tcs.TrySetResult(new ApiCallResult<UInt64>
+                    {
+                        ErrorCode = code,
+                        Result = height
+                    });
+                });
+            });
+        }
+
+
+        /// <summary>
+        /// Given a block hash, it queries the chain asynchronously for the block's height.
+        /// Return right away and uses a callback to return the result.
+        /// </summary>
+        /// <param name="blockHash"> 32-byte array representation of the block hash.
+        ///    Identifies it univocally.
+        /// </param>
         /// <param name="handler"> Callback which will be invoked when the block height is found. </param>
-        public void FetchBlockHeight(byte[] blockHash, Action<ErrorCode, UInt64> handler)
+        private void FetchBlockHeight(byte[] blockHash, Action<ErrorCode, UInt64> handler)
         {
             var managedHash = new hash_t
             {
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_height(nativeInstance_, contextPtr, managedHash, FetchBlockHeightHandler);
+            ChainNative.chain_fetch_block_height(nativeInstance_, contextPtr, managedHash, internalFetchBlockHeightHandler_);
         }
 
+
         /// <summary>
-        /// Given a block hash, it queries the chain asynchronously for the block's height.
-        /// Blocks until block height is retrieved.
+        /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
         /// </summary>
-        /// <param name="blockHash">  32-byte array representation of the block hash.
-        ///    Identifies it univocally. </param>
-        /// <returns> The block height </returns>
-        public Tuple<ErrorCode, UInt64> GetBlockHeight(byte[] blockHash)
+        public async Task<ApiCallResult<UInt64>> FetchLastHeightAsync()
         {
-            UInt64 height = 0;
-            var managedHash = new hash_t
+            return await TaskHelper.ToTask<ApiCallResult<UInt64>>(tcs =>
             {
-                hash = blockHash
-            };
-            ErrorCode result = ChainNative.chain_get_block_height(nativeInstance_, managedHash, ref height);
-            return new Tuple<ErrorCode, UInt64>(result, height);
+                FetchLastHeight((code, height) =>
+                {
+                    tcs.TrySetResult(new ApiCallResult<UInt64>
+                    {
+                        ErrorCode = code,
+                        Result = height
+                    });
+                });
+            });
         }
 
         /// <summary>
         /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
         /// </summary>
         /// <param name="handler"> Callback which will be called once the last height is retrieved. </param>
-        public void FetchLastHeight(Action<ErrorCode, UInt64> handler)
+        private void FetchLastHeight(Action<ErrorCode, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_last_height(nativeInstance_, handlerPtr, FetchLastHeightHandler);
+            ChainNative.chain_fetch_last_height(nativeInstance_, handlerPtr, internalFetchLastHeightHandler_);
         }
 
-        /// <summary>
-        /// Gets the height of the highest block in the local copy of the blockchain, synchronously.
-        /// It blocks until height is retrieved.
-        /// </summary>
-        /// <returns> Error code (0 = success) and height </returns>
-        public Tuple<ErrorCode, UInt64> GetLastHeight()
-        {
-            UInt64 height = 0;
-            ErrorCode result = ChainNative.chain_get_last_height(nativeInstance_, ref height);
-            return new Tuple<ErrorCode, UInt64>(result, height);
-        }
 
         #endregion //Chain
 
@@ -83,119 +150,254 @@ namespace Bitprim
         /// Given a block hash, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<Block>>> FetchBlockByHashAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<Block>>>(tcs =>
+            {
+                FetchBlockByHash(blockHash, (code, block, height) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<Block>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<Block>
+                        {
+                            BlockData = block,
+                            BlockHeight = height
+                        }
+                    });
+                });
+            });
+        }
+
+
+        /// <summary>
+        /// Given a block hash, retrieve the full block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        public void FetchBlockByHash(byte[] blockHash, Action<ErrorCode, Block> handler)
+        private void FetchBlockByHash(byte[] blockHash, Action<ErrorCode, Block, UInt64> handler)
         {
             var managedHash = new hash_t
             {
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockByHashHandler);
-        }
-
-        /// <summary>
-        /// Given a block hash, get the full block it identifies, synchronously.
-        /// </summary>
-        /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code and full block </returns>
-        public Tuple<ErrorCode, Block, UInt64> GetBlockByHash(byte[] blockHash)
-        {
-            IntPtr block = IntPtr.Zero;
-            UInt64 height = 0;
-            var managedHash = new hash_t
-            {
-                hash = blockHash
-            };
-            ErrorCode result = ChainNative.chain_get_block_by_hash(nativeInstance_, managedHash, ref block, ref height);
-            return new Tuple<ErrorCode, Block, UInt64>(result, new Block(block), height);
+            ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, internalFetchBlockHandlerByHash_);
         }
 
         /// <summary>
         /// Given a block height, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<Block>>> FetchBlockByHeightAsync(UInt64 height)
+        {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<Block>>>(tcs =>
+            {
+                FetchBlockByHeight(height, (code, block, blockHeight) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<Block>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<Block>
+                        {
+                            BlockData = block,
+                            BlockHeight = blockHeight
+                        }
+                    });
+
+                });
+
+            });
+
+        }
+
+
+        /// <summary>
+        /// Given a block height, retrieve the full block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be called when the block is retrieved. </param>
-        public void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block> handler)
+        private void FetchBlockByHeight(UInt64 height, Action<ErrorCode, Block, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, FetchBlockByHeightHandler);
+            ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, internalFetchBlockHandler_);
         }
 
-        /// <summary>
-        /// Given a block height, get the full block it identifies, synchronously.
-        /// </summary>
-        /// <param name="height"> Block height </param>
-        /// <returns> Error code and full block </returns>
-        public Tuple<ErrorCode, Block, UInt64> GetBlockByHeight(UInt64 height)
-        {
-            IntPtr block = IntPtr.Zero;
-            UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode result = ChainNative.chain_get_block_by_height(nativeInstance_, height, ref block, ref actualHeight);
-            return new Tuple<ErrorCode, Block, UInt64>(result, new Block(block), actualHeight);
-        }
-
-        #endregion //Block
-
-        #region Block header
 
         /// <summary>
-        /// Given a block hash, get the header from the block it identifies, asynchronously.
+        /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <param name="handler"> Callback which will be called when the header is retrieved </param>
-        public void FetchBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header> handler)
+        public async Task<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>> FetchBlockHeaderByHashTxSizesAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>>(tcs =>
+            {
+
+                FetchBlockHeaderByHashTxSizes(blockHash, (errorCode, header, height, hashes, size) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>
+                    {
+                        ErrorCode = errorCode,
+                        Result = new GetBlockHeaderByHashTxSizeResult
+                        {
+                            Block = new GetBlockDataResult<Header> { BlockData = header, BlockHeight = height },
+                            TransactionHashes = hashes,
+                            SerializedBlockSize = size
+                        }
+                    });
+
+                });
+
+            });
+        }
+
+        /// <summary>
+        /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
+        /// <param name="handler"> Callback which will be called when the data is retrieved. </param>
+        private void FetchBlockHeaderByHashTxSizes(byte[] blockHash, FetchBlockHeaderByHashTxsSizeHandler handler)
         {
             var managedHash = new hash_t
             {
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, FetchBlockHeaderByHashHandler);
+            ChainNative.chain_fetch_block_header_by_hash_txs_size(nativeInstance_, contextPtr, managedHash, internalFetchBlockHeaderByHashTxsSizeHandler_);
+        }
+
+
+
+        /// <summary>
+        /// Given a block height, retrieve only block hash and timestamp, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        public async Task<ApiCallResult<GetBlockHashTimestampResult>> FetchBlockByHeightHashTimestampAsync(UInt64 height)
+        {
+            return await TaskHelper.ToTask<ApiCallResult<GetBlockHashTimestampResult>>(tcs =>
+            {
+                FetchBlockByHeightHashTimestamp(height, (errorCode, hash, date, blockHeight) =>
+                {
+                    tcs.TrySetResult(new ApiCallResult<GetBlockHashTimestampResult>
+                    {
+                        ErrorCode = errorCode,
+                        Result = new GetBlockHashTimestampResult
+                        {
+                            BlockHash = hash,
+                            BlockTimestamp = date
+                        }
+                    });
+
+                });
+            });
+        }
+
+
+
+        /// <summary>
+        /// Given a block height, retrieve only block hash and timestamp, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        /// <param name="handler"> Callback which will be called when the block data is retrieved. </param>
+        private void FetchBlockByHeightHashTimestamp(UInt64 height, FetchBlockByHeightHashTimestampHandler handler)
+        {
+            GCHandle handlerHandle = GCHandle.Alloc(handler);
+            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            ChainNative.chain_fetch_block_by_height_timestamp(nativeInstance_, handlerPtr, height, internalFetchBlockHeightTimestampHandler_);
+        }
+
+
+
+        #endregion //Block
+
+        #region Block header
+
+
+        /// <summary>
+        /// Given a block hash, get the header from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<Header>>> FetchBlockHeaderByHashAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<Header>>>(tcs =>
+            {
+
+                FetchBlockHeaderByHash(blockHash, (code, header, height) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<Header>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<Header>
+                        {
+                            BlockData = header,
+                            BlockHeight = height
+                        }
+                    });
+
+                });
+
+
+            });
         }
 
         /// <summary>
-        /// Given a block hash, get the header from the block it identifies, synchronously.
+        /// Given a block hash, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code, full block header and block height </returns>
-        public Tuple<ErrorCode, Header, UInt64> GetBlockHeaderByHash(byte[] blockHash)
+        /// <param name="handler"> Callback which will be called when the header is retrieved </param>
+        private void FetchBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header, UInt64> handler)
         {
-            IntPtr header = IntPtr.Zero;
-            UInt64 height = 0;
             var managedHash = new hash_t
             {
                 hash = blockHash
             };
-            ErrorCode result = ChainNative.chain_get_block_header_by_hash(nativeInstance_, managedHash, ref header, ref height);
-            return new Tuple<ErrorCode, Header, UInt64>(result, new Header(header), height);
+            IntPtr contextPtr = CreateContext(handler, managedHash);
+            ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, internalFetchBlockHeaderHandlerByHash_);
         }
+
+
+        /// <summary>
+        /// Given a block height, get the header from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="height"> Block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<Header>>> FetchBlockHeaderByHeightAsync(UInt64 height)
+        {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<Header>>>(tcs =>
+            {
+
+                FetchBlockHeaderByHeight(height, (code, header, blockHeight) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<Header>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<Header>
+                        {
+                            BlockData = header,
+                            BlockHeight = blockHeight
+                        }
+                    });
+
+                });
+
+            });
+        }
+
+
 
         /// <summary>
         /// Given a block height, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
         /// <param name="handler"> Callback which will be invoked when the block header is retrieved </param>
-        public void FetchBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header> handler)
+        private void FetchBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, FetchBlockHeaderbyHeightHandler);
+            ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, internalFetchBlockHeaderHandler_);
         }
 
-        /// <summary>
-        /// Given a block height, get the header from the block it identifies, synchronously.
-        /// </summary>
-        /// <param name="height"> Block height </param>
-        /// <returns> Error code, full block header, and height </returns>
-        public Tuple<ErrorCode, Header, UInt64> GetBlockHeaderByHeight(UInt64 height)
-        {
-            IntPtr header = IntPtr.Zero;
-            UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode result = ChainNative.chain_get_block_header_by_height(nativeInstance_, height, ref header, ref actualHeight);
-            return new Tuple<ErrorCode, Header, UInt64>(result, new Header(header), actualHeight);
-        }
+
 
         #endregion //Block header
 
@@ -205,57 +407,84 @@ namespace Bitprim
         /// Given a block hash, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>> FetchMerkleBlockByHashAsync(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>>(tcs =>
+            {
+
+                FetchMerkleBlockByHash(blockHash, (code, merkleBlock, height) =>
+                {
+                    tcs.SetResult(new DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<MerkleBlock>
+                        {
+                            BlockData = merkleBlock,
+                            BlockHeight = height
+                        }
+                    });
+
+                });
+
+            });
+        }
+
+        /// <summary>
+        /// Given a block hash, get the merkle block from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be invoked when the Merkle block is retrieved </param>
-        public void FetchMerkleBlockByHash(byte[] blockHash, Action<ErrorCode, MerkleBlock, UInt64> handler)
+        private void FetchMerkleBlockByHash(byte[] blockHash, Action<ErrorCode, MerkleBlock, UInt64> handler)
         {
             var managedHash = new hash_t
             {
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchMerkleBlockByHashHandler);
+            ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, internalMerkleBlockFetchHandlerByHash_);
         }
 
+
+
         /// <summary>
-        /// Given a block hash, get the merkle block from the block it identifies, synchronously.
+        /// Given a block height, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
-        /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code, full Merkle block and height </returns>
-        public Tuple<ErrorCode, MerkleBlock, UInt64> GetMerkleBlockByHash(byte[] blockHash)
+        /// <param name="height"> Desired block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>> FetchMerkleBlockByHeightAsync(UInt64 height)
         {
-            IntPtr merkleBlock = IntPtr.Zero;
-            UInt64 height = 0;
-            var managedHash = new hash_t
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>>(tcs =>
             {
-                hash = blockHash
-            };
-            ErrorCode result = ChainNative.chain_get_merkle_block_by_hash(nativeInstance_, managedHash, ref merkleBlock, ref height);
-            return new Tuple<ErrorCode, MerkleBlock, UInt64>(result, new MerkleBlock(merkleBlock), height);
+
+                FetchMerkleBlockByHeight(height, (code, merkleBlock, actualHeight) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<MerkleBlock>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<MerkleBlock>
+                        {
+                            BlockData = merkleBlock,
+                            BlockHeight = actualHeight
+                        }
+                    });
+
+                });
+
+
+            });
         }
+
+
 
         /// <summary>
         /// Given a block height, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <param name="handler"> Callback which will be invoked when the Merkle block is retrieved </param>
-        public void FetchMerkleBlockByHeight(UInt64 height, Action<ErrorCode, MerkleBlock, UInt64> handler)
+        private void FetchMerkleBlockByHeight(UInt64 height, Action<ErrorCode, MerkleBlock, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, FetchMerkleBlockByHeightHandler);
-        }
-
-        /// <summary>
-        /// Given a block height, get the merkle block from the block it identifies, synchronously.
-        /// </summary>
-        /// <param name="height"> Desired block height </param>
-        /// <returns> Error code, full Merkle block and height </returns>
-        public Tuple<ErrorCode, MerkleBlock, UInt64> GetMerkleBlockByHeight(UInt64 height)
-        {
-            IntPtr merkleBlock = IntPtr.Zero;
-            UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode result = ChainNative.chain_get_merkle_block_by_height(nativeInstance_, height, ref merkleBlock, ref actualHeight);
-            return new Tuple<ErrorCode, MerkleBlock, UInt64>(result, new MerkleBlock(merkleBlock), actualHeight);
+            ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, internalMerkleBlockFetchHandler_);
         }
 
         #endregion //Merkle Block
@@ -266,58 +495,85 @@ namespace Bitprim
         /// Given a block hash, get the compact block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> FetchCompactBlockByHash(byte[] blockHash)
+        {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>>(tcs =>
+            {
+
+                FetchCompactBlockByHash(blockHash, (code, compactBlock, height) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<CompactBlock>
+                        {
+                            BlockData = compactBlock,
+                            BlockHeight = height
+                        }
+                    });
+
+                });
+
+            });
+        }
+
+
+        /// <summary>
+        /// Given a block hash, get the compact block from the block it identifies, asynchronously.
+        /// </summary>
+        /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        public void FetchCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock> handler)
+        private void FetchCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock, UInt64> handler)
         {
             var managedHash = new hash_t
             {
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, FetchCompactBlockByHashHandler);
+            ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, internalFetchCompactBlockHandler_);
         }
 
+
+
         /// <summary>
-        /// Given a block hash, get the compact block from the block it identifies, synchronously.
+        /// Given a block height, get the compact block from the block it identifies, asynchronously.
         /// </summary>
-        /// <param name="blockHash"> 32 bytes of the block hash </param>
-        /// <returns> Error code, full compact block and height </returns>
-        public Tuple<ErrorCode, CompactBlock, UInt64> GetCompactBlockByHash(byte[] blockHash)
+        /// <param name="height"> Desired block height </param>
+        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> FetchCompactBlockByHeightAsync(UInt64 height)
         {
-            IntPtr compactBlock = IntPtr.Zero;
-            UInt64 height = 0;
-            var managedHash = new hash_t
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>>(tcs =>
             {
-                hash = blockHash
-            };
-            ErrorCode result = ChainNative.chain_get_compact_block_by_hash(nativeInstance_, managedHash, ref compactBlock, ref height);
-            return new Tuple<ErrorCode, CompactBlock, UInt64>(result, new CompactBlock(compactBlock), height);
+                FetchCompactBlockByHeight(height, (code, compactBlock, blockHeight) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
+                    {
+                        ErrorCode = code,
+                        Result = new GetBlockDataResult<CompactBlock>
+                        {
+                            BlockData = compactBlock,
+                            BlockHeight = blockHeight
+                        }
+                    });
+
+                });
+
+            });
         }
+
 
         /// <summary>
         /// Given a block height, get the compact block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        public void FetchCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock> handler)
+        private void FetchCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock, UInt64> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, FetchCompactBlockByHeightHandler);
+            ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, internalFetchCompactBlockHandler_);
         }
 
-        /// <summary>
-        /// Given a block height, get the compact block from the block it identifies, synchronously.
-        /// </summary>
-        /// <param name="height"> Desired block height </param>
-        /// <returns> Error code, full compact block and height </returns>
-        public Tuple<ErrorCode, CompactBlock, UInt64> GetCompactBlockByHeight(UInt64 height)
-        {
-            IntPtr compactBlock = IntPtr.Zero;
-            UInt64 actualHeight = 0; //Should always match input height
-            ErrorCode result = ChainNative.chain_get_compact_block_by_height(nativeInstance_, height, ref compactBlock, ref actualHeight);
-            return new Tuple<ErrorCode, CompactBlock, UInt64>(result, new CompactBlock(compactBlock), actualHeight);
-        }
+
 
         #endregion //Compact block
 
@@ -327,36 +583,72 @@ namespace Bitprim
         /// Get a transaction by its hash, asynchronously.
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
+        /// <param name="requireConfirmed"> True if the transaction must belong to a block </param>
+        public async Task<DisposableApiCallResult<GetTxDataResult>> FetchTransactionAsync(byte[] txHash, bool requireConfirmed)
+        {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetTxDataResult>>(tcs =>
+            {
+                FetchTransaction(txHash, requireConfirmed, (code, transaction, index, height) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetTxDataResult>
+                    {
+                        ErrorCode = code,
+                        Result = new GetTxDataResult
+                        {
+                            Tx = transaction,
+                            TxPosition = new GetTxPositionResult
+                            {
+                                Index = index,
+                                BlockHeight = height
+                            }
+                        }
+                    });
+
+                });
+            });
+        }
+
+        /// <summary>
+        /// Get a transaction by its hash, asynchronously.
+        /// </summary>
+        /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <param name="handler"> Callback which will be invoked when the transaction is retrieved </param>
-        public void FetchTransaction(byte[] txHash, bool requireConfirmed, Action<ErrorCode, Transaction, UInt64, UInt64> handler)
+        private void FetchTransaction(byte[] txHash, bool requireConfirmed, Action<ErrorCode, Transaction, UInt64, UInt64> handler)
         {
             var managedHash = new hash_t
             {
                 hash = txHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, FetchTransactionByHashHandler);
+            ChainNative.chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, internalFetchTransactionHandler_);
         }
 
+
+
         /// <summary>
-        /// Get a transaction by its hash, synchronously.
+        /// Given a transaction hash, it fetches the height and position inside the block, asynchronously.
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
-        /// <returns> Error code, full transaction, index inside block and height </returns>
-        public Tuple<ErrorCode, Transaction, UInt64, UInt64> GetTransaction(byte[] txHash, bool requireConfirmed)
+        public async Task<ApiCallResult<GetTxPositionResult>> FetchTransactionPositionAsync(byte[] txHash, bool requireConfirmed)
         {
-            IntPtr transaction = IntPtr.Zero;
-            UInt64 index = 0;
-            UInt64 height = 0;
-            var managedHash = new hash_t
+            return await TaskHelper.ToTask<ApiCallResult<GetTxPositionResult>>(tcs =>
             {
-                hash = txHash
-            };
-            ErrorCode result = ChainNative.chain_get_transaction(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref transaction, ref index, ref height);
-            return new Tuple<ErrorCode, Transaction, UInt64, UInt64>(result, new Transaction(transaction), index, height);
+
+                FetchTransactionPosition(txHash, requireConfirmed, (code, index, height) =>
+                {
+                    tcs.TrySetResult(new ApiCallResult<GetTxPositionResult>
+                    {
+                        ErrorCode = code,
+                        Result = new GetTxPositionResult { Index = index, BlockHeight = height }
+                    });
+
+                });
+
+            });
         }
+
 
         /// <summary>
         /// Given a transaction hash, it fetches the height and position inside the block, asynchronously.
@@ -364,32 +656,14 @@ namespace Bitprim
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
         /// <param name="handler"> Callback which will be invoked when the transaction position is retrieved </param>
-        public void FetchTransactionPosition(byte[] txHash, bool requireConfirmed, Action<ErrorCode, UInt64, UInt64> handler)
+        private void FetchTransactionPosition(byte[] txHash, bool requireConfirmed, Action<ErrorCode, UInt64, UInt64> handler)
         {
             var managedHash = new hash_t
             {
                 hash = txHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, FetchTransactionPositionHandler);
-        }
-
-        /// <summary>
-        /// Given a transaction hash, it fetches the height and position inside the block, synchronously.
-        /// </summary>
-        /// <param name="txHash"> 32 bytes of transaction hash </param>
-        /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
-        /// <returns> Error code, index in block (zero based) and block height </returns>
-        public Tuple<ErrorCode, UInt64, UInt64> GetTransactionPosition(byte[] txHash, bool requireConfirmed)
-        {
-            UInt64 index = 0;
-            UInt64 height = 0;
-            var managedHash = new hash_t
-            {
-                hash = txHash
-            };
-            ErrorCode result = ChainNative.chain_get_transaction_position(nativeInstance_, managedHash, requireConfirmed ? 1 : 0, ref index, ref height);
-            return new Tuple<ErrorCode, UInt64, UInt64>(result, index, height);
+            ChainNative.chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, internalFetchTransactionPositionHandler_);
         }
 
         #endregion //Transaction
@@ -400,34 +674,28 @@ namespace Bitprim
         /// Fetch the transaction input which spends the indicated output, asynchronously.
         /// </summary>
         /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
-        /// <param name="handler"> Callback which will be called when spend is retrieved </param>
-        public void FetchSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler)
+        public async Task<ApiCallResult<Point>> FetchSpendAsync(OutputPoint outputPoint)
         {
-            IntPtr contextPtr = CreateContext(handler, outputPoint);
-            ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, FetchSpendHandler);
+            return await TaskHelper.ToTask<ApiCallResult<Point>>(tcs =>
+            {
+                FetchSpend(outputPoint, (code, point) =>
+                {
+                    tcs.TrySetResult(new ApiCallResult<Point> { ErrorCode = code, Result = point });
+                });
+            });
         }
 
         /// <summary>
-        /// Get the transaction input which spends the indicated output, synchronously.
+        /// Fetch the transaction input which spends the indicated output, asynchronously.
         /// </summary>
         /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
-        /// <returns> Error code and output point </returns>
-        public Tuple<ErrorCode, Point> GetSpend(OutputPoint outputPoint)
+        /// <param name="handler"> Callback which will be called when spend is retrieved </param>
+        private void FetchSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler)
         {
-            //TODO When node-cint wraps a get function for this, call that instead
-            var handlerDone = new AutoResetEvent(false);
-            ErrorCode error = 0;
-            Point point = null;
-            Action<ErrorCode, Point> handler = delegate(ErrorCode theError, Point thePoint)
-            {
-                error = theError;
-                point = thePoint;
-                handlerDone.Set();
-            };
-            FetchSpend(outputPoint, handler);
-            handlerDone.WaitOne();
-            return new Tuple<ErrorCode, Point>(error, point);
+            IntPtr contextPtr = CreateContext(handler, outputPoint);
+            ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, internalFetchSpendHandler_);
         }
+
 
         #endregion //Spend
 
@@ -439,27 +707,38 @@ namespace Bitprim
         /// <param name="address"> Bitcoin payment address to search </param>
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
-        /// <param name="handler"> Callback which will be called when the history is retrieved </param>
-        public void FetchHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HistoryCompactList> handler)
+        public async Task<DisposableApiCallResult<HistoryCompactList>> FetchHistoryAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
         {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, FetchHistoryHandler);
+            return await TaskHelper.ToTask<DisposableApiCallResult<HistoryCompactList>>(tcs =>
+            {
+                FetchHistory(address, limit, fromHeight, (code, history) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<HistoryCompactList>
+                    {
+                        ErrorCode = code,
+                        Result = history
+                    });
+                    
+                });   
+            });
         }
 
+
         /// <summary>
-        /// Get a list of output points, values, and spends for a given payment address (synchronously)
+        /// Get a list of output points, values, and spends for a given payment address (asynchronously)
         /// </summary>
         /// <param name="address"> Bitcoin payment address to search </param>
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
-        /// <returns> Error code, HistoryCompactList </returns>
-        public Tuple<ErrorCode, HistoryCompactList> GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
+        /// <param name="handler"> Callback which will be called when the history is retrieved </param>
+        private void FetchHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HistoryCompactList> handler)
         {
-            IntPtr history = IntPtr.Zero;
-            ErrorCode result = ChainNative.chain_get_history(nativeInstance_, address.NativeInstance, limit, fromHeight, ref history);
-            return new Tuple<ErrorCode, HistoryCompactList>(result, new HistoryCompactList(history));
+            GCHandle handlerHandle = GCHandle.Alloc(handler);
+            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            ChainNative.chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalFetchHistoryHandler_);
         }
+
+
 
         #endregion //History
 
@@ -471,11 +750,36 @@ namespace Bitprim
         /// </summary>
         /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
         /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
+        public async Task<DisposableApiCallResult<StealthCompactList>> FetchStealthAsync(Binary filter, UInt64 fromHeight)
+        {
+            return await TaskHelper.ToTask<DisposableApiCallResult<StealthCompactList>>(tcs =>
+            {
+                
+                FetchStealth(filter, fromHeight, (code, list) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<StealthCompactList>()
+                    {
+                        ErrorCode = code,
+                        Result = list
+                    });
+                    
+                });
+                
+            });
+        }
+
+
+        /// <summary>
+        /// Get metadata on potential payment transactions by stealth filter. Given a filter and a
+        /// height in the chain, it queries the chain for transactions matching the given filter.
+        /// </summary>
+        /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
+        /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
         /// <param name="handler"> Callback which will be called when the stealth list is retrieved </param>
-        public void FetchStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
+        private void FetchStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
         {
             IntPtr contextPtr = CreateContext(handler, filter);
-            ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, FetchStealthHandler);
+            ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, internalFetchStealthHandler_);
         }
 
         #endregion //Stealth
@@ -486,58 +790,39 @@ namespace Bitprim
         /// Given a list of indexes, fetch a header reader for them, asynchronously
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
-        /// <param name="handler"> Callback which will called when the reader is retrieved </param>
-        public void FetchBlockLocator(BlockIndexList indexes, Action<ErrorCode, HeaderReader> handler)
+        public async Task<DisposableApiCallResult<HeaderReader>> FetchBlockLocatorAsync(BlockIndexList indexes)
         {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, FetchBlockLocatorHandler);
+            return await TaskHelper.ToTask<DisposableApiCallResult<HeaderReader>>(tcs =>
+            {
+                FetchBlockLocator(indexes, (code, headerReader) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<HeaderReader>
+                    {
+                        ErrorCode = code,
+                        Result = headerReader
+                    });
+                    
+                });
+                
+            });
         }
 
+
         /// <summary>
-        /// Given a list of indexes, fetch a header reader for them, synchronously
+        /// Given a list of indexes, fetch a header reader for them, asynchronously
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
-        /// <returns> Error code, HeaderReader </returns>
-        public Tuple<ErrorCode, HeaderReader> GetBlockLocator(BlockIndexList indexes)
+        /// <param name="handler"> Callback which will called when the reader is retrieved </param>
+        private void FetchBlockLocator(BlockIndexList indexes, Action<ErrorCode, HeaderReader> handler)
         {
-            IntPtr headerReader = IntPtr.Zero;
-            ErrorCode result = ChainNative.chain_get_block_locator(nativeInstance_, indexes.NativeInstance, ref headerReader);
-            return new Tuple<ErrorCode, HeaderReader>(result, new HeaderReader(headerReader));
+            GCHandle handlerHandle = GCHandle.Alloc(handler);
+            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            ChainNative.chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, internalBlockLocatorFetchHandler_);
         }
+
+
 
         #endregion //Block indexes
-
-        #region Subscribers
-
-        /// <summary>
-        /// Be notified (called back) when the local copy of the blockchain is reorganized.
-        /// </summary>
-        /// <param name="handler"> Callback which will be called when blocks are added or removed.
-        /// The callback returns 3 parameters:
-        ///     - Height (UInt64): The chain height at which reorganization takes place
-        ///     - Incoming (Blocklist): Incoming blocks (added to the blockchain).
-        ///     - Outgoing (Blocklist): Outgoing blocks (removed from the blockchain).
-        /// </param>
-        public void SubscribeToBlockChain(Action<UInt64, BlockList, BlockList> handler)
-        {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_subscribe_blockchain(nativeInstance_, handlerPtr, ReorganizeHandler);
-        }
-
-        /// <summary>
-        /// Be notified (called back) when the local copy of the blockchain is updated at the transaction level.
-        /// </summary>
-        /// <param name="handler"> Callback which will be called when a transaction is added. </param>
-        public void SubscribeToTransaction(Action<UInt64, BlockList, BlockList> handler)
-        {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_subscribe_transaction(nativeInstance_, handlerPtr, TransactionHandler);
-        }
-
-        #endregion //Subscribers
 
         #region Organizers
 
@@ -545,45 +830,62 @@ namespace Bitprim
         /// Given a block, organize it (async).
         /// </summary>
         /// <param name="block"> The block to organize </param>
-        /// <param name="handler"> Callback which will be called when organization is complete. </param>
-        public void OrganizeBlock(Block block, Action<int> handler)
+        public async Task<ErrorCode> OrganizeBlockAsync(Block block)
         {
-            GCHandle handlerHandle = GCHandle.Alloc(handler);
-            IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, ResultHandler);
+            return await TaskHelper.ToTask<ErrorCode>(tcs =>
+            {
+                OrganizeBlock(block, errorCode =>
+                {
+                    tcs.TrySetResult(errorCode);      
+                });
+                
+            });
         }
 
         /// <summary>
-        /// Given a block, organize it (sync).
+        /// Given a block, organize it (async).
         /// </summary>
-        /// <param name="block"> The block to organize. </param>
-        /// <returns> Error code </returns>
-        public ErrorCode OrganizeBlockSync(Block block)
+        /// <param name="block"> The block to organize </param>
+        /// <param name="handler"> Callback which will be called when organization is complete. </param>
+        private void OrganizeBlock(Block block, Action<ErrorCode> handler)
         {
-            return ChainNative.chain_organize_block_sync(nativeInstance_, block.NativeInstance);
+            GCHandle handlerHandle = GCHandle.Alloc(handler);
+            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            ChainNative.chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, internalResultHandler_);
         }
+
+
+        /// <summary>
+        /// Given a transaction, organize it (async).
+        /// </summary>
+        /// <param name="transaction"> The transaction to organize. </param>
+        public async Task<ErrorCode> OrganizeTransactionAsync(Transaction transaction)
+        {
+            return await TaskHelper.ToTask<ErrorCode>(tcs =>
+            {
+                
+                OrganizeTransaction(transaction, errorCode =>
+                {
+                    tcs.TrySetResult(errorCode);
+                   
+                });
+                
+            });
+        }
+
 
         /// <summary>
         /// Given a transaction, organize it (async).
         /// </summary>
         /// <param name="transaction"> The transaction to organize. </param>
         /// <param name="handler"> Callback which will be called when organization is complete. </param>
-        public void OrganizeTransaction(Transaction transaction, Action<int> handler)
+        private void OrganizeTransaction(Transaction transaction, Action<ErrorCode> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance, ResultHandler);
+            ChainNative.chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance, internalResultHandler_);
         }
 
-        /// <summary>
-        /// Given a transaction, organize it (sync)
-        /// </summary>
-        /// <param name="transaction"> The transaction to organize </param>
-        /// <returns> Error code </returns>
-        public ErrorCode OrganizeTransactionSync(Transaction transaction)
-        {
-            return ChainNative.chain_organize_transaction_sync(nativeInstance_, transaction.NativeInstance);
-        }
 
         #endregion //Organizers
 
@@ -593,17 +895,39 @@ namespace Bitprim
         /// Determine if a transaction is valid for submission to the blockchain.
         /// </summary>
         /// <param name="transaction"> Transaction to validate </param>
+        public async Task<ApiCallResult<string>> ValidateTransactionAsync(Transaction transaction)
+        {
+            return await TaskHelper.ToTask<ApiCallResult<string>>(tcs =>
+            {
+                
+                ValidateTransaction(transaction, (code, message) =>
+                {
+                    tcs.TrySetResult(new ApiCallResult<string>
+                    {
+                        ErrorCode = code,
+                        Result = message
+                    });
+                    
+                });
+                
+            });
+        }
+
+
+        /// <summary>
+        /// Determine if a transaction is valid for submission to the blockchain.
+        /// </summary>
+        /// <param name="transaction"> Transaction to validate </param>
         /// <param name="handler"> Callback which will be called when validation is complete. </param>
-        public void ValidateTransaction(Transaction transaction, Action handler)
+        private void ValidateTransaction(Transaction transaction, Action<ErrorCode, string> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_validate_tx(nativeInstance_, handlerPtr, transaction.NativeInstance, ValidateTransactionHandler);
+            ChainNative.chain_validate_tx(nativeInstance_, handlerPtr, transaction.NativeInstance, internalValidateTxHandler_);
         }
 
         /// <summary>
         /// Determine if the node is synchronized (i.e. has the latest copy of the blockchain/is at top height)
-        /// Criterion: no nodes from the last 48 hs.
         /// </summary>
         public bool IsStale
         {
@@ -615,197 +939,299 @@ namespace Bitprim
 
         #endregion //Misc
 
-        internal Chain(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
-        }
 
-        private static void FetchBlockHeaderByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr header, UInt64 height)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, Header>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, Header>, hash_t>);
-            Action<ErrorCode, Header> handler = context.Item1;
-            handler(error, new Header(header));
-            contextHandle.Free();
-        }
-
-        private static void FetchBlockHeaderbyHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr header, UInt64 height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, Header> handler = (handlerHandle.Target as Action<ErrorCode, Header>);
-            handler(error, new Header(header));
-            handlerHandle.Free();
-        }
-
-        private static void FetchBlockByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr block, UInt64 height)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, Block>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, Block>, hash_t>);
-            Action<ErrorCode, Block> handler = context.Item1;
-            handler(error, new Block(block));
-            contextHandle.Free();
-        }
-
-        private static void FetchBlockByHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block, UInt64 height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, Block> handler = (handlerHandle.Target as Action<ErrorCode, Block>);
-            handler(error, new Block(block));
-            handlerHandle.Free();
-        }
-
-        private static void FetchBlockHeightHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 height)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, UInt64>, hash_t>);
-            Action<ErrorCode, UInt64> handler = context.Item1;
-            handler(error, height);
-            contextHandle.Free();
-        }
-
-        private static void FetchBlockLocatorHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr headerReader)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, HeaderReader> handler = (handlerHandle.Target as Action<ErrorCode, HeaderReader>);
-            handler(error, new HeaderReader(headerReader));
-            handlerHandle.Free();
-        }
-
-        private static void FetchCompactBlockByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr compactBlock, UInt64 height)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, CompactBlock>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, CompactBlock>, hash_t>);
-            Action<ErrorCode, CompactBlock> handler = context.Item1;
-            handler(error, new CompactBlock(compactBlock));
-            contextHandle.Free();
-        }
-
-        private static void FetchCompactBlockByHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr compactBlock, UInt64 height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, CompactBlock> handler = (handlerHandle.Target as Action<ErrorCode, CompactBlock>);
-            handler(error, new CompactBlock(compactBlock));
-            handlerHandle.Free();
-        }
-
-        private static void FetchHistoryHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr history)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, HistoryCompactList> handler = (handlerHandle.Target as Action<ErrorCode, HistoryCompactList>);
-            handler(error, new HistoryCompactList(history));
-            handlerHandle.Free();
-        }
-
-        private static void FetchLastHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, UIntPtr height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, UInt64> handler = (handlerHandle.Target as Action<ErrorCode, UInt64>);
-            handler(error, (UInt64)height);
-            handlerHandle.Free();
-        }
-
-        private static void FetchMerkleBlockByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr merkleBlock, UInt64 height)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, MerkleBlock, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, MerkleBlock, UInt64>, hash_t>);
-            Action<ErrorCode, MerkleBlock, UInt64> handler = context.Item1;
-            handler(error, new MerkleBlock(merkleBlock), height);
-            contextHandle.Free();
-        }
-
-        private static void FetchMerkleBlockByHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr merkleBlock, UInt64 height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, MerkleBlock, UInt64> handler = (handlerHandle.Target as Action<ErrorCode, MerkleBlock, UInt64>);
-            handler(error, new MerkleBlock(merkleBlock), height);
-            handlerHandle.Free();
-        }
-
-        private static void FetchSpendHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr inputPoint)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, Point>, OutputPoint> context = (contextHandle.Target as Tuple<Action<ErrorCode, Point>, OutputPoint>);
-            Action<ErrorCode, Point> handler = context.Item1;
-            handler(error, new Point(inputPoint));
-            contextHandle.Free();
-        }
-
-        private static void FetchStealthHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr stealth)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, StealthCompactList>, Binary> context = (contextHandle.Target as Tuple<Action<ErrorCode, StealthCompactList>, Binary>);
-            Action<ErrorCode, StealthCompactList> handler = context.Item1;
-            handler(error, new StealthCompactList(stealth));
-            contextHandle.Free();
-        }
-
-        private static void FetchTransactionByHashHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr transaction, UInt64 index, UInt64 height)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, Transaction, UInt64, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, Transaction, UInt64, UInt64>, hash_t>);
-            Action<ErrorCode, Transaction, UInt64, UInt64> handler = context.Item1;
-            handler(error, new Transaction(transaction), index, height);
-            contextHandle.Free();
-        }
-
-        private static void FetchTransactionByHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction, UInt64 index, UInt64 height)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, Transaction, UInt64, UInt64> handler = (handlerHandle.Target as Action<ErrorCode, Transaction, UInt64, UInt64>);
-            handler(error, new Transaction(transaction), index, height);
-            handlerHandle.Free();
-        }
-
-        private static void FetchTransactionPositionHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 index, UInt64 height)
-        {
-            GCHandle contextHandle = (GCHandle)contextPtr;
-            Tuple<Action<ErrorCode, UInt64, UInt64>, hash_t> context = (contextHandle.Target as Tuple<Action<ErrorCode, UInt64, UInt64>, hash_t>);
-            Action<ErrorCode, UInt64, UInt64> handler = context.Item1;
-            handler(error, index, height);
-            contextHandle.Free();
-        }
-
-        private static void ReorganizeHandler(IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr blockList, IntPtr blockList2)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, UInt64, BlockList, BlockList> handler = (handlerHandle.Target as Action<ErrorCode, UInt64, BlockList, BlockList>);
-            handler(error, u, new BlockList(blockList), new BlockList(blockList2));
-            handlerHandle.Free();
-        }
-
-        private static void ResultHandler(IntPtr chain, IntPtr context, ErrorCode error)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode> handler = (handlerHandle.Target as Action<ErrorCode>);
-            handler(error);
-            handlerHandle.Free();
-        }
-
-        private static void TransactionHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, Transaction> handler = (handlerHandle.Target as Action<ErrorCode, Transaction>);
-            handler(error, new Transaction(transaction));
-            handlerHandle.Free();
-        }
-
-        private static void ValidateTransactionHandler(IntPtr chain, IntPtr context, ErrorCode error, string message)
-        {
-            GCHandle handlerHandle = (GCHandle)context;
-            Action<ErrorCode, string> handler = (handlerHandle.Target as Action<ErrorCode, string>);
-            handler(error, message);
-            handlerHandle.Free();
-        }
-
-        private IntPtr CreateContext<C, P>(C callback, P parameters)
+        private IntPtr CreateContext<TC, TP>(TC callback, TP parameters)
         {
             // Both the callback and its parameters need to hold garbage collection off until
             // the callback is called, so a GCHandle is taken for an object containing both of them:
             // that is the context
-            var context = new Tuple<C, P>(callback, parameters);
-            GCHandle contextHandle = GCHandle.Alloc(context);
+            var context = new Tuple<TC, TP>(callback, parameters);
+            var contextHandle = GCHandle.Alloc(context);
             return (IntPtr)contextHandle;
         }
-    }
 
+
+        private static void FetchBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr block, UInt64 height)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Block, UInt64>, hash_t>);
+                Action<ErrorCode, Block, UInt64> handler = context.Item1;
+                handler(error, new Block(block), height);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block, UInt64 height)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                Action<ErrorCode, Block, UInt64> handler = (handlerHandle.Target as Action<ErrorCode, Block, UInt64>);
+                handler(error, new Block(block), height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchBlockHeaderByHashTxsSizeInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr blockHeader, UInt64 blockHeight, IntPtr txHashes, UInt64 blockSerializedSize)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<FetchBlockHeaderByHashTxsSizeHandler, hash_t>);
+                FetchBlockHeaderByHashTxsSizeHandler handler = context.Item1;
+                handler(error, new Header(blockHeader), blockHeight, new HashList(txHashes), blockSerializedSize);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchBlockByHeightHashTimestampInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, hash_t blockHash, UInt32 timestamp, UInt64 height)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as FetchBlockByHeightHashTimestampHandler);
+                //Copy native memory before it goes out of scope
+                byte[] blockHashCopy = new byte[blockHash.hash.Length];
+                blockHash.hash.CopyTo(blockHashCopy, 0);
+                //Convert Unix timestamp to date
+                DateTime blockDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).UtcDateTime;
+                handler(error, blockHashCopy, blockDate, height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchBlockHeaderByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+            IntPtr header, UInt64 height)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Header, UInt64>, hash_t>);
+                Action<ErrorCode, Header, UInt64> handler = context.Item1;
+                handler(error, new Header(header), height);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchBlockHeaderInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr header, UInt64 height)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, Header, UInt64>);
+                handler(error, new Header(header), height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchBlockHeightInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 height)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, UInt64>, hash_t>);
+                Action<ErrorCode, UInt64> handler = context.Item1;
+                handler(error, height);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchBlockLocatorInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr headerReader)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, HeaderReader>);
+                handler(error, new HeaderReader(headerReader));
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchCompactBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr compactBlock, UInt64 height)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, CompactBlock, UInt64>);
+                handler(error, new CompactBlock(compactBlock), height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchHistoryInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr history)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, HistoryCompactList>);
+                handler(error, new HistoryCompactList(history));
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchLastHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, UInt64 height)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, UInt64>);
+                handler(error, height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchMerkleBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
+            IntPtr merkleBlock, UInt64 height)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, MerkleBlock, UInt64>, hash_t>);
+                Action<ErrorCode, MerkleBlock, UInt64> handler = context.Item1;
+                handler(error, new MerkleBlock(merkleBlock), height);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchMerkleBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr merkleBlock, UInt64 height)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = handlerHandle.Target as Action<ErrorCode, MerkleBlock, UInt64>;
+                handler(error, new MerkleBlock(merkleBlock), height);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchSpendInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr inputPoint)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Point>, OutputPoint>);
+                Action<ErrorCode, Point> handler = context.Item1;
+                handler(error, new Point(inputPoint));
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchStealthInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr stealth)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, StealthCompactList>, Binary>);
+                Action<ErrorCode, StealthCompactList> handler = context.Item1;
+                handler(error, new StealthCompactList(stealth));
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchTransactionByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr transaction, UInt64 index, UInt64 height)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Transaction, UInt64, UInt64>, hash_t>);
+                Action<ErrorCode, Transaction, UInt64, UInt64> handler = context.Item1;
+                handler(error, new Transaction(transaction), index, height);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void FetchTransactionPositionInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 index, UInt64 height)
+        {
+            GCHandle contextHandle = (GCHandle)contextPtr;
+            try
+            {
+                var context = (contextHandle.Target as Tuple<Action<ErrorCode, UInt64, UInt64>, hash_t>);
+                Action<ErrorCode, UInt64, UInt64> handler = context.Item1;
+                handler(error, index, height);
+            }
+            finally
+            {
+                contextHandle.Free();
+            }
+        }
+
+        private static void ResultInternalHandler(IntPtr chain, IntPtr context, ErrorCode error)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                Action<ErrorCode> handler = (handlerHandle.Target as Action<ErrorCode>);
+                handler(error);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void ValidateTransactionInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, string message)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, string>);
+                handler(error, message);
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+    }
 }
