@@ -88,7 +88,6 @@ Task("Test")
 
 Task("Package")
     .IsDependentOn("Test")
-    .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
     .Does(() => {
 
         var settings = new DotNetCorePackSettings
