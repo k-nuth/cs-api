@@ -50,6 +50,9 @@ namespace Bitprim.Native
         public static extern IntPtr chain_transaction_construct_default();
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        public static extern IntPtr chain_transaction_factory_from_data(UInt32 version,byte[] data, UInt64 n);
+
+        [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr chain_transaction_inputs(IntPtr transaction);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
