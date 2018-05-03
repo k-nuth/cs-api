@@ -164,16 +164,10 @@ namespace Bitprim.Native
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_organize_transaction(IntPtr chain, IntPtr context, IntPtr transaction, ResultHandler handler);
 
-        
-
         // Misc ------------------------------------------------
         //typedef void (*validate_tx_handler_t)(chain_t, void*, error_code_t, char const* message);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ValidateTxHandler(IntPtr chain, IntPtr context, ErrorCode error, [MarshalAs(UnmanagedType.LPStr)]string message);
-
-        [DllImport(Constants.BITPRIM_C_LIBRARY)] //TODO This is a transaction constructor, move to transaction.h
-        public static extern IntPtr hex_to_tx([MarshalAs(UnmanagedType.LPStr)]string txHex);
-
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_validate_tx(IntPtr chain, IntPtr context, IntPtr transaction, ValidateTxHandler handler);
@@ -182,5 +176,4 @@ namespace Bitprim.Native
         public static extern int /* bool */ chain_is_stale(IntPtr chain);
 
     }
-
 }

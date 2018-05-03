@@ -49,7 +49,7 @@ namespace Bitprim
         /// Convert byte array to hex tring
         /// </summary>
         /// <param name="ba">Byte array</param>
-        /// <returns>HEx string representation, with as many characters as bytes</returns>
+        /// <returns>Hex string representation, with as many characters as bytes</returns>
         public static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);
@@ -67,13 +67,27 @@ namespace Bitprim
         /// <returns>ASCII byte array</returns>
         public static byte[] HexStringToByteArray(string hex)
         {
+            return HexStringToByteArray(hex, true);
+        }
+
+        /// <summary>
+        /// Convert hex string to byte array
+        /// </summary>
+        /// <param name="hex">Hex string</param>
+        /// <param name="reverse">Reverse the resulting array</param>
+        /// <returns>ASCII byte array</returns>
+        public static byte[] HexStringToByteArray(string hex, bool reverse)
+        {
             int numberChars = hex.Length;
             byte[] bytes = new byte[numberChars / 2];
             for (int i = 0; i < numberChars; i += 2)
             {
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
             }
-            Array.Reverse(bytes);
+
+            if (reverse)
+                Array.Reverse(bytes);
+            
             return bytes;
         }
 
