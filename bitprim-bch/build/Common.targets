@@ -39,9 +39,15 @@
     <Message Text="Conan Channel: $(CONAN_CHANNEL)"/>
     <Message Text="Conan Version: $(CONAN_VERSION)"/>
 
-    <WriteLinesToFile
+    <!-- <WriteLinesToFile
       File="conanfile.txt" Lines="[requires];bitprim-node-cint/$(CONAN_VERSION)@bitprim/$(CONAN_CHANNEL);[generators];cmake;[options];bitprim-node-cint:shared=True;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
+    -->
+
+    <WriteLinesToFile
+      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.9.1@bitprim/testing;[generators];cmake;[options];bitprim-node-cint:shared=True;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      Overwrite="true"/>
+
     <Message Text="Operating System: $(OS)"/>
     
     <Exec Command="conan install . --install-folder=."/>
