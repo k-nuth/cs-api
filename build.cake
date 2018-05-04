@@ -74,6 +74,7 @@ Task("Build")
 
 Task("Test")
     .IsDependentOn("Build")
+    //.WithCriteria(AppVeyor.IsRunningOnAppVeyor)
     .Does(() => {
         
          var settings = new DotNetCoreTestSettings
