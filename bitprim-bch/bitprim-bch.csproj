@@ -20,18 +20,18 @@
 
   <ItemGroup>
       <Compile Include="..\bitprim\**/*.cs" />
-      <None Include="..\bitprim\docs\Doxyfile" Link="docs\Doxyfile" />  
+      <None Include="..\bitprim\docs\Doxyfile" Link="docs\Doxyfile" /> 
   </ItemGroup>
-
 
   <ItemGroup>
     <!-- pack the target files -->
-    <Content Include="build\netstandard2.0\bitprim-bch.targets" PackagePath="build\netstandard2.0\bitprim-bch.targets" />
-	    
-	<Content Include="build\Common.targets" PackagePath="build\Common.targets" />
+    <Content Include="build\netstandard2.0\bitprim-bch.targets" PackagePath="build\netstandard2.0\bitprim-bch.targets" />  
+	  <Content Include="build\Common.targets" PackagePath="build\Common.targets" />
     
-	<!-- pack the conan file -->
+	  <!-- pack the conan file -->
     <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" />
+    <Content Include="..\bitprim\conan\conan_channel" Link="content\conan_channel" PackagePath="content\" />  
+    <Content Include="..\bitprim\conan\conan_version" Link="content\conan_version" PackagePath="content\" /> 
   </ItemGroup>
 
   <ItemGroup>
@@ -40,13 +40,10 @@
     <Folder Include="native\" />
     <Folder Include="content\" />
     <Folder Include="docs\" />
-    
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
   </ItemGroup>
-
- 
 
 </Project>

@@ -39,7 +39,6 @@ Task("Clean")
 Task("Restore")
     .Does(() => {
         DotNetCoreRestore(solutionName);
-        //NuGetRestore(solutionName);
     });
 
 GitVersion versionInfo = null;
@@ -88,7 +87,6 @@ Task("Test")
 
 Task("Package")
     .IsDependentOn("Test")
-    .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
     .Does(() => {
 
         var settings = new DotNetCorePackSettings

@@ -5,10 +5,51 @@
     </Exec>
     <Exec Command="conan remote update bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="$(ConanRemoteList.Contains('bitprim'))" />
     <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
+    
+    <ReadLinesFromFile  
+            File="..\bitprim\conan\conan_channel">  
+            <Output  
+                TaskParameter="Lines"  
+              PropertyName="CONAN_CHANNEL"  />  
+    </ReadLinesFromFile>  
+
+     <ReadLinesFromFile  
+            File="..\bitprim\conan\conan_version">  
+            <Output  
+                TaskParameter="Lines"  
+              PropertyName="CONAN_VERSION"/>  
+    </ReadLinesFromFile>      
+  
+
+    <ReadLinesFromFile  
+            File="conan_channel">  
+            <Output  
+                TaskParameter="Lines"  
+              PropertyName="CONAN_CHANNEL" Condition="'$(CONAN_CHANNEL)' == ''" />  
+    </ReadLinesFromFile>
+
+    <ReadLinesFromFile  
+            File="conan_version">  
+            <Output  
+                TaskParameter="Lines"  
+              PropertyName="CONAN_VERSION" Condition="'$(CONAN_VERSION)' == ''"/>  
+    </ReadLinesFromFile>      
+  
+  
+    <Message Text="Conan Channel: $(CONAN_CHANNEL)"/>
+    <Message Text="Conan Version: $(CONAN_VERSION)"/>
+
+    <!-- <WriteLinesToFile
+      File="conanfile.txt" Lines="[requires];bitprim-node-cint/$(CONAN_VERSION)@bitprim/$(CONAN_CHANNEL);[generators];cmake;[options];bitprim-node-cint:shared=True;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      Overwrite="true"/>
+    -->
+
     <WriteLinesToFile
       File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.9.1@bitprim/stable;[generators];cmake;[options];bitprim-node-cint:shared=True;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
+
     <Message Text="Operating System: $(OS)"/>
+    
     <Exec Command="conan install . --install-folder=."/>
     <Message Text="OS = $(OS)" />
     <Copy SourceFiles="bitprim-node-cint.dll" DestinationFiles="$(OutDir)libbitprim-node-cint.dll" Condition=" '$(OS)' == 'Windows_NT' "/>

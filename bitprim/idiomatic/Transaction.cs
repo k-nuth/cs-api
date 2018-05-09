@@ -24,10 +24,13 @@ namespace Bitprim
         /// <summary>
         /// Create a transaction from its binary hex representation.
         /// </summary>
-        /// <param name="hexString"></param>
-        public Transaction(string hexString)
+        /// <param name="version">Transaction protocol version. </param>
+        /// <param name="hexString">Raw transaction in hex</param>
+        public Transaction(UInt32 version, string hexString)
         {
-            nativeInstance_ = ChainNative.hex_to_tx(hexString);
+            //the raw tx is already reversed
+            byte[] array = Binary.HexStringToByteArray(hexString,false);
+            nativeInstance_ = TransactionNative.chain_transaction_factory_from_data(version,array,(UInt64)array.Length);
             ownsNativeObject_ = true;
         }
 
@@ -45,6 +48,12 @@ namespace Bitprim
                 version, locktime, inputs.NativeInstance, outputs.NativeInstance
             );
             ownsNativeObject_ = true;
+        }
+
+        internal Transaction(IntPtr nativeInstance, bool ownsNativeObject = true)
+        {
+            nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
         }
 
         ~Transaction()
@@ -333,11 +342,7 @@ namespace Bitprim
             }
         }
 
-        internal Transaction(IntPtr nativeInstance, bool ownsNativeObject = true)
-        {
-            nativeInstance_ = nativeInstance;
-            ownsNativeObject_ = ownsNativeObject;
-        }
+  
 
         protected virtual void Dispose(bool disposing)
         {
