@@ -863,16 +863,12 @@ namespace Bitprim
         {
             return await TaskHelper.ToTask<ErrorCode>(tcs =>
             {
-                
                 OrganizeTransaction(transaction, errorCode =>
                 {
-                    tcs.TrySetResult(errorCode);
-                   
+                    tcs.TrySetResult(errorCode);      
                 });
-                
             });
         }
-
 
         /// <summary>
         /// Given a transaction, organize it (async).
