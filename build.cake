@@ -18,11 +18,12 @@ var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
 var conanChannel = System.IO.File.ReadAllText("./bitprim/conan/conan_channel");
 var conanVersion = System.IO.File.ReadAllText("./bitprim/conan/conan_version");
 
-void UpdateConan(string pathTarget)
+void UpdateConan(string pathTarget, string currency)
 {
-    var fileTarget = System.IO.File.ReadAllText(pathTarget);
+    var fileTarget = System.IO.File.ReadAllText("./bitprim/build/Common.targets");
     fileTarget = fileTarget.Replace("$(CONAN_CHANNEL)",conanChannel);
     fileTarget = fileTarget.Replace("$(CONAN_VERSION)",conanVersion);
+    fileTarget = fileTarget.Replace("$(CONAN_CURRENCY)",currency);
     System.IO.File.WriteAllText(pathTarget,fileTarget);
 }
 
@@ -74,8 +75,8 @@ Task("ConanVersion")
         Information("Conan Channel " + conanChannel);
         Information("Conan Version " + conanVersion);
 
-        UpdateConan("./bitprim-bch/build/Common.targets");
-        UpdateConan("./bitprim-btc/build/Common.targets");
+        UpdateConan("./bitprim-bch/build/Common.targets","BCH");
+        UpdateConan("./bitprim-btc/build/Common.targets","BTC");
     });
 
 
