@@ -15,6 +15,17 @@ var publishToNuget = EnvironmentVariable("PUBLISH_TO_NUGET") ?? "false";
 
 var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
 
+var conanChannel = System.IO.File.ReadAllText("./bitprim/conan/conan_channel");
+var conanVersion = System.IO.File.ReadAllText("./bitprim/conan/conan_version");
+
+void UpdateConan(string pathTarget, string currency)
+{
+    var fileTarget = System.IO.File.ReadAllText("./bitprim/build/Common.targets");
+    fileTarget = fileTarget.Replace("$(CONAN_CHANNEL)",conanChannel);
+    fileTarget = fileTarget.Replace("$(CONAN_VERSION)",conanVersion);
+    fileTarget = fileTarget.Replace("$(CONAN_CURRENCY)",currency);
+    System.IO.File.WriteAllText(pathTarget,fileTarget);
+}
 
 Task("Clean")
     .Does(() => {
@@ -53,14 +64,26 @@ Task("Version")
         versionInfo = GitVersion(new GitVersionSettings{ OutputType = GitVersionOutput.Json });        
 
         Information("Version calculated: " + versionInfo.MajorMinorPatch);
-
         Information("Version Nuget calculated: " + versionInfo.NuGetVersion);
 
     });
 
+
+Task("ConanVersion")
+    .Does(() => {
+        
+        Information("Conan Channel " + conanChannel);
+        Information("Conan Version " + conanVersion);
+
+        UpdateConan("./bitprim-bch/build/Common.targets","BCH");
+        UpdateConan("./bitprim-btc/build/Common.targets","BTC");
+    });
+
+
 Task("Build")
     .IsDependentOn("Clean")
     .IsDependentOn("Version")
+    .IsDependentOn("ConanVersion")
     .IsDependentOn("Restore")
     .Does(() => {
 
