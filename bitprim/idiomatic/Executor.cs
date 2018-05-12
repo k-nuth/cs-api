@@ -203,6 +203,14 @@ namespace Bitprim
             }
         }
 
+        public bool IsLoadConfigValid
+        {
+            get
+            {
+                return ExecutorNative.executor_load_config_valid(nativeInstance_) != 0;
+            }
+        }
+
 
         /// <summary>
         /// Be notified (called back) when the local copy of the blockchain is reorganized.
