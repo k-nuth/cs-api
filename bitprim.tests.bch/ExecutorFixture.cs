@@ -5,7 +5,7 @@ namespace Bitprim.Tests
 
     public class ExecutorFixture : IDisposable
     {
-        private Executor exec_;
+        private readonly Executor exec_;
 
         public ExecutorFixture()
         {

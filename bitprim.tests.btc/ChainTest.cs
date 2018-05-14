@@ -7,10 +7,11 @@ using Newtonsoft.Json;
 
 namespace Bitprim.Tests
 {
+    [Collection("ChainCollection")]
     public class ChainTest : IClassFixture<ExecutorFixture>
     {
         private const int FIRST_NON_COINBASE_BLOCK_HEIGHT = 170;
-        private ExecutorFixture executorFixture_;
+        private readonly ExecutorFixture executorFixture_;
 
         public ChainTest(ExecutorFixture fixture)
         {
