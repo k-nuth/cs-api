@@ -30,6 +30,7 @@ namespace Bitprim
         private readonly ChainNative.BlockLocatorFetchHandler internalBlockLocatorFetchHandler_;
         private readonly ChainNative.FetchSpendHandler internalFetchSpendHandler_;
         private readonly ChainNative.FetchHistoryHandler internalFetchHistoryHandler_;
+        private readonly ChainNative.FetchTransactionsHandler internalFetchTxnsHandler_;
         private readonly ChainNative.FetchStealthHandler internalFetchStealthHandler_;
         private readonly ChainNative.FetchCompactBlockHandler internalFetchCompactBlockHandler_;
         private readonly ChainNative.FetchTransactionHandler internalFetchTransactionHandler_;
@@ -54,6 +55,7 @@ namespace Bitprim
             internalBlockLocatorFetchHandler_ = FetchBlockLocatorInternalHandler;
             internalFetchSpendHandler_ = FetchSpendInternalHandler;
             internalFetchHistoryHandler_ = FetchHistoryInternalHandler;
+            internalFetchTxnsHandler_ = FetchTransactionsInternalHandler;
             internalFetchStealthHandler_ = FetchStealthInternalHandler;
             internalFetchCompactBlockHandler_ = FetchCompactBlockInternalHandler;
             internalFetchTransactionHandler_ = FetchTransactionByHashInternalHandler;
@@ -723,14 +725,6 @@ namespace Bitprim
             });
         }
 
-
-        /// <summary>
-        /// Get a list of output points, values, and spends for a given payment address (asynchronously)
-        /// </summary>
-        /// <param name="address"> Bitcoin payment address to search </param>
-        /// <param name="limit"> Maximum amount of results to fetch </param>
-        /// <param name="fromHeight"> Starting point to search for transactions </param>
-        /// <param name="handler"> Callback which will be called when the history is retrieved </param>
         private void FetchHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HistoryCompactList> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
@@ -738,7 +732,33 @@ namespace Bitprim
             ChainNative.chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalFetchHistoryHandler_);
         }
 
+        /// <summary>
+        /// Get a list of tx ids for a given payment address (asynchronously). Duplicates are already filtered out.
+        /// </summary>
+        /// <param name="address"> Bitcoin payment address to search </param>
+        /// <param name="limit"> Maximum amount of results to fetch </param>
+        /// <param name="fromHeight"> Starting point to search for transactions </param>
+        public async Task<DisposableApiCallResult<HashList>> FetchTransactionsAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
+        {
+            return await TaskHelper.ToTask<DisposableApiCallResult<HashList>>(tcs =>
+            {
+                FetchTxns(address, limit, fromHeight, (code, txns) =>
+                {
+                    tcs.TrySetResult(new DisposableApiCallResult<HashList>
+                    {
+                        ErrorCode = code,
+                        Result = txns
+                    });
+                });
+            });
+        }
 
+        private void FetchTxns(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HashList> handler)
+        {
+            GCHandle handlerHandle = GCHandle.Alloc(handler);
+            IntPtr handlerPtr = (IntPtr)handlerHandle;
+            ChainNative.chain_fetch_txns(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalFetchTxnsHandler_);
+        }
 
         #endregion //History
 
@@ -1094,6 +1114,20 @@ namespace Bitprim
             {
                 var handler = (handlerHandle.Target as Action<ErrorCode, HistoryCompactList>);
                 handler(error, new HistoryCompactList(history));
+            }
+            finally
+            {
+                handlerHandle.Free();
+            }
+        }
+
+        private static void FetchTransactionsInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr txns)
+        {
+            GCHandle handlerHandle = (GCHandle)context;
+            try
+            {
+                var handler = (handlerHandle.Target as Action<ErrorCode, HashList>);
+                handler(error, new HashList(txns));
             }
             finally
             {

@@ -46,3 +46,9 @@
 /tools/*
 !tools/packages.config
 /build
+/bitprim.console/archive/
+/bitprim.console/bn
+/bitprim.console/deploy_manifest.txt
+/bitprim.console/libbitprim-node-cint.so
+/bitprim.tests/
+/bitprim/bin/

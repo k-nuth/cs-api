@@ -127,8 +127,15 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FetchHistoryHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr history);
 
+        //typedef void (*history_fetch_handler_t)(chain_t, void*, error_code_t, hash_list_t history);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void FetchTransactionsHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr txns);
+
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_fetch_history(IntPtr chain, IntPtr context, IntPtr address, UInt64 limit, UInt64 from_height, FetchHistoryHandler handler);
+
+        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        public static extern void chain_fetch_txns(IntPtr chain, IntPtr context, IntPtr address, UInt64 limit, UInt64 from_height, FetchTransactionsHandler handler);
 
         
         // Stealth ---------------------------------------------------------------------
