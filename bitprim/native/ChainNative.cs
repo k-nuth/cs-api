@@ -60,9 +60,7 @@ namespace Bitprim.Native
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_fetch_block_header_by_hash(IntPtr chain, IntPtr context, hash_t hash, FetchBlockHeaderHandler handler);
-
-        
-
+      
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_fetch_block_header_by_height(IntPtr chain, IntPtr context, UInt64 height, FetchBlockHeaderHandler handler);
 
@@ -135,7 +133,7 @@ namespace Bitprim.Native
         public static extern void chain_fetch_history(IntPtr chain, IntPtr context, IntPtr address, UInt64 limit, UInt64 from_height, FetchHistoryHandler handler);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern void chain_fetch_txns(IntPtr chain, IntPtr context, IntPtr address, UInt64 limit, UInt64 from_height, FetchTransactionsHandler handler);
+        public static extern void chain_fetch_confirmed_transactions(IntPtr chain, IntPtr context, IntPtr address, UInt64 limit, UInt64 from_height, FetchTransactionsHandler handler);
 
         
         // Stealth ---------------------------------------------------------------------
@@ -166,10 +164,14 @@ namespace Bitprim.Native
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_organize_block(IntPtr chain, IntPtr context, IntPtr block, ResultHandler handler);
-
-        
+ 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_organize_transaction(IntPtr chain, IntPtr context, IntPtr transaction, ResultHandler handler);
+
+        // Mempool.
+        //-------------------------------------------------------------------------
+        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        public static extern void chain_get_mempool_transactions(IntPtr chain, IntPtr address, int /*bool*/ use_testnet_rules, int /*bool*/ witness, ref IntPtr out_txs);
 
         // Misc ------------------------------------------------
         //typedef void (*validate_tx_handler_t)(chain_t, void*, error_code_t, char const* message);
