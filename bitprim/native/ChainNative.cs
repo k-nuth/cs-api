@@ -171,7 +171,7 @@ namespace Bitprim.Native
         // Mempool.
         //-------------------------------------------------------------------------
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern void chain_get_mempool_transactions(IntPtr chain, IntPtr address, int /*bool*/ use_testnet_rules, int /*bool*/ witness, ref IntPtr out_txs);
+        public static extern IntPtr chain_get_mempool_transactions(IntPtr chain, IntPtr address, int /*bool*/ use_testnet_rules);
 
         // Misc ------------------------------------------------
         //typedef void (*validate_tx_handler_t)(chain_t, void*, error_code_t, char const* message);

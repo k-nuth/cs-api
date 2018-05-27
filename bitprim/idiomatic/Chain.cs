@@ -956,10 +956,9 @@ namespace Bitprim
 
         #region Mempool
 
-        public MempoolTransactionList GetMempoolTransactions(PaymentAddress address, bool useTestnetRules, bool witness)
+        public MempoolTransactionList GetMempoolTransactions(PaymentAddress address, bool useTestnetRules)
         {
-            IntPtr txs = IntPtr.Zero;
-            ChainNative.chain_get_mempool_transactions(nativeInstance_, address.NativeInstance, useTestnetRules? 1:0, witness? 1:0, ref txs);
+            IntPtr txs = ChainNative.chain_get_mempool_transactions(nativeInstance_, address.NativeInstance, useTestnetRules? 1:0);
             return new MempoolTransactionList(txs);
         }
 
