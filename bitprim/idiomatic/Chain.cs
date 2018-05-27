@@ -738,11 +738,11 @@ namespace Bitprim
         /// <param name="address"> Bitcoin payment address to search </param>
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
-        public async Task<DisposableApiCallResult<HashList>> FetchTransactionsAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
+        public async Task<DisposableApiCallResult<HashList>> FetchConfirmedTransactionsAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
         {
             return await TaskHelper.ToTask<DisposableApiCallResult<HashList>>(tcs =>
             {
-                FetchTxns(address, limit, fromHeight, (code, txns) =>
+                FetchConfirmedTransactions(address, limit, fromHeight, (code, txns) =>
                 {
                     tcs.TrySetResult(new DisposableApiCallResult<HashList>
                     {
@@ -753,11 +753,11 @@ namespace Bitprim
             });
         }
 
-        private void FetchTxns(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HashList> handler)
+        private void FetchConfirmedTransactions(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HashList> handler)
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_txns(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalFetchTxnsHandler_);
+            ChainNative.chain_fetch_confirmed_transactions(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalFetchTxnsHandler_);
         }
 
         #endregion //History
@@ -929,7 +929,6 @@ namespace Bitprim
             });
         }
 
-
         /// <summary>
         /// Determine if a transaction is valid for submission to the blockchain.
         /// </summary>
@@ -955,6 +954,15 @@ namespace Bitprim
 
         #endregion //Misc
 
+        #region Mempool
+
+        public MempoolTransactionList GetMempoolTransactions(PaymentAddress address, bool useTestnetRules)
+        {
+            IntPtr txs = ChainNative.chain_get_mempool_transactions(nativeInstance_, address.NativeInstance, useTestnetRules? 1:0);
+            return new MempoolTransactionList(txs);
+        }
+
+        #endregion //Mempool
 
         private IntPtr CreateContext<TC, TP>(TC callback, TP parameters)
         {
