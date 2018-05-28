@@ -52,3 +52,5 @@
 /bitprim.console/libbitprim-node-cint.so
 /bitprim.tests/
 /bitprim/bin/
+/bitprim.tests.bch/bitprim-node-cint.dll
+/bitprim.tests.btc/bitprim-node-cint.dll
