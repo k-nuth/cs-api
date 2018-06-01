@@ -758,7 +758,6 @@ namespace Bitprim.Logging
         private readonly ICallSiteExtension _callsiteLogger;
         private readonly Func<bool> _getIsDisabled;
         internal const string FailedToGenerateLogMessage = "Failed to generate log message";
-        private Func<string> _lastExtensionMethod;
 
         internal LoggerExecutionWrapper(Logger logger, Func<bool> getIsDisabled = null)
         {

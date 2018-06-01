@@ -54,6 +54,10 @@ namespace Bitprim.Native
         [DllImport(Constants.BITPRIM_C_LIBRARY, EntryPoint = "node_settings_get_network")]
         public static extern NetworkType executor_get_network(IntPtr executor);
 
+        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        public static extern int /*bool*/ executor_load_config_valid(IntPtr exec);
+
+
         //TODO Add when networking interface is ready
         //[DllImport(Constants.BITPRIM_C_LIBRARY)]
         //public static extern IntPtr executor_get_p2p(IntPtr exec);

@@ -6,12 +6,12 @@
     <Exec Command="conan remote update bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="$(ConanRemoteList.Contains('bitprim'))" />
     <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
     
-    <Message Text="Conan Channel: stable"/>
-    <Message Text="Conan Version: 0.10.0"/>
-    <Message Text="Conan Currency: BCH"/>
+    <Message Text="Conan Channel: $(CONAN_CHANNEL)"/>
+    <Message Text="Conan Version: $(CONAN_VERSION)"/>
+    <Message Text="Conan Currency: $(CONAN_CURRENCY)"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.10.0@bitprim/stable;[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=BCH;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];bitprim-node-cint/$(CONAN_VERSION)@bitprim/$(CONAN_CHANNEL);[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=$(CONAN_CURRENCY);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>

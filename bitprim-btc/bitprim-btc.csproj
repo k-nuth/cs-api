@@ -32,9 +32,7 @@
 		<Content Include="build\Common.targets" PackagePath="build\Common.targets" />
     
 	  <!-- pack the conan file -->
-    <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" />
-    <Content Include="..\bitprim\conan\conan_channel" Link="content\conan_channel" PackagePath="content\" />  
-    <Content Include="..\bitprim\conan\conan_version" Link="content\conan_version" PackagePath="content\" /> 
+    <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" /> 
   </ItemGroup>
 
   <ItemGroup>

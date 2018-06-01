@@ -21,6 +21,15 @@
     <ProjectReference Include="..\bitprim-bch\bitprim-bch.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="config\invalid.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="config\valid.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <Target Name="CopyNativeLib" AfterTargets="Build">
     <CallTarget Targets="GetBitprimNodeCint" />
   </Target>
