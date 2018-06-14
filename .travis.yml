@@ -6,6 +6,7 @@ branches:
   only:
   - master
   - dev
+  - feature-CS-53
 
 configuration:
 - Release
@@ -94,6 +95,7 @@ install:
         pyenv activate conan
       fi
       
+      pip install --upgrade pip
       pip install conan_package_tools --upgrade
       pip install conan --upgrade
       pip install wheel --upgrade
