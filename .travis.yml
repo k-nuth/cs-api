@@ -6,7 +6,6 @@ branches:
   only:
   - master
   - dev
-  - feature-CS-53
 
 configuration:
 - Release
