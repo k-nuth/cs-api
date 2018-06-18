@@ -6,7 +6,6 @@ branches:
   only:
   - master
   - dev
-  - feature-CS-54
 
 configuration:
 - Release
