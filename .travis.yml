@@ -6,6 +6,7 @@ branches:
   only:
   - master
   - dev
+  - feature-CS-54
 
 configuration:
 - Release
@@ -37,7 +38,7 @@ osx: &osx
 mono:
   - latest
 
-dotnet: 2.1.4
+dotnet: 2.1
 
 matrix:
    include:
