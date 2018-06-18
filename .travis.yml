@@ -37,7 +37,7 @@ osx: &osx
 mono:
   - latest
 
-dotnet: 2.1.4
+dotnet: 2.1.300
 
 matrix:
    include:
