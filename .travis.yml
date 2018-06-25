@@ -4,8 +4,11 @@ dist: trusty
 
 branches:
   only:
-  - master
   - dev
+  - /^v\d+\.\d+\.\d+$/
+  - /^release-\d+\.\d+\.\d+$/
+  - /^feature-ci-.+$/
+  - /^feature_ci_.+$/
 
 configuration:
 - Release
