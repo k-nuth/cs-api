@@ -2,6 +2,7 @@ build: off
 
 branches:
   only:
+  - master
   - dev
   - /^v\d+\.\d+\.\d+$/
   - /^release-\d+\.\d+\.\d+$/
