@@ -387,9 +387,9 @@ namespace Bitprim.Tests
         {
             using (var address = new PaymentAddress("1PDatg81sEwirJU3QUKcGLyfQC6epZNyiL"))
             {
-                using (var lista = executorFixture_.Executor.Chain.GetMempoolTransactions(address, true))
+                using (var list = executorFixture_.Executor.Chain.GetMempoolTransactions(address, true))
                 {
-                    Assert.True(lista.Count>=0); 
+                    Assert.True(list.Count>=0); 
                 }
             }
         }
