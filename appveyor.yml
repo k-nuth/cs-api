@@ -8,7 +8,7 @@ branches:
   - /^feature-ci-.+$/
   - /^feature_ci_.+$/
 
- appveyor_repo_tag: true
+
 
 platform:
   - x64
