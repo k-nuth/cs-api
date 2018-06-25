@@ -2,11 +2,11 @@ build: off
 
 branches:
   only:
-    - dev
-    - /^v\d+\.\d+\.\d+$/
-    - /^release-\d+\.\d+\.\d+$/
-    - /^feature-ci-.+$/
-    - /^feature_ci_.+$/
+  - dev
+  - /^v\d+\.\d+\.\d+$/
+  - /^release-\d+\.\d+\.\d+$/
+  - /^feature-ci-.+$/
+  - /^feature_ci_.+$/
 
 platform:
   - x64
