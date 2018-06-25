@@ -381,5 +381,17 @@ namespace Bitprim.Tests
             Assert.Equal(ErrorCode.Success, ret.ErrorCode);
             Assert.Equal("2009-01-03 18:15:05", ret.Result.BlockTimestamp.ToString("yyyy-MM-dd HH:mm:ss"));
         }
+
+        [Fact]
+        public void GetMempoolTransactions()
+        {
+            using (var address = new PaymentAddress("1PDatg81sEwirJU3QUKcGLyfQC6epZNyiL"))
+            {
+                using (var lista = executorFixture_.Executor.Chain.GetMempoolTransactions(address, true))
+                {
+                    Assert.True(lista.Count>=0); 
+                }
+            }
+        }
     }
 }
