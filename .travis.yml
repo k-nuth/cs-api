@@ -159,7 +159,7 @@ script:
       moxygen --anchors ./xml/
       
       git clone https://github.com/bitprim/bitprim-docs.git
-      
+      ls
       yes | cp -rf api.md ./bitprim/docs/bitprim-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
 
       cd bitprim-docs 
