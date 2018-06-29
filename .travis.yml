@@ -133,9 +133,9 @@ install:
       nvm install 8.4.0
       npm install moxygen -g
       #Install Doxygen 1.8.13
-      wget 'ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.13.src.tar.gz'
-      tar -xzf doxygen-1.8.13.src.tar.gz
-      cd doxygen-1.8.13
+      wget 'ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.14.src.tar.gz'
+      tar -xzf doxygen-1.8.14.src.tar.gz
+      cd doxygen-1.8.14
       mkdir build
       cd build
       cmake -G "Unix Makefiles" ..
@@ -155,11 +155,16 @@ script:
     else
       cd bitprim/docs
       doxygen Doxyfile
-      moxygen ./xml/
-      git clone https://dario-ramos:dir4ylgmhl4ci2243xk5gnxt1k9rclbxt7eiila378ktbmur5j802hfl5hg9wjdq@git.gitbook.com/jujumax/bitprim.git
-      yes | cp -rf api.md ./bitprim/dotnet-interface/reference.md 
-      cd bitprim
-      git add dotnet-interface/reference.md
+      moxygen --anchors ./xml/
+    
+      git clone https://github.com/bitprim/bitprim-docs.git
+      git checkout master
+      yes | cp -rf api.md ./bitprim/docs/bitprim-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
+    
+      cd bitprim-docs
+      git add docs/developer_guide/dotnet/dotnet-interface-details.md
       git commit -m "Updated Dotnet docs" || :
-      git push -u -f || :
+      git remote add origin-commit https://${GH_TOKEN}@github.com/bitprim/bitprim-docs.git > /dev/null 2>&1
+      git push --quiet --set-upstream origin-commit master  || true
+    
     fi
