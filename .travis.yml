@@ -157,12 +157,14 @@ script:
       cd bitprim/docs
       doxygen Doxyfile
       moxygen --anchors ./xml/
-    
+      
       git clone https://github.com/bitprim/bitprim-docs.git
-      git checkout master
+      
       yes | cp -rf api.md ./bitprim/docs/bitprim-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
-    
-      cd bitprim-docs
+
+      cd bitprim-docs 
+      git checkout master
+      
       git add docs/developer_guide/dotnet/dotnet-interface-details.md
       git commit -m "Updated Dotnet docs" || :
       git remote add origin-commit https://${GH_TOKEN}@github.com/bitprim/bitprim-docs.git > /dev/null 2>&1
