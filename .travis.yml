@@ -129,7 +129,7 @@ install:
 
       fi
 
-    else
+    #else
       #Install Moxygen
       #nvm install 8.4.0
       #npm install moxygen -g
@@ -153,7 +153,7 @@ script:
       chmod +x build.sh
       ./build.sh
 
-    else
+    #else
       #cd bitprim/docs
       #doxygen Doxyfile
       #moxygen --anchors ./xml/
