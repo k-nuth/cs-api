@@ -55,9 +55,9 @@ matrix:
               - gcc-4.9
         env: UPDATE_DOCS=false MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
-      - <<: *linux
-        compiler: gcc 
-        env: UPDATE_DOCS=true
+      #- <<: *linux
+      #  compiler: gcc 
+      #  env: UPDATE_DOCS=true
 
       - <<: *osx
         osx_image: xcode8.3
@@ -131,19 +131,19 @@ install:
 
     else
       #Install Moxygen
-      nvm install 8.4.0
-      npm install moxygen -g
+      #nvm install 8.4.0
+      #npm install moxygen -g
       #Install Doxygen 1.8.13
-      wget 'ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.14.src.tar.gz'
-      tar -xzf doxygen-1.8.14.src.tar.gz
-      cd doxygen-1.8.14
-      mkdir build
-      cd build
-      cmake -G "Unix Makefiles" ..
-      make
-      sudo make install
-      cd ../..
-      doxygen -v
+      #wget 'ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.13.src.tar.gz'
+      #tar -xzf doxygen-1.8.13.src.tar.gz
+      #cd doxygen-1.8.13
+      #mkdir build
+      #cd build
+      #cmake -G "Unix Makefiles" ..
+      #make
+      #sudo make install
+      #cd ../..
+      #doxygen -v
     fi
 
 script:
@@ -154,20 +154,20 @@ script:
       ./build.sh
 
     else
-      cd bitprim/docs
-      doxygen Doxyfile
-      moxygen --anchors ./xml/
+      #cd bitprim/docs
+      #doxygen Doxyfile
+      #moxygen --anchors ./xml/
       
-      git clone https://github.com/bitprim/bitprim-docs.git
-      ls
-      yes | cp -rf api.md ./bitprim/docs/bitprim-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
+      #git clone https://github.com/bitprim/bitprim-docs.git
+      #ls
+      #yes | cp -rf api.md ./bitprim/docs/bitprim-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
 
-      cd bitprim-docs 
-      git checkout master
+      #cd bitprim-docs 
+      #git checkout master
       
-      git add docs/developer_guide/dotnet/dotnet-interface-details.md
-      git commit -m "Updated Dotnet docs" || :
-      git remote add origin-commit https://${GH_TOKEN}@github.com/bitprim/bitprim-docs.git > /dev/null 2>&1
-      git push --quiet --set-upstream origin-commit master  || true
+      #git add docs/developer_guide/dotnet/dotnet-interface-details.md
+      #git commit -m "Updated Dotnet docs" || :
+      #git remote add origin-commit https://${GH_TOKEN}@github.com/bitprim/bitprim-docs.git > /dev/null 2>&1
+      #git push --quiet --set-upstream origin-commit master  || true
     
     fi
