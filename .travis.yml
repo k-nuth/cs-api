@@ -9,7 +9,6 @@ branches:
   - /^release-\d+\.\d+\.\d+$/
   - /^feature-ci-.+$/
   - /^feature_ci_.+$/
-  - feature-CS-59
 
 configuration:
 - Release
