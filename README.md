@@ -70,5 +70,5 @@ if you have problems running build.ps1 please check this link
 
 ##Examples
 
-For logging integration example see: [Example](https://github.com/bitprim/bitprim-cs/tree/dev/bitprim.console)
+For a logging integration example see: [Example](https://github.com/bitprim/bitprim-cs/tree/dev/bitprim.console)
 
