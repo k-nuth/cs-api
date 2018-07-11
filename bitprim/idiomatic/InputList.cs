@@ -3,33 +3,35 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
+    /// <summary>
+    /// Represents a list of Inputs
+    /// </summary>
     public class InputList : NativeList<Input>
     {
         private bool ownsNativeObject_;
 
-        public override IntPtr CreateNativeList()
+        protected override IntPtr CreateNativeList()
         {
             ownsNativeObject_ = true;
             return InputListNative.chain_input_list_construct_default();
         }
 
-        public override Input GetNthNativeElement(uint n)
+        protected override Input GetNthNativeElement(uint n)
         {
             return new Input(InputListNative.chain_input_list_nth(NativeInstance, (UIntPtr)n), false);
         }
 
-        public override uint GetCount()
+        protected override uint GetCount()
         {
             return (uint) InputListNative.chain_input_list_count(NativeInstance);
         }
 
-        public override void AddElement(Input element)
+        protected override void AddElement(Input element)
         {
             InputListNative.chain_input_list_push_back(NativeInstance, element.NativeInstance);
         }
 
-        public override void DestroyNativeList()
+        protected override void DestroyNativeList()
         {
             if(ownsNativeObject_)
             {

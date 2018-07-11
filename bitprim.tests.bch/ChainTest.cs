@@ -21,7 +21,7 @@ namespace Bitprim.Tests
         [Fact]
         public async Task TestFetchLastHeight()
         {
-            Tuple<ErrorCode,UInt64> errorAndHeight = await FetchLastHeight();
+            Tuple<ErrorCode, UInt64> errorAndHeight = await FetchLastHeight();
             Assert.Equal(ErrorCode.Success, errorAndHeight.Item1);
         }
 
@@ -71,7 +71,7 @@ namespace Bitprim.Tests
             }
         }
 
-        
+
 
         [Fact]
         public async Task TestFetchBlockHeightAsync()
@@ -79,7 +79,7 @@ namespace Bitprim.Tests
             //https://blockchain.info/es/block-height/0
             var hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
             var ret = await executorFixture_.Executor.Chain.FetchBlockHeightAsync(hash);
-            
+
             Assert.Equal(ErrorCode.Success, ret.ErrorCode);
             Assert.Equal<UInt64>(0, ret.Result);
         }
@@ -136,7 +136,7 @@ namespace Bitprim.Tests
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 Assert.Equal<uint>(0, ret.Result.Count);
             }
-           
+
         }
 
         [Fact]
@@ -153,7 +153,7 @@ namespace Bitprim.Tests
                 Assert.Equal<UInt64>(1, ret.Result.TxPosition.Index);
                 CheckFirstNonCoinbaseTxFromHeight170(ret.Result.Tx, txHashHexStr);
             }
-            
+
         }
 
         [Fact]
@@ -213,9 +213,9 @@ namespace Bitprim.Tests
         {
             string uri = @"https://blockchain.info/block-height/" + height + "?format=json";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            using(HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using(Stream stream = response.GetResponseStream())
-            using(StreamReader reader = new StreamReader(stream))
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream))
             {
                 var jsonObject = JsonConvert.DeserializeObject<dynamic>(reader.ReadToEnd());
                 return jsonObject;
@@ -230,7 +230,7 @@ namespace Bitprim.Tests
             Assert.Equal("0000000000000000000000000000000000000000000000000000000000000000", Binary.ByteArrayToHexString(header.PreviousBlockHash));
             Assert.Equal<UInt32>(1, header.Version);
             Assert.Equal<UInt32>(486604799, header.Bits);
-            Assert.Equal<UInt32>(2083236893, header.Nonce);            
+            Assert.Equal<UInt32>(2083236893, header.Nonce);
             DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
             Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
@@ -344,13 +344,14 @@ namespace Bitprim.Tests
         private async Task WaitUntilBlock(UInt64 desiredHeight, string callerName)
         {
             ErrorCode error = 0;
-            UInt64 height = 0;            
-            while(error == 0 && height < desiredHeight){
+            UInt64 height = 0;
+            while (error == 0 && height < desiredHeight)
+            {
                 Console.WriteLine("--->" + callerName + " checking height: " + height);
                 var errorAndHeight = await FetchLastHeight();
                 error = errorAndHeight.Item1;
                 height = errorAndHeight.Item2;
-                if(height < desiredHeight)
+                if (height < desiredHeight)
                 {
                     await Task.Delay(10000);
                 }
@@ -358,7 +359,7 @@ namespace Bitprim.Tests
             Assert.Equal(ErrorCode.Success, error);
         }
 
-        
+
         [Fact]
         public async Task FetchBlockHeaderByHashTxSizesAsync()
         {
@@ -385,9 +386,105 @@ namespace Bitprim.Tests
             {
                 using (var list = executorFixture_.Executor.Chain.GetMempoolTransactions(address, true))
                 {
-                    Assert.True(list.Count>=0); 
+                    Assert.True(list.Count >= 0);
                 }
             }
+        }
+        /*
+        [Fact]
+        public async Task FetchBlockLocatorAsync()
+        {
+            using (var list = new BlockIndexList())
+            {
+                list.Add(1);
+                list.Add(2);
+                list.Add(3);
+
+                using (DisposableApiCallResult<HeaderReader> ret = await executorFixture_.Executor.Chain.FetchBlockLocatorAsync(list))
+                {
+                    Assert.True(ret.Result.IsValid);
+                }
+            }
+
+        }*/
+
+       /* [Fact]
+        public async Task FetchCompactBlockByHashAsync()
+        {
+            var hash = Binary.HexStringToByteArray("000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943");
+            using (var ret = await executorFixture_.Executor.Chain.FetchCompactBlockByHashAsync(hash))
+            {
+                Assert.True(ret.Result.BlockData.IsValid); 
+            }
+        }*/
+        /*
+        [Fact]
+        public async Task FetchCompactBlockByHeightAsync()
+        {
+            using (var ret = await executorFixture_.Executor.Chain.FetchCompactBlockByHeightAsync(1))
+            {
+                Assert.True(ret.Result.BlockData.IsValid); 
+            }
+        }*/
+
+        [Fact]
+        public async Task FetchHistoryAsync()
+        {
+            using (var address = new PaymentAddress("bchtest:qp7d6x2weeca9fn6eakwvgd9ryq8g6h0tuyks75rt7"))
+            {
+                using (var ret = await executorFixture_.Executor.Chain.FetchHistoryAsync(address,10,1))
+                {
+                    Assert.True(ret.Result.Count >= 0); 
+                }
+            }
+            
+        }
+
+        [Fact]
+        public async Task FetchConfirmedTransactionsAsync()
+        {
+            using (var address = new PaymentAddress("bchtest:qp7d6x2weeca9fn6eakwvgd9ryq8g6h0tuyks75rt7"))
+            using (var ret = await executorFixture_.Executor.Chain.FetchConfirmedTransactionsAsync(address,10,1))
+            {
+                Assert.True(ret.Result.Count >= 0); 
+            }
+        }
+
+        [Fact]
+        public async Task OrganizeBlockAsync()
+        {
+            using (var block = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
+            {
+                var ret = await executorFixture_.Executor.Chain.OrganizeBlockAsync(block.Result.BlockData);
+                Assert.True(ret == ErrorCode.DuplicateBlock);
+            }
+        }
+
+        [Fact]
+        public async Task OrganizeTransactionAsync()
+        {
+            using (var block = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
+            {
+                var ret = await executorFixture_.Executor.Chain.OrganizeTransactionAsync(block.Result.BlockData.GetNthTransaction(0));
+                Assert.True(ret == ErrorCode.CoinbaseTransaction);
+            }
+        }
+
+        [Fact]
+        public async Task ValidateTransactionAsync()
+        {
+            using (var block = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
+            {
+                var ret = await executorFixture_.Executor.Chain.ValidateTransactionAsync(block.Result.BlockData.GetNthTransaction(0));
+                Assert.True(ret.ErrorCode == ErrorCode.CoinbaseTransaction);
+            }
+        }
+
+        [Fact]
+        public void IsStale()
+        {
+            var ret = executorFixture_.Executor.Chain.IsStale;
+            Assert.True(ret);
         }
     }
 }

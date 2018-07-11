@@ -3,7 +3,7 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
+    /*
     /// <summary>
     /// Helper for reading the header for each block in a specific set of blocks.
     /// </summary>
@@ -118,6 +118,6 @@ namespace Bitprim
             GetHeadersNative.chain_get_headers_destruct(nativeInstance_);
         }
 
-    }
+    }*/
 
 }

@@ -1,6 +1,8 @@
 namespace Bitprim
 {
-
+    /// <summary>
+    /// Represents the network type
+    /// </summary>
     public enum NetworkType
     {
         None = 0,
