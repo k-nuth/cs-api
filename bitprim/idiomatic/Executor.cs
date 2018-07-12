@@ -196,7 +196,7 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Returns true if the node is stopped
+        /// Returns true if and only if the node is stopped
         /// </summary>
         public bool IsStopped
         {
@@ -207,7 +207,7 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Returns true if the config file is valid
+        /// Returns true if and only if and only if the config file is valid
         /// </summary>
         public bool IsLoadConfigValid
         {

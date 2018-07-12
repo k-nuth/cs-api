@@ -3,7 +3,7 @@ using System;
 namespace Bitprim
 {
     /// <summary>
-    /// Represent a result of calling an API method
+    /// Represents a result of calling a native API method
     /// </summary>
     /// <typeparam name="TResultData">The Result's type</typeparam>
     public class ApiCallResult<TResultData>
@@ -20,13 +20,13 @@ namespace Bitprim
     }
 
     /// <summary>
-    /// Represent a disposable result of calling an API method. It's necessary to call Dispose when the result is not needed anymore
+    /// Represents a disposable result of calling an API method. It's necessary to call Dispose when the result is not needed anymore
     /// </summary>
     /// <typeparam name="TResultData">The Result's type</typeparam>
     public sealed class DisposableApiCallResult<TResultData> : ApiCallResult<TResultData>, IDisposable where TResultData : IDisposable
     {
         /// <summary>
-        /// Dipose method for cleaning resources
+        /// Dispose method for resource cleanup
         /// </summary>
         public void Dispose()
         {
@@ -35,23 +35,23 @@ namespace Bitprim
     }
 
     /// <summary>
-    /// Contains data for a block
+    /// Contains block information
     /// </summary>
-    /// <typeparam name="TBlockData">Type of the data</typeparam>
+    /// <typeparam name="TBlockData">Specific block data type</typeparam>
     public sealed class GetBlockDataResult<TBlockData> : IDisposable where TBlockData : IDisposable
     {
         /// <summary>
-        /// Return the blocks' data
+        /// Return the block's data
         /// </summary>
         public TBlockData BlockData { get; set; }
         
         /// <summary>
-        /// The height of the block
+        /// The block's height
         /// </summary>
         public UInt64 BlockHeight;
 
         /// <summary>
-        /// Dipose method for cleaning resources
+        /// Dispose method for resource cleanup
         /// </summary>
         public void Dispose()
         {
@@ -70,17 +70,17 @@ namespace Bitprim
         public GetBlockDataResult<Header> Block { get; set; }
         
         /// <summary>
-        /// List of transaction's hashes
+        /// List of transaction hashes
         /// </summary>
         public HashList TransactionHashes { get; set; }
         
         /// <summary>
-        /// Size of a serialized block
+        /// Serialized block size in bytes
         /// </summary>
         public UInt64 SerializedBlockSize { get; set; }
 
         /// <summary>
-        /// Dipose method for cleaning resources
+        /// Dispose method for resource cleanup
         /// </summary>
         public void Dispose()
         {
@@ -117,12 +117,12 @@ namespace Bitprim
         public Transaction Tx { get; set; }
         
         /// <summary>
-        /// Block information
+        /// Transaction position as a block height - index pair
         /// </summary>
         public GetTxPositionResult TxPosition { get; set; }
 
         /// <summary>
-        /// Dipose method for cleaning resources
+        /// Dispose method for resource cleanup
         /// </summary>
         public void Dispose()
         {

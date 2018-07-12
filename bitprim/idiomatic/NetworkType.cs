@@ -1,7 +1,7 @@
 namespace Bitprim
 {
     /// <summary>
-    /// Represents the network type
+    /// Represents the network type (Mainnet, Testnet, Regtest)
     /// </summary>
     public enum NetworkType
     {

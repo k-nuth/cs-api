@@ -78,7 +78,7 @@ If you want to build from source, you need the following prerequisites:
 
 * .Net Framework 4.6.1
 * .Net Core 2.0
-* Powershell (Only windows)
+* Powershell (Windows only)
 
 Run the following commands:
 
@@ -86,11 +86,11 @@ Run the following commands:
 git clone https://github.com/bitprim/bitprim-cs.git
 cd bitprim-cs
 
-if you are on windows run:
+if you are on Windows, run:
 
 powershell ./build.ps1
 
-if you are in linux or osx :
+if you are in Linux or osx :
 
 chmod +x build.sh
 ./build.sh

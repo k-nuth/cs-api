@@ -1,7 +1,7 @@
 namespace Bitprim
 {
     /// <summary>
-    /// Define the kind of a Point
+    /// Defines output point kind (Value or Spend)
     /// </summary>
     public enum PointKind
     {

@@ -67,19 +67,19 @@ namespace Bitprim
         protected abstract void DestroyNativeList();
 
         /// <summary>
-        /// Allow access elements by index
+        /// Allow element random access (by index)
         /// </summary>
-        /// <param name="index"></param>
+        /// <param name="index">Zero-based index</param>
         /// <returns></returns>
         public T this[uint index] => GetNthNativeElement(index);
 
         /// <summary>
-        /// Returns the count of elements
+        /// Returns element count
         /// </summary>
         public uint Count => GetCount();
 
         /// <summary>
-        /// Adds an element to the list
+        /// Element to add; it is added at the end of the list
         /// </summary>
         /// <param name="element"></param>
         public void Add(T element)
