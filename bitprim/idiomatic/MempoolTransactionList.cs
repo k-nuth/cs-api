@@ -3,33 +3,35 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
+    /// <summary>
+    /// Represents a list of MempoolTransaction
+    /// </summary>
     public class MempoolTransactionList : NativeList<MempoolTransaction>
     {
         private bool ownsNativeObject_;
 
-        public override IntPtr CreateNativeList()
+        protected override IntPtr CreateNativeList()
         {
             ownsNativeObject_ = true;
             return MempoolTransactionListNative.chain_mempool_transaction_list_construct_default();
         }
 
-        public override MempoolTransaction GetNthNativeElement(uint n)
+        protected override MempoolTransaction GetNthNativeElement(uint n)
         {
             return new MempoolTransaction(MempoolTransactionListNative.chain_mempool_transaction_list_nth(NativeInstance, n));
         }
 
-        public override uint GetCount()
+        protected override uint GetCount()
         {
             return (uint) MempoolTransactionListNative.chain_mempool_transaction_list_count(NativeInstance);
         }
 
-        public override void AddElement(MempoolTransaction element)
+        protected override void AddElement(MempoolTransaction element)
         {
             throw new NotImplementedException("Read only list");
         }
 
-        public override void DestroyNativeList()
+        protected override void DestroyNativeList()
         {
             if(ownsNativeObject_)
             {

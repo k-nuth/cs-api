@@ -148,11 +148,12 @@ namespace Bitprim.Native
         // Block indexes ---------------------------------------------------------------
 
         //typedef void (*block_locator_fetch_handler_t)(chain_t, void*, error_code_t, get_headers_ptr_t);
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void BlockLocatorFetchHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr getHeaders);
+        //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        //public delegate void BlockLocatorFetchHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr getHeaders);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern void chain_fetch_block_locator(IntPtr chain, IntPtr context, IntPtr heights, BlockLocatorFetchHandler handler);
+        //Comented in CINT
+        //[DllImport(Constants.BITPRIM_C_LIBRARY)]
+        //public static extern void chain_fetch_block_locator(IntPtr chain, IntPtr context, IntPtr heights, BlockLocatorFetchHandler handler);
 
         
         // Organizers.

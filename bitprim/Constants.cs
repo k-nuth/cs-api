@@ -1,4 +1,7 @@
-public static class Constants
+namespace Bitprim
 {
-    internal const string BITPRIM_C_LIBRARY = "libbitprim-node-cint";
+    internal static class Constants
+    {
+        internal const string BITPRIM_C_LIBRARY = "libbitprim-node-cint";
+    }
 }

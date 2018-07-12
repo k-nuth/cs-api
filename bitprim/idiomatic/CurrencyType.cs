@@ -1,5 +1,8 @@
 namespace Bitprim
 {
+    /// <summary>
+    /// Represents the supported coins
+    /// </summary>
     public enum CurrencyType
     {
         None = 0,

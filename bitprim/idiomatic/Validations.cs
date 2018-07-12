@@ -2,6 +2,9 @@ using System.Linq;
 
 namespace Bitprim
 {
+    /// <summary>
+    /// Helper class with utility methods
+    /// </summary>
     public static class Validations
     {
         private const int HASH_HEX_LENGTH = 64;

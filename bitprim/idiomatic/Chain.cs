@@ -27,12 +27,12 @@ namespace Bitprim
         private readonly ChainNative.MerkleBlockFetchHandler internalMerkleBlockFetchHandlerByHash_;
         private readonly ChainNative.ValidateTxHandler internalValidateTxHandler_;
         private readonly ChainNative.ResultHandler internalResultHandler_;
-        private readonly ChainNative.BlockLocatorFetchHandler internalBlockLocatorFetchHandler_;
+        //private readonly ChainNative.BlockLocatorFetchHandler internalBlockLocatorFetchHandler_;
         private readonly ChainNative.FetchSpendHandler internalFetchSpendHandler_;
         private readonly ChainNative.FetchHistoryHandler internalFetchHistoryHandler_;
         private readonly ChainNative.FetchTransactionsHandler internalFetchTxnsHandler_;
         private readonly ChainNative.FetchStealthHandler internalFetchStealthHandler_;
-        private readonly ChainNative.FetchCompactBlockHandler internalFetchCompactBlockHandler_;
+        //private readonly ChainNative.FetchCompactBlockHandler internalFetchCompactBlockHandler_;
         private readonly ChainNative.FetchTransactionHandler internalFetchTransactionHandler_;
         private readonly ChainNative.FetchTransactionPositionHandler internalFetchTransactionPositionHandler_;
 
@@ -52,12 +52,12 @@ namespace Bitprim
             internalMerkleBlockFetchHandlerByHash_ = FetchMerkleBlockByHashInternalHandler;
             internalValidateTxHandler_ = ValidateTransactionInternalHandler;
             internalResultHandler_ = ResultInternalHandler;
-            internalBlockLocatorFetchHandler_ = FetchBlockLocatorInternalHandler;
+            //internalBlockLocatorFetchHandler_ = FetchBlockLocatorInternalHandler;
             internalFetchSpendHandler_ = FetchSpendInternalHandler;
             internalFetchHistoryHandler_ = FetchHistoryInternalHandler;
             internalFetchTxnsHandler_ = FetchTransactionsInternalHandler;
             internalFetchStealthHandler_ = FetchStealthInternalHandler;
-            internalFetchCompactBlockHandler_ = FetchCompactBlockInternalHandler;
+            //internalFetchCompactBlockHandler_ = FetchCompactBlockInternalHandler;
             internalFetchTransactionHandler_ = FetchTransactionByHashInternalHandler;
             internalFetchTransactionPositionHandler_ = FetchTransactionPositionInternalHandler;
         }
@@ -492,16 +492,15 @@ namespace Bitprim
         #endregion //Merkle Block
 
         #region Compact block
-
+        /*
         /// <summary>
         /// Given a block hash, get the compact block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> FetchCompactBlockByHash(byte[] blockHash)
+        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> FetchCompactBlockByHashAsync(byte[] blockHash)
         {
             return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>>(tcs =>
             {
-
                 FetchCompactBlockByHash(blockHash, (code, compactBlock, height) =>
                 {
                     tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
@@ -533,10 +532,10 @@ namespace Bitprim
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
             ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, internalFetchCompactBlockHandler_);
-        }
+        }*/
 
 
-
+        /*
         /// <summary>
         /// Given a block height, get the compact block from the block it identifies, asynchronously.
         /// </summary>
@@ -574,7 +573,7 @@ namespace Bitprim
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, internalFetchCompactBlockHandler_);
         }
-
+        */
 
 
         #endregion //Compact block
@@ -806,7 +805,7 @@ namespace Bitprim
 
         #region Block indexes
 
-        /// <summary>
+        /*/// <summary>
         /// Given a list of indexes, fetch a header reader for them, asynchronously
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
@@ -825,10 +824,10 @@ namespace Bitprim
                 });
                 
             });
-        }
+        }*/
 
 
-        /// <summary>
+       /* /// <summary>
         /// Given a list of indexes, fetch a header reader for them, asynchronously
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
@@ -838,7 +837,7 @@ namespace Bitprim
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, internalBlockLocatorFetchHandler_);
-        }
+        }*/
 
 
 
@@ -1082,7 +1081,7 @@ namespace Bitprim
                 contextHandle.Free();
             }
         }
-
+        /*
         private static void FetchBlockLocatorInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr headerReader)
         {
             GCHandle handlerHandle = (GCHandle)context;
@@ -1095,21 +1094,22 @@ namespace Bitprim
             {
                 handlerHandle.Free();
             }
-        }
-
+        }*/
+        /*
         private static void FetchCompactBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr compactBlock, UInt64 height)
         {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
-                var handler = (handlerHandle.Target as Action<ErrorCode, CompactBlock, UInt64>);
+                var contexHandler = handlerHandle.Target as Tuple<Action<ErrorCode, CompactBlock, UInt64>,hash_t>;
+                Action<ErrorCode, CompactBlock, UInt64> handler = contexHandler.Item1;
                 handler(error, new CompactBlock(compactBlock), height);
             }
             finally
             {
                 handlerHandle.Free();
             }
-        }
+        }*/
 
         private static void FetchHistoryInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr history)
         {
