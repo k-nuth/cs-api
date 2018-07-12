@@ -12,9 +12,23 @@ namespace Bitprim
     public class Executor : IDisposable
     {
         private static readonly ILog Logger = LogProvider.For<Executor>();
+        /// <summary>
+        /// Contains information about new blocks
+        /// </summary>
+        /// <param name="errorCode">Error code</param>
+        /// <param name="height">Branch height</param>
+        /// <param name="incoming">List of incoming blocks</param>
+        /// <param name="outgoing">List of outgoing blocks</param>
+        /// <returns></returns>
+        public delegate bool BlockHandler(ErrorCode errorCode, UInt64 height, BlockList incoming, BlockList outgoing);
         
-        public delegate bool BlockHandler(ErrorCode e, UInt64 u, BlockList incoming, BlockList outgoing);
-        public delegate bool TransactionHandler(ErrorCode e, Transaction newTx);
+        /// <summary>
+        /// Contains information about new transactions
+        /// </summary>
+        /// <param name="errorCode">Erro code</param>
+        /// <param name="newTx">The new transaction</param>
+        /// <returns></returns>
+        public delegate bool TransactionHandler(ErrorCode errorCode, Transaction newTx);
 
         private Chain chain_;
         private readonly IntPtr nativeInstance_;
