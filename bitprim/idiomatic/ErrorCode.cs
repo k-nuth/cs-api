@@ -19,7 +19,7 @@ namespace Bitprim
         /// </summary>
         Unknown = 43,
         /// <summary>
-        /// The resource not exists
+        /// The resource not exist
         /// </summary>
         NotFound = 3,
         /// <summary>
@@ -27,7 +27,7 @@ namespace Bitprim
         /// </summary>
         FileSystem = 42,
         /// <summary>
-        /// Transaction not standard
+        /// Non-standard transaction
         /// </summary>
         NonStandard = 17,
         /// <summary>
@@ -121,7 +121,7 @@ namespace Bitprim
         /// </summary>
         InsufficientWork = 48,
         /// <summary>
-        /// Missing transaction parent
+        /// Transaction parent missing
         /// </summary>
         OrphanTransaction = 14,
         /// <summary>
@@ -217,7 +217,7 @@ namespace Bitprim
         /// </summary>
         CoinbaseValueLimit = 41,
         /// <summary>
-        /// too many block embedded signature operations
+        /// Too many block embedded signature operations
         /// </summary>
         BlockEmbeddedSigopLimit = 52,
         /// <summary>
@@ -281,7 +281,7 @@ namespace Bitprim
         /// </summary>
         MissingPreviousOutput = 19,
         /// <summary>
-        /// Previous output not found
+        /// double spend of input
         /// </summary>
         DoubleSpend = 18,
         /// <summary>
@@ -289,7 +289,7 @@ namespace Bitprim
         /// </summary>
         CoinbaseMaturity = 46,
         /// <summary>
-        /// Spend exceeds value of inputs
+        /// Spend exceeds input values sum
         /// </summary>
         SpendExceedsValue = 40,
         /// <summary>
@@ -347,7 +347,7 @@ namespace Bitprim
         /// </summary>
         IncorrectSignature = 64,
         /// <summary>
-        /// stack false
+        /// Error processing script
         /// </summary>
         StackFalse = 65,
         /// <summary>

@@ -25,7 +25,7 @@ namespace Bitprim
         /// <summary>
         /// Contains information about new transactions
         /// </summary>
-        /// <param name="errorCode">Erro code</param>
+        /// <param name="errorCode">Error code</param>
         /// <param name="newTx">The new transaction</param>
         /// <returns></returns>
         public delegate bool TransactionHandler(ErrorCode errorCode, Transaction newTx);
