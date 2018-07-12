@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 namespace Bitprim
 {
+    /// <summary>
+    /// Abstract class to represent lists of native objects
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class NativeList<T> : IEnumerable<T>, IDisposable
     {
         private IntPtr nativeInstance_;
@@ -18,13 +22,17 @@ namespace Bitprim
             nativeInstance_ = nativeInstance;
         }
 
-        public IEnumerator<T> GetEnumerator()  
+        /// <summary>
+        /// Enumerator of T
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<T> GetEnumerator()
         {
-            for (uint i = 0; i < GetCount() ; i++)
+            for (uint i = 0; i < GetCount(); i++)
             {
                 yield return GetNthNativeElement(i);
             }
-        }  
+        }
 
         ~NativeList()
         {
@@ -52,40 +60,33 @@ namespace Bitprim
             DestroyNativeList();
         }
 
-        public abstract IntPtr CreateNativeList();
-        public abstract T GetNthNativeElement(uint n);
-        public abstract uint GetCount();
-        public abstract void AddElement(T element);
-        public abstract void DestroyNativeList();
+        protected abstract IntPtr CreateNativeList();
+        protected abstract T GetNthNativeElement(uint n);
+        protected abstract uint GetCount();
+        protected abstract void AddElement(T element);
+        protected abstract void DestroyNativeList();
 
-     
-        public T this[uint index]
-        {
-            get
-            {
-                return GetNthNativeElement(index);
-            }
-        }
+        /// <summary>
+        /// Allow element random access (by index)
+        /// </summary>
+        /// <param name="index">Zero-based index</param>
+        /// <returns></returns>
+        public T this[uint index] => GetNthNativeElement(index);
 
-        public uint Count
-        {
-            get
-            {
-                return GetCount();
-            }
-        }
+        /// <summary>
+        /// Returns element count
+        /// </summary>
+        public uint Count => GetCount();
 
+        /// <summary>
+        /// Element to add; it is added at the end of the list
+        /// </summary>
+        /// <param name="element"></param>
         public void Add(T element)
         {
             AddElement(element);
         }
 
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
+        internal IntPtr NativeInstance => nativeInstance_;
     }
 }

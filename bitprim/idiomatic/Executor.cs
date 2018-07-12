@@ -195,6 +195,9 @@ namespace Bitprim
             ExecutorNative.executor_stop(nativeInstance_);
         }
 
+        /// <summary>
+        /// Returns true if and only if the node is stopped
+        /// </summary>
         public bool IsStopped
         {
             get
@@ -203,6 +206,9 @@ namespace Bitprim
             }
         }
 
+        /// <summary>
+        /// Returns true if and only if and only if the config file is valid
+        /// </summary>
         public bool IsLoadConfigValid
         {
             get

@@ -116,6 +116,9 @@ namespace Bitprim
             }
         }
 
+        /// <summary>
+        /// Amount of work done to mine the block
+        /// </summary>
         public string Proof
         {
             get

@@ -393,5 +393,100 @@ namespace Bitprim.Tests
                 }
             }
         }
+
+        /*[Fact]
+        public async Task FetchBlockLocatorAsync()
+        {
+            using (var list = new BlockIndexList())
+            {
+                list.Add(1);
+                list.Add(2);
+                list.Add(3);
+
+                using (DisposableApiCallResult<HeaderReader> ret = await executorFixture_.Executor.Chain.FetchBlockLocatorAsync(list))
+                {
+                    Assert.True(ret.Result.IsValid);
+                }
+            }
+
+        }*/
+        /*
+        [Fact]
+        public async Task FetchCompactBlockByHashAsync()
+        {
+            var hash = Binary.HexStringToByteArray("00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048");
+            using (var ret = await executorFixture_.Executor.Chain.FetchCompactBlockByHashAsync(hash))
+            {
+                Assert.True(ret.Result.BlockData.IsValid); 
+            }
+        }*/
+        /*
+        [Fact]
+        public async Task FetchCompactBlockByHeightAsync()
+        {
+            using (var ret = await executorFixture_.Executor.Chain.FetchCompactBlockByHeightAsync(1))
+            {
+                Assert.True(ret.Result.BlockData.IsValid); 
+            }
+        }*/
+
+        [Fact]
+        public async Task FetchHistoryAsync()
+        {
+            using (var address = new PaymentAddress("1PDatg81sEwirJU3QUKcGLyfQC6epZNyiL"))
+            using (var ret = await executorFixture_.Executor.Chain.FetchHistoryAsync(address,10,1))
+            {
+                Assert.True(ret.Result.Count >= 0); 
+            }     
+        }
+
+        [Fact]
+        public async Task FetchConfirmedTransactionsAsync()
+        {
+            using (var address = new PaymentAddress("1PDatg81sEwirJU3QUKcGLyfQC6epZNyiL"))
+            using (var ret = await executorFixture_.Executor.Chain.FetchConfirmedTransactionsAsync(address,10,1))
+            {
+                Assert.True(ret.Result.Count >= 0); 
+            }
+        }
+
+        [Fact]
+        public async Task OrganizeBlockAsync()
+        {
+            using (var block = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
+            {
+                var ret = await executorFixture_.Executor.Chain.OrganizeBlockAsync(block.Result.BlockData);
+                Assert.True(ret == ErrorCode.DuplicateBlock);
+            }
+        }
+
+        
+        [Fact]
+        public async Task OrganizeTransactionAsync()
+        {
+            using (var block = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
+            {
+                var ret = await executorFixture_.Executor.Chain.OrganizeTransactionAsync(block.Result.BlockData.GetNthTransaction(0));
+                Assert.True(ret == ErrorCode.CoinbaseTransaction);
+            }
+        }
+
+
+        [Fact]
+        public async Task ValidateTransactionAsync()
+        {
+            using (var block = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
+            {
+                var ret = await executorFixture_.Executor.Chain.ValidateTransactionAsync(block.Result.BlockData.GetNthTransaction(0));
+                Assert.True(ret.ErrorCode == ErrorCode.CoinbaseTransaction);
+            }
+        }
+
+        [Fact]
+        public void IsStale()
+        {
+            var ret = executorFixture_.Executor.Chain.IsStale;
+            Assert.True(ret);
+        }
     }
 }

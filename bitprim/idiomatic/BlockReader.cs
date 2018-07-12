@@ -3,7 +3,7 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
+    /*
     /// <summary>
     /// Allows user to read a specific set of blocks from the blockchain.
     /// </summary>
@@ -102,5 +102,5 @@ namespace Bitprim
             GetBlocksNative.chain_get_blocks_destruct(nativeInstance_);
         }
     }
-
+    */
 }

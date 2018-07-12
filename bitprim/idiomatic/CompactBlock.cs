@@ -3,9 +3,7 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
     /// <summary>
-    /// TODO: Omit from docs (not implemented yet)
     /// BIP 512 representation of a block for reduced propagation bandwidth.
     /// </summary>
     public class CompactBlock : IDisposable

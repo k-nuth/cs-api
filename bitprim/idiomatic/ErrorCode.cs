@@ -1,6 +1,8 @@
 namespace Bitprim
 {
-
+    /// <summary>
+    /// Error codes returned by the C API
+    /// </summary>
     public enum ErrorCode
     {
         // general codes
