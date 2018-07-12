@@ -4,7 +4,7 @@ using Bitprim.Native;
 namespace Bitprim
 {
     /// <summary>
-    /// Represent a list of blocks
+    /// Represents a list of blocks
     /// </summary>
     public class BlockList : NativeList<Block>
     {

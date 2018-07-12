@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Bitprim
 {
     /// <summary>
-    /// Abstract class to represents lists for native objects
+    /// Abstract class to represent lists of native objects
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class NativeList<T> : IEnumerable<T>, IDisposable
