@@ -5,13 +5,12 @@ namespace bitprim.tutorials
 {
     public class BitprimCsAPI : IBitprimCsAPI, IDisposable
     {
-        private readonly Chain chain_;
+        private Chain chain_;
         private readonly Executor executor_;
 
         public BitprimCsAPI(string nodeConfigFile)
         {
             executor_ = new Executor(nodeConfigFile);
-            chain_ = executor_.Chain;
         }
 
         ~BitprimCsAPI()
@@ -46,6 +45,7 @@ namespace bitprim.tutorials
             {
                 throw new ApplicationException("Executor::InitAndRunAsync failed; error code: " + result);
             }
+            chain_ = executor_.Chain;
         }
 
         protected virtual void Dispose(bool disposing){
