@@ -50,9 +50,9 @@ matrix:
             sources:
               - ubuntu-toolchain-r-test
             packages:
-              - g++-4.9
-              - gcc-4.9
-        env: UPDATE_DOCS=false MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+              - g++-5
+              - gcc-5
+        env: UPDATE_DOCS=false MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
       #- <<: *linux
       #  compiler: gcc 
@@ -112,9 +112,9 @@ install:
         sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
         sudo apt-get update -y
         sudo apt-get install dotnet-sdk-2.0.2 -y
-        sudo apt-get install -qq g++-4.9
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
+        sudo apt-get install -qq g++-5
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 90
         gcc --version
         g++ --version
         sudo ldconfig
