@@ -54,3 +54,9 @@
 /bitprim/bin/
 /bitprim.tests.bch/bitprim-node-cint.dll
 /bitprim.tests.btc/bitprim-node-cint.dll
+/bitprim.tutorials/*.cmake
+/bitprim.tutorials/*.so
+/bitprim.tutorials/*.txt
+/bitprim.tutorials/archive/
+/bitprim.tutorials/bin/
+/bitprim.tutorials/obj/
