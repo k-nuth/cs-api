@@ -55,21 +55,21 @@ If you use Visual Studio, you can use the UI or the Package Manager.
     * Run the following command
 
 ```
-Install-Package bitprim-bch -Version 0.4.2
+Install-Package bitprim-bch
 
 or
 
-Install-Package bitprim-btc -Version 0.4.2
+Install-Package bitprim-btc
 ```
 
 If you are using dotnet cli:
 
 ```
-dotnet add package bitprim-bch --version 0.4.2
+dotnet add package bitprim-bch
 
 or
 
-dotnet add package bitprim-btc --version 0.4.2
+dotnet add package bitprim-btc
 ```
 
 ## Building from source
