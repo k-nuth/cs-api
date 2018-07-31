@@ -152,12 +152,17 @@ Task("DeployNuget")
     .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
     {
+        var branchName = AppVeyor.Environment.Repository.Branch;
+        if (branchName != "master")
+        {
+            skipNuget = "true";
+        }
 
         Information("Publish to nuget:" + publishToNuget);
         Information("Skip nuget:" + skipNuget); 
         Information("Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
-        
-        
+        Information("Branch name:" + branchName);
+         
         if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]") && skipNuget == "false")
         {
             var files = System.IO.File
