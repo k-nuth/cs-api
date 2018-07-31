@@ -18,35 +18,17 @@ namespace Bitprim
         /// <summary>
         /// Returns true iif this is a valid compact representation of a block (as per BIP 512).
         /// </summary>
-        public bool IsValid
-        {
-            get
-            {
-                return CompactBlockNative.compact_block_is_valid(nativeInstance_) != 0;
-            }
-        }
+        public bool IsValid => CompactBlockNative.chain_compact_block_is_valid(nativeInstance_) != 0;
 
         /// <summary>
         /// Block nonce (i.e. value which makes hash start with leading zeroes), as a 64-bit unsigned integer.
         /// </summary>
-        public UInt64 Nonce
-        {
-            get
-            {
-                return CompactBlockNative.compact_block_nonce(nativeInstance_);
-            }
-        }
+        public UInt64 Nonce => CompactBlockNative.chain_compact_block_nonce(nativeInstance_);
 
         /// <summary>
         /// Amount of transactions that belong to the block.
         /// </summary>
-        public UInt64 TransactionCount
-        {
-            get
-            {
-                return CompactBlockNative.compact_block_transaction_count(nativeInstance_);
-            }
-        }
+        public UInt64 TransactionCount => CompactBlockNative.chain_compact_block_transaction_count(nativeInstance_);
 
         /// <summary>
         /// Get the block's nth transaction, synchronously.
@@ -55,7 +37,7 @@ namespace Bitprim
         /// <returns> Full transaction object </returns>
         public Transaction GetNthTransaction(UInt64 n)
         {
-            return new Transaction(CompactBlockNative.compact_block_transaction_nth(nativeInstance_, n), false);
+            return new Transaction(CompactBlockNative.chain_compact_block_transaction_nth(nativeInstance_, n), false);
         }
 
         /// <summary>
@@ -65,7 +47,7 @@ namespace Bitprim
         /// <returns> Size in bytes. </returns>
         public UInt64 GetSerializedSize(UInt32 version)
         {
-            return CompactBlockNative.compact_block_serialized_size(nativeInstance_, version);
+            return CompactBlockNative.chain_compact_block_serialized_size(nativeInstance_, version);
         }
 
         public void Dispose()
@@ -79,7 +61,7 @@ namespace Bitprim
         /// </summary>
         public void Reset()
         {
-            CompactBlockNative.compact_block_reset(nativeInstance_);
+            CompactBlockNative.chain_compact_block_reset(nativeInstance_);
         }
 
         internal CompactBlock(IntPtr nativeInstance)
@@ -94,10 +76,7 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            //Logger.Log("Destroying compact block " + nativeInstance_.ToString("X"));
-            CompactBlockNative.compact_block_destruct(nativeInstance_);
+            CompactBlockNative.chain_compact_block_destruct(nativeInstance_);
         }
-
     }
-
 }
