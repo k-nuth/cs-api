@@ -9,9 +9,10 @@
     <Message Text="Conan Channel: $(CONAN_CHANNEL)"/>
     <Message Text="Conan Version: $(CONAN_VERSION)"/>
     <Message Text="Conan Currency: $(CONAN_CURRENCY)"/>
+    <Message Text="Conan Keoken: $(CONAN_KEOKEN)"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];bitprim-node-cint/$(CONAN_VERSION)@bitprim/$(CONAN_CHANNEL);[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=$(CONAN_CURRENCY);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];bitprim-node-cint/$(CONAN_VERSION)@bitprim/$(CONAN_CHANNEL);[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=$(CONAN_CURRENCY);bitprim-node-cint:keoken=$(CONAN_KEOKEN);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
