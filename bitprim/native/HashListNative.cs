@@ -9,10 +9,10 @@ namespace Bitprim.Native
         public static extern IntPtr chain_hash_list_construct_default();
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern void chain_hash_list_nth_out(IntPtr list, UIntPtr /*size_t*/ n, ref hash_t out_hash);
+        public static extern void chain_hash_list_nth_out(IntPtr list, UInt64 n, ref hash_t out_hash);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern UIntPtr /*size_t*/ chain_hash_list_count(IntPtr list);
+        public static extern UInt64 chain_hash_list_count(IntPtr list);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_hash_list_destruct(IntPtr list);

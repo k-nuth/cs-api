@@ -91,7 +91,6 @@ Task("Build")
         MSBuild(solutionName, new MSBuildSettings {
             ArgumentCustomization = args => args.Append(platform 
                                             + " /p:AssemblyVersion=" + versionInfo.MajorMinorPatch
-                                            //+ " /p:DefineConstants=\"KEOKEN=0\""
                                             )
             ,Configuration = configuration
         });

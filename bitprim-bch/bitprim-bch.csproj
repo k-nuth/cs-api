@@ -18,6 +18,10 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);KEOKEN</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
       <Compile Include="..\bitprim\**/*.cs" />
       <None Include="..\bitprim\docs\Doxyfile" Link="docs\Doxyfile" /> 

@@ -134,7 +134,7 @@ namespace Bitprim.Tests
             using (var ret = await executorFixture_.Executor.Chain.FetchStealthAsync(new Binary("1111"), 0))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
-                Assert.Equal<uint>(0, ret.Result.Count);
+                Assert.Equal<UInt64>(0, ret.Result.Count);
             }
 
         }

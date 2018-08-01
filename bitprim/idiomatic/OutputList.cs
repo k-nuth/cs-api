@@ -16,14 +16,14 @@ namespace Bitprim
             return OutputListNative.chain_output_list_construct_default();
         }
 
-        protected override Output GetNthNativeElement(uint n)
+        protected override Output GetNthNativeElement(UInt64 n)
         {
-            return new Output(OutputListNative.chain_output_list_nth(NativeInstance, (UIntPtr) n), false);
+            return new Output(OutputListNative.chain_output_list_nth(NativeInstance, n), false);
         }
 
-        protected override uint GetCount()
+        protected override UInt64 GetCount()
         {
-            return (uint) OutputListNative.chain_output_list_count(NativeInstance);
+            return OutputListNative.chain_output_list_count(NativeInstance);
         }
 
         protected override void AddElement(Output element)
@@ -35,9 +35,7 @@ namespace Bitprim
         {
             if(ownsNativeObject_)
             {
-                //Logger.Log("Destroying output list " + NativeInstance.ToString("X") + " ...");
                 OutputListNative.chain_output_list_destruct(NativeInstance);
-                //Logger.Log("Output list " + NativeInstance.ToString("X") + " destroyed!");
             }
         }
 

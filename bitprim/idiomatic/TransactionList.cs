@@ -13,14 +13,14 @@ namespace Bitprim
             return TransactionListNative.chain_transaction_list_construct_default();
         }
 
-        protected override Transaction GetNthNativeElement(uint n)
+        protected override Transaction GetNthNativeElement(UInt64 n)
         {
-            return new Transaction(TransactionListNative.chain_transaction_list_nth(NativeInstance, (UIntPtr) n), false);
+            return new Transaction(TransactionListNative.chain_transaction_list_nth(NativeInstance, n), false);
         }
 
-        protected override uint GetCount()
+        protected override UInt64 GetCount()
         {
-            return (uint) TransactionListNative.chain_transaction_list_count(NativeInstance);
+            return TransactionListNative.chain_transaction_list_count(NativeInstance);
         }
 
         protected override void AddElement(Transaction element)
@@ -30,9 +30,7 @@ namespace Bitprim
 
         protected override void DestroyNativeList()
         {
-            //Logger.Log("Destroying transaction list " + NativeInstance.ToString("X"));
             TransactionListNative.chain_transaction_list_destruct(NativeInstance);
-            //Logger.Log("Transaction list " + NativeInstance.ToString("X") + " destroyed!");
         }
 
         internal TransactionList(IntPtr nativeInstance) : base(nativeInstance)

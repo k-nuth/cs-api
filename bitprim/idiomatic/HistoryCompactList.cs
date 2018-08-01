@@ -6,29 +6,16 @@ namespace Bitprim
     /// <summary>
     /// List of output points, values, and spends for a given payment address
     /// </summary>
-    public class HistoryCompactList : NativeList<HistoryCompact>
+    public class HistoryCompactList : NativeReadOnlyList<HistoryCompact>
     {
-        protected override IntPtr CreateNativeList()
+        protected override HistoryCompact GetNthNativeElement(UInt64 n)
         {
-            //There is no native call for this, so we deem it invalid.
-            //Use the IntPtr constructor instead.
-            throw new NotImplementedException();
+            return new HistoryCompact(HistoryCompactListNative.chain_history_compact_list_nth(NativeInstance, n), false);
         }
 
-        protected override HistoryCompact GetNthNativeElement(uint n)
+        protected override UInt64 GetCount()
         {
-            return new HistoryCompact(HistoryCompactListNative.chain_history_compact_list_nth(NativeInstance, (UInt64)n), false);
-        }
-
-        protected override uint GetCount()
-        {
-            return (uint) HistoryCompactListNative.chain_history_compact_list_count(NativeInstance);
-        }
-
-        protected override void AddElement(HistoryCompact element)
-        {
-            //No native call for this
-            throw new NotImplementedException();
+            return HistoryCompactListNative.chain_history_compact_list_count(NativeInstance);
         }
 
         protected override void DestroyNativeList()

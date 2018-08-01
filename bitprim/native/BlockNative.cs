@@ -5,7 +5,6 @@ namespace Bitprim.Native
 {
     internal static class BlockNative
     {
-
         //Note: The user is responsible for releasing memory
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern byte[] chain_block_generate_merkle_root(IntPtr block);
@@ -69,23 +68,21 @@ namespace Bitprim.Native
         public static extern UInt64 chain_block_subsidy(UIntPtr height);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern UIntPtr chain_block_serialized_size(IntPtr block, UInt32 version);
+        public static extern UInt64 chain_block_serialized_size(IntPtr block, UInt32 version);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern UIntPtr chain_block_signature_operations(IntPtr block);
+        public static extern UInt64 chain_block_signature_operations(IntPtr block);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern UIntPtr chain_block_signature_operations_bip16_active(IntPtr block, int /*bool*/ bip16_active);
+        public static extern UInt64 chain_block_signature_operations_bip16_active(IntPtr block, int /*bool*/ bip16_active);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern UIntPtr chain_block_total_inputs(IntPtr block, int /*bool*/ with_coinbase /*= true*/);
+        public static extern UInt64 chain_block_total_inputs(IntPtr block, int /*bool*/ with_coinbase /*= true*/);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern UIntPtr chain_block_transaction_count(IntPtr block);
+        public static extern UInt64 chain_block_transaction_count(IntPtr block);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_block_destruct(IntPtr block);
-
     }
-
 }

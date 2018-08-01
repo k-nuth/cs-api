@@ -3,7 +3,6 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
     public class HashList : NativeList<byte[]>
     {
         private bool ownsNativeObject_;
@@ -14,16 +13,16 @@ namespace Bitprim
             return HashListNative.chain_hash_list_construct_default();
         }
 
-        protected override byte[] GetNthNativeElement(uint n)
+        protected override byte[] GetNthNativeElement(UInt64 n)
         {
             var managedHash = new hash_t();
-            HashListNative.chain_hash_list_nth_out(NativeInstance, (UIntPtr)n, ref managedHash);
+            HashListNative.chain_hash_list_nth_out(NativeInstance, n, ref managedHash);
             return managedHash.hash;
         }
 
-        protected override uint GetCount()
+        protected override UInt64 GetCount()
         {
-            return (uint) HashListNative.chain_hash_list_count(NativeInstance);
+            return HashListNative.chain_hash_list_count(NativeInstance);
         }
 
         protected override void AddElement(byte[] element)
@@ -35,9 +34,7 @@ namespace Bitprim
         {
             if(ownsNativeObject_)
             {
-                //Logger.Log("Destroying hash list " + NativeInstance.ToString("X") + " ...");
                 HashListNative.chain_hash_list_destruct(NativeInstance);
-                //Logger.Log("Hash list " + NativeInstance.ToString("X") + " destroyed!");
             }
         }
 
