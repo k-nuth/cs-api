@@ -5,7 +5,6 @@ namespace Bitprim.Native
 {
     internal static class HistoryCompactListNative
     {
-
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr chain_history_compact_list_nth(IntPtr list, UInt64 n);
 
