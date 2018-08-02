@@ -13,6 +13,14 @@ namespace Bitprim
         private readonly Header header_;
         private readonly IntPtr nativeInstance_;
 
+        public Block (UInt32 version, string hexString)
+        {
+            //the raw block is already reversed
+            byte[] array = Binary.HexStringToByteArray(hexString,false);
+            nativeInstance_ = BlockNative.chain_block_factory_from_data(version,array,(UInt64)array.Length);
+            ownsNativeObject_ = true;
+        }
+
         internal Block(IntPtr nativeInstance, bool ownsNativeObject = true)
         {
             nativeInstance_ = nativeInstance;

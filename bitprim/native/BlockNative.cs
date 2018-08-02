@@ -84,5 +84,9 @@ namespace Bitprim.Native
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_block_destruct(IntPtr block);
+
+        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        public static extern IntPtr chain_block_factory_from_data(UInt32 version,byte[] data, UInt64 n);
+
     }
 }
