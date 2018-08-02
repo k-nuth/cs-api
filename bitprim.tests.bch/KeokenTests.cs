@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Bitprim.Tests
 {
-    //[Collection("KeokenCollection")]
+    [Collection("ChainCollection")]
     public class KeokenTest : IClassFixture<ExecutorFixture>
     {
         private readonly ExecutorFixture executorFixture_;
@@ -16,14 +16,14 @@ namespace Bitprim.Tests
             keokenManager_ = executorFixture_.Executor.KeokenManager;
         }
 
-        /*[Fact]
+        [Fact]
         public void TestInitializeFromBlockchain()
         {
             keokenManager_.InitializeFromBlockchain();
             Assert.Equal(true, keokenManager_.Initialized);
-        }*/
+        }
 
-        /*[Fact]
+        [Fact]
         public void TestGetAllAssetAddresses()
         {
             keokenManager_.InitializeFromBlockchain();
@@ -54,6 +54,6 @@ namespace Bitprim.Tests
                     Assert.Equal<UInt64>(0,ret.Count);
                 }
             }
-        }*/
+        }
     }
 }
