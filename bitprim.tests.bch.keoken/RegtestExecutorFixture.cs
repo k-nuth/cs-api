@@ -16,19 +16,18 @@ namespace Bitprim.Tests.Bch.Keoken
                 throw new InvalidOperationException("Executor::InitChain failed, check log");
             }
 
-            
-            //Add Blocks
+            //Add mined blocks containing Keoken Transactions
             using (var sr = new StreamReader("config/blocks.hex")) 
             {
                 while (sr.Peek() >= 0)
                 {
-                    var hex = sr.ReadLine();
+                    string hex = sr.ReadLine();
                     using (var b = new Block(1, hex))
                     {
-                        var errCode = Executor.Chain.OrganizeBlockAsync(b).Result;
+                        ErrorCode errCode = Executor.Chain.OrganizeBlockAsync(b).Result;
                         if (errCode != ErrorCode.Success)
                         {
-
+                            throw new Exception("Error loading blocks:" + errCode.ToString());
                         }
                     }
                 }
