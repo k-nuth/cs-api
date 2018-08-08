@@ -6,7 +6,7 @@ namespace Bitprim
     /// <summary>
     /// Represents a list of MempoolTransaction
     /// </summary>
-    public class MempoolTransactionList : NativeList<MempoolTransaction>
+    public class MempoolTransactionList : NativeList<IMempoolTransaction>
     {
         private bool ownsNativeObject_;
 
@@ -16,7 +16,7 @@ namespace Bitprim
             return MempoolTransactionListNative.chain_mempool_transaction_list_construct_default();
         }
 
-        protected override MempoolTransaction GetNthNativeElement(uint n)
+        protected override IMempoolTransaction GetNthNativeElement(uint n)
         {
             return new MempoolTransaction(MempoolTransactionListNative.chain_mempool_transaction_list_nth(NativeInstance, n));
         }
@@ -26,7 +26,7 @@ namespace Bitprim
             return (uint) MempoolTransactionListNative.chain_mempool_transaction_list_count(NativeInstance);
         }
 
-        protected override void AddElement(MempoolTransaction element)
+        protected override void AddElement(IMempoolTransaction element)
         {
             throw new NotImplementedException("Read only list");
         }

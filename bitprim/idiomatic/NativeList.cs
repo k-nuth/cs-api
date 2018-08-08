@@ -8,7 +8,7 @@ namespace Bitprim
     /// Abstract class to represent lists of native objects
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class NativeList<T> : IEnumerable<T>, IDisposable
+    public abstract class NativeList<T> : INativeList<T>
     {
         private IntPtr nativeInstance_;
 

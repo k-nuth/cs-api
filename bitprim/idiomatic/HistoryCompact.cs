@@ -7,7 +7,7 @@ namespace Bitprim
     /// <summary>
     /// Output points, values, and spends for a payment address.
     /// </summary>
-    public class HistoryCompact : IDisposable
+    public class HistoryCompact : IHistoryCompact
     {
         private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
@@ -21,7 +21,7 @@ namespace Bitprim
         /// <summary>
         /// The point that identifies the History instance.
         /// </summary>
-        public Point Point
+        public IPoint Point
         {
             get
             {

@@ -7,7 +7,7 @@ namespace Bitprim
     /// <summary>
     /// Stealth payment related data.
     /// </summary>
-    public class StealthCompact : IDisposable
+    public class StealthCompact : IStealthCompact
     {
         private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
