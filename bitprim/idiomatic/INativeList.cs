@@ -7,5 +7,7 @@ namespace Bitprim
     public interface INativeList<T> :  IEnumerable<T>, IDisposable
     {
         T this[UInt64 index] { get; }
+
+        UInt64 Count { get; }
     }
 }
