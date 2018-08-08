@@ -16,7 +16,7 @@ namespace Bitprim
         /// </summary>
         public Binary()
         {
-            nativeInstance_ = BinaryNative.binary_construct();
+            nativeInstance_ = BinaryNative.core_binary_construct();
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Bitprim
         /// <param name="hexString">  Binary string. Example: '10111010101011011111000000001101' </param>
         public Binary(string hexString)
         {
-            nativeInstance_ = BinaryNative.binary_construct_string(hexString);
+            nativeInstance_ = BinaryNative.core_binary_construct_string(hexString);
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Bitprim
         /// <param name="n"> Array length in amount of elements. </param>
         public Binary(UInt64 bitsSize, byte[] blocks, UInt64 n)
         {
-            nativeInstance_ = BinaryNative.binary_construct_blocks((UIntPtr)bitsSize, blocks, (UIntPtr)n);
+            nativeInstance_ = BinaryNative.core_binary_construct_blocks((UIntPtr)bitsSize, blocks, (UIntPtr)n);
         }
 
         ~Binary()
@@ -97,7 +97,7 @@ namespace Bitprim
         {
             get
             {
-                return BinaryNative.binary_encoded(nativeInstance_);
+                return BinaryNative.core_binary_encoded(nativeInstance_);
             }
         }
 
@@ -122,9 +122,9 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            //Logger.Log("Destroying binary " + nativeInstance_.ToString("X") + " ...");
-            BinaryNative.binary_destruct(nativeInstance_);
-            //Logger.Log("Binary " + nativeInstance_.ToString("X") + " destroyed!");
+            
+            BinaryNative.core_binary_destruct(nativeInstance_);
+            
         }
 
     }

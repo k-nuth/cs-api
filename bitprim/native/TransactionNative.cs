@@ -6,7 +6,6 @@ namespace Bitprim.Native
 
     internal static class TransactionNative
     {
-
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void chain_transaction_hash_out(IntPtr transaction, ref hash_t hash);
 

@@ -9,9 +9,25 @@ namespace Bitprim
     /// </summary>
     public class Block : IBlock
     {
-        private bool ownsNativeObject_;
-        private Header header_;
-        private IntPtr nativeInstance_;
+        private readonly bool ownsNativeObject_;
+        private readonly Header header_;
+        private readonly IntPtr nativeInstance_;
+
+        public Block (UInt32 version, string hexString)
+        {
+            //the raw block is already reversed
+            byte[] array = Binary.HexStringToByteArray(hexString,false);
+            nativeInstance_ = BlockNative.chain_block_factory_from_data(version,array,(UInt64)array.Length);
+            ownsNativeObject_ = true;
+        }
+
+        internal Block(IntPtr nativeInstance, bool ownsNativeObject = true)
+        {
+            nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
+            header_ = new Header(BlockNative.chain_block_header(nativeInstance_), false);
+        }
+
 
         ~Block()
         {
@@ -27,57 +43,27 @@ namespace Bitprim
         /// <summary>
         /// Returns true if and only if all transactions in the block have a unique hash (i.e. no duplicates)
         /// </summary>
-        public bool IsDistinctTransactionSet
-        {
-            get
-            {
-                return BlockNative.chain_block_is_distinct_transaction_set(nativeInstance_) != 0;
-            }
-        }
+        public bool IsDistinctTransactionSet => BlockNative.chain_block_is_distinct_transaction_set(nativeInstance_) != 0;
 
         /// <summary>
         /// Returns true if and only if there is more than one coinbase transaction in the block.
         /// </summary>
-        public bool IsExtraCoinbase
-        {
-            get
-            {
-                return BlockNative.chain_block_is_extra_coinbases(nativeInstance_) != 0;
-            }
-        }
+        public bool IsExtraCoinbase => BlockNative.chain_block_is_extra_coinbases(nativeInstance_) != 0;
 
         /// <summary>
         /// Returns true if and only if there is at least one double-spent transaction in this block
         /// </summary>
-        public bool IsInternalDoubleSpend
-        {
-            get
-            {
-                return BlockNative.chain_block_is_internal_double_spend(nativeInstance_) != 0;
-            }
-        }
+        public bool IsInternalDoubleSpend => BlockNative.chain_block_is_internal_double_spend(nativeInstance_) != 0;
 
         /// <summary>
         /// Returns true if and only if the block is valid
         /// </summary>
-        public bool IsValid
-        {
-            get
-            {
-                return BlockNative.chain_block_is_valid(nativeInstance_) != 0;
-            }
-        }
+        public bool IsValid => BlockNative.chain_block_is_valid(nativeInstance_) != 0;
 
         /// <summary>
         /// Returns true if and only if the generated Merkle root equals the header's Merkle root.
         /// </summary>
-        public bool IsValidMerkleRoot
-        {
-            get
-            {
-                return BlockNative.chain_block_is_valid_merkle_root(nativeInstance_) != 0;
-            }
-        }
+        public bool IsValidMerkleRoot => BlockNative.chain_block_is_valid_merkle_root(nativeInstance_) != 0;
 
         /// <summary>
         /// The block's hash as a 32 byte array.
@@ -108,13 +94,7 @@ namespace Bitprim
         /// <summary>
         /// The block's header
         /// </summary>
-        public IHeader Header
-        {
-            get
-            {
-                return header_;
-            }
-        }
+        public IHeader Header => header_;
 
         /// <summary>
         /// Amount of work done to mine the block
@@ -133,46 +113,22 @@ namespace Bitprim
         /// <summary>
         /// Miner fees included in the block's coinbase transaction.
         /// </summary>
-        public UInt64 Fees
-        {
-            get
-            {
-                return BlockNative.chain_block_fees(nativeInstance_);
-            }
-        }
+        public UInt64 Fees => BlockNative.chain_block_fees(nativeInstance_);
 
         /// <summary>
         /// Sum of coinbase outputs.
         /// </summary>
-        public UInt64 Claim
-        {
-            get
-            {
-                return BlockNative.chain_block_claim(nativeInstance_);
-            }
-        }
+        public UInt64 Claim => BlockNative.chain_block_claim(nativeInstance_);
 
         /// <summary>
         /// Amount of signature operations in the block.
         /// </summary>
-        public UInt64 SignatureOperationsCount
-        {
-            get
-            {
-                return (UInt64)BlockNative.chain_block_signature_operations(nativeInstance_);
-            }
-        }
+        public UInt64 SignatureOperationsCount => BlockNative.chain_block_signature_operations(nativeInstance_);
 
         /// <summary>
         /// The total amount of transactions that the block contains.
         /// </summary>
-        public UInt64 TransactionCount
-        {
-            get
-            {
-                return (UInt64)BlockNative.chain_block_transaction_count(nativeInstance_);
-            }
-        }
+        public UInt64 TransactionCount => BlockNative.chain_block_transaction_count(nativeInstance_);
 
         /// <summary>
         /// Returns true if and only if every transaction in the block is final or not.
@@ -253,7 +209,7 @@ namespace Bitprim
         /// <returns> UInt64 representation of the block size in bytes. </returns>
         public UInt64 GetSerializedSize(UInt32 version)
         {
-            return (UInt64)BlockNative.chain_block_serialized_size(nativeInstance_, version);
+            return BlockNative.chain_block_serialized_size(nativeInstance_, version);
         }
 
         /// <summary>
@@ -263,7 +219,7 @@ namespace Bitprim
         /// <returns> The amount of signature operations in this block </returns>
         public UInt64 GetSignatureOperationsCount(bool bip16Active)
         {
-            return (UInt64)BlockNative.chain_block_signature_operations_bip16_active
+            return BlockNative.chain_block_signature_operations_bip16_active
             (
                 nativeInstance_, bip16Active ? 1 : 0
             );
@@ -276,26 +232,14 @@ namespace Bitprim
         /// <returns> UInt64 representation of the sum </returns>
         public UInt64 GetTotalInputs(bool withCoinbase)
         {
-            return (UInt64)BlockNative.chain_block_total_inputs
+            return BlockNative.chain_block_total_inputs
             (
                 nativeInstance_, withCoinbase ? 1 : 0
             );
         }
 
-        internal Block(IntPtr nativeInstance, bool ownsNativeObject = true)
-        {
-            nativeInstance_ = nativeInstance;
-            ownsNativeObject_ = ownsNativeObject;
-            header_ = new Header(BlockNative.chain_block_header(nativeInstance_), false);
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
+        
+        internal IntPtr NativeInstance => nativeInstance_;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -306,12 +250,8 @@ namespace Bitprim
             //Release unmanaged resources
             if(ownsNativeObject_)
             {
-                //Logger.Log("Destroying block " + nativeInstance_.ToString("X") + "...");
                 BlockNative.chain_block_destruct(nativeInstance_);
-                //Logger.Log("Block " + nativeInstance_.ToString("X") + " destroyed!");
             }
         }
-
     }
-
 }

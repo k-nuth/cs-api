@@ -3,7 +3,9 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Bitprim.Logging;
 using Bitprim.Native;
-
+#if KEOKEN
+using Bitprim.Keoken;
+#endif
 namespace Bitprim
 {
     /// <summary>
@@ -31,6 +33,9 @@ namespace Bitprim
         public delegate bool TransactionHandler(ErrorCode errorCode, Transaction newTx);
 
         private Chain chain_;
+        #if KEOKEN
+        private KeokenManager keokenManager_;   
+        #endif
         private readonly IntPtr nativeInstance_;
         private readonly ExecutorNative.ReorganizeHandler internalBlockHandler_;
         private readonly ExecutorNative.RunNodeHandler internalRunNodeHandler_;
@@ -113,6 +118,17 @@ namespace Bitprim
                 return chain_;
             }
         }
+
+#if KEOKEN
+
+        public KeokenManager KeokenManager
+        {
+            get
+            {
+                return keokenManager_;
+            }
+        }
+#endif
 
         /// <summary>
         /// The node's network. Won't be valid until node starts running
@@ -322,6 +338,11 @@ namespace Bitprim
                 if (error == 0)
                 {
                     chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+                    
+                    #if KEOKEN
+                        keokenManager_ = new KeokenManager(ExecutorNative.executor_get_keoken_manager(nativeInstance_));
+                    #endif 
+                    
                     running_ = true;
                 }
                 handler(error);

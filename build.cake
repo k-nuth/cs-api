@@ -38,6 +38,7 @@ Task("Clean")
         CleanDirectory("./bitprim.console/bin");
         CleanDirectory("./bitprim.tests.bch/bin");
         CleanDirectory("./bitprim.tests.btc/bin");
+        CleanDirectory("./bitprim.tests.bch.keoken/bin");
        
         if (DirectoryExists(outputDir))
         {
@@ -91,7 +92,6 @@ Task("Build")
         MSBuild(solutionName, new MSBuildSettings {
             ArgumentCustomization = args => args.Append(platform 
                                             + " /p:AssemblyVersion=" + versionInfo.MajorMinorPatch
-                                            //+ " /p:DefineConstants=\"KEOKEN=0\""
                                             )
             ,Configuration = configuration
         });
@@ -110,6 +110,7 @@ Task("Test")
         
         DotNetCoreTest("./bitprim.tests.bch",settings);
         DotNetCoreTest("./bitprim.tests.btc",settings);
+        DotNetCoreTest("./bitprim.tests.bch.keoken",settings);
     });
 
 Task("Package")
