@@ -16,7 +16,7 @@ namespace Bitprim
             return MempoolTransactionListNative.chain_mempool_transaction_list_construct_default();
         }
 
-        protected override MempoolTransaction GetNthNativeElement(UInt64 n)
+        protected override IMempoolTransaction GetNthNativeElement(UInt64 n)
         {
             return new MempoolTransaction(MempoolTransactionListNative.chain_mempool_transaction_list_nth(NativeInstance, n));
         }

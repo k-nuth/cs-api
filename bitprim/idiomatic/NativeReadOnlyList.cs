@@ -8,7 +8,7 @@ namespace Bitprim
     /// Abstract class to represent read-only lists of native objects
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class NativeReadOnlyList<T> : IEnumerable<T>, IDisposable
+    public abstract class NativeReadOnlyList<T> : INativeList<T>
     {
         protected IntPtr nativeInstance_;
 
