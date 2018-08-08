@@ -7,7 +7,7 @@ namespace Bitprim
     /// <summary>
     /// Represents a full Bitcoin blockchain block.
     /// </summary>
-    public class Header : IDisposable
+    public class Header : IHeader
     {
         private bool ownsNativeObject_;
         private IntPtr nativeInstance_;

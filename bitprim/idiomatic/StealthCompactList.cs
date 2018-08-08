@@ -3,9 +3,9 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-    public class StealthCompactList : NativeReadOnlyList<StealthCompact>
+    public class StealthCompactList : NativeReadOnlyList<IStealthCompact>
     {
-        protected override StealthCompact GetNthNativeElement(UInt64 n)
+        protected override IStealthCompact GetNthNativeElement(UInt64 n)
         {
             return new StealthCompact(StealthCompactListNative.chain_stealth_compact_list_nth(NativeInstance, n), false);
         }

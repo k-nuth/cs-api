@@ -6,9 +6,9 @@ namespace Bitprim
     /// <summary>
     /// List of output points, values, and spends for a given payment address
     /// </summary>
-    public class HistoryCompactList : NativeReadOnlyList<HistoryCompact>
+    public class HistoryCompactList : NativeReadOnlyList<IHistoryCompact>
     {
-        protected override HistoryCompact GetNthNativeElement(UInt64 n)
+        protected override IHistoryCompact GetNthNativeElement(UInt64 n)
         {
             return new HistoryCompact(HistoryCompactListNative.chain_history_compact_list_nth(NativeInstance, n), false);
         }
@@ -20,7 +20,6 @@ namespace Bitprim
 
         protected override void DestroyNativeList()
         {
-            //Logger.Log("Destroying history compact list " + NativeInstance.ToString("X"));
             HistoryCompactListNative.chain_history_compact_list_destruct(NativeInstance);
         }
 
