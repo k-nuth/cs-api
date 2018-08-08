@@ -6,7 +6,7 @@ namespace Bitprim
     /// <summary>
     /// List of output points, values, and spends for a given payment address
     /// </summary>
-    public class HistoryCompactList : NativeList<HistoryCompact>
+    public class HistoryCompactList : NativeList<IHistoryCompact>
     {
         protected override IntPtr CreateNativeList()
         {
@@ -15,7 +15,7 @@ namespace Bitprim
             throw new NotImplementedException();
         }
 
-        protected override HistoryCompact GetNthNativeElement(uint n)
+        protected override IHistoryCompact GetNthNativeElement(uint n)
         {
             return new HistoryCompact(HistoryCompactListNative.chain_history_compact_list_nth(NativeInstance, (UInt64)n), false);
         }
@@ -25,7 +25,7 @@ namespace Bitprim
             return (uint) HistoryCompactListNative.chain_history_compact_list_count(NativeInstance);
         }
 
-        protected override void AddElement(HistoryCompact element)
+        protected override void AddElement(IHistoryCompact element)
         {
             //No native call for this
             throw new NotImplementedException();

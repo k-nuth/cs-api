@@ -7,7 +7,7 @@ namespace Bitprim
     /// <summary>
     /// Represents a full Bitcoin blockchain block.
     /// </summary>
-    public class Block : IDisposable
+    public class Block : IBlock
     {
         private bool ownsNativeObject_;
         private Header header_;
@@ -25,7 +25,7 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Returns true iif all transactions in the block have a unique hash (i.e. no duplicates)
+        /// Returns true if and only if all transactions in the block have a unique hash (i.e. no duplicates)
         /// </summary>
         public bool IsDistinctTransactionSet
         {
@@ -36,7 +36,7 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Returns true iif there is more than one coinbase transaction in the block.
+        /// Returns true if and only if there is more than one coinbase transaction in the block.
         /// </summary>
         public bool IsExtraCoinbase
         {
@@ -47,7 +47,7 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Returns true iif there is at least one double-spent transaction in this block
+        /// Returns true if and only if there is at least one double-spent transaction in this block
         /// </summary>
         public bool IsInternalDoubleSpend
         {
@@ -58,7 +58,7 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Returns true iif the block is valid
+        /// Returns true if and only if the block is valid
         /// </summary>
         public bool IsValid
         {
@@ -69,7 +69,7 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Returns true iif the generated Merkle root equals the header's Merkle root.
+        /// Returns true if and only if the generated Merkle root equals the header's Merkle root.
         /// </summary>
         public bool IsValidMerkleRoot
         {
@@ -108,7 +108,7 @@ namespace Bitprim
         /// <summary>
         /// The block's header
         /// </summary>
-        public Header Header
+        public IHeader Header
         {
             get
             {
@@ -175,7 +175,7 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Returns true iif every transaction in the block is final or not.
+        /// Returns true if and only if every transaction in the block is final or not.
         /// </summary>
         /// <param name="height"></param>
         /// <returns></returns>
@@ -185,20 +185,20 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Given a block height, return true iif its coinbase claim is not higher than the deserved reward.
+        /// Given a block height, return true if and only if its coinbase claim is not higher than the deserved reward.
         /// </summary>
         /// <param name="height">The height which identifies the block to examine</param>
-        /// <returns> True iif 1 if coinbase claim is not higher than the deserved reward. </returns>
+        /// <returns> True if and only if 1 if coinbase claim is not higher than the deserved reward. </returns>
         public bool IsValidCoinbaseClaim(UInt64 height)
         {
             return BlockNative.chain_block_is_valid_coinbase_claim(nativeInstance_, (UIntPtr)height) != 0;
         }
 
         /// <summary>
-        /// Returns true iif the block's coinbase script is valid.
+        /// Returns true if and only if the block's coinbase script is valid.
         /// </summary>
         /// <param name="height"> The block's height. Identifies it univocally. </param>
-        /// <returns>True iif the block's coinbase script is valid.</returns>
+        /// <returns>True if and only if the block's coinbase script is valid.</returns>
         public bool IsValidCoinbaseScript(UInt64 height)
         {
             return BlockNative.chain_block_is_valid_coinbase_script(nativeInstance_, (UIntPtr)height) != 0;
@@ -207,13 +207,23 @@ namespace Bitprim
         /// <summary>
         /// Raw block data.
         /// </summary>
-        /// <param name="wire">Iif true, include data size at the beginning.</param>
+        /// <param name="wire">if and only if true, include data size at the beginning.</param>
         /// <returns>Byte array with block data.</returns>
         public byte[] ToData(bool wire)
         {
             int blockSize = 0;
             var blockData = new NativeBuffer(BlockNative.chain_block_to_data(nativeInstance_, wire? 1:0, ref blockSize));
             return blockData.CopyToManagedArray(blockSize);
+        }
+
+        /// <summary>
+        /// Given a position in the block, returns the corresponding transaction.
+        /// </summary>
+        /// <param name="n"> Zero-based index </param>
+        /// <returns> Full transaction object </returns>
+        public ITransaction GetNthTransaction(UInt64 n)
+        {
+            return new Transaction(BlockNative.chain_block_transaction_nth(nativeInstance_, (UIntPtr)n), false);
         }
 
         /// <summary>
@@ -224,16 +234,6 @@ namespace Bitprim
         public static UInt64 GetSubsidy(UInt64 height)
         {
             return BlockNative.chain_block_subsidy((UIntPtr)height);
-        }
-
-        /// <summary>
-        /// Given a position in the block, returns the corresponding transaction.
-        /// </summary>
-        /// <param name="n"> Zero-based index </param>
-        /// <returns> Full transaction object </returns>
-        public Transaction GetNthTransaction(UInt64 n)
-        {
-            return new Transaction(BlockNative.chain_block_transaction_nth(nativeInstance_, (UIntPtr)n), false);
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace Bitprim
         /// <summary>
         /// Amount of signature operations in the block.
         /// </summary>
-        /// <param name="bip16Active"> Iif true, count bip16 active operations. </param>
+        /// <param name="bip16Active"> If and only if true, count bip16 active operations. </param>
         /// <returns> The amount of signature operations in this block </returns>
         public UInt64 GetSignatureOperationsCount(bool bip16Active)
         {
@@ -272,7 +272,7 @@ namespace Bitprim
         /// <summary>
         /// The sum of all inputs of all transactions in the block.
         /// </summary>
-        /// <param name="withCoinbase">Iif true, consider coinbase transactions. </param>
+        /// <param name="withCoinbase">If and only if true, consider coinbase transactions. </param>
         /// <returns> UInt64 representation of the sum </returns>
         public UInt64 GetTotalInputs(bool withCoinbase)
         {

@@ -3,7 +3,7 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-    public class StealthCompactList : NativeList<StealthCompact>
+    public class StealthCompactList : NativeList<IStealthCompact>
     {
         protected override IntPtr CreateNativeList()
         {
@@ -11,7 +11,7 @@ namespace Bitprim
             throw new NotImplementedException();
         }
 
-        protected override StealthCompact GetNthNativeElement(uint n)
+        protected override IStealthCompact GetNthNativeElement(uint n)
         {
             return new StealthCompact(StealthCompactListNative.stealth_compact_list_nth(NativeInstance, (UInt64) n), false);
         }
@@ -21,7 +21,7 @@ namespace Bitprim
             return (uint) StealthCompactListNative.stealth_compact_list_count(NativeInstance);
         }
 
-        protected override void AddElement(StealthCompact element)
+        protected override void AddElement(IStealthCompact element)
         {
             //No native call for this
             throw new NotImplementedException();

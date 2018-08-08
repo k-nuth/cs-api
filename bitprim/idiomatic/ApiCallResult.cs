@@ -67,12 +67,12 @@ namespace Bitprim
         /// <summary>
         /// Block Data
         /// </summary>
-        public GetBlockDataResult<Header> Block { get; set; }
+        public GetBlockDataResult<IHeader> Header { get; set; }
         
         /// <summary>
         /// List of transaction hashes
         /// </summary>
-        public HashList TransactionHashes { get; set; }
+        public INativeList<byte[]> TransactionHashes { get; set; }
         
         /// <summary>
         /// Serialized block size in bytes
@@ -84,7 +84,7 @@ namespace Bitprim
         /// </summary>
         public void Dispose()
         {
-            Block.Dispose();
+            Header.Dispose();
             TransactionHashes.Dispose();
         }
     }
@@ -114,7 +114,7 @@ namespace Bitprim
         /// <summary>
         /// The requested transaction
         /// </summary>
-        public Transaction Tx { get; set; }
+        public ITransaction Tx { get; set; }
         
         /// <summary>
         /// Transaction position as a block height - index pair
