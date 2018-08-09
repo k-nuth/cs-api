@@ -19,7 +19,7 @@ namespace bitprim.tutorials
 
         public bool TransactionIsMemo(string txHash)
         {
-            using(Transaction tx = bitprimApi_.GetTransactionByHash(txHash))
+            using(ITransaction tx = bitprimApi_.GetTransactionByHash(txHash))
             {
                 return TransactionIsMemo(tx);
             }
@@ -27,7 +27,7 @@ namespace bitprim.tutorials
 
         public string GetPost(string txHash)
         {
-            using(Transaction tx = bitprimApi_.GetTransactionByHash(txHash))
+            using(ITransaction tx = bitprimApi_.GetTransactionByHash(txHash))
             {
                 return GetPost(tx);
             }
@@ -41,7 +41,7 @@ namespace bitprim.tutorials
             while(postsFound < nPosts && blockchainHeight > 1)
             {
                 progressReportCallback("Searching block " + blockchainHeight + "...");
-                using(Block block = bitprimApi_.GetBlockByHeight(blockchainHeight))
+                using(IBlock block = bitprimApi_.GetBlockByHeight(blockchainHeight))
                 {
                     for(uint iTx=0; iTx<block.TransactionCount; ++iTx)
                     {
@@ -66,7 +66,7 @@ namespace bitprim.tutorials
             return posts;
         }
 
-        private bool TransactionIsMemo(Transaction tx)
+        private bool TransactionIsMemo(ITransaction tx)
         {
             foreach(Output output in tx.Outputs)
             {
@@ -97,7 +97,7 @@ namespace bitprim.tutorials
             return bytes;
         }
 
-        private string GetPost(Transaction tx)
+        private string GetPost(ITransaction tx)
         {
             foreach(Output output in tx.Outputs)
             {

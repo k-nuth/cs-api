@@ -5,9 +5,9 @@ namespace bitprim.tutorials
 {
     public interface IBitprimCsAPI
     {
-        Block GetBlockByHeight(UInt64 height);
+        IBlock GetBlockByHeight(UInt64 height);
 
-        Transaction GetTransactionByHash(string txHash);
+        ITransaction GetTransactionByHash(string txHash);
 
         UInt64 GetCurrentBlockchainHeight();
     }

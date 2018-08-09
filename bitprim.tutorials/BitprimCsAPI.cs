@@ -5,7 +5,7 @@ namespace bitprim.tutorials
 {
     public class BitprimCsAPI : IBitprimCsAPI, IDisposable
     {
-        private Chain chain_;
+        private IChain chain_;
         private readonly Executor executor_;
 
         public BitprimCsAPI(string nodeConfigFile)
@@ -18,12 +18,12 @@ namespace bitprim.tutorials
             Dispose(false);
         }
 
-        public Block GetBlockByHeight(UInt64 height)
+        public IBlock GetBlockByHeight(UInt64 height)
         {
             return chain_.FetchBlockByHeightAsync(height).Result.Result.BlockData;
         }
 
-        public Transaction GetTransactionByHash(string txHash)
+        public ITransaction GetTransactionByHash(string txHash)
         {
             return chain_.FetchTransactionAsync(Binary.HexStringToByteArray(txHash), true).Result.Result.Tx;
         }
