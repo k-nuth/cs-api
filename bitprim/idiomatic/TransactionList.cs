@@ -6,7 +6,7 @@ namespace Bitprim
     /// <summary>
     /// Represents a list of Transactions
     /// </summary>
-    public class TransactionList : NativeList<Transaction>
+    public class TransactionList : NativeReadableWritableList<Transaction>
     {
         protected override IntPtr CreateNativeList()
         {

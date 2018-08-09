@@ -6,7 +6,7 @@ namespace Bitprim
     /// <summary>
     /// List of output points, values, and spends for a given payment address
     /// </summary>
-    public class HistoryCompactList : NativeReadOnlyList<IHistoryCompact>
+    public class HistoryCompactList : NativeReadableList<IHistoryCompact>
     {
         protected override IHistoryCompact GetNthNativeElement(UInt64 n)
         {

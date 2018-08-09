@@ -6,7 +6,7 @@ namespace Bitprim
     /// <summary>
     /// Represents a list of MempoolTransaction
     /// </summary>
-    public class MempoolTransactionList : NativeList<IMempoolTransaction>
+    public class MempoolTransactionList : NativeReadableWritableList<IMempoolTransaction>
     {
         private bool ownsNativeObject_;
 

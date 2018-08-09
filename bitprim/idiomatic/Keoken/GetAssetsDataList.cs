@@ -8,7 +8,7 @@ using Bitprim.Native.Keoken;
 
 namespace Bitprim.Keoken
 {
-    public class GetAssetsDataList : NativeReadOnlyList<GetAssetsData>
+    public class GetAssetsDataList : NativeReadableList<GetAssetsData>
     {
         internal GetAssetsDataList(IntPtr nativeInstance) : base(nativeInstance)
         {            

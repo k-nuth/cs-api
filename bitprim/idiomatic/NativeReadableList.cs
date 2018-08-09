@@ -8,16 +8,16 @@ namespace Bitprim
     /// Abstract class to represent read-only lists of native objects
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class NativeReadOnlyList<T> : INativeList<T>
+    public abstract class NativeReadableList<T> : INativeList<T>
     {
         protected IntPtr nativeInstance_;
 
-        protected NativeReadOnlyList()
+        protected NativeReadableList()
         {
 
         }
 
-        protected NativeReadOnlyList(IntPtr nativeInstance)
+        protected NativeReadableList(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
         }
@@ -34,7 +34,7 @@ namespace Bitprim
             }
         }
 
-        ~NativeReadOnlyList()
+        ~NativeReadableList()
         {
             Dispose(false);
         }

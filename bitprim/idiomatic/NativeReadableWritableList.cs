@@ -8,14 +8,14 @@ namespace Bitprim
     /// Abstract class to represent lists of native objects
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class NativeList<T> : NativeReadOnlyList<T>
+    public abstract class NativeReadableWritableList<T> : NativeReadableList<T>
     {
-        protected NativeList()
+        protected NativeReadableWritableList()
         {
             nativeInstance_ = CreateNativeList();
         }
 
-        protected NativeList(IntPtr nativeInstance):base(nativeInstance)
+        protected NativeReadableWritableList(IntPtr nativeInstance):base(nativeInstance)
         {
             
         }

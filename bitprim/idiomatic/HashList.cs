@@ -3,7 +3,7 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-    public class HashList : NativeList<byte[]>
+    public class HashList : NativeReadableWritableList<byte[]>
     {
         private bool ownsNativeObject_;
 
