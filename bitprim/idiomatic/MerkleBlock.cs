@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using Bitprim.Native;
 
 namespace Bitprim
@@ -8,7 +7,7 @@ namespace Bitprim
     /// <summary>
     /// Merkle tree representation of a blockchain block.
     /// </summary>
-    public class MerkleBlock : IDisposable
+    public class MerkleBlock : IMerkleBlock
     {
         private Header header_;
         private IntPtr nativeInstance_;
@@ -30,21 +29,9 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Get the Nth transaction hash from the block.
-        /// </summary>
-        /// <param name="n">Zerp-based index.</param>
-        /// <returns> Transaction hash in 32 byte array format. </returns>
-        public byte[] GetNthHash(int n)
-        {
-            var managedHash = new hash_t();
-            MerkleBlockNative.chain_merkle_block_hash_nth_out(nativeInstance_, (UIntPtr)n, ref managedHash);
-            return managedHash.hash;
-        }
-
-        /// <summary>
         /// The block's header.
         /// </summary>
-        public Header Header
+        public IHeader Header
         {
             get
             {
@@ -72,6 +59,18 @@ namespace Bitprim
             {
                 return (UInt64)MerkleBlockNative.chain_merkle_block_total_transaction_count(nativeInstance_);
             }
+        }
+
+        /// <summary>
+        /// Get the Nth transaction hash from the block.
+        /// </summary>
+        /// <param name="n">Zerp-based index.</param>
+        /// <returns> Transaction hash in 32 byte array format. </returns>
+        public byte[] GetNthHash(int n)
+        {
+            var managedHash = new hash_t();
+            MerkleBlockNative.chain_merkle_block_hash_nth_out(nativeInstance_, (UIntPtr)n, ref managedHash);
+            return managedHash.hash;
         }
 
         /// <summary>

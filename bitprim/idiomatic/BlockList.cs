@@ -1,35 +1,36 @@
 using System;
 using Bitprim.Native;
-using System.Collections;
 
 namespace Bitprim
 {
-
+    /// <summary>
+    /// Represents a list of blocks
+    /// </summary>
     public class BlockList : NativeList<Block>
     {
-        public override IntPtr CreateNativeList()
+        protected override IntPtr CreateNativeList()
         {
             return BlockListNative.chain_block_list_construct_default();
         }
 
-        public override Block GetNthNativeElement(int n)
+        protected override Block GetNthNativeElement(UInt64 n)
         {
-            return new Block(BlockListNative.chain_block_list_nth(NativeInstance, (UInt64)n), false);
+            return new Block(BlockListNative.chain_block_list_nth(NativeInstance, n), false);
         }
 
-        public override uint GetCount()
+        protected override UInt64 GetCount()
         {
-            return (uint) BlockListNative.chain_block_list_count(NativeInstance);
+            return BlockListNative.chain_block_list_count(NativeInstance);
         }
 
-        public override void AddElement(Block element)
+        protected override void AddElement(Block element)
         {
             BlockListNative.chain_block_list_push_back(NativeInstance, element.NativeInstance);
         }
 
-        public override void DestroyNativeList()
+        protected override void DestroyNativeList()
         {
-            Logger.Log("Destroying block list " + NativeInstance.ToString("X"));
+            //Logger.Log("Destroying block list " + NativeInstance.ToString("X"));
             BlockListNative.chain_block_list_destruct(NativeInstance);
         }
 

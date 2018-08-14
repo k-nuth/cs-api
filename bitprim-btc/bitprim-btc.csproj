@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.2.193</Version>
+    <Version>0.2.189</Version>
     <Authors>Bitprim</Authors>
     <Company>Bitprim</Company>
     <Description>C# binding for Bitprim Bitcoin platform</Description>
@@ -18,14 +18,33 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
+
+  <ItemGroup>
+      <Compile Include="..\bitprim\**/*.cs" />
+      <None Include="..\bitprim\docs\Doxyfile" Link="docs\Doxyfile" />  
+  </ItemGroup>
+
+
   <ItemGroup>
     <!-- pack the target files -->
-    <Content Include="build\netstandard2.0\bitprim.targets" PackagePath="build\netstandard2.0\bitprim.targets" />
-	    
-	<Content Include="build\Common.targets" PackagePath="build\Common.targets" />
+    <Content Include="build\netstandard2.0\bitprim-btc.targets" PackagePath="build\netstandard2.0\bitprim-btc.targets" />
+     
+		<Content Include="build\Common.targets" PackagePath="build\Common.targets" />
     
-	<!-- pack the conan file -->
-    <Content Include="..\conanfile.txt" PackagePath="content\conanfile.txt" />
+	  <!-- pack the conan file -->
+    <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" /> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="build\netstandard2.0\" />
+    <Folder Include="idiomatic\" />
+    <Folder Include="native\" />
+    <Folder Include="content\" />
+    <Folder Include="docs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
   </ItemGroup>
 
 </Project>

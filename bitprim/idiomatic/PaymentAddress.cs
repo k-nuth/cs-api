@@ -17,7 +17,7 @@ namespace Bitprim
         /// <param name="hexString"></param>
         public PaymentAddress(string hexString)
         {
-            nativeInstance_ = PaymentAddressNative.chain_payment_address_construct_from_string(hexString);
+            nativeInstance_ = PaymentAddressNative.wallet_payment_address_construct_from_string(hexString);
         }
 
         ~PaymentAddress()
@@ -32,7 +32,7 @@ namespace Bitprim
         {
             get
             {
-                return PaymentAddressNative.chain_payment_address_is_valid(nativeInstance_) != 0;
+                return PaymentAddressNative.wallet_payment_address_is_valid(nativeInstance_) != 0;
             }
         }
 
@@ -43,7 +43,7 @@ namespace Bitprim
         {
             get
             {
-                return PaymentAddressNative.chain_payment_address_version(nativeInstance_);
+                return PaymentAddressNative.wallet_payment_address_version(nativeInstance_);
             }
         }
 
@@ -54,7 +54,10 @@ namespace Bitprim
         {
             get
             {
-                return new NativeString(PaymentAddressNative.chain_payment_address_encoded(nativeInstance_)).ToString();
+                using ( NativeString addressString = new NativeString(PaymentAddressNative.wallet_payment_address_encoded(nativeInstance_)) )
+                {
+                    return addressString.ToString();
+                }
             }
         }
 
@@ -85,7 +88,7 @@ namespace Bitprim
             }
             //Release unmanaged resources
             //Logger.Log("Destroying payment address " + nativeInstance_.ToString("X"));
-            PaymentAddressNative.chain_payment_address_destruct(nativeInstance_);
+            PaymentAddressNative.wallet_payment_address_destruct(nativeInstance_);
             //Logger.Log("Payment address " + nativeInstance_.ToString("X") + " destroyed!");
         }
     }

@@ -1,42 +1,41 @@
 using System;
 using Bitprim.Native;
-using System.Collections;
 
 namespace Bitprim
 {
-
+    /// <summary>
+    /// Represents a list of Outputs
+    /// </summary>
     public class OutputList : NativeList<Output>
     {
         private bool ownsNativeObject_;
 
-        public override IntPtr CreateNativeList()
+        protected override IntPtr CreateNativeList()
         {
             ownsNativeObject_ = true;
             return OutputListNative.chain_output_list_construct_default();
         }
 
-        public override Output GetNthNativeElement(int n)
+        protected override Output GetNthNativeElement(UInt64 n)
         {
-            return new Output(OutputListNative.chain_output_list_nth(NativeInstance, (UIntPtr) n), false);
+            return new Output(OutputListNative.chain_output_list_nth(NativeInstance, n), false);
         }
 
-        public override uint GetCount()
+        protected override UInt64 GetCount()
         {
-            return (uint) OutputListNative.chain_output_list_count(NativeInstance);
+            return OutputListNative.chain_output_list_count(NativeInstance);
         }
 
-        public override void AddElement(Output element)
+        protected override void AddElement(Output element)
         {
             OutputListNative.chain_output_list_push_back(NativeInstance, element.NativeInstance);
         }
 
-        public override void DestroyNativeList()
+        protected override void DestroyNativeList()
         {
             if(ownsNativeObject_)
             {
-                //Logger.Log("Destroying output list " + NativeInstance.ToString("X") + " ...");
                 OutputListNative.chain_output_list_destruct(NativeInstance);
-                //Logger.Log("Output list " + NativeInstance.ToString("X") + " destroyed!");
             }
         }
 

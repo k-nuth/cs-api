@@ -5,20 +5,15 @@ namespace Bitprim.Tests
 
 public class ExecutorFixture : IDisposable
 {
-    private Executor exec_;
+    private readonly Executor exec_;
 
     public ExecutorFixture()
     {
         exec_ = new Executor("");
-        bool initChainOk = exec_.InitChain();
-        if(!initChainOk)
+        int initChainOk = exec_.InitAndRunAsync().GetAwaiter().GetResult();
+        if (initChainOk != 0)
         {
             throw new InvalidOperationException("Executor::InitChain failed, check log");
-        }
-        int runResult = exec_.RunWait();
-        if(runResult != 0)
-        {
-            throw new InvalidOperationException("Executor::RunWait failed, check log");
         }
     }
 
@@ -33,6 +28,7 @@ public class ExecutorFixture : IDisposable
     public void Dispose()
     {
         exec_.Stop();
+        exec_.Dispose();
         GC.Collect();
         GC.WaitForPendingFinalizers();
     }

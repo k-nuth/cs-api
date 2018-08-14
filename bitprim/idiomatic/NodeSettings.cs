@@ -2,9 +2,14 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
+    /// <summary>
+    /// Holds node settings
+    /// </summary>
     public class NodeSettings
     {
-
+        /// <summary>
+        /// Returns the node's currency
+        /// </summary>
         public static CurrencyType CurrencyType
         {
             get

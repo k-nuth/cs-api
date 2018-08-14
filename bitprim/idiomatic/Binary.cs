@@ -4,7 +4,6 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
     /// <summary>
     /// Represents a binary filter.
     /// </summary>
@@ -17,7 +16,7 @@ namespace Bitprim
         /// </summary>
         public Binary()
         {
-            nativeInstance_ = BinaryNative.binary_construct();
+            nativeInstance_ = BinaryNative.core_binary_construct();
         }
 
         /// <summary>
@@ -26,7 +25,7 @@ namespace Bitprim
         /// <param name="hexString">  Binary string. Example: '10111010101011011111000000001101' </param>
         public Binary(string hexString)
         {
-            nativeInstance_ = BinaryNative.binary_construct_string(hexString);
+            nativeInstance_ = BinaryNative.core_binary_construct_string(hexString);
         }
 
         /// <summary>
@@ -37,7 +36,7 @@ namespace Bitprim
         /// <param name="n"> Array length in amount of elements. </param>
         public Binary(UInt64 bitsSize, byte[] blocks, UInt64 n)
         {
-            nativeInstance_ = BinaryNative.binary_construct_blocks((UIntPtr)bitsSize, blocks, (UIntPtr)n);
+            nativeInstance_ = BinaryNative.core_binary_construct_blocks((UIntPtr)bitsSize, blocks, (UIntPtr)n);
         }
 
         ~Binary()
@@ -49,7 +48,7 @@ namespace Bitprim
         /// Convert byte array to hex tring
         /// </summary>
         /// <param name="ba">Byte array</param>
-        /// <returns>HEx string representation, with as many characters as bytes</returns>
+        /// <returns>Hex string representation, with as many characters as bytes</returns>
         public static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);
@@ -67,13 +66,27 @@ namespace Bitprim
         /// <returns>ASCII byte array</returns>
         public static byte[] HexStringToByteArray(string hex)
         {
+            return HexStringToByteArray(hex, true);
+        }
+
+        /// <summary>
+        /// Convert hex string to byte array
+        /// </summary>
+        /// <param name="hex">Hex string</param>
+        /// <param name="reverse">Reverse the resulting array</param>
+        /// <returns>ASCII byte array</returns>
+        public static byte[] HexStringToByteArray(string hex, bool reverse)
+        {
             int numberChars = hex.Length;
             byte[] bytes = new byte[numberChars / 2];
             for (int i = 0; i < numberChars; i += 2)
             {
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
             }
-            Array.Reverse(bytes);
+
+            if (reverse)
+                Array.Reverse(bytes);
+            
             return bytes;
         }
 
@@ -84,7 +97,7 @@ namespace Bitprim
         {
             get
             {
-                return BinaryNative.binary_encoded(nativeInstance_);
+                return BinaryNative.core_binary_encoded(nativeInstance_);
             }
         }
 
@@ -109,9 +122,9 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            //Logger.Log("Destroying binary " + nativeInstance_.ToString("X") + " ...");
-            BinaryNative.binary_destruct(nativeInstance_);
-            //Logger.Log("Binary " + nativeInstance_.ToString("X") + " destroyed!");
+            
+            BinaryNative.core_binary_destruct(nativeInstance_);
+            
         }
 
     }

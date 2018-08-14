@@ -1,5 +1,7 @@
-public static class Constants
+namespace Bitprim
 {
-    public const string BITPRIM_C_LIBRARY = "libbitprim-node-cint";
-    public const string CONFIG_FILE = "test.cfg";
+    internal static class Constants
+    {
+        internal const string BITPRIM_C_LIBRARY = "libbitprim-node-cint";
+    }
 }

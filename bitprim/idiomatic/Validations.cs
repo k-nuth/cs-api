@@ -2,6 +2,9 @@ using System.Linq;
 
 namespace Bitprim
 {
+    /// <summary>
+    /// Helper class with utility methods
+    /// </summary>
     public static class Validations
     {
         private const int HASH_HEX_LENGTH = 64;
@@ -13,8 +16,10 @@ namespace Bitprim
         /// <returns>True iif hex is a valid base 58 address</returns>
         public static bool IsValidPaymentAddress(string hex)
         {
-            var address = new PaymentAddress(hex);
-            return address.IsValid;
+            using (var address = new PaymentAddress(hex))
+            {
+                return address.IsValid;
+            }
         }
 
         /// <summary>

@@ -8,7 +8,7 @@ namespace Bitprim
     /// Represents one of the transaction inputs.
     /// It's a transaction hash and index pair.
     /// </summary>
-    public class Point
+    public class Point : IPoint
     {
         private IntPtr nativeInstance_;
 

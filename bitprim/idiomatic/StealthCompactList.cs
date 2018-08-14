@@ -1,38 +1,23 @@
 using System;
 using Bitprim.Native;
-using System.Collections;
 
 namespace Bitprim
 {
-
-    public class StealthCompactList : NativeList<StealthCompact>
+    public class StealthCompactList : NativeReadOnlyList<IStealthCompact>
     {
-        public override IntPtr CreateNativeList()
+        protected override IStealthCompact GetNthNativeElement(UInt64 n)
         {
-            //No native call for this
-            throw new NotImplementedException();
+            return new StealthCompact(StealthCompactListNative.chain_stealth_compact_list_nth(NativeInstance, n), false);
         }
 
-        public override StealthCompact GetNthNativeElement(int n)
+        protected override UInt64 GetCount()
         {
-            return new StealthCompact(StealthCompactListNative.stealth_compact_list_nth(NativeInstance, (UInt64) n), false);
+            return StealthCompactListNative.chain_stealth_compact_list_count(NativeInstance);
         }
 
-        public override uint GetCount()
+        protected override void DestroyNativeList()
         {
-            return (uint) StealthCompactListNative.stealth_compact_list_count(NativeInstance);
-        }
-
-        public override void AddElement(StealthCompact element)
-        {
-            //No native call for this
-            throw new NotImplementedException();
-        }
-
-        public override void DestroyNativeList()
-        {
-            Logger.Log("Destroying stealth compact list " + NativeInstance.ToString("X"));
-            StealthCompactListNative.stealth_compact_list_destruct(NativeInstance);
+            StealthCompactListNative.chain_stealth_compact_list_destruct(NativeInstance);
         }
 
         internal StealthCompactList(IntPtr nativeInstance) : base(nativeInstance)

@@ -4,14 +4,18 @@ dist: trusty
 
 branches:
   only:
-  - master
   - dev
+  - /^v\d+\.\d+\.\d+$/
+  - /^release-\d+\.\d+\.\d+$/
+  - /^feature-ci-.+$/
+  - /^feature_ci_.+$/
 
 configuration:
 - Release
 
 env:  
   - CLI_VERSION=latest
+
 addons:  
   apt:
     packages:
@@ -28,19 +32,31 @@ linux: &linux
    language: python
    python: "3.6"
 
+
 osx: &osx
    os: osx
-   language: generic
+   language: csharp
+
+mono:
+  - latest
+
+dotnet: 2.1.300
 
 matrix:
    include:
-      - <<: *linux
-        compiler: gcc 
-        env: UPDATE_DOCS=false
+      - <<: *linux 
+        addons:
+          apt:
+            sources:
+              - ubuntu-toolchain-r-test
+            packages:
+              - g++-4.9
+              - gcc-4.9
+        env: UPDATE_DOCS=false MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
-      - <<: *linux
-        compiler: gcc 
-        env: UPDATE_DOCS=true
+      #- <<: *linux
+      #  compiler: gcc 
+      #  env: UPDATE_DOCS=true
 
       - <<: *osx
         osx_image: xcode8.3
@@ -55,9 +71,13 @@ before_install:
       sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
       sudo apt-get update -qq
     fi
+    
+    git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    git fetch origin
 
 install:
-  # Install Conan
+  
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
       # Install Conan    
@@ -76,18 +96,17 @@ install:
         pyenv rehash
         pyenv activate conan
       fi
+      
+      pip install --upgrade pip
       pip install conan_package_tools --upgrade
       pip install conan --upgrade
       pip install wheel --upgrade
       pip install twine --upgrade
       conan user
-      # Install .NET Core 2.x
-      if test "$TRAVIS_OS_NAME" == "osx"; then
-        curl -O https://download.microsoft.com/download/D/7/2/D725E47F-A4F1-4285-8935-A91AE2FCC06A/dotnet-sdk-2.0.3-osx-gs-x64.pkg
-        sudo installer -pkg dotnet-sdk-2.0.3-osx-gs-x64.pkg -target /
-        sudo update_dyld_shared_cache
-        ln -s /usr/local/share/dotnet/dotnet /usr/local/bin/
-      else
+      
+    
+      if test "$TRAVIS_OS_NAME" != "osx"; then
+        # Install .NET Core 2.x
         curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
         sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
         sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
@@ -95,42 +114,59 @@ install:
         sudo apt-get install dotnet-sdk-2.0.2 -y
         sudo apt-get install -qq g++-4.9
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/g++-4.9 90
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
         gcc --version
         g++ --version
         sudo ldconfig
+
+        # Install Mono, only to run cake
+        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+        sudo apt install apt-transport-https
+        echo "deb https://download.mono-project.com/repo/ubuntu stable-trusty main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+        sudo apt update
+        sudo apt install mono-devel
+
       fi
-    else
+
+    #else
       #Install Moxygen
-      nvm install 8.4.0
-      npm install moxygen -g
+      #nvm install 8.4.0
+      #npm install moxygen -g
       #Install Doxygen 1.8.13
-      wget 'ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.13.src.tar.gz'
-      tar -xzf doxygen-1.8.13.src.tar.gz
-      cd doxygen-1.8.13
-      mkdir build
-      cd build
-      cmake -G "Unix Makefiles" ..
-      make
-      sudo make install
-      cd ../..
-      doxygen -v
+      #wget 'ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.13.src.tar.gz'
+      #tar -xzf doxygen-1.8.13.src.tar.gz
+      #cd doxygen-1.8.13
+      #mkdir build
+      #cd build
+      #cmake -G "Unix Makefiles" ..
+      #make
+      #sudo make install
+      #cd ../..
+      #doxygen -v
     fi
 
 script:
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
-      cd bitprim.tests
-      dotnet build -f netcoreapp2.0 -c Release -v normal
-      dotnet test --no-build -f netcoreapp2.0 -c Release -v normal
-    else
-      cd bitprim/docs
-      doxygen Doxyfile
-      moxygen ./xml/
-      git clone https://dario-ramos:dir4ylgmhl4ci2243xk5gnxt1k9rclbxt7eiila378ktbmur5j802hfl5hg9wjdq@git.gitbook.com/jujumax/bitprim.git
-      yes | cp -rf api.md ./bitprim/dotnet-interface/reference.md 
-      cd bitprim
-      git add dotnet-interface/reference.md
-      git commit -m "Updated Dotnet docs" || :
-      git push -u -f || :
+      
+      chmod +x build.sh
+      ./build.sh
+
+    #else
+      #cd bitprim/docs
+      #doxygen Doxyfile
+      #moxygen --anchors ./xml/
+      
+      #git clone https://github.com/bitprim/bitprim-docs.git
+      #ls
+      #yes | cp -rf api.md ./bitprim/docs/bitprim-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
+
+      #cd bitprim-docs 
+      #git checkout master
+      
+      #git add docs/developer_guide/dotnet/dotnet-interface-details.md
+      #git commit -m "Updated Dotnet docs" || :
+      #git remote add origin-commit https://${GH_TOKEN}@github.com/bitprim/bitprim-docs.git > /dev/null 2>&1
+      #git push --quiet --set-upstream origin-commit master  || true
+    
     fi

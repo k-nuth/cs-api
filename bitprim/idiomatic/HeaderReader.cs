@@ -3,7 +3,7 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
+    /*
     /// <summary>
     /// Helper for reading the header for each block in a specific set of blocks.
     /// </summary>
@@ -114,10 +114,10 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Logger.Log("Destroying header reader " + nativeInstance_.ToString("X"));
+            //Logger.Log("Destroying header reader " + nativeInstance_.ToString("X"));
             GetHeadersNative.chain_get_headers_destruct(nativeInstance_);
         }
 
-    }
+    }*/
 
 }

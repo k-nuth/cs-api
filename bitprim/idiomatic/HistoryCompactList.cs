@@ -1,38 +1,25 @@
 using System;
 using Bitprim.Native;
-using System.Collections;
 
 namespace Bitprim
 {
-
-    public class HistoryCompactList : NativeList<HistoryCompact>
+    /// <summary>
+    /// List of output points, values, and spends for a given payment address
+    /// </summary>
+    public class HistoryCompactList : NativeReadOnlyList<IHistoryCompact>
     {
-        public override IntPtr CreateNativeList()
+        protected override IHistoryCompact GetNthNativeElement(UInt64 n)
         {
-            //There is no native call for this, so we deem it invalid.
-            //Use the IntPtr constructor instead.
-            throw new NotImplementedException();
+            return new HistoryCompact(HistoryCompactListNative.chain_history_compact_list_nth(NativeInstance, n), false);
         }
 
-        public override HistoryCompact GetNthNativeElement(int n)
+        protected override UInt64 GetCount()
         {
-            return new HistoryCompact(HistoryCompactListNative.chain_history_compact_list_nth(NativeInstance, (UInt64)n), false);
+            return HistoryCompactListNative.chain_history_compact_list_count(NativeInstance);
         }
 
-        public override uint GetCount()
+        protected override void DestroyNativeList()
         {
-            return (uint) HistoryCompactListNative.chain_history_compact_list_count(NativeInstance);
-        }
-
-        public override void AddElement(HistoryCompact element)
-        {
-            //No native call for this
-            throw new NotImplementedException();
-        }
-
-        public override void DestroyNativeList()
-        {
-            Logger.Log("Destroying history compact list " + NativeInstance.ToString("X"));
             HistoryCompactListNative.chain_history_compact_list_destruct(NativeInstance);
         }
 

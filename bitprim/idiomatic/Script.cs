@@ -59,14 +59,23 @@ namespace Bitprim
         /// <returns> Human readable script. </returns>
         public string ToString(UInt32 activeForks)
         {
-            return new NativeString(ScriptNative.chain_script_to_string(nativeInstance_, activeForks)).ToString();
+            using ( NativeString scriptString = new NativeString(ScriptNative.chain_script_to_string(nativeInstance_, activeForks)) )
+            {
+                return scriptString.ToString();
+            }
         }
 
+        /// <summary>
+        /// Script type
+        /// </summary>
         public string Type
         {
             get
             {
-                return new NativeString(ScriptNative.chain_script_type(nativeInstance_)).ToString();
+                using ( NativeString scriptTypeString = new NativeString(ScriptNative.chain_script_type(nativeInstance_)) )
+                {
+                    return scriptTypeString.ToString();
+                }
             }
         }
 

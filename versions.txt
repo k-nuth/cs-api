@@ -1,1 +1,1 @@
-bitprim-node-cint: v0.3.0-177-gad85524
+bitprim-node-cint: v0.9.1
