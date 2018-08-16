@@ -16,6 +16,10 @@ namespace Bitprim
         /// <returns>True iif hex is a valid base 58 address</returns>
         public static bool IsValidPaymentAddress(string hex)
         {
+            if(string.IsNullOrWhiteSpace(hex))
+            {
+                return false;
+            }
             using (var address = new PaymentAddress(hex))
             {
                 return address.IsValid;
