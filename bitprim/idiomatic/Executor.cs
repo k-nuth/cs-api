@@ -287,6 +287,10 @@ namespace Bitprim
                 ExecutorNative.executor_stop(nativeInstance_);
             }
             ExecutorNative.executor_destruct(nativeInstance_);
+
+#if KEOKEN
+            keokenManager_?.Dispose();   
+#endif
         }
 
         private static int InternalBlockHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing)

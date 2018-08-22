@@ -1,19 +1,23 @@
-using Bitprim.Native.Keoken;
+
 using System;
 
 #if KEOKEN
 
+using Bitprim.Native.Keoken;
+
 namespace Bitprim.Keoken
 {
 
-    public class KeokenState : IKeokenState
+    public class KeokenMemoryState : IKeokenState
     {
-        public KeokenState()
+        private bool disposed;
+
+        public KeokenMemoryState()
         {
             NativeInstance = KeokenStateNative.keoken_state_construct_default();
         }
 
-        ~KeokenState()
+        ~KeokenMemoryState()
         {
             Dispose(false);
         }
@@ -26,10 +30,7 @@ namespace Bitprim.Keoken
 
         public UInt32 InitialAssetId
         {
-            set
-            {
-                KeokenStateNative.keoken_state_set_initial_asset_id(NativeInstance, value);
-            }
+            set => KeokenStateNative.keoken_state_set_initial_asset_id(NativeInstance, value);
         }
 
         public bool StateAssetIdExists(UInt32 id)
@@ -59,7 +60,7 @@ namespace Bitprim.Keoken
 
         public void CreateAsset(string assetName, Int64 assetAmount, PaymentAddress owner, UInt64 blockHeight, byte[] txId)
         {
-            var managedTxId = new Bitprim.Native.hash_t
+            var managedTxId = new Native.hash_t
             {
                 hash = txId
             };
@@ -68,7 +69,7 @@ namespace Bitprim.Keoken
 
         public void CreateBalanceEntry(UInt32 assetId, Int64 assetAmount, PaymentAddress source, PaymentAddress target, UInt64 blockHeight, byte[] txId)
         {
-            var managedTxId = new Bitprim.Native.hash_t
+            var managedTxId = new Native.hash_t
             {
                 hash = txId
             };
@@ -79,12 +80,18 @@ namespace Bitprim.Keoken
 
         protected virtual void Dispose(bool disposing)
         {
+            if (disposed)
+                return;
+
+            //Release unmanaged resources
+            KeokenStateNative.keoken_state_destruct(NativeInstance);
+
             if (disposing)
             {
                 //Release managed resources and call Dispose for member variables
             }
-            //Release unmanaged resources
-            KeokenStateNative.keoken_state_destruct(NativeInstance);
+            
+            disposed = true;
         }
     }
 }

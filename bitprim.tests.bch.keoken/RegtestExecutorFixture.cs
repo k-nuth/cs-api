@@ -13,7 +13,7 @@ namespace Bitprim.Tests.Bch.Keoken
             int initChainOk = exec_.InitAndRunAsync().GetAwaiter().GetResult();
             if (initChainOk != 0)
             {
-                throw new InvalidOperationException("Executor::InitChain failed, check log");
+                throw new InvalidOperationException("Executor::InitAndRunAsync failed, check log");
             }
 
             //Add mined blocks containing Keoken Transactions

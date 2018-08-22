@@ -1,12 +1,11 @@
-using Bitprim.Keoken;
 using System;
 using System.Runtime.InteropServices;
 
 #if KEOKEN
+using Bitprim.Keoken;
 
 namespace Bitprim.Native.Keoken
 {
-
     internal static class KeokenStateNative  
     {
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
@@ -30,7 +29,7 @@ namespace Bitprim.Native.Keoken
         public static extern int /*bool*/ keoken_state_asset_id_exists(IntPtr state, UInt32 id);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern Int64 keoken_state_get_balance(IntPtr state, UInt32 id, IntPtr addr);
+        public static extern Int64 keoken_state_get_balance(IntPtr state, UInt32 asset_id, IntPtr addr);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr keoken_state_get_assets_by_address(IntPtr state, IntPtr addr);

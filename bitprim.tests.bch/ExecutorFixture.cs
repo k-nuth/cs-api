@@ -2,7 +2,6 @@ using System;
 
 namespace Bitprim.Tests
 {
-
     public class ExecutorFixture : IDisposable
     {
         public ExecutorFixture()
@@ -11,7 +10,7 @@ namespace Bitprim.Tests
             int initChainOk = Executor.InitAndRunAsync().GetAwaiter().GetResult();
             if (initChainOk != 0)
             {
-                throw new InvalidOperationException("Executor::InitChain failed, check log");
+                throw new InvalidOperationException("Executor::InitAndRunAsync failed, check log");
             }
         }
 
