@@ -17,6 +17,7 @@ namespace Bitprim.Tests
         [Fact]
         public void TestCashAddressValidation()
         {
+            Assert.False(Validations.IsValidPaymentAddress("bitcoincash:qz7cgzl5mavucstffsr8qf8mp2v60zncqv7tn3nlea"));
             Assert.True(Validations.IsValidPaymentAddress("bitcoincash:qz7cgzl5mavucstffsr8qf8mp2v60zncqv7tn3nler"));
         }
 
