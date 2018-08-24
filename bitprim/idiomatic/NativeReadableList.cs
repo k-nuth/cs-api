@@ -77,6 +77,7 @@ namespace Bitprim
         /// </summary>
         public UInt64 Count => GetCount();
 
-        internal IntPtr NativeInstance => nativeInstance_;
+        public IntPtr NativeInstance => nativeInstance_;
+
     }
 }

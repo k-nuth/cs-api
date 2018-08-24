@@ -15,13 +15,32 @@ namespace Bitprim.Tests
         }
 
         public Executor Executor { get; }
-
-        public void Dispose()
+     
+        private void ReleaseUnmanagedResources()
         {
             Executor.Stop();
             Executor.Dispose();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            ReleaseUnmanagedResources();
+            if (disposing)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~ExecutorFixture()
+        {
+            Dispose(false);
         }
     }
 }

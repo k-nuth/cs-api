@@ -13,7 +13,7 @@ namespace Bitprim.Keoken
     public class KeokenManager:IDisposable
     {
         private readonly IntPtr nativeInstance_;
-        private DelegatedState delegatedState_;
+        //private DelegatedState delegatedState_;
 
         public KeokenManager(IntPtr nativeInstance)
         {
@@ -25,19 +25,20 @@ namespace Bitprim.Keoken
             KeokenManagerNative.keoken_manager_initialize_from_blockchain(nativeInstance_);
         }
 
-        public void ConfigureState(DelegatedState delegatedState)
+        public void ConfigureState()
         {
-            delegatedState_ = delegatedState;
-            KeokenManagerNative.keoken_manager_configure_state(nativeInstance_,delegatedState_.KeokenStateDelegatedSetInitialAssetIdHandler
-                                                                ,delegatedState_.KeokenStateDelegatedCreateAssetHandler
-                                                                ,delegatedState_.KeokenStateDelegatedCreateBalanceEntryHandler
-                                                                ,delegatedState_.KeokenStateDelegatedAssetIdExistsHandler
-                                                                ,delegatedState_.KeokenStateDelegatedGetBalanceHandler
-                                                                ,delegatedState_.KeokenStateDelegatedGetAssetsByAddressHandler
-                                                                ,delegatedState_.KeokenStateDelegatedGetAssetsListHandler
-                                                                ,delegatedState_.KeokenStateDelegatedGetAllAssetAddressesListHandler);
+            //delegatedState_ = delegatedState;
+            KeokenManagerNative.keoken_manager_configure_state(nativeInstance_,IntPtr.Zero,DelegatedState.KeokenStateDelegatedSetInitialAssetIdHandler
+                                                                ,DelegatedState.KeokenStateDelegatedCreateAssetHandler
+                                                                ,DelegatedState.KeokenStateDelegatedCreateBalanceEntryHandler
+                                                                ,DelegatedState.KeokenStateDelegatedAssetIdExistsHandler
+                                                                ,DelegatedState.KeokenStateDelegatedGetBalanceHandler
+                                                                ,DelegatedState.KeokenStateDelegatedGetAssetsByAddressHandler
+                                                                ,DelegatedState.KeokenStateDelegatedGetAssetsListHandler
+                                                                ,DelegatedState.KeokenStateDelegatedGetAllAssetAddressesListHandler);
         }
 
+        
         public bool Initialized => KeokenManagerNative.keoken_manager_initialized(nativeInstance_) != 0;
 
         public GetAssetsByAddressDataList GetAssetsByAddress (PaymentAddress address)
@@ -57,7 +58,7 @@ namespace Bitprim.Keoken
 
         private void ReleaseUnmanagedResources()
         {
-            delegatedState_?.Dispose();
+            //delegatedState_?.Dispose();
         }
 
         private void Dispose(bool disposing)

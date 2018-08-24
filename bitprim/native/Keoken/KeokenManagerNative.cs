@@ -20,7 +20,7 @@ namespace Bitprim.Native.Keoken
         //         payment_address_t /*owner*/, 
         //         uint64_t /*size_t*/ /*block_height*/, 
         //         hash_t /*txid*/);
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl,CharSet=CharSet.Ansi)]
         public delegate void KeokenStateDelegatedCreateAssetHandler(IntPtr state, string asset_name, Int64 asset_amount, IntPtr owner, UInt64 block_height, hash_t txid);
 
 
@@ -80,7 +80,7 @@ namespace Bitprim.Native.Keoken
         public static extern IntPtr keoken_manager_get_all_asset_addresses(IntPtr keokenManager);
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
-        public static extern void keoken_manager_configure_state(IntPtr keokenManager
+        public static extern void keoken_manager_configure_state(IntPtr keokenManager,IntPtr context
                                                                 ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedSetInitialAssetIdHandler setInitialAssetIdHandler
                                                                 ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedCreateAssetHandler createAssetHandler
                                                                 ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedCreateBalanceEntryHandler createBalanceEntryHandler

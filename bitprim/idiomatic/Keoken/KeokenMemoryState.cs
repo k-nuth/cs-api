@@ -1,5 +1,5 @@
-
 using System;
+using System.Collections.Generic;
 
 #if KEOKEN
 
@@ -38,17 +38,17 @@ namespace Bitprim.Keoken
             return KeokenStateNative.keoken_state_asset_id_exists(NativeInstance, id) != 0;
         }
 
-        public GetAllAssetsAddressesDataList GetAllAssetAddresses()
+        public INativeList<IGetAllAssetsAddressesData> GetAllAssetAddresses()
         {
             return new GetAllAssetsAddressesDataList(KeokenStateNative.keoken_state_get_all_asset_addresses(NativeInstance));
         }
 
-        public GetAssetsByAddressDataList GetAssetsByAddress(PaymentAddress addr)
+        public INativeList<IGetAssetsByAddressData> GetAssetsByAddress(PaymentAddress addr)
         {
             return new GetAssetsByAddressDataList(KeokenStateNative.keoken_state_get_assets_by_address(NativeInstance, addr.NativeInstance));
         }
 
-        public GetAssetsDataList GetAssets()
+        public INativeList<IGetAssetsData> GetAssets()
         {
             return new GetAssetsDataList(KeokenStateNative.keoken_state_get_assets(NativeInstance));
         }

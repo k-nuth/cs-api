@@ -228,24 +228,12 @@ namespace Bitprim
         /// <summary>
         /// Returns true if and only if the node is stopped
         /// </summary>
-        public bool IsStopped
-        {
-            get
-            {
-                return ExecutorNative.executor_stopped(nativeInstance_) != 0;
-            }
-        }
+        public bool IsStopped => ExecutorNative.executor_stopped(nativeInstance_) != 0;
 
         /// <summary>
         /// Returns true if and only if and only if the config file is valid
         /// </summary>
-        public bool IsLoadConfigValid
-        {
-            get
-            {
-                return ExecutorNative.executor_load_config_valid(nativeInstance_) != 0;
-            }
-        }
+        public bool IsLoadConfigValid => ExecutorNative.executor_load_config_valid(nativeInstance_) != 0;
 
 
         /// <summary>
