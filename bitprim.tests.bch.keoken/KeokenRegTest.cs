@@ -53,7 +53,6 @@ namespace Bitprim.Tests.Bch.Keoken
                     }
                 }
             }
-           
         }
 
         [Fact]
@@ -83,6 +82,7 @@ namespace Bitprim.Tests.Bch.Keoken
                     }
                 }
             }
+            
         }
 
         [Fact]
@@ -120,8 +120,7 @@ namespace Bitprim.Tests.Bch.Keoken
                         }      
                     }
                 }
-            }
-            
+            }       
         }
     }
 }

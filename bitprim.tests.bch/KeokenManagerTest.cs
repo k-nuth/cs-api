@@ -36,7 +36,6 @@ namespace Bitprim.Tests
         [Fact]
         public void TestGetAllAssetAddresses()
         {
-            
             using (var state = new KeokenMemoryState())
             {
                 DelegatedState.SetDelegatedState(state);
@@ -64,8 +63,6 @@ namespace Bitprim.Tests
             }
         }
 
-       
-
         [Fact]
         public void TestGetAssetsByAddress()
         {
@@ -76,14 +73,12 @@ namespace Bitprim.Tests
                 executorFixture_.Executor.KeokenManager.InitializeFromBlockchain();
                 using (var address = new PaymentAddress("16TGufqQ9FPnEbixbD4ZjVabaP455roE6t"))
                 {
-                    //TODO Mario
                     using (var ret = executorFixture_.Executor.KeokenManager.GetAssetsByAddress(address))
                     {
                         Assert.Equal<UInt64>(0, ret.Count);
                     }
                 }
             }
-
         }
     }
 

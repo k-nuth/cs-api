@@ -3,6 +3,7 @@ using Xunit;
 
 namespace Bitprim.Tests
 {
+    [Collection("ChainCollection")]
     public class KeokenMemoryStateTest 
     {
         [Fact]
@@ -169,7 +170,7 @@ namespace Bitprim.Tests
             }
         }
 
-         [Fact]
+        [Fact]
         public void TestGetBalanceReturnsValidData()
         {
             using (var memoryState = new KeokenMemoryState())

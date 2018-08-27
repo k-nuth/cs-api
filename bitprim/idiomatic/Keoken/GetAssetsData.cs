@@ -21,10 +21,12 @@ namespace Bitprim.Keoken
     public class GetAssetsData: IGetAssetsData
     {
         private readonly IntPtr nativeInstance_;
+        private readonly bool ownsNativeObject_;
 
         public GetAssetsData(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = false;
         }
 
         ~GetAssetsData()
@@ -48,7 +50,11 @@ namespace Bitprim.Keoken
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            GetAssetsDataNative.keoken_get_assets_data_destruct(nativeInstance_);
+            if (ownsNativeObject_)
+            {
+                GetAssetsDataNative.keoken_get_assets_data_destruct(nativeInstance_);
+            }
+            
         }
 
         public UInt32 AssetId => GetAssetsDataNative.keoken_get_assets_data_asset_id(nativeInstance_);

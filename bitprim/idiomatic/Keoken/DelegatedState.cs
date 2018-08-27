@@ -16,7 +16,6 @@ namespace Bitprim.Keoken
             internalState_ = internalState;
         }
 
-
         public static void KeokenStateDelegatedSetInitialAssetIdHandler(IntPtr state, UInt32 asset_id_initial)
         {
             internalState_.InitialAssetId = asset_id_initial;
@@ -26,7 +25,6 @@ namespace Bitprim.Keoken
             IntPtr owner, UInt64 block_height, hash_t txid)
         {
             using (var owner_address = new PaymentAddress(owner))
-            //using (var asset_name_str = new NativeString(asset_name) )
             {
                 internalState_.CreateAsset(asset_name,asset_amount,owner_address, block_height,txid.hash);
             }

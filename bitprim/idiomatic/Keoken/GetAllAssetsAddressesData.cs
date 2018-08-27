@@ -22,10 +22,12 @@ namespace Bitprim.Keoken
     public class GetAllAssetsAddressesData: IGetAllAssetsAddressesData
     {
         private readonly IntPtr nativeInstance_;
+        private readonly bool ownsNativeObject_;
 
         public GetAllAssetsAddressesData(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = false;
         }
 
         ~GetAllAssetsAddressesData()
@@ -48,8 +50,12 @@ namespace Bitprim.Keoken
             {
                 //Release managed resources and call Dispose for member variables
             }
+            
             //Release unmanaged resources
-            GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_destruct(nativeInstance_);
+            if (ownsNativeObject_)
+            {
+                GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_destruct(nativeInstance_);
+            }
         }
 
         public UInt32 AssetId => GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_asset_id(nativeInstance_);
