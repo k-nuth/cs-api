@@ -64,6 +64,8 @@ namespace Bitprim.Tests
             }
         }
 
+       
+
         [Fact]
         public void TestGetAssetsByAddress()
         {
@@ -75,10 +77,10 @@ namespace Bitprim.Tests
                 using (var address = new PaymentAddress("16TGufqQ9FPnEbixbD4ZjVabaP455roE6t"))
                 {
                     //TODO Mario
-                    /*using (var ret = executorFixture_.Executor.KeokenManager.GetAssetsByAddress(address))
+                    using (var ret = executorFixture_.Executor.KeokenManager.GetAssetsByAddress(address))
                     {
                         Assert.Equal<UInt64>(0, ret.Count);
-                    }*/
+                    }
                 }
             }
 

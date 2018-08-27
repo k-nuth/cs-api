@@ -9,6 +9,7 @@ namespace Bitprim
     public class PaymentAddress : IDisposable
     {
         private readonly IntPtr nativeInstance_;
+        private readonly bool ownsNativeObject_;
 
         /// <summary>
         /// Create an address from its hex string representation.
@@ -17,6 +18,13 @@ namespace Bitprim
         public PaymentAddress(string hexString)
         {
             nativeInstance_ = PaymentAddressNative.wallet_payment_address_construct_from_string(hexString);
+            ownsNativeObject_ = true;
+        }
+
+        internal PaymentAddress(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = false;
         }
 
         ~PaymentAddress()
@@ -54,11 +62,6 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        internal PaymentAddress(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
-        }
-
         internal IntPtr NativeInstance => nativeInstance_;
 
         protected virtual void Dispose(bool disposing)
@@ -68,7 +71,10 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            PaymentAddressNative.wallet_payment_address_destruct(nativeInstance_);
+            if (ownsNativeObject_)
+            {
+                PaymentAddressNative.wallet_payment_address_destruct(nativeInstance_);
+            }
         }
     }
 

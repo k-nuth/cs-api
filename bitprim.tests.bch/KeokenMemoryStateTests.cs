@@ -168,5 +168,24 @@ namespace Bitprim.Tests
                 }
             }
         }
+
+         [Fact]
+        public void TestGetBalanceReturnsValidData()
+        {
+            using (var memoryState = new KeokenMemoryState())
+            using (var address_source = new PaymentAddress("16TGufqQ9FPnEbixbD4ZjVabaP455roE6t"))
+            using (var address_target = new PaymentAddress("my2dxGb5jz43ktwGxg2doUaEb9WhZ9PQ7K"))
+            {
+                byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+                memoryState.InitialAssetId = 5;
+                
+                memoryState.CreateAsset("test asset", 15, address_source, 10,hash);
+                
+                memoryState.CreateBalanceEntry(5, 10, address_source, address_target, 5,hash);
+
+                Assert.Equal(5,memoryState.GetBalance(5, address_source));
+                Assert.Equal(10,memoryState.GetBalance(5, address_target));
+            }
+        }
     }
 }

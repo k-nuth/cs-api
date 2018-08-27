@@ -53,9 +53,9 @@ namespace Bitprim.Keoken
             return new GetAssetsDataList(KeokenStateNative.keoken_state_get_assets(NativeInstance));
         }
 
-        public Int64 GetBalance(UInt32 id, PaymentAddress addr)
+        public Int64 GetBalance(UInt32 asset_id, PaymentAddress addr)
         {
-            return KeokenStateNative.keoken_state_get_balance(NativeInstance, id, addr.NativeInstance);
+            return KeokenStateNative.keoken_state_get_balance(NativeInstance, asset_id, addr.NativeInstance);
         }
 
         public void CreateAsset(string assetName, Int64 assetAmount, PaymentAddress owner, UInt64 blockHeight, byte[] txId)
