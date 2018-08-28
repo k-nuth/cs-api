@@ -34,7 +34,8 @@ namespace Bitprim.Tests.Bch.Keoken
                     }
                 }
             }
-           
+
+            
             DelegatedState.SetDelegatedState(state_);
             exec_.KeokenManager.ConfigureState();
             exec_.KeokenManager.InitializeFromBlockchain();

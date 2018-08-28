@@ -4,11 +4,34 @@ using System.Collections.Generic;
 using Bitprim.Native;
 
 #if KEOKEN
+using Bitprim.Native.Keoken;
 
 namespace Bitprim.Keoken
 {
     public static class DelegatedState
     {
+        public static KeokenManagerNativeDelegates.KeokenStateDelegatedSetInitialAssetIdHandler KeokenStateDelegatedSetInitialAssetIdHandler;
+        public static KeokenManagerNativeDelegates.KeokenStateDelegatedCreateAssetHandler KeokenStateDelegatedCreateAssetHandler;
+        public static KeokenManagerNativeDelegates.KeokenStateDelegatedAssetIdExistsHandler KeokenStateDelegatedAssetIdExistsHandler;
+        public static KeokenManagerNativeDelegates.KeokenStateDelegatedGetAllAssetAddressesListHandler KeokenStateDelegatedGetAllAssetAddressesListHandler;
+        public static KeokenManagerNativeDelegates.KeokenStateDelegatedCreateBalanceEntryHandler KeokenStateDelegatedCreateBalanceEntryHandler;
+        public static KeokenManagerNativeDelegates.KeokenStateDelegatedGetAssetsListHandler KeokenStateDelegatedGetAssetsListHandler;
+        public static KeokenManagerNativeDelegates.KeokenStateDelegatedGetAssetsByAddressHandler KeokenStateDelegatedGetAssetsByAddressHandler;
+        public static KeokenManagerNativeDelegates.KeokenStateDelegatedGetBalanceHandler KeokenStateDelegatedGetBalanceHandler;
+        
+
+        static DelegatedState()
+        {
+            KeokenStateDelegatedSetInitialAssetIdHandler = KeokenStateDelegatedSetInitialAssetIdHandlerInternal;
+            KeokenStateDelegatedCreateAssetHandler = KeokenStateDelegatedCreateAssetHandlerInternal;
+            KeokenStateDelegatedAssetIdExistsHandler = KeokenStateDelegatedAssetIdExistsHandlerInternal;
+            KeokenStateDelegatedGetAllAssetAddressesListHandler = KeokenStateDelegatedGetAllAssetAddressesListHandlerInternal;
+            KeokenStateDelegatedCreateBalanceEntryHandler = KeokenStateDelegatedCreateBalanceEntryHandlerInternal;
+            KeokenStateDelegatedGetAssetsListHandler = KeokenStateDelegatedGetAssetsListHandlerInternal;
+            KeokenStateDelegatedGetAssetsByAddressHandler = KeokenStateDelegatedGetAssetsByAddressHandlerInternal;
+            KeokenStateDelegatedGetBalanceHandler = KeokenStateDelegatedGetBalanceHandlerInternal;
+        }
+
         private static IKeokenState internalState_;
 
         public static void SetDelegatedState(IKeokenState internalState)
@@ -16,12 +39,12 @@ namespace Bitprim.Keoken
             internalState_ = internalState;
         }
 
-        public static void KeokenStateDelegatedSetInitialAssetIdHandler(IntPtr state, UInt32 asset_id_initial)
+        private static void KeokenStateDelegatedSetInitialAssetIdHandlerInternal(IntPtr state, UInt32 asset_id_initial)
         {
             internalState_.InitialAssetId = asset_id_initial;
         }
 
-        public static void KeokenStateDelegatedCreateAssetHandler(IntPtr state, string asset_name, Int64 asset_amount,
+        private static void KeokenStateDelegatedCreateAssetHandlerInternal(IntPtr state, string asset_name, Int64 asset_amount,
             IntPtr owner, UInt64 block_height, hash_t txid)
         {
             using (var owner_address = new PaymentAddress(owner))
@@ -31,7 +54,7 @@ namespace Bitprim.Keoken
         }
 
 
-        public static void KeokenStateDelegatedCreateBalanceEntryHandler(IntPtr state, UInt32 asset_id, Int64 asset_amount,
+        private static void KeokenStateDelegatedCreateBalanceEntryHandlerInternal(IntPtr state, UInt32 asset_id, Int64 asset_amount,
             IntPtr source, IntPtr target, UInt64 block_height, hash_t txid)
         {
             using (var source_address = new PaymentAddress(source))
@@ -42,13 +65,13 @@ namespace Bitprim.Keoken
         }
 
 
-        public static int KeokenStateDelegatedAssetIdExistsHandler(IntPtr state, UInt32 asset_id)
+        private static int KeokenStateDelegatedAssetIdExistsHandlerInternal(IntPtr state, UInt32 asset_id)
         {
             return internalState_.StateAssetIdExists(asset_id) ? 1 : 0;
         }
 
 
-        public static Int64 KeokenStateDelegatedGetBalanceHandler(IntPtr state, UInt32 asset_id, IntPtr addr)
+        private static Int64 KeokenStateDelegatedGetBalanceHandlerInternal(IntPtr state, UInt32 asset_id, IntPtr addr)
         {
             using (var address = new PaymentAddress(addr))
             {
@@ -57,7 +80,7 @@ namespace Bitprim.Keoken
         }
 
 
-        public static IntPtr KeokenStateDelegatedGetAssetsByAddressHandler(IntPtr state, IntPtr addr)
+        private static IntPtr KeokenStateDelegatedGetAssetsByAddressHandlerInternal(IntPtr state, IntPtr addr)
         {
             using (var address = new PaymentAddress(addr))
             {
@@ -66,13 +89,13 @@ namespace Bitprim.Keoken
         }
 
 
-        public static IntPtr KeokenStateDelegatedGetAssetsListHandler(IntPtr state)
+        private static IntPtr KeokenStateDelegatedGetAssetsListHandlerInternal(IntPtr state)
         {
             return internalState_.GetAssets().NativeInstance;
         }
 
 
-        public static IntPtr KeokenStateDelegatedGetAllAssetAddressesListHandler(IntPtr state)
+        private static IntPtr KeokenStateDelegatedGetAllAssetAddressesListHandlerInternal(IntPtr state)
         {
             return internalState_.GetAllAssetAddresses().NativeInstance;
         }

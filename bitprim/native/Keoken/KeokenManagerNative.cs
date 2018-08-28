@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 
 namespace Bitprim.Native.Keoken
 {
-    internal static class KeokenManagerNative  
-    { 
+    public static class KeokenManagerNativeDelegates
+    {
         //typedef void (*keoken_state_delegated_set_initial_asset_id_t)
         //        (void* /*ctx*/, 
         //        keoken_asset_id_t /*asset_id_initial*/);
@@ -63,7 +63,10 @@ namespace Bitprim.Native.Keoken
         //                 (void* /*ctx*/);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr KeokenStateDelegatedGetAllAssetAddressesListHandler(IntPtr state);   
+    }
 
+    internal static class KeokenManagerNative  
+    { 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void keoken_manager_initialize_from_blockchain(IntPtr keokenManager);
 
@@ -81,14 +84,14 @@ namespace Bitprim.Native.Keoken
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void keoken_manager_configure_state(IntPtr keokenManager,IntPtr context
-                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedSetInitialAssetIdHandler setInitialAssetIdHandler
-                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedCreateAssetHandler createAssetHandler
-                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedCreateBalanceEntryHandler createBalanceEntryHandler
-                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedAssetIdExistsHandler assetIdExistsHandler
-                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedGetBalanceHandler getBalanceHandler
-                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedGetAssetsByAddressHandler getAssetsByAddressHandler
-                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedGetAssetsListHandler getAssetsListHandler
-                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenStateDelegatedGetAllAssetAddressesListHandler getAllAssetAddressesListHandler        
+                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedSetInitialAssetIdHandler setInitialAssetIdHandler
+                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedCreateAssetHandler createAssetHandler
+                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedCreateBalanceEntryHandler createBalanceEntryHandler
+                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedAssetIdExistsHandler assetIdExistsHandler
+                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedGetBalanceHandler getBalanceHandler
+                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedGetAssetsByAddressHandler getAssetsByAddressHandler
+                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedGetAssetsListHandler getAssetsListHandler
+                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedGetAllAssetAddressesListHandler getAllAssetAddressesListHandler        
                                                                 );
     }
 }
