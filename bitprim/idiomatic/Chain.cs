@@ -870,10 +870,10 @@ namespace Bitprim
 
         private static void FetchBlockHeaderByHashTxsSizeInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr blockHeader, UInt64 blockHeight, IntPtr txHashes, UInt64 blockSerializedSize)
         {
-            GCHandle contextHandle = (GCHandle)contextPtr;
+            var contextHandle = (GCHandle)contextPtr;
             try
             {
-                var context = (contextHandle.Target as Tuple<FetchBlockHeaderByHashTxsSizeHandler, hash_t>);
+                var context = contextHandle.Target as Tuple<FetchBlockHeaderByHashTxsSizeHandler, hash_t>;
                 FetchBlockHeaderByHashTxsSizeHandler handler = context.Item1;
                 handler(error, new Header(blockHeader), blockHeight, new HashList(txHashes), blockSerializedSize);
             }
@@ -905,10 +905,10 @@ namespace Bitprim
         private static void FetchBlockHeaderByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
             IntPtr header, UInt64 height)
         {
-            GCHandle contextHandle = (GCHandle)contextPtr;
+            var contextHandle = (GCHandle)contextPtr;
             try
             {
-                var context = (contextHandle.Target as Tuple<Action<ErrorCode, Header, UInt64>, hash_t>);
+                var context = contextHandle.Target as Tuple<Action<ErrorCode, Header, UInt64>, hash_t>;
                 Action<ErrorCode, Header, UInt64> handler = context.Item1;
                 handler(error, new Header(header), height);
             }
@@ -920,7 +920,7 @@ namespace Bitprim
 
         private static void FetchBlockHeaderInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr header, UInt64 height)
         {
-            GCHandle handlerHandle = (GCHandle)context;
+            var handlerHandle = (GCHandle)context;
             try
             {
                 var handler = (handlerHandle.Target as Action<ErrorCode, Header, UInt64>);
@@ -934,7 +934,7 @@ namespace Bitprim
 
         private static void FetchBlockHeightInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 height)
         {
-            GCHandle contextHandle = (GCHandle)contextPtr;
+            var contextHandle = (GCHandle)contextPtr;
             try
             {
                 var context = (contextHandle.Target as Tuple<Action<ErrorCode, UInt64>, hash_t>);
