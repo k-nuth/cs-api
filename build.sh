@@ -37,6 +37,7 @@ function getPackageAssemblyPath {
     done
     if [ -z $packageVersion ]; then
         local packageVersionSearchUrl="https://api-v2v3search-0.nuget.org/autocomplete?id=$packageName"
+        # Fernando: tuve que instalar `jq` en Fedora
         local packageVersion=$(curl --silent $packageVersionSearchUrl | jq .data[-1] | sed -e 's/^"//' -e 's/"$//')
     fi
     findPackageAssembly assemblyPath $packagesDir $packageName $packageVersion $assemblyName
