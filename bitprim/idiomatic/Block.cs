@@ -18,6 +18,7 @@ namespace Bitprim
             //the raw block is already reversed
             byte[] array = Binary.HexStringToByteArray(hexString,false);
             nativeInstance_ = BlockNative.chain_block_factory_from_data(version,array,(UInt64)array.Length);
+            header_ = new Header(BlockNative.chain_block_header(nativeInstance_), false);
             ownsNativeObject_ = true;
         }
 
