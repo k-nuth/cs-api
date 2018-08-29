@@ -6,7 +6,7 @@ namespace Bitprim
     /// <summary>
     /// Represents a list of Outputs
     /// </summary>
-    public class OutputList : NativeList<Output>
+    public class OutputList : NativeReadableWritableList<Output>
     {
         private bool ownsNativeObject_;
 

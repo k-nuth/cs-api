@@ -7,13 +7,22 @@ using Bitprim.Native.Keoken;
 
 namespace Bitprim.Keoken
 {
+    public interface IGetAllAssetsAddressesData : IDisposable
+    {
+        UInt32 AssetId { get; }
+        string AssetName { get; }
+        PaymentAddress AssetCreator { get; }
+        Int64 Amount { get; }
+        PaymentAddress AmountOwner { get; }
+    }
+
     /// <summary>
     /// TODO: Add docs
     /// </summary>
-    public class GetAllAssetsAddressesData:IDisposable
+    public class GetAllAssetsAddressesData: IGetAllAssetsAddressesData
     {
-        private bool ownsNativeObject_;
         private readonly IntPtr nativeInstance_;
+        private readonly bool ownsNativeObject_;
 
         public GetAllAssetsAddressesData(IntPtr nativeInstance)
         {
@@ -41,55 +50,32 @@ namespace Bitprim.Keoken
             {
                 //Release managed resources and call Dispose for member variables
             }
+            
             //Release unmanaged resources
-            if(ownsNativeObject_)
+            if (ownsNativeObject_)
             {
                 GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_destruct(nativeInstance_);
             }
         }
 
-        public UInt32 AssetId 
-        {
-            get 
-            {
-                return  GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_asset_id(nativeInstance_);
-            }
-        }
+        public UInt32 AssetId => GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_asset_id(nativeInstance_);
 
         public string AssetName 
         {
             get 
             {
-                using (NativeString native = new NativeString(GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_asset_name(nativeInstance_)))
+                using (var native = new NativeString(GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_asset_name(nativeInstance_)))
                 {
                     return native.ToString();
                 }
             }
         }
 
-        public PaymentAddress AssetCreator
-        {
-            get 
-            {
-                return new PaymentAddress(GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_asset_creator(nativeInstance_));
-            }
-        }
+        public PaymentAddress AssetCreator => new PaymentAddress(GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_asset_creator(nativeInstance_));
 
-        public Int64 Amount 
-        {
-            get 
-            {
-                return GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_amount(nativeInstance_);
-            }
-        }
+        public Int64 Amount => GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_amount(nativeInstance_);
 
-        public PaymentAddress AmountOwner
-        {
-            get 
-            {
-                return new PaymentAddress(GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_amount_owner(nativeInstance_));
-            }
-        }
+        public PaymentAddress AmountOwner => new PaymentAddress(GetAllAssetsAddressesDataNative.keoken_get_all_asset_addresses_data_amount_owner(nativeInstance_));
     }
 }
 

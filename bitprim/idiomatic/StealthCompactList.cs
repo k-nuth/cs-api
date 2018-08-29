@@ -3,7 +3,7 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-    public class StealthCompactList : NativeReadOnlyList<IStealthCompact>
+    public class StealthCompactList : NativeReadableList<IStealthCompact>
     {
         protected override IStealthCompact GetNthNativeElement(UInt64 n)
         {

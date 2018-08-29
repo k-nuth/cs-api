@@ -6,7 +6,7 @@ namespace Bitprim
     /// <summary>
     /// Represents a list of blocks
     /// </summary>
-    public class BlockList : NativeList<Block>
+    public class BlockList : NativeReadableWritableList<Block>
     {
         protected override IntPtr CreateNativeList()
         {

@@ -2,7 +2,6 @@ using System;
 
 namespace Bitprim.Tests
 {
-
     public class ExecutorFixture : IDisposable
     {
         public ExecutorFixture()
@@ -11,18 +10,37 @@ namespace Bitprim.Tests
             int initChainOk = Executor.InitAndRunAsync().GetAwaiter().GetResult();
             if (initChainOk != 0)
             {
-                throw new InvalidOperationException("Executor::InitChain failed, check log");
+                throw new InvalidOperationException("Executor::InitAndRunAsync failed, check log");
             }
         }
 
         public Executor Executor { get; }
-
-        public void Dispose()
+     
+        private void ReleaseUnmanagedResources()
         {
             Executor.Stop();
             Executor.Dispose();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            ReleaseUnmanagedResources();
+            if (disposing)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~ExecutorFixture()
+        {
+            Dispose(false);
         }
     }
 }

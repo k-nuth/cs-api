@@ -7,13 +7,21 @@ using Bitprim.Native.Keoken;
 
 namespace Bitprim.Keoken
 {
+    public interface IGetAssetsByAddressData : IDisposable
+    {
+        UInt32 AssetId { get; }
+        string AssetName { get; }
+        PaymentAddress AssetCreator { get; }
+        Int64 Amount { get; }
+    }
+
     /// <summary>
     /// TODO: Add docs
     /// </summary>
-    public class GetAssetsByAddressData:IDisposable
+    public class GetAssetsByAddressData: IGetAssetsByAddressData
     {
-        private bool ownsNativeObject_;
         private readonly IntPtr nativeInstance_;
+        private readonly bool ownsNativeObject_;
 
         public GetAssetsByAddressData(IntPtr nativeInstance)
         {
@@ -42,46 +50,29 @@ namespace Bitprim.Keoken
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            if(ownsNativeObject_)
+            if (ownsNativeObject_)
             {
                 GetAssetsByAddressDataNative.keoken_get_assets_by_address_data_destruct(nativeInstance_);
             }
+            
         }
 
-        public UInt32 AssetId 
-        {
-            get 
-            {
-                return  GetAssetsByAddressDataNative.keoken_get_assets_by_address_data_asset_id(nativeInstance_);
-            }
-        }
+        public UInt32 AssetId => GetAssetsByAddressDataNative.keoken_get_assets_by_address_data_asset_id(nativeInstance_);
 
         public string AssetName 
         {
             get 
             {
-                using (NativeString native = new NativeString(GetAssetsByAddressDataNative.keoken_get_assets_by_address_data_asset_name(nativeInstance_)))
+                using (var native = new NativeString(GetAssetsByAddressDataNative.keoken_get_assets_by_address_data_asset_name(nativeInstance_)))
                 {
                     return native.ToString();
                 }
             }
         }
 
-        public PaymentAddress AssetCreator
-        {
-            get 
-            {
-                return new PaymentAddress(GetAssetsByAddressDataNative.keoken_get_assets_by_address_data_asset_creator(nativeInstance_));
-            }
-        }
+        public PaymentAddress AssetCreator => new PaymentAddress(GetAssetsByAddressDataNative.keoken_get_assets_by_address_data_asset_creator(nativeInstance_));
 
-        public Int64 Amount 
-        {
-            get 
-            {
-                return GetAssetsByAddressDataNative.keoken_get_assets_by_address_data_amount(nativeInstance_);
-            }
-        }
+        public Int64 Amount => GetAssetsByAddressDataNative.keoken_get_assets_by_address_data_amount(nativeInstance_);
     }
 }
 

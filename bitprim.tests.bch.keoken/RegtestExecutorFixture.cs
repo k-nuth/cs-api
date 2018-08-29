@@ -1,11 +1,13 @@
 using System;
 using System.IO;
+using Bitprim.Keoken;
 
 namespace Bitprim.Tests.Bch.Keoken
 {
     public class RegtestExecutorFixture : IDisposable
     {
         private readonly Executor exec_;
+        private readonly KeokenMemoryState state_ = new KeokenMemoryState();
 
         public RegtestExecutorFixture()
         {
@@ -13,7 +15,7 @@ namespace Bitprim.Tests.Bch.Keoken
             int initChainOk = exec_.InitAndRunAsync().GetAwaiter().GetResult();
             if (initChainOk != 0)
             {
-                throw new InvalidOperationException("Executor::InitChain failed, check log");
+                throw new InvalidOperationException("Executor::InitAndRunAsync failed, check log");
             }
 
             //Add mined blocks containing Keoken Transactions
@@ -25,22 +27,25 @@ namespace Bitprim.Tests.Bch.Keoken
                     using (var b = new Block(1, hex))
                     {
                         ErrorCode errCode = Executor.Chain.OrganizeBlockAsync(b).Result;
-                        if (errCode != ErrorCode.Success)
+                        if (errCode != ErrorCode.Success && errCode != ErrorCode.DuplicateBlock)
                         {
-                            throw new Exception("Error loading blocks:" + errCode.ToString());
+                            throw new Exception("Error loading blocks:" + errCode);
                         }
                     }
                 }
             }
-           
-            exec_.KeokenManager.InitializeFromBlockchain();
 
+            
+            DelegatedState.SetDelegatedState(state_);
+            exec_.KeokenManager.ConfigureState();
+            exec_.KeokenManager.InitializeFromBlockchain();
         }
 
         public Executor Executor => exec_;
 
         public void Dispose()
         {
+            state_.Dispose();
             exec_.Stop();
             exec_.Dispose();
             GC.Collect();

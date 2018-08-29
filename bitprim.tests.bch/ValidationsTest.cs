@@ -5,7 +5,6 @@ namespace Bitprim.Tests
 {
     public class ValidationsTest
     {
-
         [Fact]
         public void TestAddressValidation()
         {
@@ -29,6 +28,5 @@ namespace Bitprim.Tests
             Assert.False(Validations.IsValidHash("0000000014e6ae5aef5b7b660b160b7572fe14b95609fefb6f87c2d2e33a5fdg"));
             Assert.True(Validations.IsValidHash("0000000014e6ae5aef5b7b660b160b7572fe14b95609fefb6f87c2d2e33a5fdd"));
         }
-
     }
 }
