@@ -52,7 +52,7 @@ sudo apt install -y mono-devel
 conan remote add bitprim_temp https://api.bintray.com/conan/bitprim/bitprim
 
 cd /home/bitprim/bitprim-cs
-chmod +x build.sh
+sudo chmod +x build.sh
 ./build.sh
 
 
