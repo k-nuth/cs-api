@@ -246,6 +246,7 @@ namespace Bitprim
             if (disposing)
             {
                 //Release managed resources and call Dispose for member variables
+                Header.Dispose();
             }
             //Release unmanaged resources
             if(ownsNativeObject_)

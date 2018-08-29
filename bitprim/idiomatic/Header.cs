@@ -9,8 +9,8 @@ namespace Bitprim
     /// </summary>
     public class Header : IHeader
     {
-        private bool ownsNativeObject_;
-        private IntPtr nativeInstance_;
+        private readonly bool ownsNativeObject_;
+        private readonly IntPtr nativeInstance_;
 
         ~Header()
         {
@@ -20,13 +20,7 @@ namespace Bitprim
         /// <summary>
         /// Returns true if and only if the header conforms to the Bitcoin protocol format.
         /// </summary>
-        public bool IsValid
-        {
-            get
-            {
-                return HeaderNative.chain_header_is_valid(nativeInstance_) != 0;
-            }
-        }
+        public bool IsValid => HeaderNative.chain_header_is_valid(nativeInstance_) != 0;
 
         /// <summary>
         /// Block hash in 32 byte array format.
@@ -75,7 +69,7 @@ namespace Bitprim
         {
             get
             {
-                using ( NativeString proofString = new NativeString(HeaderNative.chain_header_proof_str(nativeInstance_)) )
+                using ( var proofString = new NativeString(HeaderNative.chain_header_proof_str(nativeInstance_)) )
                 {
                     return proofString.ToString();
                 }
@@ -87,14 +81,8 @@ namespace Bitprim
         /// </summary>
         public UInt32 Bits
         {
-            get
-            {
-                return HeaderNative.chain_header_bits(nativeInstance_);
-            }
-            set
-            {
-                HeaderNative.chain_header_set_bits(nativeInstance_, value);
-            }
+            get => HeaderNative.chain_header_bits(nativeInstance_);
+            set => HeaderNative.chain_header_set_bits(nativeInstance_, value);
         }
 
         /// <summary>
@@ -102,14 +90,8 @@ namespace Bitprim
         /// </summary>
         public UInt32 Nonce
         {
-            get
-            {
-                return HeaderNative.chain_header_nonce(nativeInstance_);
-            }
-            set
-            {
-                HeaderNative.chain_header_set_nonce(nativeInstance_, value);
-            }
+            get => HeaderNative.chain_header_nonce(nativeInstance_);
+            set => HeaderNative.chain_header_set_nonce(nativeInstance_, value);
         }
 
         /// <summary>
@@ -117,14 +99,8 @@ namespace Bitprim
         /// </summary>
         public UInt32 Timestamp
         {
-            get
-            {
-                return HeaderNative.chain_header_timestamp(nativeInstance_);
-            }
-            set
-            {
-                HeaderNative.chain_header_set_timestamp(nativeInstance_, value);
-            }
+            get => HeaderNative.chain_header_timestamp(nativeInstance_);
+            set => HeaderNative.chain_header_set_timestamp(nativeInstance_, value);
         }
 
         /// <summary>
@@ -132,14 +108,8 @@ namespace Bitprim
         /// </summary>
         public UInt32 Version
         {
-            get
-            {
-                return HeaderNative.chain_header_version(nativeInstance_);
-            }
-            set
-            {
-                HeaderNative.chain_header_set_version(nativeInstance_, value);
-            }
+            get => HeaderNative.chain_header_version(nativeInstance_);
+            set => HeaderNative.chain_header_set_version(nativeInstance_, value);
         }
 
         public void Dispose()
