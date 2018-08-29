@@ -17,7 +17,7 @@
 
     <Message Text="Operating System: $(OS)"/>
     <Exec Command="conan install . --install-folder=. -r bitprim" Condition=" '$(OS)' != 'Windows_NT' " />
-    <Exec Command="conan install . --install-folder=. -r bitprim -s compiler=Visual Studio -s compiler.version=15" Condition=" '$(OS)' == 'Windows_NT' "/>
+    <Exec Command="conan install . --install-folder=. -r bitprim -s compiler=&quot;Visual Studio&quot; -s compiler.version=15" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Message Text="OS = $(OS)" />
     <Copy SourceFiles="bitprim-node-cint.dll" DestinationFiles="$(OutDir)libbitprim-node-cint.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition="Exists('libbitprim-node-cint.so')"/>
