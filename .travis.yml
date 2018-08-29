@@ -95,38 +95,45 @@ install:
         pyenv virtualenv $PYTHON_FULL_VERSION conan
         pyenv rehash
         pyenv activate conan
+
+        pip install --upgrade pip > /dev/null
+        pip install conan_package_tools --upgrade > /dev/null
+        pip install conan --upgrade > /dev/null
+        #pip install wheel --upgrade
+        #pip install twine --upgrade
+        conan user
       fi
       
-      pip install --upgrade pip > /dev/null
-      pip install conan_package_tools --upgrade > /dev/null
-      pip install conan --upgrade > /dev/null
-      #pip install wheel --upgrade
-      #pip install twine --upgrade
-      conan user
-      
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        cd ${TRAVIS_BUILD_DIR}
+        chmod a+x .travis/entrypoint.sh
+        # -e TRAVIS_PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
+        /usr/bin/docker run --rm -ti  -v ${TRAVIS_BUILD_DIR}:/home/bitprim/bitprim-cs -v ${TRAVIS_BUILD_DIR}/.travis/entrypoint.sh:/tmp/entrypoint.sh lasote/conangcc5 /bin/bash -c /tmp/entrypoint.sh
+      fi
+
     
-      if test "$TRAVIS_OS_NAME" != "osx"; then
-        # Install .NET Core 2.x
-        curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-        sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-        sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
-        sudo apt-get update -y
-        sudo apt-get install dotnet-sdk-2.0.2 -y
-        sudo apt-get install -qq g++-5
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 90
-        gcc --version
-        g++ --version
-        sudo ldconfig
+      # if test "$TRAVIS_OS_NAME" != "osx"; then
+      #   # Install .NET Core 2.x
+      #   curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+      #   sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+      #   sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
+      #   sudo apt-get update -y
+      #   sudo apt-get install dotnet-sdk-2.0.2 -y
+      #   sudo apt-get install -qq g++-5
+      #   sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
+      #   sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 90
+      #   gcc --version
+      #   g++ --version
+      #   sudo ldconfig
 
-        # Install Mono, only to run cake
-        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-        sudo apt install apt-transport-https
-        echo "deb https://download.mono-project.com/repo/ubuntu stable-trusty main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-        sudo apt update
-        sudo apt install mono-devel
+      #   # Install Mono, only to run cake
+      #   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+      #   sudo apt install apt-transport-https
+      #   echo "deb https://download.mono-project.com/repo/ubuntu stable-trusty main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+      #   sudo apt update
+      #   sudo apt install mono-devel
 
-      fi
+      # fi
 
     #else
       #Install Moxygen
@@ -149,8 +156,12 @@ script:
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
       
-      chmod +x build.sh
-      ./build.sh
+      # macOS only... 
+      # Linux build at .travis/entrypoint.sh
+      if [[ "${TRAVIS_OS_NAME}" != "linux" ]]; then
+        chmod +x build.sh
+        ./build.sh
+      fi
 
     #else
       #cd bitprim/docs
