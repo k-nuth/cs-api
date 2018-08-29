@@ -3,6 +3,7 @@
 # ------------------------------------------------------------
 # Prerequisites
 
+sudo apt-get update -y
 sudo apt-get install -y curl
 # sudo apt-get install -y wget
 
@@ -18,7 +19,6 @@ conan user
 # ------------------------------------------------------------
 # Install .NET Core 2.x
 
-sudo apt-get update -y
 sudo apt-get install -y apt-transport-https
 wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
