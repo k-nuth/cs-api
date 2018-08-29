@@ -4,7 +4,7 @@
 # Prerequisites
 
 # sudo apt-get install -y curl
-sudo apt-get install -y wget
+# sudo apt-get install -y wget
 
 
 # ------------------------------------------------------------
@@ -14,13 +14,15 @@ pip install conan_package_tools --upgrade --user > /dev/null
 pip install conan --upgrade --user > /dev/null
 conan user
 
+
 # ------------------------------------------------------------
 # Install .NET Core 2.x
 
+sudo apt-get update -y
+sudo apt-get install -y apt-transport-https
 wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
-sudo apt-get install -y apt-transport-https
-sudo apt-get update -y 
+sudo apt-get update -y
 sudo apt-get install -y dotnet-sdk-2.1.202
 
 
@@ -39,9 +41,8 @@ sudo ldconfig
 # ------------------------------------------------------------
 # Install Mono, only to run cake
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-sudo apt install apt-transport-https
+# sudo apt install apt-transport-https
 echo "deb https://download.mono-project.com/repo/ubuntu stable-trusty main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-sudo apt update
 sudo apt install -y mono-devel
 
 

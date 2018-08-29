@@ -49,10 +49,11 @@ matrix:
           apt:
             sources:
               - ubuntu-toolchain-r-test
-            packages:
-              - g++-5
-              - gcc-5
-        env: UPDATE_DOCS=false MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+            # packages:
+            #   - g++-5
+            #   - gcc-5
+        env: UPDATE_DOCS=false 
+            # MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
       #- <<: *linux
       #  compiler: gcc 
@@ -109,6 +110,8 @@ install:
         chmod a+x .travis/entrypoint.sh
         # -e TRAVIS_PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
         /usr/bin/docker run --rm -ti  -v ${TRAVIS_BUILD_DIR}:/home/bitprim/bitprim-cs -v ${TRAVIS_BUILD_DIR}/.travis/entrypoint.sh:/tmp/entrypoint.sh lasote/conangcc5 /bin/bash -c /tmp/entrypoint.sh
+
+        # arceri/dotnet:2.0-sdk-stretch
       fi
 
     
