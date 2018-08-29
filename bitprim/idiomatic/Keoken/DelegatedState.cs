@@ -99,31 +99,6 @@ namespace Bitprim.Keoken
         {
             return internalState_.GetAllAssetAddresses().NativeInstance;
         }
-
-        //private static void ReleaseUnmanagedResources()
-        //{
-        //    internalState_.Dispose();
-        //}
-
-        //private static void Dispose(bool disposing)
-        //{
-        //    ReleaseUnmanagedResources();
-        //    if (disposing)
-        //    {
-                
-        //    }
-        //}
-
-        //public static void Dispose()
-        //{
-        //    Dispose(true);
-        //    GC.SuppressFinalize(this);
-        //}
-
-        //~DelegatedState()
-        //{
-        //    Dispose(false);
-        //}
     }
 }
 
