@@ -108,6 +108,7 @@ install:
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
         cd ${TRAVIS_BUILD_DIR}
         chmod a+x .travis/entrypoint.sh
+        chmod +x build.sh
         # -e TRAVIS_PYTHON_VERSION=$TRAVIS_PYTHON_VERSION
         /usr/bin/docker run --rm -ti  -v ${TRAVIS_BUILD_DIR}:/home/bitprim/bitprim-cs -v ${TRAVIS_BUILD_DIR}/.travis/entrypoint.sh:/tmp/entrypoint.sh lasote/conangcc5 /bin/bash -c /tmp/entrypoint.sh
 
