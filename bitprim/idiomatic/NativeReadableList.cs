@@ -5,19 +5,19 @@ using System.Collections.Generic;
 namespace Bitprim
 {
     /// <summary>
-    /// Abstract class to represent lists of native objects
+    /// Abstract class to represent read-only lists of native objects
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class NativeList<T> : IEnumerable<T>, IDisposable
+    public abstract class NativeReadableList<T> : INativeList<T>
     {
-        private IntPtr nativeInstance_;
+        protected IntPtr nativeInstance_;
 
-        protected NativeList()
+        protected NativeReadableList()
         {
-            nativeInstance_ = CreateNativeList();
+
         }
 
-        protected NativeList(IntPtr nativeInstance)
+        protected NativeReadableList(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
         }
@@ -28,13 +28,13 @@ namespace Bitprim
         /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
-            for (uint i = 0; i < GetCount(); i++)
+            for (UInt64 i = 0; i < GetCount(); i++)
             {
                 yield return GetNthNativeElement(i);
             }
         }
 
-        ~NativeList()
+        ~NativeReadableList()
         {
             Dispose(false);
         }
@@ -60,10 +60,9 @@ namespace Bitprim
             DestroyNativeList();
         }
 
-        protected abstract IntPtr CreateNativeList();
-        protected abstract T GetNthNativeElement(uint n);
-        protected abstract uint GetCount();
-        protected abstract void AddElement(T element);
+        
+        protected abstract T GetNthNativeElement(UInt64 n);
+        protected abstract UInt64 GetCount();
         protected abstract void DestroyNativeList();
 
         /// <summary>
@@ -71,22 +70,14 @@ namespace Bitprim
         /// </summary>
         /// <param name="index">Zero-based index</param>
         /// <returns></returns>
-        public T this[uint index] => GetNthNativeElement(index);
+        public T this[UInt64 index] => GetNthNativeElement(index);
 
         /// <summary>
         /// Returns element count
         /// </summary>
-        public uint Count => GetCount();
+        public UInt64 Count => GetCount();
 
-        /// <summary>
-        /// Element to add; it is added at the end of the list
-        /// </summary>
-        /// <param name="element"></param>
-        public void Add(T element)
-        {
-            AddElement(element);
-        }
+        public IntPtr NativeInstance => nativeInstance_;
 
-        internal IntPtr NativeInstance => nativeInstance_;
     }
 }

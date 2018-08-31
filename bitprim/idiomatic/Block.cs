@@ -7,11 +7,28 @@ namespace Bitprim
     /// <summary>
     /// Represents a full Bitcoin blockchain block.
     /// </summary>
-    public class Block : IDisposable
+    public class Block : IBlock
     {
-        private bool ownsNativeObject_;
-        private Header header_;
-        private IntPtr nativeInstance_;
+        private readonly bool ownsNativeObject_;
+        private readonly Header header_;
+        private readonly IntPtr nativeInstance_;
+
+        public Block (UInt32 version, string hexString)
+        {
+            //the raw block is already reversed
+            byte[] array = Binary.HexStringToByteArray(hexString,false);
+            nativeInstance_ = BlockNative.chain_block_factory_from_data(version,array,(UInt64)array.Length);
+            header_ = new Header(BlockNative.chain_block_header(nativeInstance_), false);
+            ownsNativeObject_ = true;
+        }
+
+        internal Block(IntPtr nativeInstance, bool ownsNativeObject = true)
+        {
+            nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = ownsNativeObject;
+            header_ = new Header(BlockNative.chain_block_header(nativeInstance_), false);
+        }
+
 
         ~Block()
         {
@@ -25,59 +42,29 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Returns true iif all transactions in the block have a unique hash (i.e. no duplicates)
+        /// Returns true if and only if all transactions in the block have a unique hash (i.e. no duplicates)
         /// </summary>
-        public bool IsDistinctTransactionSet
-        {
-            get
-            {
-                return BlockNative.chain_block_is_distinct_transaction_set(nativeInstance_) != 0;
-            }
-        }
+        public bool IsDistinctTransactionSet => BlockNative.chain_block_is_distinct_transaction_set(nativeInstance_) != 0;
 
         /// <summary>
-        /// Returns true iif there is more than one coinbase transaction in the block.
+        /// Returns true if and only if there is more than one coinbase transaction in the block.
         /// </summary>
-        public bool IsExtraCoinbase
-        {
-            get
-            {
-                return BlockNative.chain_block_is_extra_coinbases(nativeInstance_) != 0;
-            }
-        }
+        public bool IsExtraCoinbase => BlockNative.chain_block_is_extra_coinbases(nativeInstance_) != 0;
 
         /// <summary>
-        /// Returns true iif there is at least one double-spent transaction in this block
+        /// Returns true if and only if there is at least one double-spent transaction in this block
         /// </summary>
-        public bool IsInternalDoubleSpend
-        {
-            get
-            {
-                return BlockNative.chain_block_is_internal_double_spend(nativeInstance_) != 0;
-            }
-        }
+        public bool IsInternalDoubleSpend => BlockNative.chain_block_is_internal_double_spend(nativeInstance_) != 0;
 
         /// <summary>
-        /// Returns true iif the block is valid
+        /// Returns true if and only if the block is valid
         /// </summary>
-        public bool IsValid
-        {
-            get
-            {
-                return BlockNative.chain_block_is_valid(nativeInstance_) != 0;
-            }
-        }
+        public bool IsValid => BlockNative.chain_block_is_valid(nativeInstance_) != 0;
 
         /// <summary>
-        /// Returns true iif the generated Merkle root equals the header's Merkle root.
+        /// Returns true if and only if the generated Merkle root equals the header's Merkle root.
         /// </summary>
-        public bool IsValidMerkleRoot
-        {
-            get
-            {
-                return BlockNative.chain_block_is_valid_merkle_root(nativeInstance_) != 0;
-            }
-        }
+        public bool IsValidMerkleRoot => BlockNative.chain_block_is_valid_merkle_root(nativeInstance_) != 0;
 
         /// <summary>
         /// The block's hash as a 32 byte array.
@@ -108,13 +95,7 @@ namespace Bitprim
         /// <summary>
         /// The block's header
         /// </summary>
-        public Header Header
-        {
-            get
-            {
-                return header_;
-            }
-        }
+        public IHeader Header => header_;
 
         /// <summary>
         /// Amount of work done to mine the block
@@ -133,49 +114,25 @@ namespace Bitprim
         /// <summary>
         /// Miner fees included in the block's coinbase transaction.
         /// </summary>
-        public UInt64 Fees
-        {
-            get
-            {
-                return BlockNative.chain_block_fees(nativeInstance_);
-            }
-        }
+        public UInt64 Fees => BlockNative.chain_block_fees(nativeInstance_);
 
         /// <summary>
         /// Sum of coinbase outputs.
         /// </summary>
-        public UInt64 Claim
-        {
-            get
-            {
-                return BlockNative.chain_block_claim(nativeInstance_);
-            }
-        }
+        public UInt64 Claim => BlockNative.chain_block_claim(nativeInstance_);
 
         /// <summary>
         /// Amount of signature operations in the block.
         /// </summary>
-        public UInt64 SignatureOperationsCount
-        {
-            get
-            {
-                return (UInt64)BlockNative.chain_block_signature_operations(nativeInstance_);
-            }
-        }
+        public UInt64 SignatureOperationsCount => BlockNative.chain_block_signature_operations(nativeInstance_);
 
         /// <summary>
         /// The total amount of transactions that the block contains.
         /// </summary>
-        public UInt64 TransactionCount
-        {
-            get
-            {
-                return (UInt64)BlockNative.chain_block_transaction_count(nativeInstance_);
-            }
-        }
+        public UInt64 TransactionCount => BlockNative.chain_block_transaction_count(nativeInstance_);
 
         /// <summary>
-        /// Returns true iif every transaction in the block is final or not.
+        /// Returns true if and only if every transaction in the block is final or not.
         /// </summary>
         /// <param name="height"></param>
         /// <returns></returns>
@@ -185,20 +142,20 @@ namespace Bitprim
         }
 
         /// <summary>
-        /// Given a block height, return true iif its coinbase claim is not higher than the deserved reward.
+        /// Given a block height, return true if and only if its coinbase claim is not higher than the deserved reward.
         /// </summary>
         /// <param name="height">The height which identifies the block to examine</param>
-        /// <returns> True iif 1 if coinbase claim is not higher than the deserved reward. </returns>
+        /// <returns> True if and only if 1 if coinbase claim is not higher than the deserved reward. </returns>
         public bool IsValidCoinbaseClaim(UInt64 height)
         {
             return BlockNative.chain_block_is_valid_coinbase_claim(nativeInstance_, (UIntPtr)height) != 0;
         }
 
         /// <summary>
-        /// Returns true iif the block's coinbase script is valid.
+        /// Returns true if and only if the block's coinbase script is valid.
         /// </summary>
         /// <param name="height"> The block's height. Identifies it univocally. </param>
-        /// <returns>True iif the block's coinbase script is valid.</returns>
+        /// <returns>True if and only if the block's coinbase script is valid.</returns>
         public bool IsValidCoinbaseScript(UInt64 height)
         {
             return BlockNative.chain_block_is_valid_coinbase_script(nativeInstance_, (UIntPtr)height) != 0;
@@ -207,13 +164,23 @@ namespace Bitprim
         /// <summary>
         /// Raw block data.
         /// </summary>
-        /// <param name="wire">Iif true, include data size at the beginning.</param>
+        /// <param name="wire">if and only if true, include data size at the beginning.</param>
         /// <returns>Byte array with block data.</returns>
         public byte[] ToData(bool wire)
         {
             int blockSize = 0;
             var blockData = new NativeBuffer(BlockNative.chain_block_to_data(nativeInstance_, wire? 1:0, ref blockSize));
             return blockData.CopyToManagedArray(blockSize);
+        }
+
+        /// <summary>
+        /// Given a position in the block, returns the corresponding transaction.
+        /// </summary>
+        /// <param name="n"> Zero-based index </param>
+        /// <returns> Full transaction object </returns>
+        public ITransaction GetNthTransaction(UInt64 n)
+        {
+            return new Transaction(BlockNative.chain_block_transaction_nth(nativeInstance_, (UIntPtr)n), false);
         }
 
         /// <summary>
@@ -224,16 +191,6 @@ namespace Bitprim
         public static UInt64 GetSubsidy(UInt64 height)
         {
             return BlockNative.chain_block_subsidy((UIntPtr)height);
-        }
-
-        /// <summary>
-        /// Given a position in the block, returns the corresponding transaction.
-        /// </summary>
-        /// <param name="n"> Zero-based index </param>
-        /// <returns> Full transaction object </returns>
-        public Transaction GetNthTransaction(UInt64 n)
-        {
-            return new Transaction(BlockNative.chain_block_transaction_nth(nativeInstance_, (UIntPtr)n), false);
         }
 
         /// <summary>
@@ -253,17 +210,17 @@ namespace Bitprim
         /// <returns> UInt64 representation of the block size in bytes. </returns>
         public UInt64 GetSerializedSize(UInt32 version)
         {
-            return (UInt64)BlockNative.chain_block_serialized_size(nativeInstance_, version);
+            return BlockNative.chain_block_serialized_size(nativeInstance_, version);
         }
 
         /// <summary>
         /// Amount of signature operations in the block.
         /// </summary>
-        /// <param name="bip16Active"> Iif true, count bip16 active operations. </param>
+        /// <param name="bip16Active"> If and only if true, count bip16 active operations. </param>
         /// <returns> The amount of signature operations in this block </returns>
         public UInt64 GetSignatureOperationsCount(bool bip16Active)
         {
-            return (UInt64)BlockNative.chain_block_signature_operations_bip16_active
+            return BlockNative.chain_block_signature_operations_bip16_active
             (
                 nativeInstance_, bip16Active ? 1 : 0
             );
@@ -272,46 +229,31 @@ namespace Bitprim
         /// <summary>
         /// The sum of all inputs of all transactions in the block.
         /// </summary>
-        /// <param name="withCoinbase">Iif true, consider coinbase transactions. </param>
+        /// <param name="withCoinbase">If and only if true, consider coinbase transactions. </param>
         /// <returns> UInt64 representation of the sum </returns>
         public UInt64 GetTotalInputs(bool withCoinbase)
         {
-            return (UInt64)BlockNative.chain_block_total_inputs
+            return BlockNative.chain_block_total_inputs
             (
                 nativeInstance_, withCoinbase ? 1 : 0
             );
         }
 
-        internal Block(IntPtr nativeInstance, bool ownsNativeObject = true)
-        {
-            nativeInstance_ = nativeInstance;
-            ownsNativeObject_ = ownsNativeObject;
-            header_ = new Header(BlockNative.chain_block_header(nativeInstance_), false);
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
+        
+        internal IntPtr NativeInstance => nativeInstance_;
 
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
                 //Release managed resources and call Dispose for member variables
+                Header.Dispose();
             }
             //Release unmanaged resources
             if(ownsNativeObject_)
             {
-                //Logger.Log("Destroying block " + nativeInstance_.ToString("X") + "...");
                 BlockNative.chain_block_destruct(nativeInstance_);
-                //Logger.Log("Block " + nativeInstance_.ToString("X") + " destroyed!");
             }
         }
-
     }
-
 }

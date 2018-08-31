@@ -7,7 +7,7 @@ namespace Bitprim
     /// <summary>
     /// Represents an unconfirmed transaction.
     /// </summary>
-    public class MempoolTransaction
+    public class MempoolTransaction : IMempoolTransaction
     {
         private IntPtr nativeInstance_;
 

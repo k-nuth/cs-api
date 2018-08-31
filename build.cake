@@ -15,15 +15,16 @@ var publishToNuget = EnvironmentVariable("PUBLISH_TO_NUGET") ?? "false";
 
 var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
 
-var conanChannel = System.IO.File.ReadAllText("./bitprim/conan/conan_channel");
-var conanVersion = System.IO.File.ReadAllText("./bitprim/conan/conan_version");
+var conanChannel = System.IO.File.ReadAllText("./bitprim/conan/conan_channel").Trim();
+var conanVersion = System.IO.File.ReadAllText("./bitprim/conan/conan_version").Trim();
 
-void UpdateConan(string pathTarget, string currency)
+void UpdateConan(string pathTarget, string currency, bool keoken)
 {
     var fileTarget = System.IO.File.ReadAllText("./bitprim/build/Common.targets");
-    fileTarget = fileTarget.Replace("$(CONAN_CHANNEL)",conanChannel);
-    fileTarget = fileTarget.Replace("$(CONAN_VERSION)",conanVersion);
-    fileTarget = fileTarget.Replace("$(CONAN_CURRENCY)",currency);
+    fileTarget = fileTarget.Replace("$(CONAN_CHANNEL)", conanChannel);
+    fileTarget = fileTarget.Replace("$(CONAN_VERSION)", conanVersion);
+    fileTarget = fileTarget.Replace("$(CONAN_CURRENCY)", currency);
+    fileTarget = fileTarget.Replace("$(CONAN_KEOKEN)", keoken ? "True" : "False");
     System.IO.File.WriteAllText(pathTarget,fileTarget);
 }
 
@@ -37,6 +38,7 @@ Task("Clean")
         CleanDirectory("./bitprim.console/bin");
         CleanDirectory("./bitprim.tests.bch/bin");
         CleanDirectory("./bitprim.tests.btc/bin");
+        CleanDirectory("./bitprim.tests.bch.keoken/bin");
        
         if (DirectoryExists(outputDir))
         {
@@ -75,8 +77,8 @@ Task("ConanVersion")
         Information("Conan Channel " + conanChannel);
         Information("Conan Version " + conanVersion);
 
-        UpdateConan("./bitprim-bch/build/Common.targets","BCH");
-        UpdateConan("./bitprim-btc/build/Common.targets","BTC");
+        UpdateConan("./bitprim-bch/build/Common.targets","BCH",true);
+        UpdateConan("./bitprim-btc/build/Common.targets","BTC",false);
     });
 
 
@@ -88,8 +90,10 @@ Task("Build")
     .Does(() => {
 
         MSBuild(solutionName, new MSBuildSettings {
-            ArgumentCustomization = args => args.Append(platform + " /p:AssemblyVersion=" + versionInfo.MajorMinorPatch),        
-            Configuration = configuration
+            ArgumentCustomization = args => args.Append(platform 
+                                            + " /p:AssemblyVersion=" + versionInfo.MajorMinorPatch
+                                            )
+            ,Configuration = configuration
         });
 
     });
@@ -106,6 +110,7 @@ Task("Test")
         
         DotNetCoreTest("./bitprim.tests.bch",settings);
         DotNetCoreTest("./bitprim.tests.btc",settings);
+        DotNetCoreTest("./bitprim.tests.bch.keoken",settings);
     });
 
 Task("Package")
@@ -148,12 +153,17 @@ Task("DeployNuget")
     .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
     {
+        var branchName = AppVeyor.Environment.Repository.Branch;
+        if (branchName != "master")
+        {
+            skipNuget = "true";
+        }
 
         Information("Publish to nuget:" + publishToNuget);
         Information("Skip nuget:" + skipNuget); 
         Information("Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
-        
-        
+        Information("Branch name:" + branchName);
+         
         if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]") && skipNuget == "false")
         {
             var files = System.IO.File

@@ -134,7 +134,7 @@ namespace Bitprim.Tests
             using (var ret = await executorFixture_.Executor.Chain.FetchStealthAsync(new Binary("1111"), 0))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
-                Assert.Equal<uint>(0, ret.Result.Count);
+                Assert.Equal<UInt64>(0, ret.Result.Count);
             }
 
         }
@@ -222,7 +222,7 @@ namespace Bitprim.Tests
             }
         }
 
-        private static void VerifyGenesisBlockHeader(Header header)
+        private static void VerifyGenesisBlockHeader(IHeader header)
         {
             Assert.NotNull(header);
             Assert.Equal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", Binary.ByteArrayToHexString(header.Hash));
@@ -235,7 +235,7 @@ namespace Bitprim.Tests
             Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
-        private static void VerifyBlock170Header(Header header)
+        private static void VerifyBlock170Header(IHeader header)
         {
             Assert.NotNull(header);
             Assert.Equal("00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee", Binary.ByteArrayToHexString(header.Hash));
@@ -254,7 +254,7 @@ namespace Bitprim.Tests
             return new Tuple<ErrorCode, UInt64>(ret.ErrorCode, ret.Result);
         }
 
-        private void CheckFirstNonCoinbaseTxFromHeight170(Transaction tx, string txHashHexStr)
+        private void CheckFirstNonCoinbaseTxFromHeight170(ITransaction tx, string txHashHexStr)
         {
             Assert.Equal<UInt32>(1, tx.Version);
             Assert.Equal(txHashHexStr, Binary.ByteArrayToHexString(tx.Hash));
@@ -280,7 +280,7 @@ namespace Bitprim.Tests
             CheckFirstNonCoinbaseTxFromHeight170Outputs(tx);
         }
 
-        private void CheckFirstNonCoinbaseTxFromHeight170Inputs(Transaction tx)
+        private void CheckFirstNonCoinbaseTxFromHeight170Inputs(ITransaction tx)
         {
             Assert.Equal(1UL, tx.Inputs.Count);
             //Assert.Equal(50000000UL, tx.TotalInputValue); //TODO Blockdozer says this is 50 BTC
@@ -305,7 +305,7 @@ namespace Bitprim.Tests
             Assert.Equal("[304402204e45e16932b8af514961a1d3a1a25fdf3f4f7732e9d624c6c61548ab5fb8cd410220181522ec8eca07de4860a4acdd12909d831cc56cbbac4622082221a8768d1d0901]", script.ToString(0));
         }
 
-        private void CheckFirstNonCoinbaseTxFromHeight170Outputs(Transaction tx)
+        private void CheckFirstNonCoinbaseTxFromHeight170Outputs(ITransaction tx)
         {
             Assert.Equal(2UL, tx.Outputs.Count);
             Assert.Equal(5000000000UL, tx.TotalOutputValue);
@@ -367,7 +367,7 @@ namespace Bitprim.Tests
             using (var ret = await executorFixture_.Executor.Chain.FetchBlockHeaderByHashTxSizesAsync(hash))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
-                VerifyGenesisBlockHeader(ret.Result.Block.BlockData);
+                VerifyGenesisBlockHeader(ret.Result.Header.BlockData);
             }
         }
 
@@ -455,7 +455,7 @@ namespace Bitprim.Tests
         {
             using (var block = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
             {
-                var ret = await executorFixture_.Executor.Chain.OrganizeBlockAsync(block.Result.BlockData);
+                var ret = await executorFixture_.Executor.Chain.OrganizeBlockAsync((Block)block.Result.BlockData);
                 Assert.True(ret == ErrorCode.DuplicateBlock);
             }
         }
@@ -465,7 +465,7 @@ namespace Bitprim.Tests
         {
             using (var block = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
             {
-                var ret = await executorFixture_.Executor.Chain.OrganizeTransactionAsync(block.Result.BlockData.GetNthTransaction(0));
+                var ret = await executorFixture_.Executor.Chain.OrganizeTransactionAsync((Transaction)block.Result.BlockData.GetNthTransaction(0));
                 Assert.True(ret == ErrorCode.CoinbaseTransaction);
             }
         }
@@ -475,7 +475,7 @@ namespace Bitprim.Tests
         {
             using (var block = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
             {
-                var ret = await executorFixture_.Executor.Chain.ValidateTransactionAsync(block.Result.BlockData.GetNthTransaction(0));
+                var ret = await executorFixture_.Executor.Chain.ValidateTransactionAsync((Transaction)block.Result.BlockData.GetNthTransaction(0));
                 Assert.True(ret.ErrorCode == ErrorCode.CoinbaseTransaction);
             }
         }
@@ -485,6 +485,16 @@ namespace Bitprim.Tests
         {
             var ret = executorFixture_.Executor.Chain.IsStale;
             Assert.True(ret);
+        }
+
+        [Fact]
+        public void CreateBlockFromHex()
+        {
+            var hex = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f20020000000101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000";
+            using (Block b = new Block(1, hex))
+            {
+                Assert.True(b.IsValid); 
+            }
         }
     }
 }

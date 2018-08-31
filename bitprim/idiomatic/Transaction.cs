@@ -7,7 +7,7 @@ namespace Bitprim
     /// <summary>
     /// Represents a Bitcoin transaction.
     /// </summary>
-    public class Transaction : IDisposable
+    public class Transaction : ITransaction
     {
         private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
@@ -341,8 +341,6 @@ namespace Bitprim
                 return nativeInstance_;
             }
         }
-
-  
 
         protected virtual void Dispose(bool disposing)
         {

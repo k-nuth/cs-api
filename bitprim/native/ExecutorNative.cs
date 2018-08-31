@@ -57,6 +57,12 @@ namespace Bitprim.Native
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern int /*bool*/ executor_load_config_valid(IntPtr exec);
 
+        #if KEOKEN
+
+        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        public static extern IntPtr executor_get_keoken_manager(IntPtr exec);
+
+        #endif
 
         //TODO Add when networking interface is ready
         //[DllImport(Constants.BITPRIM_C_LIBRARY)]

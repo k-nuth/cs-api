@@ -3,7 +3,9 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Bitprim.Logging;
 using Bitprim.Native;
-
+#if KEOKEN
+using Bitprim.Keoken;
+#endif
 namespace Bitprim
 {
     /// <summary>
@@ -31,6 +33,9 @@ namespace Bitprim
         public delegate bool TransactionHandler(ErrorCode errorCode, Transaction newTx);
 
         private Chain chain_;
+        #if KEOKEN
+        private KeokenManager keokenManager_;   
+        #endif
         private readonly IntPtr nativeInstance_;
         private readonly ExecutorNative.ReorganizeHandler internalBlockHandler_;
         private readonly ExecutorNative.RunNodeHandler internalRunNodeHandler_;
@@ -113,6 +118,17 @@ namespace Bitprim
                 return chain_;
             }
         }
+
+#if KEOKEN
+
+        public KeokenManager KeokenManager
+        {
+            get
+            {
+                return keokenManager_;
+            }
+        }
+#endif
 
         /// <summary>
         /// The node's network. Won't be valid until node starts running
@@ -212,24 +228,12 @@ namespace Bitprim
         /// <summary>
         /// Returns true if and only if the node is stopped
         /// </summary>
-        public bool IsStopped
-        {
-            get
-            {
-                return ExecutorNative.executor_stopped(nativeInstance_) != 0;
-            }
-        }
+        public bool IsStopped => ExecutorNative.executor_stopped(nativeInstance_) != 0;
 
         /// <summary>
         /// Returns true if and only if and only if the config file is valid
         /// </summary>
-        public bool IsLoadConfigValid
-        {
-            get
-            {
-                return ExecutorNative.executor_load_config_valid(nativeInstance_) != 0;
-            }
-        }
+        public bool IsLoadConfigValid => ExecutorNative.executor_load_config_valid(nativeInstance_) != 0;
 
 
         /// <summary>
@@ -271,6 +275,10 @@ namespace Bitprim
                 ExecutorNative.executor_stop(nativeInstance_);
             }
             ExecutorNative.executor_destruct(nativeInstance_);
+
+#if KEOKEN
+            keokenManager_?.Dispose();   
+#endif
         }
 
         private static int InternalBlockHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing)
@@ -322,6 +330,11 @@ namespace Bitprim
                 if (error == 0)
                 {
                     chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+                    
+                    #if KEOKEN
+                        keokenManager_ = new KeokenManager(ExecutorNative.executor_get_keoken_manager(nativeInstance_));
+                    #endif 
+                    
                     running_ = true;
                 }
                 handler(error);

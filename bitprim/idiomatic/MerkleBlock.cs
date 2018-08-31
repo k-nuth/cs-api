@@ -7,10 +7,10 @@ namespace Bitprim
     /// <summary>
     /// Merkle tree representation of a blockchain block.
     /// </summary>
-    public class MerkleBlock : IDisposable
+    public class MerkleBlock : IMerkleBlock
     {
-        private Header header_;
-        private IntPtr nativeInstance_;
+        private readonly Header header_;
+        private readonly IntPtr nativeInstance_;
 
         ~MerkleBlock()
         {
@@ -20,13 +20,22 @@ namespace Bitprim
         /// <summary>
         /// Returns true if and only if it the block contains txs hashes, and the header is valid.
         /// </summary>
-        public bool IsValid
-        {
-            get
-            {
-                return MerkleBlockNative.chain_merkle_block_is_valid(nativeInstance_) != 0;
-            }
-        }
+        public bool IsValid => MerkleBlockNative.chain_merkle_block_is_valid(nativeInstance_) != 0;
+
+        /// <summary>
+        /// The block's header.
+        /// </summary>
+        public IHeader Header => header_;
+
+        /// <summary>
+        /// Transaction hashes list element count.
+        /// </summary>
+        public UInt64 HashCount => (UInt64)MerkleBlockNative.chain_merkle_block_hash_count(nativeInstance_);
+
+        /// <summary>
+        /// Amount of transactions inside the block.
+        /// </summary>
+        public UInt64 TotalTransactionCount => (UInt64)MerkleBlockNative.chain_merkle_block_total_transaction_count(nativeInstance_);
 
         /// <summary>
         /// Get the Nth transaction hash from the block.
@@ -38,39 +47,6 @@ namespace Bitprim
             var managedHash = new hash_t();
             MerkleBlockNative.chain_merkle_block_hash_nth_out(nativeInstance_, (UIntPtr)n, ref managedHash);
             return managedHash.hash;
-        }
-
-        /// <summary>
-        /// The block's header.
-        /// </summary>
-        public Header Header
-        {
-            get
-            {
-                return header_;
-            }
-        }
-
-        /// <summary>
-        /// Transaction hashes list element count.
-        /// </summary>
-        public UInt64 HashCount
-        {
-            get
-            {
-                return (UInt64)MerkleBlockNative.chain_merkle_block_hash_count(nativeInstance_);
-            }
-        }
-
-        /// <summary>
-        /// Amount of transactions inside the block.
-        /// </summary>
-        public UInt64 TotalTransactionCount
-        {
-            get
-            {
-                return (UInt64)MerkleBlockNative.chain_merkle_block_total_transaction_count(nativeInstance_);
-            }
         }
 
         /// <summary>
@@ -108,6 +84,7 @@ namespace Bitprim
             if (disposing)
             {
                 //Release managed resources and call Dispose for member variables
+                header_.Dispose();
             }
             //Release unmanaged resources
             //Logger.Log("Destroying merkle block " + nativeInstance_.ToString("X") + " ...");

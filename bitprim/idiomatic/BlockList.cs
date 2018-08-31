@@ -6,21 +6,21 @@ namespace Bitprim
     /// <summary>
     /// Represents a list of blocks
     /// </summary>
-    public class BlockList : NativeList<Block>
+    public class BlockList : NativeReadableWritableList<Block>
     {
         protected override IntPtr CreateNativeList()
         {
             return BlockListNative.chain_block_list_construct_default();
         }
 
-        protected override Block GetNthNativeElement(uint n)
+        protected override Block GetNthNativeElement(UInt64 n)
         {
-            return new Block(BlockListNative.chain_block_list_nth(NativeInstance, (UInt64)n), false);
+            return new Block(BlockListNative.chain_block_list_nth(NativeInstance, n), false);
         }
 
-        protected override uint GetCount()
+        protected override UInt64 GetCount()
         {
-            return (uint) BlockListNative.chain_block_list_count(NativeInstance);
+            return BlockListNative.chain_block_list_count(NativeInstance);
         }
 
         protected override void AddElement(Block element)

@@ -3,13 +3,13 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
     /// <summary>
     /// Represents a Bitcoin wallet address.
     /// </summary>
     public class PaymentAddress : IDisposable
     {
-        private IntPtr nativeInstance_;
+        private readonly IntPtr nativeInstance_;
+        private readonly bool ownsNativeObject_;
 
         /// <summary>
         /// Create an address from its hex string representation.
@@ -17,7 +17,14 @@ namespace Bitprim
         /// <param name="hexString"></param>
         public PaymentAddress(string hexString)
         {
-            nativeInstance_ = PaymentAddressNative.chain_payment_address_construct_from_string(hexString);
+            nativeInstance_ = PaymentAddressNative.wallet_payment_address_construct_from_string(hexString);
+            ownsNativeObject_ = true;
+        }
+
+        internal PaymentAddress(IntPtr nativeInstance)
+        {
+            nativeInstance_ = nativeInstance;
+            ownsNativeObject_ = false;
         }
 
         ~PaymentAddress()
@@ -28,24 +35,12 @@ namespace Bitprim
         /// <summary>
         /// Returns true iif this is a valid Base58 address.
         /// </summary>
-        public bool IsValid
-        {
-            get
-            {
-                return PaymentAddressNative.chain_payment_address_is_valid(nativeInstance_) != 0;
-            }
-        }
+        public bool IsValid => PaymentAddressNative.wallet_payment_address_is_valid(nativeInstance_) != 0;
 
         /// <summary>
         /// Address version.
         /// </summary>
-        public byte Version
-        {
-            get
-            {
-                return PaymentAddressNative.chain_payment_address_version(nativeInstance_);
-            }
-        }
+        public byte Version => PaymentAddressNative.wallet_payment_address_version(nativeInstance_);
 
         /// <summary>
         /// Human readable representation.
@@ -54,7 +49,7 @@ namespace Bitprim
         {
             get
             {
-                using ( NativeString addressString = new NativeString(PaymentAddressNative.chain_payment_address_encoded(nativeInstance_)) )
+                using ( var addressString = new NativeString(PaymentAddressNative.wallet_payment_address_encoded(nativeInstance_)) )
                 {
                     return addressString.ToString();
                 }
@@ -67,18 +62,7 @@ namespace Bitprim
             GC.SuppressFinalize(this);
         }
 
-        internal PaymentAddress(IntPtr nativeInstance)
-        {
-            nativeInstance_ = nativeInstance;
-        }
-
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
+        internal IntPtr NativeInstance => nativeInstance_;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -87,9 +71,10 @@ namespace Bitprim
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            //Logger.Log("Destroying payment address " + nativeInstance_.ToString("X"));
-            PaymentAddressNative.chain_payment_address_destruct(nativeInstance_);
-            //Logger.Log("Payment address " + nativeInstance_.ToString("X") + " destroyed!");
+            if (ownsNativeObject_)
+            {
+                PaymentAddressNative.wallet_payment_address_destruct(nativeInstance_);
+            }
         }
     }
 

@@ -3,21 +3,19 @@ using Bitprim.Native;
 
 namespace Bitprim
 {
-
     /// <summary>
     /// Transaction hash and index pair representing one of the transaction outputs.
     /// </summary>
     public class OutputPoint : IDisposable
     {
-        private bool ownsNativeObject_;
-        private IntPtr nativeInstance_;
+        private readonly bool ownsNativeObject_;
 
         /// <summary>
         /// Create an empty output point.
         /// </summary>
         public OutputPoint()
         {
-            nativeInstance_ = OutputPointNative.output_point_construct();
+            NativeInstance = OutputPointNative.chain_output_point_construct();
             ownsNativeObject_ = true;
         }
 
@@ -32,7 +30,7 @@ namespace Bitprim
             {
                 hash = pointHash
             };
-            nativeInstance_ = OutputPointNative.output_point_construct_from_hash_index(managedHash, index);
+            NativeInstance = OutputPointNative.chain_output_point_construct_from_hash_index(managedHash, index);
             ownsNativeObject_ = true;
         }
 
@@ -49,7 +47,7 @@ namespace Bitprim
             get
             {
                 var managedHash = new hash_t();
-                OutputPointNative.output_point_get_hash_out(nativeInstance_, ref managedHash);
+                OutputPointNative.chain_output_point_get_hash_out(NativeInstance, ref managedHash);
                 return managedHash.hash;
             }
         }
@@ -57,13 +55,7 @@ namespace Bitprim
         /// <summary>
         /// Transaction index (zero-based).
         /// </summary>
-        public UInt32 Index
-        {
-            get
-            {
-                return OutputPointNative.output_point_get_index(nativeInstance_);
-            }
-        }
+        public UInt32 Index => OutputPointNative.chain_output_point_get_index(NativeInstance);
 
         public void Dispose()
         {
@@ -73,17 +65,11 @@ namespace Bitprim
 
         internal OutputPoint(IntPtr nativeInstance, bool ownsNativeObject = false)
         {
-            nativeInstance_ = nativeInstance;
+            NativeInstance = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
         }
 
-        internal IntPtr NativeInstance
-        {
-            get
-            {
-                return nativeInstance_;
-            }
-        }
+        internal IntPtr NativeInstance { get; }
 
         protected virtual void Dispose(bool disposing)
         {
@@ -94,9 +80,7 @@ namespace Bitprim
             //Release unmanaged resources
             if(ownsNativeObject_)
             {
-                //Logger.Log("Destroying output point " + nativeInstance_.ToString("X") + " ...");
-                OutputPointNative.output_point_destruct(nativeInstance_);
-                //Logger.Log("Output point " + nativeInstance_.ToString("X") + " destroyed!");
+                OutputPointNative.chain_output_point_destruct(NativeInstance);
             }
         }
     }

@@ -6,7 +6,7 @@ namespace Bitprim
     /// <summary>
     /// Represents a list of Inputs
     /// </summary>
-    public class InputList : NativeList<Input>
+    public class InputList : NativeReadableWritableList<Input>
     {
         private bool ownsNativeObject_;
 
@@ -16,14 +16,14 @@ namespace Bitprim
             return InputListNative.chain_input_list_construct_default();
         }
 
-        protected override Input GetNthNativeElement(uint n)
+        protected override Input GetNthNativeElement(UInt64 n)
         {
-            return new Input(InputListNative.chain_input_list_nth(NativeInstance, (UIntPtr)n), false);
+            return new Input(InputListNative.chain_input_list_nth(NativeInstance, n), false);
         }
 
-        protected override uint GetCount()
+        protected override UInt64 GetCount()
         {
-            return (uint) InputListNative.chain_input_list_count(NativeInstance);
+            return InputListNative.chain_input_list_count(NativeInstance);
         }
 
         protected override void AddElement(Input element)
@@ -35,9 +35,7 @@ namespace Bitprim
         {
             if(ownsNativeObject_)
             {
-                //Logger.Log("Destroying input list " + NativeInstance.ToString("X") + " ...");
                 InputListNative.chain_input_list_destruct(NativeInstance);
-                //Logger.Log("Input list " + NativeInstance.ToString("X") + " destroyed!");
             }
         }
 
