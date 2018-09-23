@@ -44,6 +44,7 @@ namespace Bitprim
             Dispose(false);
         }
 
+
         /// <summary>
         /// Convert byte array to hex tring
         /// </summary>
@@ -51,11 +52,33 @@ namespace Bitprim
         /// <returns>Hex string representation, with as many characters as bytes</returns>
         public static string ByteArrayToHexString(byte[] ba)
         {
+            return ByteArrayToHexString(ba, false);
+        }
+
+        /// <summary>
+        /// Convert byte array to hex tring
+        /// </summary>
+        /// <param name="ba">Byte array</param>
+        /// <param name="reverse">If and only if true, invert result order (at the byte level)</param>
+        /// <returns>Hex string representation, with as many characters as bytes</returns>
+        public static string ByteArrayToHexString(byte[] ba, bool reverse)
+        {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);
-            for(int i=ba.Length-1; i>=0; i--)
+            if(reverse)
             {
-                hexString.AppendFormat("{0:x2}", ba[i]);
+                for(int i=0; i<ba.Length; i++)
+                {
+                    hexString.AppendFormat("{0:x2}", ba[i]);
+                }
             }
+            else
+            {
+                for(int i=ba.Length-1; i>=0; i--)
+                {
+                    hexString.AppendFormat("{0:x2}", ba[i]);
+                }
+            }
+
             return hexString.ToString();
         }
 
@@ -85,8 +108,10 @@ namespace Bitprim
             }
 
             if (reverse)
+            {
                 Array.Reverse(bytes);
-            
+            }
+
             return bytes;
         }
 
