@@ -56,6 +56,36 @@ namespace Bitprim
             }
         }
 
+        #if BCH
+
+        /// <summary>
+        /// (Only for BCH) The native node only handles legacy addresses; this method
+        /// converts them to the CashAddr format, using bchtest: prefix for testnet and bitcoincash: prefix
+        /// for mainnet.
+        /// </summary>
+        public string ToCashAddr()
+        {
+            return SharpCashAddr.Converter.LegacyAddrToCashAddr(Encoded, out bool isP2PKH, out bool isMainnet);
+        }
+
+        /// <summary>
+        /// (Only for BCH) Utility function for legacy-to-cashaddr conversion. 
+        /// </summary>
+        public static string LegacyAddressToCashAddress(string legacyAddr)
+        {
+            return SharpCashAddr.Converter.LegacyAddrToCashAddr(legacyAddr, out bool isP2PKH, out bool isMainnet);
+        }
+
+        /// <summary>
+        /// (Only for BCH) Utility function for cashaddr-to-legacy conversion. 
+        /// </summary>
+        public static string AddressToLegacyAddress(string cashAddr)
+        {
+            return SharpCashAddr.Converter.CashAddrToLegacyAddr(cashAddr, out bool isP2PKH, out bool isMainnet);
+        }
+
+        #endif
+
         public void Dispose()
         {
             Dispose(true);
