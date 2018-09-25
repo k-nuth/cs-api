@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 ///
 namespace SharpCashAddr
 {
-	class CashAddrConversionException: Exception
+	public class CashAddrConversionException: Exception
 	{
 		public CashAddrConversionException()
 			: base() {

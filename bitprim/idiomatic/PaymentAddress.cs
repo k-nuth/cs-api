@@ -79,7 +79,7 @@ namespace Bitprim
         /// <summary>
         /// (Only for BCH) Utility function for cashaddr-to-legacy conversion. 
         /// </summary>
-        public static string AddressToLegacyAddress(string cashAddr)
+        public static string CashAddressToLegacyAddress(string cashAddr)
         {
             return SharpCashAddr.Converter.CashAddrToLegacyAddr(cashAddr, out bool isP2PKH, out bool isMainnet);
         }
