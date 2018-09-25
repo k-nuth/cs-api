@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants);KEOKEN</DefineConstants>
+    <DefineConstants>$(DefineConstants);KEOKEN;BCH</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
