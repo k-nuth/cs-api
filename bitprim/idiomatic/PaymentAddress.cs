@@ -63,17 +63,19 @@ namespace Bitprim
         /// converts them to the CashAddr format, using bchtest: prefix for testnet and bitcoincash: prefix
         /// for mainnet.
         /// </summary>
-        public string ToCashAddr()
+        /// <param name="noPrefix"> If and only if true, include cashaddr prefix (bchtest/bitcoincash) </param>
+        public string ToCashAddr(bool noPrefix)
         {
-            return SharpCashAddr.Converter.LegacyAddrToCashAddr(Encoded, out bool isP2PKH, out bool isMainnet);
+            return SharpCashAddr.Converter.LegacyAddrToCashAddr(Encoded, noPrefix, out bool isP2PKH, out bool isMainnet);
         }
 
         /// <summary>
         /// (Only for BCH) Utility function for legacy-to-cashaddr conversion. 
         /// </summary>
-        public static string LegacyAddressToCashAddress(string legacyAddr)
+        /// <param name="noPrefix"> If and only if true, include cashaddr prefix (bchtest/bitcoincash) </param>
+        public static string LegacyAddressToCashAddress(string legacyAddr, bool noPrefix)
         {
-            return SharpCashAddr.Converter.LegacyAddrToCashAddr(legacyAddr, out bool isP2PKH, out bool isMainnet);
+            return SharpCashAddr.Converter.LegacyAddrToCashAddr(legacyAddr, noPrefix, out bool isP2PKH, out bool isMainnet);
         }
 
         /// <summary>
