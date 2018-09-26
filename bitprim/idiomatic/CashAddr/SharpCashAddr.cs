@@ -101,7 +101,7 @@ namespace SharpCashAddr
 			return converted;
 		}
 
-		public static string LegacyAddrToCashAddr(string oldAddress, out bool isP2PKH, out bool mainnet)
+		public static string LegacyAddrToCashAddr(string oldAddress, bool includePrefix, out bool isP2PKH, out bool mainnet)
 		{
 			// BigInteger wouldn't be needed, but that would result in the use a MIT License
 			BigInteger address = new BigInteger(0);
@@ -170,7 +170,7 @@ namespace SharpCashAddr
 				throw new CashAddrConversionException("Address checksum doesn't match. Have you made a mistake while typing it?");
 			addrBytes[0] = (byte) (isP2PKH ? 0x00 : 0x08);
 			byte[] cashAddr = convertBitsEightToFive(addrBytes);
-			var ret = new System.Text.StringBuilder(mainnet ? "bitcoincash:" : "bchtest:");
+			var ret = new System.Text.StringBuilder(includePrefix? (mainnet ? "bitcoincash:" : "bchtest:") : "");
 			// https://play.golang.org/p/sM_CE4AQ7Vp
 			ulong mod = PolyMod(cashAddr, (ulong) (mainnet ? 1058337025301 : 584719417569));
 			for (int i = 0; i < 8; ++i) {
