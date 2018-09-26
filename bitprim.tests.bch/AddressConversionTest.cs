@@ -18,7 +18,7 @@ namespace Bitprim.Tests
         {
             using(var address = new PaymentAddress(TESTNET_LEGACY_ADDR))
             {
-                Assert.Equal(TESTNET_CASH_ADDR, address.ToCashAddr(noPrefix: false));
+                Assert.Equal(TESTNET_CASH_ADDR, address.ToCashAddr(includePrefix: true));
             }
         }
 
@@ -27,7 +27,7 @@ namespace Bitprim.Tests
         {
             using(var address = new PaymentAddress(TESTNET_LEGACY_ADDR))
             {
-                Assert.Equal(TESTNET_CASH_ADDR_NO_PREFIX, address.ToCashAddr(noPrefix: true));
+                Assert.Equal(TESTNET_CASH_ADDR_NO_PREFIX, address.ToCashAddr(includePrefix: false));
             }
         }
 
@@ -36,7 +36,7 @@ namespace Bitprim.Tests
         {
             using(var address = new PaymentAddress(MAINNET_LEGACY_ADDR))
             {
-                Assert.Equal(MAINNET_CASH_ADDR, address.ToCashAddr(noPrefix: false));
+                Assert.Equal(MAINNET_CASH_ADDR, address.ToCashAddr(includePrefix: true));
             }
         }
 
@@ -45,7 +45,7 @@ namespace Bitprim.Tests
         {
             using(var address = new PaymentAddress(MAINNET_LEGACY_ADDR))
             {
-                Assert.Equal(MAINNET_CASH_ADDR_NO_PREFIX, address.ToCashAddr(noPrefix: true));
+                Assert.Equal(MAINNET_CASH_ADDR_NO_PREFIX, address.ToCashAddr(includePrefix: false));
             }
         }
 
@@ -64,31 +64,31 @@ namespace Bitprim.Tests
         [Fact]
         public void ConvertMainnetLegacyToCashAddr()
         {
-            Assert.Equal(MAINNET_CASH_ADDR, PaymentAddress.LegacyAddressToCashAddress(MAINNET_LEGACY_ADDR, noPrefix: false));
+            Assert.Equal(MAINNET_CASH_ADDR, PaymentAddress.LegacyAddressToCashAddress(MAINNET_LEGACY_ADDR, includePrefix: true));
         }
 
         [Fact]
         public void ConvertMainnetLegacyToCashAddrNoPrefix()
         {
-            Assert.Equal(MAINNET_CASH_ADDR_NO_PREFIX, PaymentAddress.LegacyAddressToCashAddress(MAINNET_LEGACY_ADDR, noPrefix: true));
+            Assert.Equal(MAINNET_CASH_ADDR_NO_PREFIX, PaymentAddress.LegacyAddressToCashAddress(MAINNET_LEGACY_ADDR, includePrefix: false));
         }
 
         [Fact]
         public void ConvertTestnetLegacyToCashAddr()
         {
-            Assert.Equal(TESTNET_CASH_ADDR, PaymentAddress.LegacyAddressToCashAddress(TESTNET_LEGACY_ADDR, noPrefix: false));
+            Assert.Equal(TESTNET_CASH_ADDR, PaymentAddress.LegacyAddressToCashAddress(TESTNET_LEGACY_ADDR, includePrefix: true));
         }
 
         [Fact]
         public void ConvertTestnetLegacyToCashAddrNoPrefix()
         {
-            Assert.Equal(TESTNET_CASH_ADDR_NO_PREFIX, PaymentAddress.LegacyAddressToCashAddress(TESTNET_LEGACY_ADDR, noPrefix: true));
+            Assert.Equal(TESTNET_CASH_ADDR_NO_PREFIX, PaymentAddress.LegacyAddressToCashAddress(TESTNET_LEGACY_ADDR, includePrefix: false));
         }
 
         [Fact]
         public void ShouldThrowIfConvertingCashAddrToCashAddr()
         {
-            var ex = Assert.Throws<SharpCashAddr.CashAddrConversionException>( () => PaymentAddress.LegacyAddressToCashAddress(TESTNET_CASH_ADDR, noPrefix: false) );
+            var ex = Assert.Throws<SharpCashAddr.CashAddrConversionException>( () => PaymentAddress.LegacyAddressToCashAddress(TESTNET_CASH_ADDR, includePrefix: true) );
             Assert.Equal("Address contains unexpected character.", ex.Message);
         }
 
@@ -102,7 +102,7 @@ namespace Bitprim.Tests
         [Fact]
         public void ShouldThrowOnEmptyLegacyAddr()
         {
-            var ex = Assert.Throws<SharpCashAddr.CashAddrConversionException>( () => PaymentAddress.LegacyAddressToCashAddress("", noPrefix: false) );
+            var ex = Assert.Throws<SharpCashAddr.CashAddrConversionException>( () => PaymentAddress.LegacyAddressToCashAddress("", includePrefix: true) );
             Assert.Equal("Address to be decoded is shorter or longer than expected!", ex.Message);
         }
 
