@@ -59,6 +59,7 @@
 /bitprim.tutorials/archive/
 /bitprim.tutorials/bin/
 /bitprim.tutorials/obj/
+/bitprim.tests.bch/*.so
 /bitprim.tests.bch.keoken/bin/
 /bitprim.tests.bch.keoken/obj/
 /bitprim.tests.bch.keoken/conaninfo.txt
