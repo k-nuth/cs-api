@@ -94,7 +94,7 @@ namespace Bitprim
         /// <param name="hex"> For BCH, it can be in cashaddr format, with or without prefix. </param>
         /// <param name="address"> If parsing fails (invalid address), this will be null; otherwise, it
         /// will contain a newly created PaymentAdress instance. </param>
-        public static bool TryParsePaymentAddress(string hex, out PaymentAddress address)
+        public static bool TryParse(string hex, out PaymentAddress address)
         {
             if(string.IsNullOrWhiteSpace(hex))
             {
