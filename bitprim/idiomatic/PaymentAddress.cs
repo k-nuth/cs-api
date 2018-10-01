@@ -88,6 +88,29 @@ namespace Bitprim
 
         #endif
 
+        /// <summary>
+        /// Try to parse a hex string which represents a payment address.
+        /// </summary>
+        /// <param name="hex"> For BCH, it can be in cashaddr format, with or without prefix. </param>
+        /// <param name="address"> If parsing fails (invalid address), this will be null; otherwise, it
+        /// will contain a newly created PaymentAdress instance. </param>
+        public static bool TryParsePaymentAddress(string hex, out PaymentAddress address)
+        {
+            if(string.IsNullOrWhiteSpace(hex))
+            {
+                address = null;
+                return false;
+            }
+            address = new PaymentAddress(hex);
+            if( !address.IsValid )
+            {
+                address.Dispose();
+                address = null;
+                return false;
+            }
+            return true;
+        }
+
         public void Dispose()
         {
             Dispose(true);
