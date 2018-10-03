@@ -6,8 +6,8 @@
     <Exec Command="conan remote update bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="$(ConanRemoteList.Contains('bitprim'))" />
     <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
     
-    <Message Text="Conan Channel: testing"/>
-    <Message Text="Conan Version: 0.14.1"/>
+    <Message Text="Conan Channel: stable"/>
+    <Message Text="Conan Version: 0.13.0"/>
     <Message Text="Conan Currency: BCH"/>
     <Message Text="Conan Keoken: True"/>
     
