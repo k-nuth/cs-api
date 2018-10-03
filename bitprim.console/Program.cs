@@ -28,7 +28,7 @@ namespace bitprim.console
             {
                 Console.CancelKeyPress += OnSigInterrupt;
                 Log.Information("Initializing...");
-                using (var executor = new Executor("/home/bitprim/dev/bitprim/github/bitprim/bitprim-insight/bitprim.insight/bcc-testnet.cfg"))
+                using (var executor = new Executor(""))
                 {
                     var result = await executor.InitAndRunAsync();
                     if (result != 0)

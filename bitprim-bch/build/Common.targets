@@ -12,7 +12,7 @@
     <Message Text="Conan Keoken: True"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.14.1@bitprim/testing;[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=BCH;bitprim-node-cint:keoken=True;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.13.0@bitprim/stable;[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=BCH;bitprim-node-cint:keoken=True;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
