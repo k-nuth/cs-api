@@ -1,5 +1,6 @@
 using Bitprim.Native;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
@@ -827,7 +828,7 @@ namespace Bitprim
             return new MempoolTransactionList(txs);
         }
 
-        public INativeList<ITransaction> GetMempoolTransactions(INativeList<PaymentAddress> addresses, bool useTestnetRules)
+        public INativeList<ITransaction> GetMempoolTransactions(IEnumerable<PaymentAddress> addresses, bool useTestnetRules)
         {
             using(var nativeAddresses = new NativeStringList())
             {
