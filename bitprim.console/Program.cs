@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bitprim;
 using Serilog;
@@ -7,7 +8,7 @@ namespace bitprim.console
 {
     public class Program
     {
-        private static bool running_;
+        //private static bool running_;
 
         static void Main(string[] args)
         {
@@ -27,28 +28,33 @@ namespace bitprim.console
             {
                 Console.CancelKeyPress += OnSigInterrupt;
                 Log.Information("Initializing...");
-                using (var executor = new Executor(""))
+                using (var executor = new Executor("/home/bitprim/dev/bitprim/github/bitprim/bitprim-insight/bitprim.insight/bcc-testnet.cfg"))
                 {
                     var result = await executor.InitAndRunAsync();
                     if (result != 0)
                     {
                         throw new ApplicationException("Executor::InitAndRunAsync failed; error code: " + result);
                     }
-                    executor.SubscribeToBlockChain(OnBlockArrived);
+                    //executor.SubscribeToBlockChain(OnBlockArrived);
                     Log.Information("Synchronizing local copy of the blockchain...");
-                    running_ = true;
-                    while (running_)
-                    {
-                        var lastHeight = await executor.Chain.FetchLastHeightAsync();
-                        Log.Information("Current height in local copy: " + lastHeight.Result);
-                        await Task.Delay(5000);
-                    }
+                    // running_ = true;
+                    // while (running_)
+                    // {
+                    //     var lastHeight = await executor.Chain.FetchLastHeightAsync();
+                    //     Log.Information("Current height in local copy: " + lastHeight.Result);
+                    //     await Task.Delay(5000);
+                    // }
+                    await Task.Delay(10000);
+                    var addresses = new PaymentAddressList();
+                    addresses.Add(new PaymentAddress("bchtest:qq6g5362emyqppwx6kwpsl08xkgep7xwkyh9p68qsj"));
+                    addresses.Add(new PaymentAddress("bchtest:qqg2fwfzd4xeywf8h2zajqy77357gk0v7yvsvhd4xu"));
+                    var txs = executor.Chain.GetMempoolTransactions(addresses, true);
+                    Log.Information("Txs count: " + txs.Count);
 
                     Log.Information("Stopping node...");
                     executor.Stop();
-                    Log.Information("Node stopped!");
+                    Log.Information("Shutting down node...");
                 }
-                
             }
             catch (Exception ex)
             {
@@ -56,12 +62,13 @@ namespace bitprim.console
             }
 
             Log.CloseAndFlush();
+            Log.Information("Node shutdown OK!");
         }
 
         private static void OnSigInterrupt(object sender, ConsoleCancelEventArgs args)
         {
             args.Cancel = true;
-            running_ = false;
+            //running_ = false;
         }
 
         private static bool OnBlockArrived(ErrorCode errorCode, UInt64 u, BlockList incoming, BlockList outgoing)
