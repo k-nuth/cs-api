@@ -827,6 +827,24 @@ namespace Bitprim
             return new MempoolTransactionList(txs);
         }
 
+        public INativeList<ITransaction> GetMempoolTransactions(INativeList<PaymentAddress> addresses, bool useTestnetRules)
+        {
+            using(var nativeAddresses = new NativeStringList())
+            {
+                foreach(PaymentAddress address in addresses)
+                {
+                    nativeAddresses.Add(address.Encoded);
+                }
+                IntPtr txs = ChainNative.chain_get_mempool_transactions_from_wallets
+                (
+                    nativeInstance_,
+                    nativeAddresses.NativeInstance,
+                    useTestnetRules? 1 : 0
+                );
+                return new TransactionList(txs);
+            }
+        }
+
         #endregion //Mempool
 
         private IntPtr CreateContext<TC, TP>(TC callback, TP parameters)
