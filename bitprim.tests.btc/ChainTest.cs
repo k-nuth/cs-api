@@ -385,11 +385,12 @@ namespace Bitprim.Tests
         [Fact]
         public void GetMempoolTransactions()
         {
-            using (var address = new PaymentAddress("1PDatg81sEwirJU3QUKcGLyfQC6epZNyiL"))
+            using (var addresses = new PaymentAddressList())
             {
-                using (var list = executorFixture_.Executor.Chain.GetMempoolTransactions(address, true))
+                addresses.Add(new PaymentAddress("1PDatg81sEwirJU3QUKcGLyfQC6epZNyiL"));
+                using (var list = executorFixture_.Executor.Chain.GetMempoolTransactions(addresses, true))
                 {
-                    Assert.True(list.Count>=0); 
+                    Assert.True(list.Count >= 0);
                 }
             }
         }
