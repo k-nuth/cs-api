@@ -69,6 +69,8 @@
 /bitprim.tests.bch.keoken/conan_imports_manifest.txt
 /bitprim.tests.bch.keoken/libbitprim-node-cint.dll
 /bitprim.tests.bch.keoken/bitprim-node-cint.dll
+/bitprim.tests.bch.keoken/*.so
+/bitprim.tests.btc/*.so
 /bitprim.tests.common/bin/
 /bitprim.tests.common/obj/
 /bitprim.tests.common/*.txt
