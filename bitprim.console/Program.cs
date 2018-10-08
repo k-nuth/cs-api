@@ -8,11 +8,26 @@ namespace bitprim.console
 {
     public class Program
     {
-        private static bool running_;
-
         static void Main(string[] args)
         {
             InternalMain(args).GetAwaiter().GetResult();
+        }
+
+        static async Task WaitForBlock(Executor executor, UInt64 blockNumber)
+        {
+            Log.Information("Waiting for block " + blockNumber);
+            bool keepWaiting = true;
+            while ( keepWaiting )
+            {
+                var lastHeight = await executor.Chain.FetchLastHeightAsync();
+                Log.Information("Current height in local copy: " + lastHeight.Result);
+                keepWaiting = lastHeight.Result < blockNumber;
+                if( keepWaiting )
+                {
+                    await Task.Delay(5000);
+                }
+            }
+            Log.Information("Block " + blockNumber + " arrived/found!");
         }
 
         static async Task InternalMain(string[] args)
@@ -26,7 +41,6 @@ namespace bitprim.console
 
             try
             {
-                Console.CancelKeyPress += OnSigInterrupt;
                 Log.Information("Initializing...");
                 using (var executor = new Executor(""))
                 {
@@ -35,16 +49,10 @@ namespace bitprim.console
                     {
                         throw new ApplicationException("Executor::InitAndRunAsync failed; error code: " + result);
                     }
-                    executor.SubscribeToBlockChain(OnBlockArrived);
-                    Log.Information("Synchronizing local copy of the blockchain...");
-                    running_ = true;
-                    while (running_)
-                    {
-                        var lastHeight = await executor.Chain.FetchLastHeightAsync();
-                        Log.Information("Current height in local copy: " + lastHeight.Result);
-                        await Task.Delay(5000);
-                    }
+                    //executor.SubscribeToBlockChain(OnBlockArrived);
+                    await WaitForBlock(executor, 1260000);
                     Log.Information("Stopping node...");
+                    await Task.Delay(5000);
                     executor.Stop();
                     Log.Information("Shutting down node...");
                 }
@@ -55,12 +63,6 @@ namespace bitprim.console
             }
             Log.CloseAndFlush();
             Log.Information("Node shutdown OK!");
-        }
-
-        private static void OnSigInterrupt(object sender, ConsoleCancelEventArgs args)
-        {
-            args.Cancel = true;
-            running_ = false;
         }
 
         private static bool OnBlockArrived(ErrorCode errorCode, UInt64 u, BlockList incoming, BlockList outgoing)
