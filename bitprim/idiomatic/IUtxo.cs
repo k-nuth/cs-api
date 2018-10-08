@@ -25,6 +25,12 @@ namespace Bitprim
         UInt64 Amount { get; }
 
         /// <summary>
+        /// Blockchain height for the block containing this output's transaction.
+        /// For unconfirmed transactions, this value will be UInt64.MaxValue.
+        /// </summary>
+        UInt64 BlockHeight { get; }
+
+        /// <summary>
         /// Output script.
         /// </summary>
         IScript Script { get; }

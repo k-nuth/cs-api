@@ -19,5 +19,8 @@ namespace Bitprim.Native
 
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr chain_utxo_get_script(IntPtr utxo);
+
+        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        public static extern UInt64 chain_utxo_get_block_height(IntPtr utxo);
     }
 }

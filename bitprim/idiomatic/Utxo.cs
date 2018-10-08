@@ -70,6 +70,18 @@ namespace Bitprim
             }
         }
 
+        /// <summary>
+        /// Blockchain height for the block containing this output's transaction.
+        /// For unconfirmed transactions, this value will be UInt64.MaxValue.
+        /// </summary>
+        public UInt64 BlockHeight
+        {
+            get
+            {
+                return UtxoNative.chain_utxo_get_block_height(nativeInstance_);
+            }
+        }
+
         internal Utxo(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
