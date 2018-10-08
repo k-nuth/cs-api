@@ -6,7 +6,7 @@ namespace Bitprim
     /// <summary>
     /// Represents a transaction script.
     /// </summary>
-    public class Script : IDisposable
+    public class Script : IScript
     {
         private bool ownsNativeObject_;
         private IntPtr nativeInstance_;

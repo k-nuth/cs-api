@@ -7,7 +7,7 @@ namespace Bitprim
     {
         protected override IUtxo GetNthNativeElement(UInt64 n)
         {
-            return new Utxo(UtxoListNative.chain_utxo_list_nth(NativeInstance, n), false);
+            return new Utxo(UtxoListNative.chain_utxo_list_nth(NativeInstance, n) );
         }
 
         protected override UInt64 GetCount()
@@ -21,7 +21,7 @@ namespace Bitprim
         }
 
         internal UtxoList(IntPtr nativeInstance) : base(nativeInstance)
-        {            
+        {
         }
     }
 

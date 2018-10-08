@@ -15,11 +15,19 @@ namespace Bitprim
         bool IsStale { get; }
 
         /// <summary>
-        /// Get mempool transactions (unconfirmed) from a specific address.
+        /// Get mempool transactions (unconfirmed) from a specific set of addresses.
         /// </summary>
         /// <param name="address"> Address to search. </param>
         /// <param name="useTestnetRules"> Tells whether we are in testnet or not. </param>
         INativeList<ITransaction> GetMempoolTransactions(INativeList<PaymentAddress> address, bool useTestnetRules);
+
+        /// <summary>
+        /// Get unspent outputs (utxos) from a specific address; Both confirmed and unconfirmed transactions
+        /// are considered when searching.
+        /// </summary>
+        /// <param name="address"> Address to search. </param>
+        /// <param name="useTestnetRules"> Tells whether we are in testnet or not. </param>
+        INativeList<IUtxo> GetUtxos(PaymentAddress address, bool useTestnetRules);
 
         /// <summary>
         /// Given a block height, retrieve only block hash and timestamp, asynchronously.

@@ -833,6 +833,17 @@ namespace Bitprim
             return new TransactionList(txs);
         }
 
+        public INativeList<IUtxo> GetUtxos(PaymentAddress address, bool useTestnetRules)
+        {
+            IntPtr utxos = ChainNative.chain_get_utxos
+            (
+                nativeInstance_,
+                address.NativeInstance,
+                useTestnetRules? 1 : 0
+            );
+            return new UtxoList(utxos);
+        }
+
         #endregion //Mempool
 
         private IntPtr CreateContext<TC, TP>(TC callback, TP parameters)
