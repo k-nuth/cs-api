@@ -51,7 +51,7 @@ namespace bitprim.console
                     }
                     //executor.SubscribeToBlockChain(OnBlockArrived);
                     await WaitForBlock(executor, 1260000);
-                    QueryBlockchain();    
+                    QueryBlockchain(executor.Chain);    
                     Log.Information("Stopping node...");
                     await Task.Delay(5000);
                     executor.Stop();
@@ -72,7 +72,7 @@ namespace bitprim.console
             return true;
         }
 
-        private static void QueryBlockchain()
+        private static void QueryBlockchain(IChain chain)
         {
             //TODO Test bitprim-cs query API here
         }
