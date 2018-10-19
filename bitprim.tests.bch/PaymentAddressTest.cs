@@ -11,6 +11,7 @@ namespace Bitprim.Tests
             Assert.Null(addr);
         }
 
+
         [Fact]
         public void WhitespaceAddressShouldFail()
         {
@@ -31,6 +32,7 @@ namespace Bitprim.Tests
             Assert.True(PaymentAddress.TryParse("bitcoincash:qrcuqadqrzp2uztjl9wn5sthepkg22majyxw4gmv6p", out PaymentAddress addr));
             Assert.NotNull(addr);
             Assert.True(addr.IsValid);
+            addr.Dispose();
         }
 
         [Fact]
@@ -39,16 +41,16 @@ namespace Bitprim.Tests
             Assert.True(PaymentAddress.TryParse("qrcuqadqrzp2uztjl9wn5sthepkg22majyxw4gmv6p", out PaymentAddress addr));
             Assert.NotNull(addr);
             Assert.True(addr.IsValid);
+            addr.Dispose();
         }
 
         [Fact]
         public void MainnetLegacyAddressOK()
         {
-            var a = new PaymentAddress("");
-
             Assert.True(PaymentAddress.TryParse("1P3GQYtcWgZHrrJhUa4ctoQ3QoCU2F65nz", out PaymentAddress addr));
             Assert.NotNull(addr);
             Assert.True(addr.IsValid);
+            addr.Dispose();
         }
 
         // TODO A standalone testnet address is not considered valid by default; the node needs to be in testnet mode
