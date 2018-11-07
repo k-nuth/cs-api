@@ -63,6 +63,19 @@ namespace Bitprim.Native.Keoken
         //                 (void* /*ctx*/);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr KeokenStateDelegatedGetAllAssetAddressesListHandler(IntPtr state);   
+
+
+        //typedef void (*keoken_state_delegated_remove_up_to_t)
+        //        (void* /*ctx*/, 
+        //        uint64_t /*size_t*/ /*height*/);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void KeokenStateDelegatedRemoveUpToHandler(IntPtr state, UInt64 height);   
+
+
+        //typedef void (*keoken_state_delegated_reset_t)
+        //        (void* /*ctx*/);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void KeokenStateDelegatedResetHandler(IntPtr state);   
     }
 
     internal static class KeokenManagerNative  
@@ -85,6 +98,8 @@ namespace Bitprim.Native.Keoken
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern void keoken_manager_configure_state(IntPtr keokenManager,IntPtr context
                                                                 ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedSetInitialAssetIdHandler setInitialAssetIdHandler
+                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedResetHandler resetHandler
+                                                                ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedRemoveUpToHandler removeUpToHandler
                                                                 ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedCreateAssetHandler createAssetHandler
                                                                 ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedCreateBalanceEntryHandler createBalanceEntryHandler
                                                                 ,[MarshalAs(UnmanagedType.FunctionPtr)]KeokenManagerNativeDelegates.KeokenStateDelegatedAssetIdExistsHandler assetIdExistsHandler

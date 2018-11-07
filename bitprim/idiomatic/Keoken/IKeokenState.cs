@@ -14,6 +14,10 @@ namespace Bitprim.Keoken
     {
         UInt32 InitialAssetId { set; }
 
+        void RemoveUpTo(UInt64 height);
+
+        void Reset();
+
         bool StateAssetIdExists(UInt32 id);
          
         INativeList<IGetAllAssetsAddressesData> GetAllAssetAddresses();
