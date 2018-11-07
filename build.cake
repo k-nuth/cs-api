@@ -15,8 +15,8 @@ var publishToNuget = EnvironmentVariable("PUBLISH_TO_NUGET") ?? "false";
 
 var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
 
-var conanChannel = System.IO.File.ReadAllText("./bitprim/conan/conan_channel");
-var conanVersion = System.IO.File.ReadAllText("./bitprim/conan/conan_version");
+var conanChannel = System.IO.File.ReadAllText("./bitprim/conan/conan_channel").Trim();
+var conanVersion = System.IO.File.ReadAllText("./bitprim/conan/conan_version").Trim();
 
 void UpdateConan(string pathTarget, string currency, bool keoken)
 {
@@ -108,9 +108,10 @@ Task("Test")
                 Configuration = configuration
             };
         
-        DotNetCoreTest("./bitprim.tests.bch",settings);
-        DotNetCoreTest("./bitprim.tests.btc",settings);
-        DotNetCoreTest("./bitprim.tests.bch.keoken",settings);
+        DotNetCoreTest("./bitprim.tests.bch", settings);
+        DotNetCoreTest("./bitprim.tests.btc", settings);
+        DotNetCoreTest("./bitprim.tests.bch.keoken", settings);
+        DotNetCoreTest("./bitprim.tests.common", settings);
     });
 
 Task("Package")

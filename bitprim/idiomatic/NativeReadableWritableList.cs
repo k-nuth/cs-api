@@ -22,7 +22,7 @@ namespace Bitprim
         
         protected abstract IntPtr CreateNativeList();
         protected abstract void AddElement(T element);
-        
+
         /// <summary>
         /// Element to add; it is added at the end of the list
         /// </summary>

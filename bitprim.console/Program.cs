@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bitprim;
 using Serilog;
@@ -43,19 +44,17 @@ namespace bitprim.console
                         Log.Information("Current height in local copy: " + lastHeight.Result);
                         await Task.Delay(5000);
                     }
-
                     Log.Information("Stopping node...");
                     executor.Stop();
-                    Log.Information("Node stopped!");
+                    Log.Information("Shutting down node...");
                 }
-                
             }
             catch (Exception ex)
             {
                 Log.Error(ex,"Error detected");
             }
-
             Log.CloseAndFlush();
+            Log.Information("Node shutdown OK!");
         }
 
         private static void OnSigInterrupt(object sender, ConsoleCancelEventArgs args)

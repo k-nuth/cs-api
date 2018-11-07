@@ -56,6 +56,61 @@ namespace Bitprim
             }
         }
 
+        #if BCH
+
+        /// <summary>
+        /// (Only for BCH) The native node only handles legacy addresses; this method
+        /// converts them to the CashAddr format, using bchtest: prefix for testnet and bitcoincash: prefix
+        /// for mainnet.
+        /// </summary>
+        /// <param name="includePrefix"> If and only if true, include cashaddr prefix (bchtest/bitcoincash) </param>
+        public string ToCashAddr(bool includePrefix)
+        {
+            return SharpCashAddr.Converter.LegacyAddrToCashAddr(Encoded, includePrefix, out bool isP2PKH, out bool isMainnet);
+        }
+
+        /// <summary>
+        /// (Only for BCH) Utility function for legacy-to-cashaddr conversion. 
+        /// </summary>
+        /// <param name="includePrefix"> If and only if true, include cashaddr prefix (bchtest/bitcoincash) </param>
+        public static string LegacyAddressToCashAddress(string legacyAddr, bool includePrefix)
+        {
+            return SharpCashAddr.Converter.LegacyAddrToCashAddr(legacyAddr, includePrefix, out bool isP2PKH, out bool isMainnet);
+        }
+
+        /// <summary>
+        /// (Only for BCH) Utility function for cashaddr-to-legacy conversion. 
+        /// </summary>
+        public static string CashAddressToLegacyAddress(string cashAddr)
+        {
+            return SharpCashAddr.Converter.CashAddrToLegacyAddr(cashAddr, out bool isP2PKH, out bool isMainnet);
+        }
+
+        #endif
+
+        /// <summary>
+        /// Try to parse a hex string which represents a payment address.
+        /// </summary>
+        /// <param name="hex"> For BCH, it can be in cashaddr format, with or without prefix. </param>
+        /// <param name="address"> If parsing fails (invalid address), this will be null; otherwise, it
+        /// will contain a newly created PaymentAdress instance. </param>
+        public static bool TryParse(string hex, out PaymentAddress address)
+        {
+            if(string.IsNullOrWhiteSpace(hex))
+            {
+                address = null;
+                return false;
+            }
+            address = new PaymentAddress(hex);
+            if( !address.IsValid )
+            {
+                address.Dispose();
+                address = null;
+                return false;
+            }
+            return true;
+        }
+
         public void Dispose()
         {
             Dispose(true);

@@ -19,7 +19,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="address"> Address to search. </param>
         /// <param name="useTestnetRules"> Tells whether we are in testnet or not. </param>
-        INativeList<IMempoolTransaction> GetMempoolTransactions(PaymentAddress address, bool useTestnetRules);
+        INativeList<ITransaction> GetMempoolTransactions(INativeList<PaymentAddress> address, bool useTestnetRules);
 
         /// <summary>
         /// Given a block height, retrieve only block hash and timestamp, asynchronously.
