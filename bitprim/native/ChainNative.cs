@@ -174,6 +174,9 @@ namespace Bitprim.Native
         [DllImport(Constants.BITPRIM_C_LIBRARY)]
         public static extern IntPtr chain_get_mempool_transactions(IntPtr chain, IntPtr address, int /*bool*/ use_testnet_rules);
 
+        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        public static extern IntPtr chain_get_mempool_transactions_from_wallets(IntPtr chain, IntPtr addresses, int /*bool*/ use_testnet_rules);
+
         // Misc ------------------------------------------------
         //typedef void (*validate_tx_handler_t)(chain_t, void*, error_code_t, char const* message);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

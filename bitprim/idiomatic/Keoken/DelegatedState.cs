@@ -11,6 +11,8 @@ namespace Bitprim.Keoken
     public static class DelegatedState
     {
         public static KeokenManagerNativeDelegates.KeokenStateDelegatedSetInitialAssetIdHandler KeokenStateDelegatedSetInitialAssetIdHandler;
+        public static KeokenManagerNativeDelegates.KeokenStateDelegatedRemoveUpToHandler KeokenStateDelegatedRemoveUpToHandler;
+        public static KeokenManagerNativeDelegates.KeokenStateDelegatedResetHandler KeokenStateDelegatedResetHandler; 
         public static KeokenManagerNativeDelegates.KeokenStateDelegatedCreateAssetHandler KeokenStateDelegatedCreateAssetHandler;
         public static KeokenManagerNativeDelegates.KeokenStateDelegatedAssetIdExistsHandler KeokenStateDelegatedAssetIdExistsHandler;
         public static KeokenManagerNativeDelegates.KeokenStateDelegatedGetAllAssetAddressesListHandler KeokenStateDelegatedGetAllAssetAddressesListHandler;
@@ -23,6 +25,10 @@ namespace Bitprim.Keoken
         static DelegatedState()
         {
             KeokenStateDelegatedSetInitialAssetIdHandler = KeokenStateDelegatedSetInitialAssetIdHandlerInternal;
+
+            KeokenStateDelegatedRemoveUpToHandler = KeokenStateDelegatedRemoveUpToHandlerInternal;
+            KeokenStateDelegatedResetHandler = KeokenStateDelegatedResetHandlerInternal;
+            
             KeokenStateDelegatedCreateAssetHandler = KeokenStateDelegatedCreateAssetHandlerInternal;
             KeokenStateDelegatedAssetIdExistsHandler = KeokenStateDelegatedAssetIdExistsHandlerInternal;
             KeokenStateDelegatedGetAllAssetAddressesListHandler = KeokenStateDelegatedGetAllAssetAddressesListHandlerInternal;
@@ -42,6 +48,16 @@ namespace Bitprim.Keoken
         private static void KeokenStateDelegatedSetInitialAssetIdHandlerInternal(IntPtr state, UInt32 asset_id_initial)
         {
             internalState_.InitialAssetId = asset_id_initial;
+        }
+
+        private static void KeokenStateDelegatedRemoveUpToHandlerInternal(IntPtr state, UInt64 height)
+        {
+            internalState_.RemoveUpTo(height);          
+        }
+
+        private static void KeokenStateDelegatedResetHandlerInternal(IntPtr state)
+        {
+            internalState_.Reset();
         }
 
         private static void KeokenStateDelegatedCreateAssetHandlerInternal(IntPtr state, string asset_name, Int64 asset_amount,

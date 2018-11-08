@@ -5,6 +5,68 @@ using Xunit;
 
 namespace Bitprim.Tests.Bch.Keoken
 {
+    [Collection("KeokenCollection")]
+    public class KeokenRegTestRemove : IClassFixture<RegtestExecutorFixture>
+    {
+        private readonly RegtestExecutorFixture fixture_;
+        private readonly KeokenManager keokenManager_;
+
+        public KeokenRegTestRemove(RegtestExecutorFixture fixture)
+        {
+            fixture_ = fixture;
+            keokenManager_ = fixture_.Executor.KeokenManager;
+        }
+
+        
+        [Fact]
+        public void TestRemove()
+        {
+            using (GetAllAssetsAddressesDataList assets = keokenManager_.GetAllAssetAddresses())
+            {
+                Assert.Equal<UInt64>(3, assets.Count);
+            }
+
+            fixture_.State.RemoveUpTo(0);
+
+            using (GetAllAssetsAddressesDataList assets = keokenManager_.GetAllAssetAddresses())
+            {
+                Assert.Equal<UInt64>(0, assets.Count);
+            }
+        }
+
+    }    
+
+    [Collection("KeokenCollection")]
+    public class KeokenRegTestReset : IClassFixture<RegtestExecutorFixture>
+    {
+        private readonly RegtestExecutorFixture fixture_;
+        private readonly KeokenManager keokenManager_;
+
+        public KeokenRegTestReset(RegtestExecutorFixture fixture)
+        {
+            fixture_ = fixture;
+            keokenManager_ = fixture_.Executor.KeokenManager;
+        }
+
+        [Fact]
+        public void TestReset()
+        {
+            using (GetAllAssetsAddressesDataList assets = keokenManager_.GetAllAssetAddresses())
+            {
+                Assert.Equal<UInt64>(3, assets.Count);
+            }
+
+            fixture_.State.Reset();
+
+            using (GetAllAssetsAddressesDataList assets = keokenManager_.GetAllAssetAddresses())
+            {
+                Assert.Equal<UInt64>(0, assets.Count);
+            }
+        }
+        
+    }    
+    
+    [Collection("KeokenCollection")]
     public class KeokenRegTest: IClassFixture<RegtestExecutorFixture>
     {
         private readonly RegtestExecutorFixture fixture_;

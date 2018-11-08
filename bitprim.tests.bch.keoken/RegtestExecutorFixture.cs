@@ -43,6 +43,8 @@ namespace Bitprim.Tests.Bch.Keoken
 
         public Executor Executor => exec_;
 
+        public IKeokenState State => state_;
+
         public void Dispose()
         {
             state_.Dispose();
