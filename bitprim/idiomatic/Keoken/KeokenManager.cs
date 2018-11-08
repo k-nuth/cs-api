@@ -30,6 +30,8 @@ namespace Bitprim.Keoken
             //delegatedState_ = delegatedState;
             KeokenManagerNative.keoken_manager_configure_state(nativeInstance_,IntPtr.Zero
                                                                 ,DelegatedState.KeokenStateDelegatedSetInitialAssetIdHandler
+                                                                ,DelegatedState.KeokenStateDelegatedResetHandler
+                                                                ,DelegatedState.KeokenStateDelegatedRemoveUpToHandler
                                                                 ,DelegatedState.KeokenStateDelegatedCreateAssetHandler
                                                                 ,DelegatedState.KeokenStateDelegatedCreateBalanceEntryHandler
                                                                 ,DelegatedState.KeokenStateDelegatedAssetIdExistsHandler
