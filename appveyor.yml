@@ -58,7 +58,8 @@ init:
       }
       
 install:
-  - "%PYTHON%/Scripts/pip.exe install conan --upgrade"
+  - "%PYTHON%/Scripts/pip.exe install conan==1.7.4"
+
 
 build_script:
   - SET PATH=%PATH%;%PYTHON%/Scripts/
