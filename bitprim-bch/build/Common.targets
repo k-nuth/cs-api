@@ -9,10 +9,10 @@
     <Message Text="Conan Channel: testing"/>
     <Message Text="Conan Version: 0.17.0"/>
     <Message Text="Conan Currency: BCH"/>
-    <Message Text="Conan Keoken: False"/>
+    <Message Text="Conan Keoken: True"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.17.0@bitprim/testing;[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=BCH;bitprim-node-cint:keoken=False;bitprim-node-cint:db=new_full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.17.0@bitprim/testing;[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=BCH;bitprim-node-cint:keoken=True;bitprim-node-cint:db=new_full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
