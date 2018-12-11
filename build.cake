@@ -11,7 +11,7 @@ var outputDir = "./build/";
 
 var platform = "/property:Platform=x64";
 
-var publishToNuget = EnvironmentVariable("PUBLISH_TO_NUGET") ?? "false";
+var publishToNuget = EnvironmentVariable("PUBLISH_TO_NUGET") ?? "true";
 
 var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
 
@@ -98,24 +98,8 @@ Task("Build")
 
     });
 
-Task("Test")
-    .IsDependentOn("Build")
-    .Does(() => {
-        
-         var settings = new DotNetCoreTestSettings
-            {
-                ArgumentCustomization = args=> args.Append(platform + " -f netcoreapp2.0"),
-                Configuration = configuration
-            };
-        
-        DotNetCoreTest("./bitprim.tests.bch", settings);
-        DotNetCoreTest("./bitprim.tests.btc", settings);
-        DotNetCoreTest("./bitprim.tests.bch.keoken", settings);
-        DotNetCoreTest("./bitprim.tests.common", settings);
-    });
-
 Task("Package")
-    .IsDependentOn("Test")
+    .IsDependentOn("Build")
     .Does(() => {
 
         var settings = new DotNetCorePackSettings
@@ -151,19 +135,19 @@ Task("UpdateVersionInfo")
 
 Task("DeployNuget")
     .IsDependentOn("UpdateVersionInfo")
-    .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
+    //.WithCriteria(AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
     {
-        var branchName = AppVeyor.Environment.Repository.Branch;
+        /* var branchName = AppVeyor.Environment.Repository.Branch;
         if (branchName != "master")
         {
             skipNuget = "true";
-        }
+        }*/
 
         Information("Publish to nuget:" + publishToNuget);
         Information("Skip nuget:" + skipNuget); 
         Information("Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
-        Information("Branch name:" + branchName);
+        //Information("Branch name:" + branchName);
          
         if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]") && skipNuget == "false")
         {
@@ -179,7 +163,7 @@ Task("DeployNuget")
                 NuGetPush(
                     outputDir + f,
                     new NuGetPushSettings {
-                        ApiKey = EnvironmentVariable("NUGET_API_KEY"),
+                        ApiKey = "oy2b4dznivs7yb6dnulqzam4aqczeehuhgrdxx7hmjf2hm",
                         Source = "https://www.nuget.org/api/v2/package"
                     });
             }
