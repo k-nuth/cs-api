@@ -28,7 +28,7 @@ namespace bitprim.console
             {
                 Console.CancelKeyPress += OnSigInterrupt;
                 Log.Information("Initializing...");
-                using (var executor = new Executor(""))
+                using (var executor = new Executor(@"c:\blockchain\db_new\node.cfg"))
                 {
                     var result = await executor.InitAndRunAsync();
                     if (result != 0)

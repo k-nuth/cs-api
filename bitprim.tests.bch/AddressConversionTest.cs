@@ -1,5 +1,4 @@
 using Xunit;
-using Bitprim;
 
 namespace Bitprim.Tests
 {

@@ -19,6 +19,12 @@
     <ProjectReference Include="..\bitprim-bch\bitprim-bch.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="node.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <!-- <Target Name="CopyNativeLib" AfterTargets="Build">
     <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition="Exists('libbitprim-node-cint.so')"/>
   </Target> -->
