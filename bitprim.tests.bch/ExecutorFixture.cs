@@ -6,7 +6,7 @@ namespace Bitprim.Tests
     {
         public ExecutorFixture()
         {
-            Executor = new Executor("");
+            Executor = new Executor("config/mainnet.cfg");
             int initChainOk = Executor.InitAndRunAsync().GetAwaiter().GetResult();
             if (initChainOk != 0)
             {

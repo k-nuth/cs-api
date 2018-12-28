@@ -128,7 +128,7 @@ namespace Bitprim.Tests
                 VerifyGenesisBlockHeader(ret.Result.BlockData.Header);
             }
         }
-
+        /*
         [Fact]
         public async Task TestFetchStealth()
         {
@@ -138,7 +138,7 @@ namespace Bitprim.Tests
                 Assert.Equal<UInt64>(0, ret.Result.Count);
             }
            
-        }
+        } */
 
         [Fact]
         public async Task TestFetchTransaction()
