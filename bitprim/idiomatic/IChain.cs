@@ -132,7 +132,7 @@ namespace Bitprim
         /// </summary>
         /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
         /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
-        Task<DisposableApiCallResult<INativeList<IStealthCompact>>> FetchStealthAsync(Binary filter, UInt64 fromHeight);
+        //Task<DisposableApiCallResult<INativeList<IStealthCompact>>> FetchStealthAsync(Binary filter, UInt64 fromHeight);
 
         /// <summary>
         /// Given a block, organize it (async).

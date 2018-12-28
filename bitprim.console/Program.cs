@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bitprim;
 using Serilog;
@@ -28,7 +27,7 @@ namespace bitprim.console
             {
                 Console.CancelKeyPress += OnSigInterrupt;
                 Log.Information("Initializing...");
-                using (var executor = new Executor(@"c:\blockchain\db_new\node.cfg"))
+                using (var executor = new Executor("node.cfg"))
                 {
                     var result = await executor.InitAndRunAsync();
                     if (result != 0)
