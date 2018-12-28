@@ -127,7 +127,7 @@ namespace Bitprim.Tests
                 VerifyGenesisBlockHeader(ret.Result.BlockData.Header);
             }
         }
-
+        /*
         [Fact]
         public async Task TestFetchStealth()
         {
@@ -138,6 +138,23 @@ namespace Bitprim.Tests
             }
 
         }
+        */
+
+        [Fact]
+        public async Task TestFetchTransactionGenesis()
+        {
+            string txHashHexStr = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
+            byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
+            using (var ret = await executorFixture_.Executor.Chain.FetchTransactionAsync(hash, true))
+            {
+                Assert.Equal(ErrorCode.Success, ret.ErrorCode);
+                Assert.Equal<UInt64>(0, ret.Result.TxPosition.BlockHeight);
+                Assert.Equal<UInt64>(0, ret.Result.TxPosition.Index);
+                
+            }
+
+        }
+
 
         [Fact]
         public async Task TestFetchTransaction()
@@ -185,6 +202,7 @@ namespace Bitprim.Tests
             }
         }
 
+     
         /*[Fact]
         public void TestSubscribeToBlockchain()
         {
@@ -456,6 +474,8 @@ namespace Bitprim.Tests
         {
             using (var block = await executorFixture_.Executor.Chain.FetchBlockByHeightAsync(0))
             {
+                var aa = block.Result.BlockData.IsValid;
+                var bb = block.Result.BlockData.IsValidMerkleRoot;
                 var ret = await executorFixture_.Executor.Chain.OrganizeBlockAsync((Block)block.Result.BlockData);
                 Assert.True(ret == ErrorCode.DuplicateBlock);
             }

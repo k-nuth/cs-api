@@ -101,17 +101,16 @@ Task("Build")
 Task("Test")
     .IsDependentOn("Build")
     .Does(() => {
-        
+
          var settings = new DotNetCoreTestSettings
             {
                 ArgumentCustomization = args=> args.Append(platform + " -f netcoreapp2.0"),
                 Configuration = configuration
             };
-        
+
         DotNetCoreTest("./bitprim.tests.bch", settings);
         DotNetCoreTest("./bitprim.tests.btc", settings);
         DotNetCoreTest("./bitprim.tests.bch.keoken", settings);
-        DotNetCoreTest("./bitprim.tests.common", settings);
     });
 
 Task("Package")
