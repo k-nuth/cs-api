@@ -7,12 +7,12 @@
     <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
     
     <Message Text="Conan Channel: stable"/>
-    <Message Text="Conan Version: 0.18.0"/>
+    <Message Text="Conan Version: 0.19.0"/>
     <Message Text="Conan Currency: BCH"/>
     <Message Text="Conan Keoken: True"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.18.0@bitprim/stable;[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=BCH;bitprim-node-cint:keoken=True;bitprim-node-cint:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.19.0@bitprim/stable;[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=BCH;bitprim-node-cint:keoken=True;bitprim-node-cint:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
