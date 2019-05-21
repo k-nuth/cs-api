@@ -53,6 +53,7 @@ assembly_info:
 init:
   - ps: |
       if ($Env:APPVEYOR_REPO_BRANCH -ceq "master" -And [string]::IsNullOrEmpty($Env:APPVEYOR_REPO_TAG_NAME)) {
+        Write-Host $Env:APPVEYOR_REPO_BRANCH
         Write-Host "branch is master without tags, exiting"
         Exit-AppveyorBuild
       }
