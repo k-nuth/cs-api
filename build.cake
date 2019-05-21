@@ -77,8 +77,8 @@ Task("ConanVersion")
         Information("Conan Channel " + conanChannel);
         Information("Conan Version " + conanVersion);
 
-        UpdateConan("./bitprim-bch/build/Common.targets","BCH",true);
-        UpdateConan("./bitprim-btc/build/Common.targets","BTC",false);
+        UpdateConan("./bitprim-bch/build/Common.targets","BCH", false);
+        UpdateConan("./bitprim-btc/build/Common.targets","BTC", false);
     });
 
 
