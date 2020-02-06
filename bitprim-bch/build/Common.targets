@@ -3,8 +3,8 @@
     <Exec Command="conan remote list" ConsoleToMSBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="ConanRemoteList" />
     </Exec>
-    <Exec Command="conan remote update bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="$(ConanRemoteList.Contains('bitprim'))" />
-    <Exec Command="conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
+    <Exec Command="conan remote update bitprim https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('bitprim'))" />
+    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
     
     <Message Text="Conan Channel: stable"/>
     <Message Text="Conan Version: 0.19.0"/>
@@ -12,15 +12,15 @@
     <Message Text="Conan Keoken: False"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];bitprim-node-cint/0.19.0@bitprim/stable;[generators];cmake;[options];bitprim-node-cint:shared=True;bitprim-node-cint:currency=BCH;bitprim-node-cint:keoken=False;bitprim-node-cint:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];kth-node-cint/0.19.0@kth/stable;[generators];cmake;[options];kth-node-cint:shared=True;kth-node-cint:currency=BCH;kth-node-cint:keoken=False;kth-node-cint:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
     <Exec Command="conan install . --install-folder=. -r bitprim" Condition=" '$(OS)' != 'Windows_NT' " />
     <Exec Command="conan install . --install-folder=. -r bitprim -s compiler=&quot;Visual Studio&quot; -s compiler.version=15" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Message Text="OS = $(OS)" />
-    <Copy SourceFiles="bitprim-node-cint.dll" DestinationFiles="$(OutDir)libbitprim-node-cint.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
-    <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition="Exists('libbitprim-node-cint.so')"/>
-    <Copy SourceFiles="libbitprim-node-cint.dylib" DestinationFiles="$(OutDir)libbitprim-node-cint.dylib" Condition="Exists('libbitprim-node-cint.dylib')"/>
+    <Copy SourceFiles="kth-node-cint.dll" DestinationFiles="$(OutDir)libkth-node-cint.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
+    <Copy SourceFiles="libkth-node-cint.so" DestinationFiles="$(OutDir)libkth-node-cint.so" Condition="Exists('libkth-node-cint.so')"/>
+    <Copy SourceFiles="libkth-node-cint.dylib" DestinationFiles="$(OutDir)libkth-node-cint.dylib" Condition="Exists('libkth-node-cint.dylib')"/>
   </Target>
 </Project>

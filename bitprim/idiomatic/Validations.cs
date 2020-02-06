@@ -7,7 +7,7 @@ namespace Bitprim
     /// </summary>
     public static class Validations
     {
-        private const int HASH_HEX_LENGTH = 64;
+        private int const HASH_HEX_LENGTH = 64;
 
         /// <summary>
         /// Check if the hex string represents a valid base58 address

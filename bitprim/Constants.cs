@@ -2,6 +2,6 @@ namespace Bitprim
 {
     internal static class Constants
     {
-        internal const string BITPRIM_C_LIBRARY = "libbitprim-node-cint";
+        internal const string KTH_C_LIBRARY = "libkth-node-cint";
     }
 }

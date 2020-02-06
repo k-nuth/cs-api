@@ -26,6 +26,6 @@
   </ItemGroup>
 
   <!-- <Target Name="CopyNativeLib" AfterTargets="Build">
-    <Copy SourceFiles="libbitprim-node-cint.so" DestinationFiles="$(OutDir)libbitprim-node-cint.so" Condition="Exists('libbitprim-node-cint.so')"/>
+    <Copy SourceFiles="libkth-node-cint.so" DestinationFiles="$(OutDir)libkth-node-cint.so" Condition="Exists('libkth-node-cint.so')"/>
   </Target> -->
 </Project>

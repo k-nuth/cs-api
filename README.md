@@ -10,9 +10,9 @@ NuGet Bitcoin Cash:
 NuGet Bitcoin:
 [![NuGet](https://img.shields.io/nuget/v/bitprim-btc.svg)](https://www.nuget.org/packages/bitprim-btc)
 
-Travis: [![Build Status](https://travis-ci.org/bitprim/bitprim-cs.svg?branch=dev)](https://travis-ci.org/bitprim/bitprim-cs)
+Travis: [![Build Status](https://travis-ci.org/k-nuth/cs.svg?branch=dev)](https://travis-ci.org/k-nuth/cs)
 
-Appveyor: [![Appveyor Status](https://ci.appveyor.com/api/projects/status/github/bitprim/bitprim-cs?branch=dev&svg=true)](https://ci.appveyor.com/project/bitprim/bitprim-cs?branch=dev)
+Appveyor: [![Appveyor Status](https://ci.appveyor.com/api/projects/status/github/k-nuth/cs?branch=dev&svg=true)](https://ci.appveyor.com/project/k-nuth/cs?branch=dev)
 
 [comment]: # (TODO Implement a test coverage badge)
 
@@ -83,7 +83,7 @@ If you want to build from source, you need the following prerequisites:
 Run the following commands:
 
 ```
-git clone https://github.com/bitprim/bitprim-cs.git
+git clone https://github.com/k-nuth/cs.git
 cd bitprim-cs
 
 if you are on Windows, run:
@@ -103,5 +103,5 @@ If you have problems running build.ps1 please check this link
 
 ## Examples
 
-For a logging integration example see: [Example](https://github.com/bitprim/bitprim-cs/tree/dev/bitprim.console)
+For a logging integration example see: [Example](https://github.com/k-nuth/cs/tree/dev/bitprim.console)
 

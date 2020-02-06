@@ -1,12 +1,12 @@
 [requires]
-bitprim-node-cint/0.8@bitprim/testing
+kth-node-cint/0.8@kth/testing
 
 [generators]
 cmake
 
 [options]
-bitprim-node-cint:shared=True
-bitprim-node-cint:currency=BTC
+kth-node-cint:shared=True
+kth-node-cint:currency=BTC
 
 [imports]
 bin, *.dll    -> .

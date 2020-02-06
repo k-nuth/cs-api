@@ -7,7 +7,7 @@
     <Company>Bitprim</Company>
     <Description>C# binding for Bitprim Bitcoin platform</Description>
     <PackageProjectUrl>www.bitprim.org</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/bitprim/bitprim-cs</RepositoryUrl>
+    <RepositoryUrl>https://github.com/k-nuth/cs</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Bitcoin, C#, Litecoin, Bitcoin Cash</PackageTags>
     <PackageReleaseNotes>Basic chain queries</PackageReleaseNotes>

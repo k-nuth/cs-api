@@ -16,10 +16,10 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FetchLastHeightHandler(IntPtr chain, IntPtr context, ErrorCode error, UInt64 height);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_block_height(IntPtr chain, IntPtr context, hash_t hash, FetchBlockHeightHandler handler);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_last_height(IntPtr chain, IntPtr context, FetchLastHeightHandler handler);
         
         // Block-----------------------------------------------------------------------------------
@@ -36,19 +36,19 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FetchBlockHeaderByHashTxsSizeHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block_header, UInt64 block_height, IntPtr tx_hashes, UInt64 block_serialized_size);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_block_by_hash(IntPtr chain, IntPtr context, hash_t hash, FetchBlockHandler handler);
 
         
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_block_header_by_hash_txs_size(IntPtr chain, IntPtr ctx, hash_t hash, FetchBlockHeaderByHashTxsSizeHandler handler);
 
         
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_block_by_height(IntPtr chain, IntPtr context, UInt64 height, FetchBlockHandler handler);
 
         
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_block_by_height_timestamp(IntPtr chain, IntPtr context, UInt64 height, FetchBlockHeightTimestampHandler handler);
 
         
@@ -58,10 +58,10 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FetchBlockHeaderHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr header, UInt64 height);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_block_header_by_hash(IntPtr chain, IntPtr context, hash_t hash, FetchBlockHeaderHandler handler);
       
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_block_header_by_height(IntPtr chain, IntPtr context, UInt64 height, FetchBlockHeaderHandler handler);
 
         
@@ -71,10 +71,10 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void MerkleBlockFetchHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block, UInt64 h);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_merkle_block_by_hash(IntPtr chain, IntPtr context, hash_t hash, MerkleBlockFetchHandler handler);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_merkle_block_by_height(IntPtr chain, IntPtr context, UInt64 height, MerkleBlockFetchHandler handler);
 
         
@@ -84,11 +84,11 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FetchCompactBlockHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block, UInt64 height);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_compact_block_by_hash(IntPtr chain, IntPtr context, hash_t hash, FetchCompactBlockHandler handler);
 
         
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_compact_block_by_height(IntPtr chain, IntPtr context, UInt64 height, FetchCompactBlockHandler handler);
 
         
@@ -102,11 +102,11 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FetchTransactionPositionHandler(IntPtr chain, IntPtr context, ErrorCode error, UInt64 position, UInt64 height);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_transaction(IntPtr chain, IntPtr context, hash_t hash, int require_confirmed, FetchTransactionHandler handler);
 
         
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_transaction_position(IntPtr chain, IntPtr context, hash_t hash, int require_confirmed, FetchTransactionPositionHandler handler);
 
         
@@ -116,7 +116,7 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FetchSpendHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr inputPoint);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_spend(IntPtr chain, IntPtr context, IntPtr op, FetchSpendHandler handler);
 
         // History -------------------------------------------------------------------------------------------
@@ -129,10 +129,10 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FetchTransactionsHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr txns);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_history(IntPtr chain, IntPtr context, IntPtr address, UInt64 limit, UInt64 from_height, FetchHistoryHandler handler);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_confirmed_transactions(IntPtr chain, IntPtr context, IntPtr address, UInt64 limit, UInt64 from_height, FetchTransactionsHandler handler);
 
         
@@ -142,7 +142,7 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FetchStealthHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr stealth);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_fetch_stealth(IntPtr chain, IntPtr context, IntPtr filter, UInt64 fromHeight, FetchStealthHandler handler);
 
         // Block indexes ---------------------------------------------------------------
@@ -152,7 +152,7 @@ namespace Bitprim.Native
         //public delegate void BlockLocatorFetchHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr getHeaders);
 
         //Comented in CINT
-        //[DllImport(Constants.BITPRIM_C_LIBRARY)]
+        //[DllImport(Constants.KTH_C_LIBRARY)]
         //public static extern void chain_fetch_block_locator(IntPtr chain, IntPtr context, IntPtr heights, BlockLocatorFetchHandler handler);
 
         
@@ -163,18 +163,18 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ResultHandler(IntPtr chain, IntPtr context, ErrorCode error);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_organize_block(IntPtr chain, IntPtr context, IntPtr block, ResultHandler handler);
  
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_organize_transaction(IntPtr chain, IntPtr context, IntPtr transaction, ResultHandler handler);
 
         // Mempool.
         //-------------------------------------------------------------------------
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr chain_get_mempool_transactions(IntPtr chain, IntPtr address, int /*bool*/ use_testnet_rules);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr chain_get_mempool_transactions_from_wallets(IntPtr chain, IntPtr addresses, int /*bool*/ use_testnet_rules);
 
         // Misc ------------------------------------------------
@@ -182,10 +182,10 @@ namespace Bitprim.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ValidateTxHandler(IntPtr chain, IntPtr context, ErrorCode error, [MarshalAs(UnmanagedType.LPStr)]string message);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_validate_tx(IntPtr chain, IntPtr context, IntPtr transaction, ValidateTxHandler handler);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern int /* bool */ chain_is_stale(IntPtr chain);
 
     }

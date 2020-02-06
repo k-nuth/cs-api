@@ -18,54 +18,54 @@ namespace Bitprim.Native
         public delegate int TransactionHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction);
 
         //Functions
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern int executor_initchain(IntPtr exec);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void executor_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void executor_init_and_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr executor_construct_fd([MarshalAs(UnmanagedType.LPStr)]string path, int sout, int serr);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr executor_construct_handles([MarshalAs(UnmanagedType.LPStr)]string path, IntPtr sout, IntPtr serr);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void executor_destruct(IntPtr exec);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void executor_stop(IntPtr exec);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_subscribe_blockchain(IntPtr exec, IntPtr chain, IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)]ReorganizeHandler handler);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_subscribe_transaction(IntPtr exec, IntPtr chain, IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)]TransactionHandler handler);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr executor_get_chain(IntPtr exec);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern int /*bool*/ executor_stopped(IntPtr exec);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY, EntryPoint = "node_settings_get_network")]
+        [DllImport(Constants.KTH_C_LIBRARY, EntryPoint = "node_settings_get_network")]
         public static extern NetworkType executor_get_network(IntPtr executor);
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern int /*bool*/ executor_load_config_valid(IntPtr exec);
 
         #if KEOKEN
 
-        [DllImport(Constants.BITPRIM_C_LIBRARY)]
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr executor_get_keoken_manager(IntPtr exec);
 
         #endif
 
         //TODO Add when networking interface is ready
-        //[DllImport(Constants.BITPRIM_C_LIBRARY)]
+        //[DllImport(Constants.KTH_C_LIBRARY)]
         //public static extern IntPtr executor_get_p2p(IntPtr exec);
 
     }

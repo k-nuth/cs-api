@@ -3,7 +3,7 @@ using System;
 
 namespace bitprim.tutorials
 {
-    public class BitprimCsAPI : IBitprimCsAPI, IDisposable
+    public class KnuthCsAPI : IBitprimCsAPI, IDisposable
     {
         private IChain chain_;
         private readonly Executor executor_;
