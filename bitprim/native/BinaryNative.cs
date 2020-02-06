@@ -5,7 +5,6 @@ namespace Bitprim.Native
 {
     internal static class BinaryNative
     {
-
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern byte[] core_binary_blocks(IntPtr binary, ref UIntPtr /*size_t*/ out_n);
 
@@ -26,5 +25,4 @@ namespace Bitprim.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void core_binary_destruct(IntPtr binary); //TODO Implement in C API
     }
-
 }

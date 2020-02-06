@@ -1,6 +1,6 @@
-# Bitprim C# binding
+# Knuth C# binding
 
-C# binding for the Bitprim API.
+C# binding for the Knuth API.
 
 Our library is built with .Net Standard 2.0 and includes blockchain query interface. 
 
@@ -33,7 +33,7 @@ In case there are no pre-built binaries for your platform, conan will automatica
 
 ## Installation
 
-You can install the Bitprim C# binding via Nuget.
+You can install the Knuth C# binding via Nuget.
 
 There are two packages available:
 

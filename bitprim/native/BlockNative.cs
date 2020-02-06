@@ -87,6 +87,5 @@ namespace Bitprim.Native
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr chain_block_factory_from_data(UInt32 version,byte[] data, UInt64 n);
-
     }
 }

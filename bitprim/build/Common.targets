@@ -4,12 +4,12 @@
       <Output TaskParameter="ConsoleOutput" PropertyName="ConanRemoteList" />
     </Exec>
     <Exec Command="conan remote update bitprim https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('bitprim'))" />
-    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
+    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('bitprim'))" />
     
-    <Message Text="Conan Channel: $(CONAN_CHANNEL)"/>
-    <Message Text="Conan Version: $(CONAN_VERSION)"/>
+    <Message Text="Conan Channel:  $(CONAN_CHANNEL)"/>
+    <Message Text="Conan Version:  $(CONAN_VERSION)"/>
     <Message Text="Conan Currency: $(CONAN_CURRENCY)"/>
-    <Message Text="Conan Keoken: $(CONAN_KEOKEN)"/>
+    <Message Text="Conan Keoken:   $(CONAN_KEOKEN)"/>
     
     <WriteLinesToFile
       File="conanfile.txt" Lines="[requires];kth-node-cint/$(CONAN_VERSION)@kth/$(CONAN_CHANNEL);[generators];cmake;[options];kth-node-cint:shared=True;kth-node-cint:currency=$(CONAN_CURRENCY);kth-node-cint:keoken=$(CONAN_KEOKEN);kth-node-cint:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."

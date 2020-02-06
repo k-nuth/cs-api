@@ -153,15 +153,15 @@ script:
       ./build.sh
 
     #else
-      #cd bitprim/docs
+      #cd kth/docs
       #doxygen Doxyfile
       #moxygen --anchors ./xml/
       
       #git clone https://github.com/k-nuth/docs.git
       #ls
-      #yes | cp -rf api.md ./bitprim/docs/bitprim-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
+      #yes | cp -rf api.md ./kth/docs/kth-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
 
-      #cd bitprim-docs 
+      #cd kth-docs 
       #git checkout master
       
       #git add docs/developer_guide/dotnet/dotnet-interface-details.md
