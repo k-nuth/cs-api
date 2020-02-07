@@ -89,3 +89,9 @@ tests/btc/bin/
 /tests/bch.keoken/conanbuildinfo.txt
 /tests/bch.keoken/conanbuildinfo.cmake
 /tests/bch.keoken/conan_imports_manifest.txt
+tests/btc/libkth-c-api.dylib
+tests/bch/libkth-c-api.dylib
+console/libkth-c-api.dylib
+console/graph_info.json
+tests/bch/graph_info.json
+tests/btc/graph_info.json
