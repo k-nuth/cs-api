@@ -3,16 +3,17 @@
     <Exec Command="conan remote list" ConsoleToMSBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="ConanRemoteList" />
     </Exec>
-    <Exec Command="conan remote update kthbuild_kth_temp_ https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('kth'))" ContinueOnError="WarnAndContinue" />
-    <Exec Command="conan remote add kthbuild_kth_temp_ https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('kth'))" ContinueOnError="WarnAndContinue" />
+    <Exec Command="conan remote update kthbuild_kth_temp_ https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('kthbuild_kth_temp_'))" ContinueOnError="WarnAndContinue" />
+    <Exec Command="conan remote add kthbuild_kth_temp_ https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('kthbuild_kth_temp_'))" ContinueOnError="WarnAndContinue" />
     
     <Message Text="Conan Channel:  testing"/>
     <Message Text="Conan Version:  0.1.0"/>
     <Message Text="Conan Currency: BTC"/>
     <Message Text="Conan Keoken:   False"/>
+    <Message Text="Conan March ID: 4fZKi37a595hP"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/0.1.0@kth/testing;[generators];cmake;[options];c-api:shared=True;c-api:currency=BTC;c-api:keoken=False;c-api:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];c-api/0.1.0@kth/testing;[generators];cmake;[options];c-api:shared=True;c-api:currency=BTC;c-api:keoken=False;c-api:db=full;c-api:march_id=4fZKi37a595hP;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
