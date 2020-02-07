@@ -46,10 +46,15 @@ init:
 install:
   # - "%PYTHON%/Scripts/pip.exe install conan==1.7.4"
   - "%PYTHON%/Scripts/pip.exe install kthbuild --upgrade"
-
+  - "%PYTHON%/Scripts/pyton.exe --version"
+  - "python --version"
 
 build_script:
+  - "%PYTHON%/Scripts/pyton.exe --version"
+  - "python --version"
   - SET PATH=%PATH%;%PYTHON%/Scripts/
+  - "%PYTHON%/Scripts/pyton.exe --version"
+  - "python --version"
   - powershell .\build.ps1
 
 test: off
