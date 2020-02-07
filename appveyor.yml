@@ -46,6 +46,8 @@ init:
 install:
   # - "%PYTHON%/Scripts/pip.exe install conan==1.7.4"
   - "%PYTHON%/Scripts/pip.exe install kthbuild --upgrade"
+  # python -m pip install --upgrade pip
+  - "dir %PYTHON%/Scripts/"
   - "%PYTHON%/Scripts/python.exe --version"
   - "python --version"
 
