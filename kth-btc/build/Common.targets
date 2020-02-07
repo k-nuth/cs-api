@@ -12,15 +12,15 @@
     <Message Text="Conan Keoken:   False"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];kth-node-cint/0.19.0@kth/stable;[generators];cmake;[options];kth-node-cint:shared=True;kth-node-cint:currency=BTC;kth-node-cint:keoken=False;kth-node-cint:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];kth-c-api/0.19.0@kth/stable;[generators];cmake;[options];kth-c-api:shared=True;kth-c-api:currency=BTC;kth-c-api:keoken=False;kth-c-api:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
     <Exec Command="conan install . --install-folder=. -r kth" Condition=" '$(OS)' != 'Windows_NT' " />
     <Exec Command="conan install . --install-folder=. -r kth -s compiler=&quot;Visual Studio&quot; -s compiler.version=15" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Message Text="OS = $(OS)" />
-    <Copy SourceFiles="kth-node-cint.dll" DestinationFiles="$(OutDir)libkth-node-cint.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
-    <Copy SourceFiles="libkth-node-cint.so" DestinationFiles="$(OutDir)libkth-node-cint.so" Condition="Exists('libkth-node-cint.so')"/>
-    <Copy SourceFiles="libkth-node-cint.dylib" DestinationFiles="$(OutDir)libkth-node-cint.dylib" Condition="Exists('libkth-node-cint.dylib')"/>
+    <Copy SourceFiles="kth-c-api.dll" DestinationFiles="$(OutDir)libkth-c-api.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
+    <Copy SourceFiles="libkth-c-api.so" DestinationFiles="$(OutDir)libkth-c-api.so" Condition="Exists('libkth-c-api.so')"/>
+    <Copy SourceFiles="libkth-c-api.dylib" DestinationFiles="$(OutDir)libkth-c-api.dylib" Condition="Exists('libkth-c-api.dylib')"/>
   </Target>
 </Project>

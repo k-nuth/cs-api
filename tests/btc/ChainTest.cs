@@ -264,7 +264,7 @@ namespace Knuth.Tests
             Assert.Equal<UInt64>(275, tx.GetSerializedSize(false)); //TODO(dario) Does it make sense that it's the same value?
             Assert.Equal<UInt64>(0, tx.Fees);
             Assert.True(0 <= tx.SignatureOperations && tx.SignatureOperations <= Math.Pow(2, 64));
-            //TODO: SIGOPS-PREWITNESS = It's returning 8 because it's a non segwit txn. Node-cint should allow the bip141 boolean to be a parameter and it must be false for height < segwit activation
+            //TODO: SIGOPS-PREWITNESS = It's returning 8 because it's a non segwit txn. C-API should allow the bip141 boolean to be a parameter and it must be false for height < segwit activation
             Assert.Equal<UInt64>(8, tx.GetSignatureOperationsBip16Active(true));
             Assert.Equal<UInt64>(8, tx.GetSignatureOperationsBip16Active(false));
             Assert.Equal<UInt64>(0, tx.TotalInputValue);
@@ -316,7 +316,7 @@ namespace Knuth.Tests
             Assert.Equal(76UL, output0.GetSerializedSize(true));
             Assert.Equal(76UL, output0.GetSerializedSize(true)); //TODO In inputs, it's two bytes less; does this make sense?
             Assert.True(output0.IsValid);
-            //TODO: SIGOPS-PREWITNESS = It's returning 4 because it's a non segwit txn. Node-cint should allow the bip141 boolean to be a parameter and it must be false for height < segwit activation
+            //TODO: SIGOPS-PREWITNESS = It's returning 4 because it's a non segwit txn. C-API should allow the bip141 boolean to be a parameter and it must be false for height < segwit activation
             Assert.Equal(4UL, output0.SignatureOperationCount);
             Assert.Equal(1000000000UL, output0.Value);
             Script script0 = output0.Script;
@@ -332,7 +332,7 @@ namespace Knuth.Tests
             Assert.Equal(76UL, output1.GetSerializedSize(true));
             Assert.Equal(76UL, output1.GetSerializedSize(true));
             Assert.True(output1.IsValid);
-            //TODO: SIGOPS-PREWITNESS = It's returning 4 because it's a non segwit txn. Node-cint should allow the bip141 boolean to be a parameter and it must be false for height < segwit activation
+            //TODO: SIGOPS-PREWITNESS = It's returning 4 because it's a non segwit txn. C-API should allow the bip141 boolean to be a parameter and it must be false for height < segwit activation
             Assert.Equal(4UL, output1.SignatureOperationCount);
             Assert.Equal(4000000000UL, output1.Value);
             Script script1 = output1.Script;

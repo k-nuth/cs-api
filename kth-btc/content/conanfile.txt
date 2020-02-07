@@ -1,12 +1,12 @@
 [requires]
-kth-node-cint/0.8@kth/testing
+kth-c-api/0.8@kth/testing
 
 [generators]
 cmake
 
 [options]
-kth-node-cint:shared=True
-kth-node-cint:currency=BTC
+kth-c-api:shared=True
+kth-c-api:currency=BTC
 
 [imports]
 bin, *.dll    -> .

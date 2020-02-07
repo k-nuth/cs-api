@@ -1,1 +1,1 @@
-kth-node-cint: v0.9.1
+kth-c-api: v0.9.1
