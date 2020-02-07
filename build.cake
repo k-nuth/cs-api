@@ -3,10 +3,10 @@
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-var solutionName = "bitprim.sln";
+var solutionName = "kth.sln";
 
-var bitprimProjectBCH = "./bitprim-bch/bitprim-bch.csproj";
-var bitprimProjectBTC = "./bitprim-btc/bitprim-btc.csproj";
+var kthProjectBCH = "./kth-bch/kth-bch.csproj";
+var kthProjectBTC = "./kth-btc/kth-btc.csproj";
 var outputDir = "./build/";
 
 var platform = "/property:Platform=x64";
@@ -15,12 +15,12 @@ var publishToNuget = EnvironmentVariable("PUBLISH_TO_NUGET") ?? "false";
 
 var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
 
-var conanChannel = System.IO.File.ReadAllText("./bitprim/conan/conan_channel").Trim();
-var conanVersion = System.IO.File.ReadAllText("./bitprim/conan/conan_version").Trim();
+var conanChannel = System.IO.File.ReadAllText("./kth/conan/conan_channel").Trim();
+var conanVersion = System.IO.File.ReadAllText("./kth/conan/conan_version").Trim();
 
 void UpdateConan(string pathTarget, string currency, bool keoken)
 {
-    var fileTarget = System.IO.File.ReadAllText("./bitprim/build/Common.targets");
+    var fileTarget = System.IO.File.ReadAllText("./kth/build/Common.targets");
     fileTarget = fileTarget.Replace("$(CONAN_CHANNEL)", conanChannel);
     fileTarget = fileTarget.Replace("$(CONAN_VERSION)", conanVersion);
     fileTarget = fileTarget.Replace("$(CONAN_CURRENCY)", currency);
@@ -33,12 +33,12 @@ Task("Clean")
         
         Information("Cleaning... ");
 
-        CleanDirectory("./bitprim-bch/bin");
-        CleanDirectory("./bitprim-btc/bin");
-        CleanDirectory("./bitprim.console/bin");
-        CleanDirectory("./bitprim.tests.bch/bin");
-        CleanDirectory("./bitprim.tests.btc/bin");
-        CleanDirectory("./bitprim.tests.bch.keoken/bin");
+        CleanDirectory("./kth-bch/bin");
+        CleanDirectory("./kth-btc/bin");
+        CleanDirectory("./console/bin");
+        CleanDirectory("./tests/bch/bin");
+        CleanDirectory("./tests/btc/bin");
+        CleanDirectory("./tests/bch.keoken/bin");
        
         if (DirectoryExists(outputDir))
         {
@@ -77,8 +77,8 @@ Task("ConanVersion")
         Information("Conan Channel " + conanChannel);
         Information("Conan Version " + conanVersion);
 
-        UpdateConan("./bitprim-bch/build/Common.targets","BCH",true);
-        UpdateConan("./bitprim-btc/build/Common.targets","BTC",false);
+        UpdateConan("./kth-bch/build/Common.targets","BCH",true);
+        UpdateConan("./kth-btc/build/Common.targets","BTC",false);
     });
 
 
@@ -108,9 +108,9 @@ Task("Test")
                 Configuration = configuration
             };
 
-        DotNetCoreTest("./bitprim.tests.bch", settings);
-        DotNetCoreTest("./bitprim.tests.btc", settings);
-        DotNetCoreTest("./bitprim.tests.bch.keoken", settings);
+        DotNetCoreTest("./tests/bch", settings);
+        DotNetCoreTest("./tests/btc", settings);
+        DotNetCoreTest("./tests/bch.keoken", settings);
     });
 
 Task("Package")
@@ -126,12 +126,12 @@ Task("Package")
             Configuration = configuration
         };
 
-        DotNetCorePack(bitprimProjectBCH, settings);
-        DotNetCorePack(bitprimProjectBTC, settings);
+        DotNetCorePack(kthProjectBCH, settings);
+        DotNetCorePack(kthProjectBTC, settings);
 
         System.IO.File.WriteAllLines(outputDir + "artifacts", new[]{
-            "nuget:bitprim-bch." + versionInfo.NuGetVersion + ".nupkg",
-            "nuget:bitprim-btc." + versionInfo.NuGetVersion + ".nupkg"
+            "nuget:kth-bch." + versionInfo.NuGetVersion + ".nupkg",
+            "nuget:kth-btc." + versionInfo.NuGetVersion + ".nupkg"
         });
         
     });

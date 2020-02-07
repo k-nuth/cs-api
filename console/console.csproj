@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\kth-bch\build\Common.targets" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <Target Name="CopyNativeLib" AfterTargets="Build">
+    <CallTarget Targets="GetKnuthCAPI" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog.Sinks.ColoredConsole" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\kth-bch\kth-bch.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="node.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!-- <Target Name="CopyNativeLib" AfterTargets="Build">
+    <Copy SourceFiles="libkth-node-cint.so" DestinationFiles="$(OutDir)libkth-node-cint.so" Condition="Exists('libkth-node-cint.so')"/>
+  </Target> -->
+</Project>

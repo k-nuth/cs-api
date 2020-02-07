@@ -30,7 +30,7 @@ linux: &linux
    os: linux
    sudo: required
    language: python
-   python: "3.6"
+   python: "3.7"
 
 
 osx: &osx
@@ -153,20 +153,20 @@ script:
       ./build.sh
 
     #else
-      #cd bitprim/docs
+      #cd kth/docs
       #doxygen Doxyfile
       #moxygen --anchors ./xml/
       
-      #git clone https://github.com/bitprim/bitprim-docs.git
+      #git clone https://github.com/k-nuth/docs.git
       #ls
-      #yes | cp -rf api.md ./bitprim/docs/bitprim-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
+      #yes | cp -rf api.md ./kth/docs/kth-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
 
-      #cd bitprim-docs 
+      #cd kth-docs 
       #git checkout master
       
       #git add docs/developer_guide/dotnet/dotnet-interface-details.md
       #git commit -m "Updated Dotnet docs" || :
-      #git remote add origin-commit https://${GH_TOKEN}@github.com/bitprim/bitprim-docs.git > /dev/null 2>&1
+      #git remote add origin-commit https://${GH_TOKEN}@github.com/k-nuth/docs.git > /dev/null 2>&1
       #git push --quiet --set-upstream origin-commit master  || true
     
     fi

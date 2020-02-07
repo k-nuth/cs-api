@@ -1,1 +1,1 @@
-bitprim-node-cint: v0.9.1
+kth-node-cint: v0.9.1
