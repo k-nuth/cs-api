@@ -12,7 +12,7 @@
     <Message Text="Conan Keoken:   False"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/0.1.0@kth/testing;[generators];cmake;[options];kth-c-api:shared=True;kth-c-api:currency=BCH;kth-c-api:keoken=False;kth-c-api:db=full;[imports];bin, *.dll -> .;lib, *.so -> .;lib, *.dylib -> ."
+      File="conanfile.txt" Lines="[requires];c-api/0.1.0@kth/testing;[generators];cmake;[options];c-api:shared=True;c-api:currency=BCH;c-api:keoken=False;c-api:db=full;[imports];bin, *.dll -> .;lib, *.so -> .;lib, *.dylib -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
