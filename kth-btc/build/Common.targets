@@ -6,13 +6,13 @@
     <Exec Command="conan remote update kth https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('kth'))" ContinueOnError="WarnAndContinue" />
     <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('kth'))" ContinueOnError="WarnAndContinue" />
     
-    <Message Text="Conan Channel:  stable"/>
+    <Message Text="Conan Channel:  testing"/>
     <Message Text="Conan Version:  0.1.0"/>
     <Message Text="Conan Currency: BTC"/>
     <Message Text="Conan Keoken:   False"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/0.1.0@kth/stable;[generators];cmake;[options];kth-c-api:shared=True;kth-c-api:currency=BTC;kth-c-api:keoken=False;kth-c-api:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];c-api/0.1.0@kth/testing;[generators];cmake;[options];kth-c-api:shared=True;kth-c-api:currency=BTC;kth-c-api:keoken=False;kth-c-api:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
