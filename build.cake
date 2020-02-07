@@ -18,13 +18,14 @@ var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
 var conanChannel = System.IO.File.ReadAllText("./kth/conan/conan_channel").Trim();
 var conanVersion = System.IO.File.ReadAllText("./kth/conan/conan_version").Trim();
 
-void UpdateConan(string pathTarget, string currency, bool keoken)
+void UpdateConan(string pathTarget, string currency, bool keoken, string marchId)
 {
     var fileTarget = System.IO.File.ReadAllText("./kth/build/Common.targets");
     fileTarget = fileTarget.Replace("$(CONAN_CHANNEL)", conanChannel);
     fileTarget = fileTarget.Replace("$(CONAN_VERSION)", conanVersion);
     fileTarget = fileTarget.Replace("$(CONAN_CURRENCY)", currency);
     fileTarget = fileTarget.Replace("$(CONAN_KEOKEN)", keoken ? "True" : "False");
+    fileTarget = fileTarget.Replace("$(CONAN_MARCH_ID)", marchId);
     System.IO.File.WriteAllText(pathTarget,fileTarget);
 }
 
@@ -102,12 +103,12 @@ Task("Version")
 
 Task("ConanVersion")
     .Does(() => {
-        
         Information("Conan Channel " + conanChannel);
         Information("Conan Version " + conanVersion);
 
-        UpdateConan("./kth-bch/build/Common.targets","BCH", false);
-        UpdateConan("./kth-btc/build/Common.targets","BTC", false);
+        //TODO(fernando): march_id is hardcoded, see what to do.
+        UpdateConan("./kth-bch/build/Common.targets","BCH", false, "4fZKi37a595hP");
+        UpdateConan("./kth-btc/build/Common.targets","BTC", false, "4fZKi37a595hP");
     });
 
 
