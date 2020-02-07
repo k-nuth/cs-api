@@ -10,7 +10,7 @@ namespace Knuth.Tests
     [Collection("ChainCollection")]
     public class ChainTest : IClassFixture<ExecutorFixture>
     {
-        private int const FIRST_NON_COINBASE_BLOCK_HEIGHT = 170;
+        private const int FIRST_NON_COINBASE_BLOCK_HEIGHT = 170;
         private readonly ExecutorFixture executorFixture_;
 
         public ChainTest(ExecutorFixture fixture)

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\kth-bch\build\Common.targets" />
+  <Import Project="..\..\kth-bch\build\Common.targets" />
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\kth-bch\kth-bch.csproj" />
+    <ProjectReference Include="..\..\kth-bch\kth-bch.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -58,3 +58,11 @@
 /tests/common/*.txt
 /tests/common/*.so
 /tests/common/*.cmake
+
+
+
+console/obj
+kth-bch/obj/
+kth-btc/obj/
+tests/bch/obj/
+tests/btc/obj/

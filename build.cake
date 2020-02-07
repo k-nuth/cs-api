@@ -106,8 +106,8 @@ Task("ConanVersion")
         Information("Conan Channel " + conanChannel);
         Information("Conan Version " + conanVersion);
 
-        UpdateConan("./kth-bch/build/Common.targets","BCH",true);
-        UpdateConan("./kth-btc/build/Common.targets","BTC",false);
+        UpdateConan("./kth-bch/build/Common.targets","BCH", false);
+        UpdateConan("./kth-btc/build/Common.targets","BTC", false);
     });
 
 
