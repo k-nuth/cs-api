@@ -44,22 +44,27 @@ init:
       }
       
 install:
-  - "echo %PYTHON%"
-  - "cd %PYTHON%"
-  - "cd Scripts"
-  - dir
+  - "python --version"
+  - set PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%;
+
+  # - "echo %PYTHON%"
+  # - "cd %PYTHON%"
+  # - "cd Scripts"
+  # - dir
   # - "dir %PYTHON%\\Scripts"
   # - "%PYTHON%/Scripts/pip.exe install conan==1.7.4"
   - "%PYTHON%/Scripts/pip.exe install kthbuild --upgrade"
   # python -m pip install --upgrade pip
-  - "%PYTHON%/Scripts/python.exe --version"
+  # - "%PYTHON%/Scripts/python.exe --version"
   - "python --version"
 
 build_script:
-  - "%PYTHON%/Scripts/python.exe --version"
+  # - "%PYTHON%/Scripts/python.exe --version"
   - "python --version"
-  - SET PATH=%PATH%;%PYTHON%/Scripts/
-  - "%PYTHON%/Scripts/python.exe --version"
+  - set PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%;
+
+  # - SET PATH=%PATH%;%PYTHON%/Scripts/
+  # - "%PYTHON%/Scripts/python.exe --version"
   - "python --version"
   - powershell .\build.ps1
 
