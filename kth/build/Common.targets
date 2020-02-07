@@ -3,8 +3,8 @@
     <Exec Command="conan remote list" ConsoleToMSBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="ConanRemoteList" />
     </Exec>
-    <Exec Command="conan remote update kth https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('kth'))" />
-    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('kth'))" />
+    <Exec Command="conan remote update kthbuild_kth_temp_ https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('kthbuild_kth_temp_'))" ContinueOnError="WarnAndContinue" />
+    <Exec Command="conan remote add kthbuild_kth_temp_ https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('kthbuild_kth_temp_'))" ContinueOnError="WarnAndContinue" />
     
     <Message Text="Conan Channel:  $(CONAN_CHANNEL)"/>
     <Message Text="Conan Version:  $(CONAN_VERSION)"/>
@@ -16,8 +16,8 @@
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
-    <Exec Command="conan install . --install-folder=. -r kth" Condition=" '$(OS)' != 'Windows_NT' " />
-    <Exec Command="conan install . --install-folder=. -r kth -s compiler=&quot;Visual Studio&quot; -s compiler.version=16" Condition=" '$(OS)' == 'Windows_NT' "/>
+    <Exec Command="conan install . --install-folder=. -r kthbuild_kth_temp_" Condition=" '$(OS)' != 'Windows_NT' " />
+    <Exec Command="conan install . --install-folder=. -r kthbuild_kth_temp_ -s compiler=&quot;Visual Studio&quot; -s compiler.version=16" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Message Text="OS = $(OS)" />
     <Copy SourceFiles="kth-c-api.dll" DestinationFiles="$(OutDir)libkth-c-api.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Copy SourceFiles="libkth-c-api.so" DestinationFiles="$(OutDir)libkth-c-api.so" Condition="Exists('libkth-c-api.so')"/>
