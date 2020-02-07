@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Knuth.Keoken;
 
-namespace tests.bch.Keoken
+namespace Tests.Bch.Keoken
 {
     public class RegtestExecutorFixture : IDisposable
     {

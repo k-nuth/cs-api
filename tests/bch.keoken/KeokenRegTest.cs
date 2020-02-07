@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Knuth.Keoken;
 using Xunit;
 
-namespace tests.bch.Keoken
+namespace Tests.Bch.Keoken
 {
     [Collection("KeokenCollection")]
     public class KeokenRegTestRemove : IClassFixture<RegtestExecutorFixture>

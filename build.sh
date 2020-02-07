@@ -18,6 +18,11 @@ PACKAGES_CONFIG_MD5=$TOOLS_DIR/packages.config.md5sum
 ADDINS_PACKAGES_CONFIG=$ADDINS_DIR/packages.config
 MODULES_PACKAGES_CONFIG=$MODULES_DIR/packages.config
 
+
+echo "SCRIPT_DIR: $SCRIPT_DIR"
+echo "TOOLS_DIR:  $TOOLS_DIR"
+echo "NUGET_EXE:  $NUGET_EXE"
+
 # Define md5sum or md5 depending on Linux/OSX
 MD5_EXE=
 if [[ "$(uname -s)" == "Darwin" ]]; then

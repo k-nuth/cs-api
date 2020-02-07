@@ -1,4 +1,4 @@
-#tool "nuget:?package=GitVersion.CommandLine&version=4.0.0-beta0012"
+// #tool "nuget:?package=GitVersion.CommandLine&version=5.1.3"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
@@ -54,21 +54,50 @@ Task("Restore")
         DotNetCoreRestore(solutionName);
     });
 
-GitVersion versionInfo = null;
+// GitVersion versionInfo = null;
+// Task("Version")
+//     .Does(() => {
+        
+//         GitVersion(new GitVersionSettings{
+//             UpdateAssemblyInfo = false,
+//             OutputType = GitVersionOutput.BuildServer
+//         });
+        
+//         versionInfo = GitVersion(new GitVersionSettings{ 
+//             OutputType = GitVersionOutput.Json });
+
+//         Information("Version calculated: " + versionInfo.MajorMinorPatch);
+//         Information("Version Nuget calculated: " + versionInfo.NuGetVersion);
+
+//     });
+
+string version = null;
 Task("Version")
     .Does(() => {
-        
-        GitVersion(new GitVersionSettings{
-            UpdateAssemblyInfo = false,
-            OutputType = GitVersionOutput.BuildServer
-        });
-        
-        versionInfo = GitVersion(new GitVersionSettings{ OutputType = GitVersionOutput.Json });        
 
-        Information("Version calculated: " + versionInfo.MajorMinorPatch);
-        Information("Version Nuget calculated: " + versionInfo.NuGetVersion);
+        Information("Running python get_version.py");
 
+        using(var process = StartAndReturnProcess("python", new ProcessSettings { 
+                    Arguments = "get_version.py",
+                    RedirectStandardOutput = true }))
+        {
+            process.WaitForExit();
+            // This should output 0 as valid arguments supplied
+            Information("python get_version.py exit code: {0}", process.GetExitCode());
+
+            var output = process.GetStandardOutput();
+            foreach (var o in output) {
+                Information("o: {0}", o);
+                version = o;
+                break;
+            }
+        }
+        Information("Version calculated: " + version);
+
+        // Information("Version calculated: " + versionInfo.MajorMinorPatch);
+        // Information("Version Nuget calculated: " + versionInfo.NuGetVersion);
     });
+
 
 
 Task("ConanVersion")
@@ -89,9 +118,16 @@ Task("Build")
     .IsDependentOn("Restore")
     .Does(() => {
 
+        // MSBuild(solutionName, new MSBuildSettings {
+        //     ArgumentCustomization = args => args.Append(platform 
+        //                                     + " /p:AssemblyVersion=" + versionInfo.MajorMinorPatch
+        //                                     )
+        //     ,Configuration = configuration
+        // });
+
         MSBuild(solutionName, new MSBuildSettings {
             ArgumentCustomization = args => args.Append(platform 
-                                            + " /p:AssemblyVersion=" + versionInfo.MajorMinorPatch
+                                            + " /p:AssemblyVersion=" + version
                                             )
             ,Configuration = configuration
         });
@@ -119,7 +155,8 @@ Task("Package")
 
         var settings = new DotNetCorePackSettings
         {
-            ArgumentCustomization = args=> args.Append(platform + " /p:PackageVersion=" + versionInfo.NuGetVersion),
+            // ArgumentCustomization = args=> args.Append(platform + " /p:PackageVersion=" + versionInfo.NuGetVersion),
+            ArgumentCustomization = args=> args.Append(platform + " /p:PackageVersion=" + version),
             OutputDirectory = outputDir,
             NoBuild = true,
             NoRestore = true,
@@ -129,11 +166,16 @@ Task("Package")
         DotNetCorePack(kthProjectBCH, settings);
         DotNetCorePack(kthProjectBTC, settings);
 
+        // System.IO.File.WriteAllLines(outputDir + "artifacts", new[]{
+        //     "nuget:kth-bch." + versionInfo.NuGetVersion + ".nupkg",
+        //     "nuget:kth-btc." + versionInfo.NuGetVersion + ".nupkg"
+        // });
+
         System.IO.File.WriteAllLines(outputDir + "artifacts", new[]{
-            "nuget:kth-bch." + versionInfo.NuGetVersion + ".nupkg",
-            "nuget:kth-btc." + versionInfo.NuGetVersion + ".nupkg"
+            "nuget:kth-bch." + version + ".nupkg",
+            "nuget:kth-btc." + version + ".nupkg"
         });
-        
+
     });
 
 Task("UpdateVersionInfo")

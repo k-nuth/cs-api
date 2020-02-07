@@ -4,15 +4,15 @@
       <Output TaskParameter="ConsoleOutput" PropertyName="ConanRemoteList" />
     </Exec>
     <Exec Command="conan remote update kth https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('kth'))" />
-    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition="!$(ConanRemoteList.Contains('kth'))" />
+    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('kth'))" />
     
-    <Message Text="Conan Channel: stable"/>
-    <Message Text="Conan Version: 0.19.0"/>
+    <Message Text="Conan Channel:  stable"/>
+    <Message Text="Conan Version:  0.19.0"/>
     <Message Text="Conan Currency: BCH"/>
-    <Message Text="Conan Keoken: False"/>
+    <Message Text="Conan Keoken:   True"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];kth-node-cint/0.19.0@kth/stable;[generators];cmake;[options];kth-node-cint:shared=True;kth-node-cint:currency=BCH;kth-node-cint:keoken=False;kth-node-cint:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];kth-node-cint/0.19.0@kth/stable;[generators];cmake;[options];kth-node-cint:shared=True;kth-node-cint:currency=BCH;kth-node-cint:keoken=True;kth-node-cint:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
