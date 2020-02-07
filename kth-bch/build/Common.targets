@@ -7,12 +7,12 @@
     <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('kth'))" />
     
     <Message Text="Conan Channel:  stable"/>
-    <Message Text="Conan Version:  0.19.0"/>
+    <Message Text="Conan Version:  0.1.0"/>
     <Message Text="Conan Currency: BCH"/>
     <Message Text="Conan Keoken:   False"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];kth-c-api/0.19.0@kth/stable;[generators];cmake;[options];kth-c-api:shared=True;kth-c-api:currency=BCH;kth-c-api:keoken=False;kth-c-api:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];c-api/0.1.0@kth/stable;[generators];cmake;[options];kth-c-api:shared=True;kth-c-api:currency=BCH;kth-c-api:keoken=False;kth-c-api:db=full;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>

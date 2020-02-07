@@ -1,5 +1,5 @@
 [requires]
-kth-c-api/0.8@kth/testing
+c-api/0.8@kth/testing
 
 [generators]
 cmake
