@@ -32,14 +32,14 @@
 		<Content Include="build\Common.targets" PackagePath="build\Common.targets" />
     
 	  <!-- pack the conan file -->
-    <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" /> 
+    <!-- <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" />  -->
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="build\netstandard2.0\" />
     <Folder Include="idiomatic\" />
     <Folder Include="native\" />
-    <Folder Include="content\" />
+    <!-- <Folder Include="content\" /> -->
     <Folder Include="docs\" />
   </ItemGroup>
 
