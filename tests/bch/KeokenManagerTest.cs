@@ -1,3 +1,5 @@
+#if KEOKEN          //TODO(fernando): check this!
+
 using System;
 using Knuth.Keoken;
 using Xunit;
@@ -219,3 +221,5 @@ namespace Knuth.Tests
         }
         */
 }
+
+#endif  // KEOKEN

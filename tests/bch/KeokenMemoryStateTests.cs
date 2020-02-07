@@ -1,3 +1,5 @@
+#if KEOKEN
+
 using Knuth.Keoken;
 using Xunit;
 
@@ -190,3 +192,5 @@ namespace Knuth.Tests
         }
     }
 }
+
+#endif // KEOKEN

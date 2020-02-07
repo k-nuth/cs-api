@@ -19,7 +19,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants);KEOKEN;BCH</DefineConstants>
+    <!--<DefineConstants>$(DefineConstants);KEOKEN;BCH</DefineConstants>-->
+    <DefineConstants>$(DefineConstants);BCH</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
