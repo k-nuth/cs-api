@@ -3,8 +3,8 @@
     <Exec Command="conan remote list" ConsoleToMSBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="ConanRemoteList" />
     </Exec>
-    <Exec Command="conan remote update kth https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('kth'))" />
-    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('kth'))" />
+    <Exec Command="conan remote update kth https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('kth'))" ContinueOnError="WarnAndContinue" />
+    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('kth'))" ContinueOnError="WarnAndContinue" />
     
     <Message Text="Conan Channel:  stable"/>
     <Message Text="Conan Version:  0.1.0"/>
