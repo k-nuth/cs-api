@@ -1,3 +1,7 @@
+# Copyright (c) 2016-2020 Knuth Project developers.
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 language: csharp  
 sudo: required  
 dist: trusty
@@ -16,6 +20,12 @@ configuration:
 env:  
   - CLI_VERSION=latest
 
+cache:
+  timeout: 600
+  ccache: true
+  directories:
+    - $HOME/Library/Caches/Homebrew
+
 addons:  
   apt:
     packages:
@@ -29,6 +39,7 @@ addons:
 linux: &linux
    os: linux
    sudo: required
+   dist: xenial
    language: python
    python: "3.7"
 
@@ -59,8 +70,11 @@ matrix:
       #  env: UPDATE_DOCS=true
 
       - <<: *osx
-        osx_image: xcode8.3
-        env: TRAVIS_PYTHON_VERSION=3.6 PYTHON_FULL_VERSION=3.6.2
+        osx_image: xcode11
+        env: TRAVIS_PYTHON_VERSION=3.7 PYTHON_FULL_VERSION=3.7.6
+
+before_cache:
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew cleanup; fi
 
 before_install:
   - |
