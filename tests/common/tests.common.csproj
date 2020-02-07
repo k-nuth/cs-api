@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\bitprim-bch\build\Common.targets" />
+  <Import Project="..\kth-bch\build\Common.targets" />
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
@@ -18,10 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\bitprim-bch\bitprim-bch.csproj" />
+    <ProjectReference Include="..\kth-bch\kth-bch.csproj" />
   </ItemGroup>
 
   <Target Name="CopyNativeLib" AfterTargets="Build">
-    <CallTarget Targets="GetBitprimNodeCint" />
+    <CallTarget Targets="GetKnuthCAPI" />
   </Target>
 </Project>

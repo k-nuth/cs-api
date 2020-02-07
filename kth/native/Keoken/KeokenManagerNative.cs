@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 #if KEOKEN
 
-namespace Bitprim.Native.Keoken
+namespace Knuth.Native.Keoken
 {
     public static class KeokenManagerNativeDelegates
     {

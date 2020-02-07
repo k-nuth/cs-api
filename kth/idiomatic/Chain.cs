@@ -1,10 +1,10 @@
-using Bitprim.Native;
+using Knuth.Native;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Represents the Bitcoin blockchain; meant to offer its different interfaces (query, mining, network)

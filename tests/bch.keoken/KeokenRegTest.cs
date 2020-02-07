@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using Bitprim.Keoken;
+using Knuth.Keoken;
 using Xunit;
 
-namespace Bitprim.Tests.Bch.Keoken
+namespace tests.bch.Keoken
 {
     [Collection("KeokenCollection")]
     public class KeokenRegTestRemove : IClassFixture<RegtestExecutorFixture>
@@ -103,7 +103,7 @@ namespace Bitprim.Tests.Bch.Keoken
                     if (asset.AssetId == 1)
                     {
                         Assert.Equal(1000000, asset.Amount);
-                        Assert.Equal("Bitprim", asset.AssetName);
+                        Assert.Equal("Knuth", asset.AssetName);
                         Assert.Equal("16TGufqQ9FPnEbixbD4ZjVabaP455roE6t", asset.AssetCreator.Encoded);
                     }
                     else
@@ -131,7 +131,7 @@ namespace Bitprim.Tests.Bch.Keoken
                         if (asset.AssetId == 1)
                         {
                             Assert.Equal(1000000, asset.Amount);
-                            Assert.Equal("Bitprim", asset.AssetName);
+                            Assert.Equal("Knuth", asset.AssetName);
                             Assert.Equal("16TGufqQ9FPnEbixbD4ZjVabaP455roE6t", asset.AssetCreator.Encoded);
                         }
                         else
@@ -159,7 +159,7 @@ namespace Bitprim.Tests.Bch.Keoken
                     if (asset.AssetId == 1)
                     {
                         Assert.Equal(1000000, asset.Amount);
-                        Assert.Equal("Bitprim", asset.AssetName);
+                        Assert.Equal("Knuth", asset.AssetName);
                         Assert.Equal("16TGufqQ9FPnEbixbD4ZjVabaP455roE6t", asset.AssetCreator.Encoded);
                         Assert.Equal("16TGufqQ9FPnEbixbD4ZjVabaP455roE6t", asset.AmountOwner.Encoded);
                     }

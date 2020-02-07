@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Bitprim
+namespace Knuth
 {
     public interface INativeList<out T> :  IEnumerable<T>, IDisposable
     {

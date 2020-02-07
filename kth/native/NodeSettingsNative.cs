@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Bitprim.Native
+namespace Knuth.Native
 {
     internal static class NodeSettingsNative
     {

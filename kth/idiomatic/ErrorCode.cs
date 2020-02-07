@@ -1,4 +1,4 @@
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Error codes returned by the C API

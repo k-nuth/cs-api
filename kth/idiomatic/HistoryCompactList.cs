@@ -1,7 +1,7 @@
 using System;
-using Bitprim.Native;
+using Knuth.Native;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// List of output points, values, and spends for a given payment address

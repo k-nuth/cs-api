@@ -1,12 +1,12 @@
-using Bitprim;
+using Knuth;
 using System;
 using System.Collections.Generic;
-using Bitprim.Native;
+using Knuth.Native;
 
 #if KEOKEN
-using Bitprim.Native.Keoken;
+using Knuth.Native.Keoken;
 
-namespace Bitprim.Keoken
+namespace Knuth.Keoken
 {
     public static class DelegatedState
     {

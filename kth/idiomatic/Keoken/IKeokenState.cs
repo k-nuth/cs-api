@@ -1,11 +1,11 @@
-using Bitprim;
+using Knuth;
 using System;
 using System.Collections.Generic;
-using Bitprim.Native;
+using Knuth.Native;
 
 #if KEOKEN
 
-namespace Bitprim.Keoken
+namespace Knuth.Keoken
 {
     // AssetAmount : Int64;
     // AssetId : UInt32;

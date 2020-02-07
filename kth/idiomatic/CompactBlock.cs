@@ -1,7 +1,7 @@
 using System;
-using Bitprim.Native;
+using Knuth.Native;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// BIP 512 representation of a block for reduced propagation bandwidth.

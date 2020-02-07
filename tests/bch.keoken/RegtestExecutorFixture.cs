@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using Bitprim.Keoken;
+using Knuth.Keoken;
 
-namespace Bitprim.Tests.Bch.Keoken
+namespace tests.bch.Keoken
 {
     public class RegtestExecutorFixture : IDisposable
     {

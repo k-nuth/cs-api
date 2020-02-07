@@ -1,6 +1,6 @@
 using System;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Represents a result of calling a native API method

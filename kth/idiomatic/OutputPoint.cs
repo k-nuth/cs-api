@@ -1,7 +1,7 @@
 using System;
-using Bitprim.Native;
+using Knuth.Native;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Transaction hash and index pair representing one of the transaction outputs.

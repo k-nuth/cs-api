@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Helper class with utility methods

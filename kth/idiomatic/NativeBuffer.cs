@@ -1,8 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
-using Bitprim.Native;
+using Knuth.Native;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// RAII wrapper for native memory. Guarantees that even if an exception

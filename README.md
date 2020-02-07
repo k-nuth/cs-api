@@ -5,21 +5,21 @@ C# binding for the Knuth API.
 Our library is built with .Net Standard 2.0 and includes blockchain query interface. 
 
 NuGet Bitcoin Cash:
-[![NuGet](https://img.shields.io/nuget/v/bitprim-bch.svg)](https://www.nuget.org/packages/bitprim-bch)
+[![NuGet](https://img.shields.io/nuget/v/kth-bch.svg)](https://www.nuget.org/packages/kth-bch)
 
 NuGet Bitcoin:
-[![NuGet](https://img.shields.io/nuget/v/bitprim-btc.svg)](https://www.nuget.org/packages/bitprim-btc)
+[![NuGet](https://img.shields.io/nuget/v/kth-btc.svg)](https://www.nuget.org/packages/kth-btc)
 
-Travis: [![Build Status](https://travis-ci.org/k-nuth/cs.svg?branch=dev)](https://travis-ci.org/k-nuth/cs)
+Travis: [![Build Status](https://travis-ci.org/k-nuth/cs-api.svg?branch=dev)](https://travis-ci.org/k-nuth/cs-api)
 
-Appveyor: [![Appveyor Status](https://ci.appveyor.com/api/projects/status/github/k-nuth/cs?branch=dev&svg=true)](https://ci.appveyor.com/project/k-nuth/cs?branch=dev)
+Appveyor: [![Appveyor Status](https://ci.appveyor.com/api/projects/status/github/k-nuth/cs-api?branch=dev&svg=true)](https://ci.appveyor.com/project/k-nuth/cs-api?branch=dev)
 
 [comment]: # (TODO Implement a test coverage badge)
 
 
 ## Documentation
 
-To view the full documentation, reference and tutorials please go to [https://bitprim.github.io/docfx/content/developer_guide/dotnet/dotnet-Interface.html](https://bitprim.github.io/docfx/content/developer_guide/dotnet/dotnet-Interface.html)
+To view the full documentation, reference and tutorials please go to [https://k-nuth.github.io/docfx/content/developer_guide/dotnet/dotnet-Interface.html](https://k-nuth.github.io/docfx/content/developer_guide/dotnet/dotnet-Interface.html)
 
 ## Prerequisites
 
@@ -37,8 +37,8 @@ You can install the Knuth C# binding via Nuget.
 
 There are two packages available:
 
-For Bitcoin Cash (BCH) you need to use  https://www.nuget.org/packages/bitprim-bch/ 
-and for Bitcoin Legacy (BTC) you need to use https://www.nuget.org/packages/bitprim-btc/
+For Bitcoin Cash (BCH) you need to use  https://www.nuget.org/packages/kth-bch/ 
+and for Bitcoin Legacy (BTC) you need to use https://www.nuget.org/packages/kth-btc/
 
 If you use Visual Studio, you can use the UI or the Package Manager.
 
@@ -46,7 +46,7 @@ If you use Visual Studio, you can use the UI or the Package Manager.
 
  * Right click on your project
  * Select *Manage Nuget Packages*
- * Search for bitprim-bch or bitprim-btc
+ * Search for kth-bch or kth-btc
  * Click Install
 
 ### Package Manager
@@ -55,21 +55,21 @@ If you use Visual Studio, you can use the UI or the Package Manager.
     * Run the following command
 
 ```
-Install-Package bitprim-bch
+Install-Package kth-bch
 
 or
 
-Install-Package bitprim-btc
+Install-Package kth-btc
 ```
 
 If you are using dotnet cli:
 
 ```
-dotnet add package bitprim-bch
+dotnet add package kth-bch
 
 or
 
-dotnet add package bitprim-btc
+dotnet add package kth-btc
 ```
 
 ## Building from source
@@ -83,8 +83,8 @@ If you want to build from source, you need the following prerequisites:
 Run the following commands:
 
 ```
-git clone https://github.com/k-nuth/cs.git
-cd bitprim-cs
+git clone https://github.com/k-nuth/cs-api.git
+cd cs-api
 
 if you are on Windows, run:
 
@@ -103,5 +103,5 @@ If you have problems running build.ps1 please check this link
 
 ## Examples
 
-For a logging integration example see: [Example](https://github.com/k-nuth/cs/tree/dev/bitprim.console)
+For a logging integration example see: [Example](https://github.com/k-nuth/cs-api/tree/dev/console)
 

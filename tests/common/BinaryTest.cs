@@ -1,8 +1,8 @@
 using Xunit;
-using Bitprim;
+using Knuth;
 using System;
 
-namespace Bitprim.Tests
+namespace Knuth.Tests
 {
     public class BinaryTest
     {

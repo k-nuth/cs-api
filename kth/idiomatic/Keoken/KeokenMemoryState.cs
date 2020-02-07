@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 #if KEOKEN
 
-using Bitprim.Native.Keoken;
+using Knuth.Native.Keoken;
 
-namespace Bitprim.Keoken
+namespace Knuth.Keoken
 {
 
     public class KeokenMemoryState : IKeokenState

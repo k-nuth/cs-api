@@ -1,4 +1,4 @@
-namespace Bitprim
+namespace Knuth
 {
     internal static class Constants
     {

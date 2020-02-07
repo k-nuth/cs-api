@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Abstract class to represent read-only lists of native objects

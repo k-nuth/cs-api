@@ -2,9 +2,9 @@ using System;
 using System.Runtime.InteropServices;
 
 #if KEOKEN
-using Bitprim.Keoken;
+using Knuth.Keoken;
 
-namespace Bitprim.Native.Keoken
+namespace Knuth.Native.Keoken
 {
     internal static class KeokenStateNative  
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Bitprim;
+using Knuth;
 using Serilog;
 
-namespace bitprim.console
+namespace console
 {
     public class Program
     {

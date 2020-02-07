@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace bitprim.tutorials
+namespace Knuth.Tutorials
 {
     class Program
     {
@@ -8,10 +8,10 @@ namespace bitprim.tutorials
         {
             try
             {
-                using(var bitprimApi = new BitprimCsAPI("bcc-testnet.cfg"))
+                using(var kthApi = new KnuthCsAPI("bcc-testnet.cfg"))
                 {
-                    var memoService = new MemoService(bitprimApi);
-                    bitprimApi.StartNode();
+                    var memoService = new MemoService(kthApi);
+                    kthApi.StartNode();
                     Console.WriteLine("Scraping...");
                     var posts = memoService.GetLatestPosts(5, OnScrapingProgressReport);
                     int i = 0;

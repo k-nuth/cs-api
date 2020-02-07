@@ -1,15 +1,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Bitprim.Logging;
-using Bitprim.Native;
+using Knuth.Logging;
+using Knuth.Native;
 #if KEOKEN
-using Bitprim.Keoken;
+using Knuth.Keoken;
 #endif
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
-    /// Controls the execution of the Bitprim bitcoin node.
+    /// Controls the execution of the Knuth bitcoin node.
     /// </summary>
     public class Executor : IDisposable
     {

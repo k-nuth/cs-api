@@ -1,9 +1,9 @@
-using Bitprim;
+using Knuth;
 using System;
 
-namespace bitprim.tutorials
+namespace Knuth.Tutorials
 {
-    public interface IBitprimCsAPI
+    public interface IKnuthCsAPI
     {
         IBlock GetBlockByHeight(UInt64 height);
 

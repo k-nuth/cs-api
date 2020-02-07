@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 #if KEOKEN
 
-namespace Bitprim.Native.Keoken
+namespace Knuth.Native.Keoken
 {
     internal static class GetAssetsDataNative
     {

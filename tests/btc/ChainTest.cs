@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Bitprim.Tests
+namespace Knuth.Tests
 {
     [Collection("ChainCollection")]
     public class ChainTest : IClassFixture<ExecutorFixture>

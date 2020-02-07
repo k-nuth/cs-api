@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Bitprim
+namespace Knuth
 {
     internal static class TaskHelper
     {

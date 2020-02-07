@@ -1,7 +1,7 @@
-using Bitprim.Native;
+using Knuth.Native;
 using System;
 
-namespace Bitprim
+namespace Knuth
 {
 
     /// <summary>

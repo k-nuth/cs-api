@@ -1,8 +1,8 @@
 using System;
-using Bitprim.Keoken;
+using Knuth.Keoken;
 using Xunit;
 
-namespace Bitprim.Tests
+namespace Knuth.Tests
 {
     [Collection("ChainCollection")]
     public class KeokenManagerTest : IClassFixture<ExecutorFixture>

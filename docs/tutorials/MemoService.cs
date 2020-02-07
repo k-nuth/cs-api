@@ -1,25 +1,25 @@
-using Bitprim;
+using Knuth;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace bitprim.tutorials
+namespace Knuth.Tutorials
 {
     public class MemoService
     {
-        private readonly IBitprimCsAPI bitprimApi_;
+        private readonly IKnuthCsAPI kthApi_;
         private readonly Regex memoRegex_;
     
-        public MemoService(IBitprimCsAPI bitprimApi)
+        public MemoService(IKnuthCsAPI kthApi)
         {
-            bitprimApi_ = bitprimApi;
+            kthApi_ = kthApi;
             memoRegex_ = new Regex("^return " + Regex.Escape("[") + "6d[0-1][1-e]" + Regex.Escape("]"), RegexOptions.Compiled);
         }
 
         public bool TransactionIsMemo(string txHash)
         {
-            using(ITransaction tx = bitprimApi_.GetTransactionByHash(txHash))
+            using(ITransaction tx = kthApi_.GetTransactionByHash(txHash))
             {
                 return TransactionIsMemo(tx);
             }
@@ -27,7 +27,7 @@ namespace bitprim.tutorials
 
         public string GetPost(string txHash)
         {
-            using(ITransaction tx = bitprimApi_.GetTransactionByHash(txHash))
+            using(ITransaction tx = kthApi_.GetTransactionByHash(txHash))
             {
                 return GetPost(tx);
             }
@@ -35,13 +35,13 @@ namespace bitprim.tutorials
 
         public List<string> GetLatestPosts(int nPosts, Action<string> progressReportCallback)
         {
-            UInt64 blockchainHeight = bitprimApi_.GetCurrentBlockchainHeight();
+            UInt64 blockchainHeight = kthApi_.GetCurrentBlockchainHeight();
             int postsFound = 0;
             var posts = new List<string>();
             while(postsFound < nPosts && blockchainHeight > 1)
             {
                 progressReportCallback("Searching block " + blockchainHeight + "...");
-                using(IBlock block = bitprimApi_.GetBlockByHeight(blockchainHeight))
+                using(IBlock block = kthApi_.GetBlockByHeight(blockchainHeight))
                 {
                     for(uint iTx=0; iTx<block.TransactionCount; ++iTx)
                     {

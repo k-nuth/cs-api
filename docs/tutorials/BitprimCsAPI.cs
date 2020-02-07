@@ -1,19 +1,19 @@
-using Bitprim;
+using Knuth;
 using System;
 
-namespace bitprim.tutorials
+namespace Knuth.tutorials
 {
-    public class KnuthCsAPI : IBitprimCsAPI, IDisposable
+    public class KnuthCsAPI : IKnuthCsAPI, IDisposable
     {
         private IChain chain_;
         private readonly Executor executor_;
 
-        public BitprimCsAPI(string nodeConfigFile)
+        public KnuthCsAPI(string nodeConfigFile)
         {
             executor_ = new Executor(nodeConfigFile);
         }
 
-        ~BitprimCsAPI()
+        ~KnuthCsAPI()
         {
             Dispose(false);
         }

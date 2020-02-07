@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Bitprim.Native
+namespace Knuth.Native
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 32), Serializable]
     public struct hash_t

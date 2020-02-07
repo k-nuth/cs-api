@@ -1,6 +1,6 @@
 using System;
 
-namespace Bitprim.Tests
+namespace Knuth.Tests
 {
     public class ExecutorFixture : IDisposable
     {

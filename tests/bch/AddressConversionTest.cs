@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Bitprim.Tests
+namespace Knuth.Tests
 {
     public class AddressConversionTest
     {

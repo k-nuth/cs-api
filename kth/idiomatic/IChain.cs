@@ -1,8 +1,8 @@
-using Bitprim;
+using Knuth;
 using System;
 using System.Threading.Tasks;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Blockchain abstract interface.

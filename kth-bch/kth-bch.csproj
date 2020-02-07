@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Version>0.2.201</Version>
-    <Authors>Bitprim</Authors>
-    <Company>Bitprim</Company>
-    <Description>C# binding for Bitprim Bitcoin platform</Description>
-    <PackageProjectUrl>www.bitprim.org</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/k-nuth/cs</RepositoryUrl>
+    <Authors>Knuth</Authors>
+    <Company>Knuth</Company>
+    <Description>C# binding for Knuth Bitcoin platform</Description>
+    <PackageProjectUrl>kth.cash</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/k-nuth/cs-api</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Bitcoin, C#, Litecoin, Bitcoin Cash</PackageTags>
     <PackageReleaseNotes>Basic chain queries</PackageReleaseNotes>
@@ -23,13 +23,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <Compile Include="..\bitprim\**/*.cs" />
-      <None Include="..\bitprim\docs\Doxyfile" Link="docs\Doxyfile" /> 
+      <Compile Include="..\kth\**/*.cs" />
+      <None Include="..\kth\docs\Doxyfile" Link="docs\Doxyfile" /> 
   </ItemGroup>
 
   <ItemGroup>
     <!-- pack the target files -->
-    <Content Include="build\netstandard2.0\bitprim-bch.targets" PackagePath="build\netstandard2.0\bitprim-bch.targets" />  
+    <Content Include="build\netstandard2.0\kth-bch.targets" PackagePath="build\netstandard2.0\kth-bch.targets" />  
 	  <Content Include="build\Common.targets" PackagePath="build\Common.targets" />
     
 	  <!-- pack the conan file -->

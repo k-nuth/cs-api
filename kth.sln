@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-bch", "bitprim-bch\bitprim-bch.csproj", "{A8818430-8063-42CF-A935-EA6093975364}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kth-bch", "kth-bch\kth-bch.csproj", "{A8818430-8063-42CF-A935-EA6093975364}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.tests.bch", "bitprim.tests.bch\bitprim.tests.bch.csproj", "{78411BF0-35E5-4240-8B55-FB06C6BC4E47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests.bch", "tests.bch\tests.bch.csproj", "{78411BF0-35E5-4240-8B55-FB06C6BC4E47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.console", "bitprim.console\bitprim.console.csproj", "{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "console", "console\console.csproj", "{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim-btc", "bitprim-btc\bitprim-btc.csproj", "{6D2DD63A-143A-4F39-B219-2E8F226E53BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kth-btc", "kth-btc\kth-btc.csproj", "{6D2DD63A-143A-4F39-B219-2E8F226E53BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bitprim.tests.btc", "bitprim.tests.btc\bitprim.tests.btc.csproj", "{E6A24977-E057-473A-AE03-CFA116823883}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests.btc", "tests.btc\tests.btc.csproj", "{E6A24977-E057-473A-AE03-CFA116823883}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bitprim.tests.bch.keoken", "bitprim.tests.bch.keoken\bitprim.tests.bch.keoken.csproj", "{9DCB88E1-5DEF-4532-8D26-E98C03D24461}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests.bch.keoken", "tests.bch.keoken\tests.bch.keoken.csproj", "{9DCB88E1-5DEF-4532-8D26-E98C03D24461}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

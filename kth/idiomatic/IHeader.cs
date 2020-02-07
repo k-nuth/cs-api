@@ -1,6 +1,6 @@
 using System;
 
-namespace Bitprim
+namespace Knuth
 {
     public interface IHeader : IDisposable
     {

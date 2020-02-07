@@ -1,10 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Target Name="GetBitprimNodeCint">
+  <Target Name="GetKnuthCAPI">
     <Exec Command="conan remote list" ConsoleToMSBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="ConanRemoteList" />
     </Exec>
-    <Exec Command="conan remote update bitprim https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('bitprim'))" />
-    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition="!$(ConanRemoteList.Contains('bitprim'))" />
+    <Exec Command="conan remote update kth https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('kth'))" />
+    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth" Condition="!$(ConanRemoteList.Contains('kth'))" />
     
     <Message Text="Conan Channel: stable"/>
     <Message Text="Conan Version: 0.19.0"/>
@@ -16,8 +16,8 @@
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
-    <Exec Command="conan install . --install-folder=. -r bitprim" Condition=" '$(OS)' != 'Windows_NT' " />
-    <Exec Command="conan install . --install-folder=. -r bitprim -s compiler=&quot;Visual Studio&quot; -s compiler.version=15" Condition=" '$(OS)' == 'Windows_NT' "/>
+    <Exec Command="conan install . --install-folder=. -r kth" Condition=" '$(OS)' != 'Windows_NT' " />
+    <Exec Command="conan install . --install-folder=. -r kth -s compiler=&quot;Visual Studio&quot; -s compiler.version=15" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Message Text="OS = $(OS)" />
     <Copy SourceFiles="kth-node-cint.dll" DestinationFiles="$(OutDir)libkth-node-cint.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Copy SourceFiles="libkth-node-cint.so" DestinationFiles="$(OutDir)libkth-node-cint.so" Condition="Exists('libkth-node-cint.so')"/>

@@ -1,7 +1,7 @@
 using Xunit;
-using Bitprim;
+using Knuth;
 
-namespace Bitprim.Tests
+namespace Knuth.Tests
 {
     public class ValidationsTest
     {

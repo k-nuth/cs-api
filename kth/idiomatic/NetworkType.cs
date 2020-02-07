@@ -1,4 +1,4 @@
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Represents the network type (Mainnet, Testnet, Regtest)

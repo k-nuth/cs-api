@@ -1,6 +1,6 @@
-using Bitprim.Native;
+using Knuth.Native;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Holds node settings

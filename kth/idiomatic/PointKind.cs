@@ -1,4 +1,4 @@
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Defines output point kind (Value or Spend)

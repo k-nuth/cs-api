@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// RAII wrapper for native strings. Guarantees that even if an exception

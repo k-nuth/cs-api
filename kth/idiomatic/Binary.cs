@@ -1,8 +1,8 @@
 using System;
 using System.Text;
-using Bitprim.Native;
+using Knuth.Native;
 
-namespace Bitprim
+namespace Knuth
 {
     /// <summary>
     /// Represents a binary filter.
