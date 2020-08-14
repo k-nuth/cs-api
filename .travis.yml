@@ -39,7 +39,7 @@ addons:
 linux: &linux
    os: linux
    sudo: required
-   dist: xenial
+   dist: focal
    language: python
    python: "3.7"
 
@@ -138,8 +138,8 @@ install:
         # sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
         # sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
 
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9.3 90
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9.3 90
+        # sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9.3 90
+        # sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9.3 90
 
         gcc --version
         g++ --version
