@@ -28,8 +28,6 @@
 /tools/*
 !tools/packages.config
 
-/build
-
 /docs/tutorials/*.cfg
 /docs/tutorials/*.cmake
 /docs/tutorials/*.so
@@ -95,3 +93,7 @@ console/libkth-c-api.dylib
 console/graph_info.json
 tests/bch/graph_info.json
 tests/btc/graph_info.json
+
+.tmp/
+build/bin/
+build/obj/

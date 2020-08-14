@@ -103,8 +103,8 @@ Task("Version")
 
 Task("ConanVersion")
     .Does(() => {
-        Information("Conan Channel " + conanChannel);
-        Information("Conan Version " + conanVersion);
+        Information("Knuth Channel " + conanChannel);
+        Information("Knuth Version " + conanVersion);
 
         //TODO(fernando): march_id is hardcoded, see what to do.
         UpdateConan("./kth-bch/build/Common.targets","BCH", false, "4fZKi37a595hP");

@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kth-bch", "kth-bch\kth-bch.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests.bch", "tests\bch\tests.bch.csproj", "{78411BF0-35E5-4240-8B55-FB06C6BC4E47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "console", "console\console.csproj", "{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}"
+# Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "console", "console\console.csproj", "{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}"
+# EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{83694BDF-60AA-4FE8-8B62-ECE43F1FEF8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +19,8 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83694BDF-60AA-4FE8-8B62-ECE43F1FEF8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83694BDF-60AA-4FE8-8B62-ECE43F1FEF8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8818430-8063-42CF-A935-EA6093975364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A8818430-8063-42CF-A935-EA6093975364}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8818430-8063-42CF-A935-EA6093975364}.Debug|x64.ActiveCfg = Debug|x64
