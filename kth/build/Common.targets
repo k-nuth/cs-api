@@ -19,8 +19,6 @@
     
     <Exec Command="conan install . --install-folder=. --update" Condition=" '$(OS)' != 'Windows_NT' " />
     <Exec Command="conan install . --install-folder=. -s compiler=&quot;Visual Studio&quot; -s compiler.version=16 --update" Condition=" '$(OS)' == 'Windows_NT' "/>
-    <!-- <Exec Command="conan install . --install-folder=. -r kth" Condition=" '$(OS)' != 'Windows_NT' " /> -->
-    <!-- <Exec Command="conan install . --install-folder=. -r kth -s compiler=&quot;Visual Studio&quot; -s compiler.version=16" Condition=" '$(OS)' == 'Windows_NT' "/> -->
     
     <Message Text="OS = $(OS)" />
     <Copy SourceFiles="kth-c-api.dll" DestinationFiles="$(OutDir)libkth-c-api.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
