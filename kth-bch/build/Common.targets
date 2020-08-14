@@ -1,17 +1,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="GetKnuthCAPI">
 
-    <!-- <Exec Command="conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config.zip" ContinueOnError="WarnAndContinue" /> -->
-    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth -f" ContinueOnError="WarnAndContinue" />
-    <Exec Command="conan remote add tao https://api.bintray.com/conan/tao-cpp/tao -f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config.zip" ContinueOnError="WarnAndContinue" />
+    <!-- <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth -f" ContinueOnError="WarnAndContinue" />
+    <Exec Command="conan remote add tao https://api.bintray.com/conan/tao-cpp/tao -f" ContinueOnError="WarnAndContinue" /> -->
 
     <Message Text="Knuth Channel:  testing"/>
-    <Message Text="Knuth Version:  0.4.0"/>
+    <Message Text="Knuth Version:  0.5.0"/>
     <Message Text="Knuth Currency: BCH"/>
     <Message Text="Knuth March ID: 4fZKi37a595hP"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/0.4.0@kth/testing;[generators];cmake;[options];c-api:shared=True;c-api:currency=BCH;c-api:keoken=False;c-api:db=default;c-api:march_id=4fZKi37a595hP;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];c-api/0.5.0@kth/testing;[generators];cmake;[options];c-api:shared=True;c-api:currency=BCH;c-api:db=default;c-api:march_id=4fZKi37a595hP;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
