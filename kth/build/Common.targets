@@ -1,7 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="GetKnuthCAPI">
-    <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth -f" ContinueOnError="WarnAndContinue" />
-    
+
+    <!-- <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth -f" ContinueOnError="WarnAndContinue" /> -->
+    <Exec Command="conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config.zip" ContinueOnError="WarnAndContinue" />
+
     <Message Text="Knuth Channel:  $(CONAN_CHANNEL)"/>
     <Message Text="Knuth Version:  $(CONAN_VERSION)"/>
     <Message Text="Knuth Currency: $(CONAN_CURRENCY)"/>
