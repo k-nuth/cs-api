@@ -91,3 +91,10 @@ tests/btc/graph_info.json
 build/bin/
 build/obj/
 tests/bch.keoken/obj/
+
+console/conan.lock
+console/hosts-bcc-testnet.cache
+console/database/bcc-testnet/
+console/log/node-bcc-testnet-debug.log
+console/log/node-bcc-testnet-error.log
+

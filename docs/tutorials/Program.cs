@@ -8,7 +8,7 @@ namespace Knuth.Tutorials
         {
             try
             {
-                using(var kthApi = new KnuthCsAPI("bcc-testnet.cfg"))
+                using(var kthApi = new KnuthCsAPI("bch-testnet.cfg"))
                 {
                     var memoService = new MemoService(kthApi);
                     kthApi.StartNode();

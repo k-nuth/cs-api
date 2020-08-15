@@ -115,22 +115,13 @@ namespace Knuth
         /// The node's query interface. Will be null until node starts running
         /// (i.e. Run or RunWait succeeded)
         /// </summary>
-        public Chain Chain
-        {
-            get
-            {
-                return chain_;
-            }
+        public Chain Chain {
+            get { return chain_; }
         }
 
 #if KEOKEN
-
-        public KeokenManager KeokenManager
-        {
-            get
-            {
-                return keokenManager_;
-            }
+        public KeokenManager KeokenManager {
+            get { return keokenManager_; }
         }
 #endif
 
@@ -138,20 +129,15 @@ namespace Knuth
         /// The node's network. Won't be valid until node starts running
         /// (i.e. Run or RunWait succeeded)
         /// </summary>
-        public NetworkType NetworkType
-        {
-            get
-            {
-                return NodeNative.executor_get_network(nativeInstance_);
-            }
+        public NetworkType NetworkType {
+            get { return NodeNative.executor_get_network(nativeInstance_); }
         }
 
         /// <summary>
         /// Initialize the local dabatase structure.
         /// </summary>
         /// <returns>True iif local chain init succeeded</returns>
-        public bool InitChain()
-        {
+        public bool InitChain() {
             Logger.Debug("Calling executor_initchain");
             return NodeNative.executor_initchain(nativeInstance_) != 0;
         }
@@ -162,14 +148,9 @@ namespace Knuth
         /// when the node actually starts running.
         /// </summary>
         /// <returns> Error code (0 = success) </returns>
-        public async Task<int> RunAsync()
-        {
-            return await TaskHelper.ToTask<int>(tcs =>
-            {
-                Run(i =>
-                {
-                    tcs.TrySetResult(i);
-                });   
+        public async Task<int> RunAsync() {
+            return await TaskHelper.ToTask<int>(tcs => {
+                Run(i => { tcs.TrySetResult(i); });   
             });
         }
 
@@ -180,8 +161,7 @@ namespace Knuth
         /// </summary>
         /// <param name="handler"> Callback which will be invoked when node starts running. </param>
         /// <returns> Error code (0 = success) </returns>
-        private void Run(Action<int> handler)
-        {
+        private void Run(Action<int> handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
             NodeNative.executor_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
@@ -194,12 +174,9 @@ namespace Knuth
         /// when the node actually starts running.
         /// </summary>
         /// <returns> Error code (0 = success) </returns>
-        public async Task<int> InitAndRunAsync()
-        {
-            return await TaskHelper.ToTask<int>(tcs =>
-            {
-                InitAndRun(i =>
-                {
+        public async Task<int> InitAndRunAsync() {
+            return await TaskHelper.ToTask<int>(tcs => {
+                InitAndRun(i => {
                     tcs.TrySetResult(i);
                 });
             });
@@ -212,20 +189,16 @@ namespace Knuth
         /// </summary>
         /// <param name="handler"> Callback which will be invoked when node starts running. </param>
         /// <returns> Error code (0 = success) </returns>
-        private void InitAndRun(Action<int> handler)
-        {
+        private void InitAndRun(Action<int> handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
             NodeNative.executor_init_and_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
         }
-
-
        
         /// <summary>
         /// Stops the node; that includes all activies, such as synchronization and networking.
         /// </summary>
-        public void Stop()
-        {
+        public void Stop() {
             NodeNative.executor_stop(nativeInstance_);
         }
 
@@ -335,9 +308,9 @@ namespace Knuth
                 {
                     chain_ = new Chain(NodeNative.executor_get_chain(nativeInstance_));
                     
-                    #if KEOKEN
-                        keokenManager_ = new KeokenManager(NodeNative.executor_get_keoken_manager(nativeInstance_));
-                    #endif 
+#if KEOKEN
+                    keokenManager_ = new KeokenManager(NodeNative.executor_get_keoken_manager(nativeInstance_));
+#endif 
                     
                     running_ = true;
                 }
