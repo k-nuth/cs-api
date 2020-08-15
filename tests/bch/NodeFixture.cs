@@ -2,24 +2,24 @@ using System;
 
 namespace Knuth.Tests
 {
-    public class ExecutorFixture : IDisposable
+    public class NodeFixture : IDisposable
     {
-        public ExecutorFixture()
+        public NodeFixture()
         {
-            Executor = new Executor("config/mainnet.cfg");
-            int initChainOk = Executor.InitAndRunAsync().GetAwaiter().GetResult();
+            Node = new Node("config/mainnet.cfg");
+            int initChainOk = Node.InitAndRunAsync().GetAwaiter().GetResult();
             if (initChainOk != 0)
             {
-                throw new InvalidOperationException("Executor::InitAndRunAsync failed, check log");
+                throw new InvalidOperationException("Node::InitAndRunAsync failed, check log");
             }
         }
 
-        public Executor Executor { get; }
+        public Node Node { get; }
      
         private void ReleaseUnmanagedResources()
         {
-            Executor.Stop();
-            Executor.Dispose();
+            Node.Stop();
+            Node.Dispose();
         }
 
         protected virtual void Dispose(bool disposing)
@@ -38,7 +38,7 @@ namespace Knuth.Tests
             GC.SuppressFinalize(this);
         }
 
-        ~ExecutorFixture()
+        ~NodeFixture()
         {
             Dispose(false);
         }

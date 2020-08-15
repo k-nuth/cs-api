@@ -3,19 +3,19 @@ using System.Runtime.InteropServices;
 
 namespace Knuth.Native
 {
-    internal static class ExecutorNative
+    internal static class NodeNative
     {
         //Delegates for callbacks
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void RunNodeHandler(IntPtr executor,IntPtr ctx, int error);
+        public delegate void RunNodeHandler(IntPtr node, IntPtr ctx, int error);
 
         //typedef int (*reorganize_handler_t)(chain_t, void*, error_code_t, uint64_t /*size_t*/, block_list_t, block_list_t);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int ReorganizeHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr blockList, IntPtr blockList2);
+        public delegate int ReorganizeHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr blockList, IntPtr blockList2);
 
         //typedef int (*transaction_handler_t)(chain_t, void*, error_code_t, transaction_t);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int TransactionHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction);
+        public delegate int TransactionHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction);
 
         //Functions
         [DllImport(Constants.KTH_C_LIBRARY)]
@@ -52,7 +52,7 @@ namespace Knuth.Native
         public static extern int /*bool*/ executor_stopped(IntPtr exec);
 
         [DllImport(Constants.KTH_C_LIBRARY, EntryPoint = "node_settings_get_network")]
-        public static extern NetworkType executor_get_network(IntPtr executor);
+        public static extern NetworkType executor_get_network(IntPtr node);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern int /*bool*/ executor_load_config_valid(IntPtr exec);

@@ -4,18 +4,18 @@ using Knuth.Keoken;
 
 namespace Tests.Bch.Keoken
 {
-    public class RegtestExecutorFixture : IDisposable
+    public class RegtestNodeFixture : IDisposable
     {
-        private readonly Executor exec_;
+        private readonly Node exec_;
         private readonly KeokenMemoryState state_ = new KeokenMemoryState();
 
-        public RegtestExecutorFixture()
+        public RegtestNodeFixture()
         {
-            exec_ = new Executor("config/regtest.cfg");
+            exec_ = new Node("config/regtest.cfg");
             int initChainOk = exec_.InitAndRunAsync().GetAwaiter().GetResult();
             if (initChainOk != 0)
             {
-                throw new InvalidOperationException("Executor::InitAndRunAsync failed, check log");
+                throw new InvalidOperationException("Node::InitAndRunAsync failed, check log");
             }
 
             //Add mined blocks containing Keoken Transactions
@@ -26,7 +26,7 @@ namespace Tests.Bch.Keoken
                     string hex = sr.ReadLine();
                     using (var b = new Block(1, hex))
                     {
-                        ErrorCode errCode = Executor.Chain.OrganizeBlockAsync(b).Result;
+                        ErrorCode errCode = Node.Chain.OrganizeBlockAsync(b).Result;
                         if (errCode != ErrorCode.Success && errCode != ErrorCode.DuplicateBlock)
                         {
                             throw new Exception("Error loading blocks:" + errCode);
@@ -41,7 +41,7 @@ namespace Tests.Bch.Keoken
             exec_.KeokenManager.InitializeFromBlockchain();
         }
 
-        public Executor Executor => exec_;
+        public Node Node => exec_;
 
         public IKeokenState State => state_;
 

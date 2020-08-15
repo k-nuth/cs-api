@@ -2,16 +2,14 @@
   <Target Name="GetKnuthCAPI">
 
     <Exec Command="conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config.zip" ContinueOnError="WarnAndContinue" />
-    <!-- <Exec Command="conan remote add kth https://api.bintray.com/conan/k-nuth/kth -f" ContinueOnError="WarnAndContinue" /> -->
-    <!-- <Exec Command="conan remote add tao https://api.bintray.com/conan/tao-cpp/tao -f" ContinueOnError="WarnAndContinue" /> -->
 
-    <Message Text="Knuth Channel:  $(CONAN_CHANNEL)"/>
-    <Message Text="Knuth Version:  $(CONAN_VERSION)"/>
-    <Message Text="Knuth Currency: $(CONAN_CURRENCY)"/>
-    <Message Text="Knuth March ID: $(CONAN_MARCH_ID)"/>
+    <Message Text="Knuth Channel:  $(KNUTH_CHANNEL)"/>
+    <Message Text="Knuth Version:  $(KNUTH_VERSION)"/>
+    <Message Text="Knuth Currency: $(KNUTH_CURRENCY)"/>
+    <Message Text="Knuth March ID: $(KNUTH_MARCH_ID)"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/$(CONAN_VERSION)@kth/$(CONAN_CHANNEL);[generators];cmake;[options];c-api:shared=True;c-api:currency=$(CONAN_CURRENCY);c-api:db=default;c-api:march_id=$(CONAN_MARCH_ID);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];c-api/$(KNUTH_VERSION)@kth/$(KNUTH_CHANNEL);[generators];cmake;[options];c-api:shared=True;c-api:currency=$(KNUTH_CURRENCY);c-api:db=default;c-api:march_id=$(KNUTH_MARCH_ID);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>

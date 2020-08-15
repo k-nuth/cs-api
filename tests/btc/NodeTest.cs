@@ -3,23 +3,23 @@
 namespace Knuth.Tests
 {
     [Collection("ChainCollection")]
-    public class ExecutorTest
+    public class NodeTest
     {
         [Fact]
         public void TestConfigValid()
         {
-            using (var exec = new Executor("config/valid.cfg"))
+            using (var exec_ = new Node("config/valid.cfg"))
             {
-                Assert.True(exec.IsLoadConfigValid); 
+                Assert.True(exec_.IsLoadConfigValid); 
             }
         }
 
         [Fact]
         public void TestConfigInvalid()
         {
-            using (var exec = new Executor("config/invalid.cfg"))
+            using (var exec_ = new Node("config/invalid.cfg"))
             {
-                Assert.False(exec.IsLoadConfigValid); 
+                Assert.False(exec_.IsLoadConfigValid); 
             }
         }
     }

@@ -27,24 +27,24 @@ namespace console
             {
                 Console.CancelKeyPress += OnSigInterrupt;
                 Log.Information("Initializing...");
-                using (var executor = new Executor("node.cfg"))
+                using (var node = new Knuth.Node("node.cfg"))
                 {
-                    var result = await executor.InitAndRunAsync();
+                    var result = await node.InitAndRunAsync();
                     if (result != 0)
                     {
-                        throw new ApplicationException("Executor::InitAndRunAsync failed; error code: " + result);
+                        throw new ApplicationException("Node::InitAndRunAsync failed; error code: " + result);
                     }
-                    executor.SubscribeToBlockChain(OnBlockArrived);
+                    node.SubscribeToBlockChain(OnBlockArrived);
                     Log.Information("Synchronizing local copy of the blockchain...");
                     running_ = true;
                     while (running_)
                     {
-                        var lastHeight = await executor.Chain.FetchLastHeightAsync();
+                        var lastHeight = await node.Chain.FetchLastHeightAsync();
                         Log.Information("Current height in local copy: " + lastHeight.Result);
                         await Task.Delay(5000);
                     }
                     Log.Information("Stopping node...");
-                    executor.Stop();
+                    node.Stop();
                     Log.Information("Shutting down node...");
                 }
             }

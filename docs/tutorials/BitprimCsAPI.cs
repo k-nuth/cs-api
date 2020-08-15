@@ -6,11 +6,11 @@ namespace Knuth.tutorials
     public class KnuthCsAPI : IKnuthCsAPI, IDisposable
     {
         private IChain chain_;
-        private readonly Executor executor_;
+        private readonly Node node_;
 
         public KnuthCsAPI(string nodeConfigFile)
         {
-            executor_ = new Executor(nodeConfigFile);
+            node_ = new Node(nodeConfigFile);
         }
 
         ~KnuthCsAPI()
@@ -40,12 +40,12 @@ namespace Knuth.tutorials
 
         public void StartNode()
         {
-            var result = executor_.InitAndRunAsync().Result;
+            var result = node_.InitAndRunAsync().Result;
             if (result != 0)
             {
-                throw new ApplicationException("Executor::InitAndRunAsync failed; error code: " + result);
+                throw new ApplicationException("Node::InitAndRunAsync failed; error code: " + result);
             }
-            chain_ = executor_.Chain;
+            chain_ = node_.Chain;
         }
 
         protected virtual void Dispose(bool disposing){
@@ -54,8 +54,8 @@ namespace Knuth.tutorials
                 //Release managed resources and call Dispose for member variables
             }   
             //Release unmanaged resources
-            executor_.Stop();
-            executor_.Dispose();
+            node_.Stop();
+            node_.Dispose();
         }
     }
 }

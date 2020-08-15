@@ -11,9 +11,9 @@ namespace Knuth
     /// <summary>
     /// Controls the execution of the Knuth bitcoin node.
     /// </summary>
-    public class Executor : IDisposable
+    public class Node : IDisposable
     {
-        private static readonly ILog Logger = LogProvider.For<Executor>();
+        private static readonly ILog Logger = LogProvider.For<Node>();
         /// <summary>
         /// Contains information about new blocks
         /// </summary>
@@ -37,16 +37,16 @@ namespace Knuth
         private KeokenManager keokenManager_;   
         #endif
         private readonly IntPtr nativeInstance_;
-        private readonly ExecutorNative.ReorganizeHandler internalBlockHandler_;
-        private readonly ExecutorNative.RunNodeHandler internalRunNodeHandler_;
-        private readonly ExecutorNative.TransactionHandler internalTxHandler_;
+        private readonly NodeNative.ReorganizeHandler internalBlockHandler_;
+        private readonly NodeNative.RunNodeHandler internalRunNodeHandler_;
+        private readonly NodeNative.TransactionHandler internalTxHandler_;
 
         private bool running_;
 
         /// <summary>
-        /// Create an executor object. Only for internal use, to instantiate delegates.
+        /// Create an node object. Only for internal use, to instantiate delegates.
         /// </summary>
-        private Executor()
+        private Node()
         {
             //TODO(fernando): create the delegate object only when it is necessary
             internalBlockHandler_ = InternalBlockHandler;
@@ -55,37 +55,37 @@ namespace Knuth
         }
 
         /// <summary>
-        /// Create executor. Does not init database or start execution yet.
+        /// Create node. Does not init database or start execution yet.
         /// </summary>
         /// <param name="configFile"> Path to configuration file. </param>
-        public Executor(string configFile) : this()
+        public Node(string configFile) : this()
         {
-            nativeInstance_ = ExecutorNative.executor_construct_fd(configFile, 0, 0);
+            nativeInstance_ = NodeNative.executor_construct_fd(configFile, 0, 0);
         }
 
         /// <summary> //TODO See BIT-20
-        /// Create executor. Does not init database or start execution yet.
+        /// Create node. Does not init database or start execution yet.
         /// </summary>
         /// <param name="configFile"> Path to configuration file. </param>
         /// <param name="stdOut"> File descriptor for redirecting standard output. </param>
         /// <param name="stdErr"> File descriptor for redirecting standard error output. </param>
-        // public Executor(string configFile, int stdOut, int stdErr)
+        // public Node(string configFile, int stdOut, int stdErr)
         // {
-        //     nativeInstance_ = ExecutorNative.executor_construct_fd(configFile, stdOut, stdErr);
+        //     nativeInstance_ = NodeNative.executor_construct_fd(configFile, stdOut, stdErr);
         // }
 
         /// <summary>
-        /// Create executor. Does not init database or start execution yet.
+        /// Create node. Does not init database or start execution yet.
         /// </summary>
         /// <param name="configFile"> Path to configuration file. </param>
         /// <param name="stdOut"> Handle for redirecting standard output. </param>
         /// <param name="stdErr"> Handle for redirecting standard output. </param>
-        public Executor(string configFile, IntPtr stdOut, IntPtr stdErr) : this()
+        public Node(string configFile, IntPtr stdOut, IntPtr stdErr) : this()
         {
-            nativeInstance_ = ExecutorNative.executor_construct_handles(configFile, stdOut, stdErr);
+            nativeInstance_ = NodeNative.executor_construct_handles(configFile, stdOut, stdErr);
         }
 
-        ~Executor()
+        ~Node()
         {
             Dispose(false);
         }
@@ -138,7 +138,7 @@ namespace Knuth
         {
             get
             {
-                return ExecutorNative.executor_get_network(nativeInstance_);
+                return NodeNative.executor_get_network(nativeInstance_);
             }
         }
 
@@ -149,7 +149,7 @@ namespace Knuth
         public bool InitChain()
         {
             Logger.Debug("Calling executor_initchain");
-            return ExecutorNative.executor_initchain(nativeInstance_) != 0;
+            return NodeNative.executor_initchain(nativeInstance_) != 0;
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Knuth
         {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
-            ExecutorNative.executor_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
+            NodeNative.executor_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
         }
 
 
@@ -212,7 +212,7 @@ namespace Knuth
         {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
-            ExecutorNative.executor_init_and_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
+            NodeNative.executor_init_and_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
         }
 
 
@@ -222,18 +222,18 @@ namespace Knuth
         /// </summary>
         public void Stop()
         {
-            ExecutorNative.executor_stop(nativeInstance_);
+            NodeNative.executor_stop(nativeInstance_);
         }
 
         /// <summary>
         /// Returns true if and only if the node is stopped
         /// </summary>
-        public bool IsStopped => ExecutorNative.executor_stopped(nativeInstance_) != 0;
+        public bool IsStopped => NodeNative.executor_stopped(nativeInstance_) != 0;
 
         /// <summary>
         /// Returns true if and only if and only if the config file is valid
         /// </summary>
-        public bool IsLoadConfigValid => ExecutorNative.executor_load_config_valid(nativeInstance_) != 0;
+        public bool IsLoadConfigValid => NodeNative.executor_load_config_valid(nativeInstance_) != 0;
 
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace Knuth
         {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
-            ExecutorNative.chain_subscribe_blockchain(nativeInstance_, Chain.NativeInstance, handlerPtr, internalBlockHandler_);
+            NodeNative.chain_subscribe_blockchain(nativeInstance_, Chain.NativeInstance, handlerPtr, internalBlockHandler_);
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace Knuth
         {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
-            ExecutorNative.chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, internalTxHandler_);
+            NodeNative.chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, internalTxHandler_);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -270,18 +270,18 @@ namespace Knuth
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            if(running_ && ExecutorNative.executor_stopped(nativeInstance_) != 0 )
+            if(running_ && NodeNative.executor_stopped(nativeInstance_) != 0 )
             {
-                ExecutorNative.executor_stop(nativeInstance_);
+                NodeNative.executor_stop(nativeInstance_);
             }
-            ExecutorNative.executor_destruct(nativeInstance_);
+            NodeNative.executor_destruct(nativeInstance_);
 
 #if KEOKEN
             keokenManager_?.Dispose();   
 #endif
         }
 
-        private static int InternalBlockHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing)
+        private static int InternalBlockHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing)
         {
             var handlerHandle = (GCHandle)context;
             var closed = false;
@@ -289,7 +289,7 @@ namespace Knuth
 
             try
             {
-                if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
+                if (NodeNative.executor_stopped(node) != 0 || error == ErrorCode.ServiceStopped)
                 {
                     handlerHandle.Free();
                     closed = true;
@@ -321,7 +321,7 @@ namespace Knuth
             }
         }
 
-        private  void InternalRunNodeHandler(IntPtr executor,IntPtr handlerPtr, int error)
+        private  void InternalRunNodeHandler(IntPtr node, IntPtr handlerPtr, int error)
         {
             var handlerHandle = (GCHandle)handlerPtr;
             var handler = (handlerHandle.Target as Action<int>);
@@ -329,10 +329,10 @@ namespace Knuth
             {
                 if (error == 0)
                 {
-                    chain_ = new Chain(ExecutorNative.executor_get_chain(nativeInstance_));
+                    chain_ = new Chain(NodeNative.executor_get_chain(nativeInstance_));
                     
                     #if KEOKEN
-                        keokenManager_ = new KeokenManager(ExecutorNative.executor_get_keoken_manager(nativeInstance_));
+                        keokenManager_ = new KeokenManager(NodeNative.executor_get_keoken_manager(nativeInstance_));
                     #endif 
                     
                     running_ = true;
@@ -345,7 +345,7 @@ namespace Knuth
             }
         }
 
-        private static int InternalTransactionHandler(IntPtr executor, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction)
+        private static int InternalTransactionHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction)
         {
             var handlerHandle = (GCHandle)context;
             var closed = false;
@@ -353,7 +353,7 @@ namespace Knuth
 
             try
             {
-                if (ExecutorNative.executor_stopped(executor) != 0 || error == ErrorCode.ServiceStopped)
+                if (NodeNative.executor_stopped(node) != 0 || error == ErrorCode.ServiceStopped)
                 {
                     handlerHandle.Free();
                     closed = true;
