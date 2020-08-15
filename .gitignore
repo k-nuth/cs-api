@@ -90,3 +90,4 @@ tests/btc/graph_info.json
 .tmp/
 build/bin/
 build/obj/
+tests/bch.keoken/obj/
