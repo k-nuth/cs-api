@@ -23,17 +23,17 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public async Task TestFetchLastHeight()
+        public async Task TestGetLastHeight()
         {
-            Tuple<ErrorCode, UInt64> errorAndHeight = await FetchLastHeight();
+            Tuple<ErrorCode, UInt64> errorAndHeight = await GetLastHeight();
             Assert.Equal(ErrorCode.Success, errorAndHeight.Item1);
         }
 
         [Fact]
-        public async Task TestFetchBlockHeaderByHeight()
+        public async Task TestGetBlockHeaderByHeight()
         {
             //https://blockchain.info/es/block-height/0
-            using (var ret = await nodeFixture_.Node.Chain.FetchBlockHeaderByHeightAsync(0))
+            using (var ret = await nodeFixture_.Node.Chain.GetBlockHeaderByHeightAsync(0))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 VerifyGenesisBlockHeader(ret.Result.BlockData);
@@ -41,11 +41,11 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public async Task TestFetchBlockHeaderByHash()
+        public async Task TestGetBlockHeaderByHash()
         {
             //https://blockchain.info/es/block-height/0
             byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            using (var ret = await nodeFixture_.Node.Chain.FetchBlockHeaderByHashAsync(hash))
+            using (var ret = await nodeFixture_.Node.Chain.GetBlockHeaderByHashAsync(hash))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 VerifyGenesisBlockHeader(ret.Result.BlockData);
@@ -53,10 +53,10 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public async Task TestFetchBlockByHeight()
+        public async Task TestGetBlockByHeight()
         {
             //https://blockchain.info/es/block-height/0
-            using (var ret = await nodeFixture_.Node.Chain.FetchBlockByHeightAsync(0))
+            using (var ret = await nodeFixture_.Node.Chain.GetBlockByHeightAsync(0))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 VerifyGenesisBlockHeader(ret.Result.BlockData.Header);
@@ -64,11 +64,11 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public async Task TestFetchBlockByHash()
+        public async Task TestGetBlockByHash()
         {
             //https://blockchain.info/es/block-height/0
             byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            using (var ret = await nodeFixture_.Node.Chain.FetchBlockByHashAsync(hash))
+            using (var ret = await nodeFixture_.Node.Chain.GetBlockByHashAsync(hash))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 VerifyGenesisBlockHeader(ret.Result.BlockData.Header);
@@ -78,24 +78,24 @@ namespace Knuth.Tests
 
 
         [Fact]
-        public async Task TestFetchBlockHeightAsync()
+        public async Task TestGetBlockHeightAsync()
         {
             //https://blockchain.info/es/block-height/0
             var hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            var ret = await nodeFixture_.Node.Chain.FetchBlockHeightAsync(hash);
+            var ret = await nodeFixture_.Node.Chain.GetBlockHeightAsync(hash);
 
             Assert.Equal(ErrorCode.Success, ret.ErrorCode);
             Assert.Equal<UInt64>(0, ret.Result);
         }
 
         [Fact]
-        public async Task TestFetchSpend()
+        public async Task TestGetSpend()
         {
-            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchSpend");
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestGetSpend");
 
             byte[] hash = Binary.HexStringToByteArray("0437cd7f8525ceed2324359c2d0ba26006d92d856a9c20fa0241106ee5a597c9");
             OutputPoint outputPoint = new OutputPoint(hash, 0);
-            var ret = await nodeFixture_.Node.Chain.FetchSpendAsync(outputPoint);
+            var ret = await nodeFixture_.Node.Chain.GetSpendAsync(outputPoint);
 
             Assert.Equal(ErrorCode.Success, ret.ErrorCode);
             Assert.NotNull(ret.Result);
@@ -104,11 +104,11 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public async Task TestFetchMerkleBlockByHash()
+        public async Task TestGetMerkleBlockByHash()
         {
             //https://blockchain.info/es/block-height/0
             byte[] hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            using (var ret = await nodeFixture_.Node.Chain.FetchMerkleBlockByHashAsync(hash))
+            using (var ret = await nodeFixture_.Node.Chain.GetMerkleBlockByHashAsync(hash))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 Assert.NotNull(ret.Result.BlockData);
@@ -119,10 +119,10 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public async Task TestFetchMerkleBlockByHeight()
+        public async Task TestGetMerkleBlockByHeight()
         {
             //https://blockchain.info/es/block-height/0
-            using (var ret = await nodeFixture_.Node.Chain.FetchMerkleBlockByHeightAsync(0))
+            using (var ret = await nodeFixture_.Node.Chain.GetMerkleBlockByHeightAsync(0))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 Assert.NotNull(ret.Result.BlockData);
@@ -133,9 +133,9 @@ namespace Knuth.Tests
         }
         /*
         [Fact]
-        public async Task TestFetchStealth()
+        public async Task TestGetStealth()
         {
-            using (var ret = await nodeFixture_.Node.Chain.FetchStealthAsync(new Binary("1111"), 0))
+            using (var ret = await nodeFixture_.Node.Chain.GetStealthAsync(new Binary("1111"), 0))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 Assert.Equal<UInt64>(0, ret.Result.Count);
@@ -145,11 +145,11 @@ namespace Knuth.Tests
         */
 
         [Fact]
-        public async Task TestFetchTransactionGenesis()
+        public async Task TestGetTransactionGenesis()
         {
             string txHashHexStr = "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b";
             byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
-            using (var ret = await nodeFixture_.Node.Chain.FetchTransactionAsync(hash, true))
+            using (var ret = await nodeFixture_.Node.Chain.GetTransactionAsync(hash, true))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 Assert.Equal<UInt64>(0, ret.Result.TxPosition.BlockHeight);
@@ -161,13 +161,13 @@ namespace Knuth.Tests
 
 
         [Fact]
-        public async Task TestFetchTransaction()
+        public async Task TestGetTransaction()
         {
-            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransaction");
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestGetTransaction");
 
             string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
             byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
-            using (var ret = await nodeFixture_.Node.Chain.FetchTransactionAsync(hash, true))
+            using (var ret = await nodeFixture_.Node.Chain.GetTransactionAsync(hash, true))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 Assert.Equal<UInt64>(FIRST_NON_COINBASE_BLOCK_HEIGHT, ret.Result.TxPosition.BlockHeight);
@@ -178,13 +178,13 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public async Task TestFetchTransactionPosition()
+        public async Task TestGetTransactionPosition()
         {
-            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchTransactionPosition");
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestGetTransactionPosition");
 
             string txHashHexStr = "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16";
             byte[] hash = Binary.HexStringToByteArray(txHashHexStr);
-            var ret = await nodeFixture_.Node.Chain.FetchTransactionPositionAsync(hash, true);
+            var ret = await nodeFixture_.Node.Chain.GetTransactionPositionAsync(hash, true);
 
             Assert.Equal(ErrorCode.Success, ret.ErrorCode);
             Assert.Equal<UInt64>(1, ret.Result.Index);
@@ -192,13 +192,13 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public async Task TestFetchBlockByHash170()
+        public async Task TestGetBlockByHash170()
         {
-            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestFetchBlockByHash170");
+            await WaitUntilBlock(FIRST_NON_COINBASE_BLOCK_HEIGHT, "TestGetBlockByHash170");
 
             //https://blockchain.info/es/block-height/170 - 2
             byte[] hash = Binary.HexStringToByteArray("00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee");
-            using (var ret = await nodeFixture_.Node.Chain.FetchBlockByHashAsync(hash))
+            using (var ret = await nodeFixture_.Node.Chain.GetBlockByHashAsync(hash))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 Assert.NotNull(ret.Result);
@@ -270,9 +270,9 @@ namespace Knuth.Tests
             Assert.Equal("2009-01-12 03:30:25", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
-        private async Task<Tuple<ErrorCode, UInt64>> FetchLastHeight()
+        private async Task<Tuple<ErrorCode, UInt64>> GetLastHeight()
         {
-            var ret = await nodeFixture_.Node.Chain.FetchLastHeightAsync();
+            var ret = await nodeFixture_.Node.Chain.GetLastHeightAsync();
             return new Tuple<ErrorCode, UInt64>(ret.ErrorCode, ret.Result);
         }
 
@@ -370,7 +370,7 @@ namespace Knuth.Tests
             while (error == 0 && height < desiredHeight)
             {
                 Console.WriteLine("--->" + callerName + " checking height: " + height);
-                var errorAndHeight = await FetchLastHeight();
+                var errorAndHeight = await GetLastHeight();
                 error = errorAndHeight.Item1;
                 height = errorAndHeight.Item2;
                 if (height < desiredHeight)
@@ -383,10 +383,10 @@ namespace Knuth.Tests
 
 
         [Fact]
-        public async Task FetchBlockHeaderByHashTxSizesAsync()
+        public async Task GetBlockHeaderByHashTxSizesAsync()
         {
             var hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-            using (var ret = await nodeFixture_.Node.Chain.FetchBlockHeaderByHashTxSizesAsync(hash))
+            using (var ret = await nodeFixture_.Node.Chain.GetBlockHeaderByHashTxSizesAsync(hash))
             {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 VerifyGenesisBlockHeader(ret.Result.Header.BlockData);
@@ -394,9 +394,9 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public async Task FetchBlockByHeightHashTimestampAsync()
+        public async Task GetBlockByHeightHashTimestampAsync()
         {
-            var ret = await nodeFixture_.Node.Chain.FetchBlockByHeightHashTimestampAsync(0);
+            var ret = await nodeFixture_.Node.Chain.GetBlockByHeightHashTimestampAsync(0);
             Assert.Equal(ErrorCode.Success, ret.ErrorCode);
             Assert.Equal("2009-01-03 18:15:05", ret.Result.BlockTimestamp.ToString("yyyy-MM-dd HH:mm:ss"));
         }
@@ -415,7 +415,7 @@ namespace Knuth.Tests
         }
         /*
         [Fact]
-        public async Task FetchBlockLocatorAsync()
+        public async Task GetBlockLocatorAsync()
         {
             using (var list = new BlockIndexList())
             {
@@ -423,7 +423,7 @@ namespace Knuth.Tests
                 list.Add(2);
                 list.Add(3);
 
-                using (DisposableApiCallResult<HeaderReader> ret = await nodeFixture_.Node.Chain.FetchBlockLocatorAsync(list))
+                using (DisposableApiCallResult<HeaderReader> ret = await nodeFixture_.Node.Chain.GetBlockLocatorAsync(list))
                 {
                     Assert.True(ret.Result.IsValid);
                 }
@@ -432,30 +432,30 @@ namespace Knuth.Tests
         }*/
 
        /* [Fact]
-        public async Task FetchCompactBlockByHashAsync()
+        public async Task GetCompactBlockByHashAsync()
         {
             var hash = Binary.HexStringToByteArray("000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943");
-            using (var ret = await nodeFixture_.Node.Chain.FetchCompactBlockByHashAsync(hash))
+            using (var ret = await nodeFixture_.Node.Chain.GetCompactBlockByHashAsync(hash))
             {
                 Assert.True(ret.Result.BlockData.IsValid); 
             }
         }*/
         /*
         [Fact]
-        public async Task FetchCompactBlockByHeightAsync()
+        public async Task GetCompactBlockByHeightAsync()
         {
-            using (var ret = await nodeFixture_.Node.Chain.FetchCompactBlockByHeightAsync(1))
+            using (var ret = await nodeFixture_.Node.Chain.GetCompactBlockByHeightAsync(1))
             {
                 Assert.True(ret.Result.BlockData.IsValid); 
             }
         }*/
 
         [Fact]
-        public async Task FetchHistoryAsync()
+        public async Task GetHistoryAsync()
         {
             using (var address = new PaymentAddress("bchtest:qp7d6x2weeca9fn6eakwvgd9ryq8g6h0tuyks75rt7"))
             {
-                using (var ret = await nodeFixture_.Node.Chain.FetchHistoryAsync(address,10,1))
+                using (var ret = await nodeFixture_.Node.Chain.GetHistoryAsync(address,10,1))
                 {
                     Assert.True(ret.Result.Count >= 0); 
                 }
@@ -464,10 +464,10 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public async Task FetchConfirmedTransactionsAsync()
+        public async Task GetConfirmedTransactionsAsync()
         {
             using (var address = new PaymentAddress("bchtest:qp7d6x2weeca9fn6eakwvgd9ryq8g6h0tuyks75rt7"))
-            using (var ret = await nodeFixture_.Node.Chain.FetchConfirmedTransactionsAsync(address,10,1))
+            using (var ret = await nodeFixture_.Node.Chain.GetConfirmedTransactionsAsync(address,10,1))
             {
                 Assert.True(ret.Result.Count >= 0); 
             }
@@ -476,7 +476,7 @@ namespace Knuth.Tests
         [Fact]
         public async Task OrganizeBlockAsync()
         {
-            using (var block = await nodeFixture_.Node.Chain.FetchBlockByHeightAsync(0))
+            using (var block = await nodeFixture_.Node.Chain.GetBlockByHeightAsync(0))
             {
                 var aa = block.Result.BlockData.IsValid;
                 var bb = block.Result.BlockData.IsValidMerkleRoot;
@@ -488,7 +488,7 @@ namespace Knuth.Tests
         [Fact]
         public async Task OrganizeTransactionAsync()
         {
-            using (var block = await nodeFixture_.Node.Chain.FetchBlockByHeightAsync(0))
+            using (var block = await nodeFixture_.Node.Chain.GetBlockByHeightAsync(0))
             {
                 var ret = await nodeFixture_.Node.Chain.OrganizeTransactionAsync((Transaction)block.Result.BlockData.GetNthTransaction(0));
                 Assert.True(ret == ErrorCode.CoinbaseTransaction);
@@ -498,7 +498,7 @@ namespace Knuth.Tests
         [Fact]
         public async Task ValidateTransactionAsync()
         {
-            using (var block = await nodeFixture_.Node.Chain.FetchBlockByHeightAsync(0))
+            using (var block = await nodeFixture_.Node.Chain.GetBlockByHeightAsync(0))
             {
                 var ret = await nodeFixture_.Node.Chain.ValidateTransactionAsync((Transaction)block.Result.BlockData.GetNthTransaction(0));
                 Assert.True(ret.ErrorCode == ErrorCode.CoinbaseTransaction);

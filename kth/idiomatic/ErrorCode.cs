@@ -2,13 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-namespace Knuth
-{
+namespace Knuth {
     /// <summary>
     /// Error codes returned by the C API
     /// </summary>
-    public enum ErrorCode
-    {
+    public enum ErrorCode {
         // general codes
         /// <summary>
         /// The operation finished without errors

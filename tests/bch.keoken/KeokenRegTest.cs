@@ -83,9 +83,9 @@ namespace Tests.Bch.Keoken
         }
 
         [Fact]
-        public async Task TestFetchLastHeightAsync()
+        public async Task TestGetLastHeightAsync()
         {
-            var height = await fixture_.Node.Chain.FetchLastHeightAsync();
+            var height = await fixture_.Node.Chain.GetLastHeightAsync();
             Assert.Equal<UInt64>(106, height.Result);
         }
 

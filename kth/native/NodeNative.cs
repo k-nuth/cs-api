@@ -7,7 +7,8 @@ using System.Runtime.InteropServices;
 
 namespace Knuth.Native
 {
-    internal static class NodeNative
+    // internal 
+    public static class NodeNative
     {
         //Delegates for callbacks
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -32,6 +33,10 @@ namespace Knuth.Native
         public static extern void executor_init_and_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
+        public static extern void executor_init_run_and_wait_for_signal(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
+
+
+        [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr executor_construct_fd([MarshalAs(UnmanagedType.LPStr)]string path, int sout, int serr);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
@@ -42,6 +47,16 @@ namespace Knuth.Native
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void executor_stop(IntPtr exec);
+
+        [DllImport(Constants.KTH_C_LIBRARY)]
+        public static extern void executor_signal_stop(IntPtr exec);
+
+        [DllImport(Constants.KTH_C_LIBRARY)]
+        public static extern void executor_close(IntPtr exec);
+
+        [DllImport(Constants.KTH_C_LIBRARY)]
+        public static extern void executor_close_on_new_thread(IntPtr exec);
+
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void chain_subscribe_blockchain(IntPtr exec, IntPtr chain, IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)]ReorganizeHandler handler);
@@ -61,12 +76,13 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern int /*bool*/ executor_load_config_valid(IntPtr exec);
 
-        #if KEOKEN
+        [DllImport(Constants.KTH_C_LIBRARY)]
+        public static extern void executor_print_thread_id();
 
+#if KEOKEN
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr executor_get_keoken_manager(IntPtr exec);
-
-        #endif
+#endif
 
         //TODO Add when networking interface is ready
         //[DllImport(Constants.KTH_C_LIBRARY)]

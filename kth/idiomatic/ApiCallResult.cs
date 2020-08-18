@@ -64,7 +64,7 @@ namespace Knuth
     }
 
     /// <summary>
-    /// Return type for FetchBlockHeaderByHashTxSizesAsync
+    /// Return type for GetBlockHeaderByHashTxSizesAsync
     /// </summary>
     public sealed class GetBlockHeaderByHashTxSizeResult : IDisposable
     {
@@ -94,7 +94,7 @@ namespace Knuth
     }
 
     /// <summary>
-    /// Return type for FetchBlockByHeightHashTimestampAsync
+    /// Return type for GetBlockByHeightHashTimestampAsync
     /// </summary>
     public class GetBlockHashTimestampResult
     {
@@ -111,7 +111,7 @@ namespace Knuth
 
  
     /// <summary>
-    /// Return type for FetchTransactionAsync
+    /// Return type for GetTransactionAsync
     /// </summary>
     public class GetTxDataResult : IDisposable
     {

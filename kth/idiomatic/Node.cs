@@ -7,16 +7,16 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Knuth.Logging;
 using Knuth.Native;
+
 #if KEOKEN
 using Knuth.Keoken;
 #endif
-namespace Knuth
-{
+
+namespace Knuth {
     /// <summary>
     /// Controls the execution of the Knuth bitcoin node.
     /// </summary>
-    public class Node : IDisposable
-    {
+    public class Node : IDisposable {
         private static readonly ILog Logger = LogProvider.For<Node>();
         /// <summary>
         /// Contains information about new blocks
@@ -46,12 +46,12 @@ namespace Knuth
         private readonly NodeNative.TransactionHandler internalTxHandler_;
 
         private bool running_;
+        private bool stopped_;
 
         /// <summary>
         /// Create an node object. Only for internal use, to instantiate delegates.
         /// </summary>
-        private Node()
-        {
+        private Node() {
             //TODO(fernando): create the delegate object only when it is necessary
             internalBlockHandler_ = InternalBlockHandler;
             internalRunNodeHandler_ = InternalRunNodeHandler;
@@ -59,16 +59,17 @@ namespace Knuth
         }
 
         /// <summary>
-        /// Create node. Does not init database or start execution yet.
+        /// Create node object. Does not init database or start execution yet.
         /// </summary>
         /// <param name="configFile"> Path to configuration file. </param>
-        public Node(string configFile) : this()
+        public Node(string configFile) 
+            : this() 
         {
-            nativeInstance_ = NodeNative.executor_construct_fd(configFile, 0, 0);
+            nativeInstance_ = NodeNative.executor_construct_fd(configFile, -1, -1);
         }
 
         /// <summary> //TODO See BIT-20
-        /// Create node. Does not init database or start execution yet.
+        /// Create node object. Does not init database or start execution yet.
         /// </summary>
         /// <param name="configFile"> Path to configuration file. </param>
         /// <param name="stdOut"> File descriptor for redirecting standard output. </param>
@@ -84,18 +85,17 @@ namespace Knuth
         /// <param name="configFile"> Path to configuration file. </param>
         /// <param name="stdOut"> Handle for redirecting standard output. </param>
         /// <param name="stdErr"> Handle for redirecting standard output. </param>
-        public Node(string configFile, IntPtr stdOut, IntPtr stdErr) : this()
+        public Node(string configFile, IntPtr stdOut, IntPtr stdErr) 
+            : this() 
         {
             nativeInstance_ = NodeNative.executor_construct_handles(configFile, stdOut, stdErr);
         }
 
-        ~Node()
-        {
+        ~Node() {
             Dispose(false);
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -103,12 +103,8 @@ namespace Knuth
         /// <summary>
         /// Returns true iif the current network is a testnet.
         /// </summary>
-        public bool UseTestnetRules
-        {
-            get
-            {
-                return NetworkType == NetworkType.Testnet;
-            }
+        public bool UseTestnetRules {
+            get { return NetworkType == NetworkType.Testnet; }
         }
 
         /// <summary>
@@ -133,39 +129,61 @@ namespace Knuth
             get { return NodeNative.executor_get_network(nativeInstance_); }
         }
 
-        /// <summary>
-        /// Initialize the local dabatase structure.
-        /// </summary>
-        /// <returns>True iif local chain init succeeded</returns>
-        public bool InitChain() {
-            Logger.Debug("Calling executor_initchain");
-            return NodeNative.executor_initchain(nativeInstance_) != 0;
-        }
+        // /// <summary>
+        // /// Initialize the local dabatase structure.
+        // /// </summary>
+        // /// <returns>True iif local chain init succeeded</returns>
+        // public bool InitChain() {
+        //     Logger.Debug("Calling executor_initchain");
+        //     return NodeNative.executor_initchain(nativeInstance_) != 0;
+        // }
 
-        /// <summary>
-        /// Starts running the node; blockchain starts synchronizing (downloading).
-        /// The call returns right away, and the handler is invoked
-        /// when the node actually starts running.
-        /// </summary>
-        /// <returns> Error code (0 = success) </returns>
-        public async Task<int> RunAsync() {
-            return await TaskHelper.ToTask<int>(tcs => {
-                Run(i => { tcs.TrySetResult(i); });   
-            });
-        }
+        // /// <summary>
+        // /// Starts running the node; blockchain starts synchronizing (downloading).
+        // /// The call returns right away, and the handler is invoked
+        // /// when the node actually starts running.
+        // /// </summary>
+        // /// <returns> Error code (0 = success) </returns>
+        // public async Task<int> RunAsync() {
+        //     return await TaskHelper.ToTask<int>(tcs => {
+        //         Run(i => { tcs.TrySetResult(i); });   
+        //     });
+        // }
 
-        /// <summary>
-        /// Starts running the node; blockchain starts synchronizing (downloading).
-        /// The call returns right away, and the handler is invoked
-        /// when the node actually starts running.
-        /// </summary>
-        /// <param name="handler"> Callback which will be invoked when node starts running. </param>
-        /// <returns> Error code (0 = success) </returns>
-        private void Run(Action<int> handler) {
-            var handlerHandle = GCHandle.Alloc(handler);
-            var handlerPtr = (IntPtr)handlerHandle;
-            NodeNative.executor_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
-        }
+        // /// <summary>
+        // /// Starts running the node; blockchain starts synchronizing (downloading).
+        // /// The call returns right away, and the handler is invoked
+        // /// when the node actually starts running.
+        // /// </summary>
+        // /// <param name="handler"> Callback which will be invoked when node starts running. </param>
+        // /// <returns> Error code (0 = success) </returns>
+        // private void Run(Action<int> handler) {
+        //     var handlerHandle = GCHandle.Alloc(handler);
+        //     var handlerPtr = (IntPtr)handlerHandle;
+        //     NodeNative.executor_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
+        // }
+
+        // /// <summary>
+        // /// Initialize if necessary and starts running the node; blockchain starts synchronizing (downloading).
+        // /// The call returns right away, and the handler is invoked
+        // /// when the node actually starts running.
+        // /// </summary>
+        // /// <returns> Error code (0 = success) </returns>
+        // public async Task<int> InitAndRunAsync() {
+        //     Console.WriteLine("InitAndRunAsync executor_print_thread_id()      1");
+        //     Knuth.Native.NodeNative.executor_print_thread_id();
+
+        //     return await TaskHelper.ToTask<int>(tcs => {
+        //         Console.WriteLine("InitAndRunAsync executor_print_thread_id()      2");
+        //         Knuth.Native.NodeNative.executor_print_thread_id();
+        //         InitAndRun(i => {
+        //             Console.WriteLine("InitAndRunAsync executor_print_thread_id()      3");
+        //             Knuth.Native.NodeNative.executor_print_thread_id();
+
+        //             tcs.TrySetResult(i);
+        //         });
+        //     });
+        // }
 
 
         /// <summary>
@@ -174,32 +192,69 @@ namespace Knuth
         /// when the node actually starts running.
         /// </summary>
         /// <returns> Error code (0 = success) </returns>
-        public async Task<int> InitAndRunAsync() {
-            return await TaskHelper.ToTask<int>(tcs => {
-                InitAndRun(i => {
-                    tcs.TrySetResult(i);
-                });
+        public async Task<ErrorCode> LaunchAsync() {
+            var completionSource = new TaskCompletionSource<ErrorCode>();
+            InitAndRun(ec => {
+                completionSource.TrySetResult(ec);
             });
+            return await completionSource.Task;
         }
 
-        /// <summary>
-        /// Initialize if necessary and starts running the node; blockchain starts synchronizing (downloading).
-        /// The call returns right away, and the handler is invoked
-        /// when the node actually starts running.
-        /// </summary>
-        /// <param name="handler"> Callback which will be invoked when node starts running. </param>
-        /// <returns> Error code (0 = success) </returns>
-        private void InitAndRun(Action<int> handler) {
+        // public async Task<int> InitAndRunVariantAsync() {
+        //     // Console.WriteLine("InitAndRunAsync executor_print_thread_id()      1");
+        //     // Knuth.Native.NodeNative.executor_print_thread_id();
+
+        //     var completionSource = new TaskCompletionSource<int>();
+        //     InitAndRunVariant(i => {
+        //         // Console.WriteLine("InitAndRunAsync executor_print_thread_id()      3");
+        //         // Knuth.Native.NodeNative.executor_print_thread_id();
+        //         completionSource.TrySetResult(i);
+        //     });
+        //     // return await completionSource.Task;
+        //     return await completionSource.Task.ConfigureAwait(false);
+        //     // return await completionSource.Task.ConfigureAwait(true);
+        // }
+
+
+        // /// <summary>
+        // /// Initialize if necessary and starts running the node; blockchain starts synchronizing (downloading).
+        // /// The call returns right away, and the handler is invoked
+        // /// when the node actually starts running.
+        // /// </summary>
+        // /// <param name="handler"> Callback which will be invoked when node starts running. </param>
+        // /// <returns> Error code (0 = success) </returns>
+        // private void InitAndRun(Action<int> handler) {
+        //     // Console.WriteLine("InitAndRun executor_print_thread_id()      1");
+        //     // Knuth.Native.NodeNative.executor_print_thread_id();
+
+        //     var handlerHandle = GCHandle.Alloc(handler);
+        //     var handlerPtr = (IntPtr)handlerHandle;
+        //     NodeNative.executor_init_and_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
+        // }
+
+        //TODO(fernando): summary
+        private void InitAndRun(Action<ErrorCode> handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
-            NodeNative.executor_init_and_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
+            Task.Run( () => {
+                NodeNative.executor_init_run_and_wait_for_signal(nativeInstance_, handlerPtr, internalRunNodeHandler_);
+                stopped_ = true;
+            });
         }
        
+
         /// <summary>
         /// Stops the node; that includes all activies, such as synchronization and networking.
         /// </summary>
         public void Stop() {
             NodeNative.executor_stop(nativeInstance_);
+        }
+
+        /// <summary>
+        /// Closes the node; that includes all activies, such as synchronization and networking.
+        /// </summary>
+        public void Close() {
+            NodeNative.executor_close(nativeInstance_);
         }
 
         /// <summary>
@@ -222,8 +277,7 @@ namespace Knuth
         ///     - Incoming (Blocklist): Incoming blocks (added to the blockchain).
         ///     - Outgoing (Blocklist): Outgoing blocks (removed from the blockchain).
         /// </param>
-        public void SubscribeToBlockChain(BlockHandler handler)
-        {
+        public void SubscribeToBlockChain(BlockHandler handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
             NodeNative.chain_subscribe_blockchain(nativeInstance_, Chain.NativeInstance, handlerPtr, internalBlockHandler_);
@@ -233,41 +287,37 @@ namespace Knuth
         /// Be notified (called back) when the local copy of the blockchain is updated at the transaction level.
         /// </summary>
         /// <param name="handler"> Callback which will be called when a transaction is added. </param>
-        public void SubscribeToTransaction(TransactionHandler handler)
-        {
+        public void SubscribeToTransaction(TransactionHandler handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
             NodeNative.chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, internalTxHandler_);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
-            //Release unmanaged resources
-            if(running_ && NodeNative.executor_stopped(nativeInstance_) != 0 )
-            {
-                NodeNative.executor_stop(nativeInstance_);
+
+            NodeNative.executor_signal_stop(nativeInstance_); 
+
+            while (running_ &&  ! stopped_) {
+                System.Threading.Thread.Sleep(100);
             }
             NodeNative.executor_destruct(nativeInstance_);
+
 
 #if KEOKEN
             keokenManager_?.Dispose();   
 #endif
         }
 
-        private static int InternalBlockHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing)
-        {
+        private static int InternalBlockHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing) {
             var handlerHandle = (GCHandle)context;
             var closed = false;
             var keepSubscription = false;
 
-            try
-            {
-                if (NodeNative.executor_stopped(node) != 0 || error == ErrorCode.ServiceStopped)
-                {
+            try {
+                if (NodeNative.executor_stopped(node) != 0 || error == ErrorCode.ServiceStopped) {
                     handlerHandle.Free();
                     closed = true;
                     return 0;
@@ -282,30 +332,23 @@ namespace Knuth
                 incomingBlocks?.Dispose();
                 outgoingBlocks?.Dispose();
 
-                if ( ! keepSubscription )
-                {
+                if ( ! keepSubscription ) {
                     handlerHandle.Free();
                     closed = true;
                 }
                 return keepSubscription ? 1 : 0;
-            }
-            finally
-            {
-                if (!keepSubscription && !closed)
-                {
+            } finally {
+                if ( ! keepSubscription && ! closed) {
                     handlerHandle.Free();
                 }
             }
         }
 
-        private  void InternalRunNodeHandler(IntPtr node, IntPtr handlerPtr, int error)
-        {
+        private  void InternalRunNodeHandler(IntPtr node, IntPtr handlerPtr, int error) {
             var handlerHandle = (GCHandle)handlerPtr;
-            var handler = (handlerHandle.Target as Action<int>);
-            try
-            {
-                if (error == 0)
-                {
+            var handler = (handlerHandle.Target as Action<ErrorCode>);
+            try {
+                if (error == 0) {
                     chain_ = new Chain(NodeNative.executor_get_chain(nativeInstance_));
                     
 #if KEOKEN
@@ -313,25 +356,21 @@ namespace Knuth
 #endif 
                     
                     running_ = true;
+                    stopped_ = false;
                 }
-                handler(error);
-            }
-            finally
-            {
+                handler((ErrorCode)error);
+            } finally {
                 handlerHandle.Free();
             }
         }
 
-        private static int InternalTransactionHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction)
-        {
+        private static int InternalTransactionHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction) {
             var handlerHandle = (GCHandle)context;
             var closed = false;
             var keepSubscription = false;
 
-            try
-            {
-                if (NodeNative.executor_stopped(node) != 0 || error == ErrorCode.ServiceStopped)
-                {
+            try {
+                if (NodeNative.executor_stopped(node) != 0 || error == ErrorCode.ServiceStopped) {
                     handlerHandle.Free();
                     closed = true;
                     return 0;
@@ -342,21 +381,16 @@ namespace Knuth
                 
                 keepSubscription = handler(error, newTransaction);
                 
-                if( ! keepSubscription )
-                {
+                if ( ! keepSubscription ) {
                     handlerHandle.Free();
                     closed = true;
                 }
                 return keepSubscription ? 1 : 0;
-            }
-            finally
-            {
-                if (!keepSubscription && !closed)
-                {
+            } finally {
+                if ( ! keepSubscription && ! closed) {
                     handlerHandle.Free();
                 }       
             }
         }
     }
-
 }

@@ -20,17 +20,17 @@ namespace Knuth.tutorials
 
         public IBlock GetBlockByHeight(UInt64 height)
         {
-            return chain_.FetchBlockByHeightAsync(height).Result.Result.BlockData;
+            return chain_.GetBlockByHeightAsync(height).Result.Result.BlockData;
         }
 
         public ITransaction GetTransactionByHash(string txHash)
         {
-            return chain_.FetchTransactionAsync(Binary.HexStringToByteArray(txHash), true).Result.Result.Tx;
+            return chain_.GetTransactionAsync(Binary.HexStringToByteArray(txHash), true).Result.Result.Tx;
         }
 
         public UInt64 GetCurrentBlockchainHeight()
         {
-            return chain_.FetchLastHeightAsync().Result.Result;
+            return chain_.GetLastHeightAsync().Result.Result;
         }
 
         public void Dispose(){

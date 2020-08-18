@@ -9,24 +9,21 @@ namespace Knuth
 {
     internal static class TaskHelper
     {
-        public static async Task<T> ToTask<T>(Action<TaskCompletionSource<T>> action)
-        {
+        public static async Task<T> ToTask<T>(Action<TaskCompletionSource<T>> action) {
             var tcs = new TaskCompletionSource<T>();
 
-            try
-            {
+            try {
                 action(tcs);   
             }
-            catch (OperationCanceledException)
-            {
+            catch (OperationCanceledException) {
                 tcs.TrySetCanceled();
             }
-            catch (Exception exc)
-            {
+            catch (Exception exc) {
                 tcs.TrySetException(exc);
             }
 
             return await tcs.Task.ConfigureAwait(false);
+            // return await tcs.Task;
         }
     }
 }
