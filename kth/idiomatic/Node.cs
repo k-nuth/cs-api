@@ -277,7 +277,7 @@ namespace Knuth {
         ///     - Incoming (Blocklist): Incoming blocks (added to the blockchain).
         ///     - Outgoing (Blocklist): Outgoing blocks (removed from the blockchain).
         /// </param>
-        public void SubscribeToBlockChain(BlockHandler handler) {
+        public void SubscribeBlockNotifications(BlockHandler handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
             NodeNative.chain_subscribe_blockchain(nativeInstance_, Chain.NativeInstance, handlerPtr, internalBlockHandler_);
@@ -287,7 +287,7 @@ namespace Knuth {
         /// Be notified (called back) when the local copy of the blockchain is updated at the transaction level.
         /// </summary>
         /// <param name="handler"> Callback which will be called when a transaction is added. </param>
-        public void SubscribeToTransaction(TransactionHandler handler) {
+        public void SubscribeTransactionNotifications(TransactionHandler handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
             NodeNative.chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, internalTxHandler_);
@@ -311,7 +311,7 @@ namespace Knuth {
 #endif
         }
 
-        private static int InternalBlockHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, UInt64 u, IntPtr incoming, IntPtr outgoing) {
+        private static int InternalBlockHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, UInt64 forkHeight, IntPtr incoming, IntPtr outgoing) {
             var handlerHandle = (GCHandle)context;
             var closed = false;
             var keepSubscription = false;
@@ -327,7 +327,7 @@ namespace Knuth {
                 var outgoingBlocks = outgoing != IntPtr.Zero? new BlockList(outgoing) : null;
                 var handler = (handlerHandle.Target as BlockHandler);
                 
-                keepSubscription = handler(error, u, incomingBlocks, outgoingBlocks);
+                keepSubscription = handler(error, forkHeight, incomingBlocks, outgoingBlocks);
             
                 incomingBlocks?.Dispose();
                 outgoingBlocks?.Dispose();

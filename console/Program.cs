@@ -20,7 +20,7 @@
 //                 return;
 //             }
 
-//             node.SubscribeToBlockChain(OnBlockArrived);
+//             node.SubscribeBlockNotifications(OnBlockArrived);
 //             Log.Information("Synchronizing local copy of the blockchain...");
 //             running_ = true;
 //             while (running_) {

@@ -9,16 +9,12 @@ using Serilog;
 
 namespace console
 {
-    public class Program
-    {
-        private static bool running_;
-
-
+    public class Program {
         static async Task Main(string[] args) {
             using (var node = new Knuth.Node("node.cfg")) {
                 await node.LaunchAsync();
                 Console.WriteLine("Knuth node has been launched");
-                node.SubscribeToBlockChain(OnBlockArrived);
+                node.SubscribeBlockNotifications(OnBlockArrived);
 
                 var height = await node.Chain.GetLastHeightAsync();
                 Console.WriteLine("Current height in local copy: " + height.Result);
@@ -32,7 +28,7 @@ namespace console
             }
         }
 
-        private static bool OnBlockArrived(ErrorCode errorCode, UInt64 u, BlockList incoming, BlockList outgoing) {
+        private static bool OnBlockArrived(ErrorCode errorCode, UInt64 height, BlockList incoming, BlockList outgoing) {
             Console.WriteLine($"{incoming.Count} blocks arrived!");
             return true;
         }
