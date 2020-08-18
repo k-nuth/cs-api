@@ -11,10 +11,10 @@ namespace Knuth.Tests
         public NodeFixture()
         {
             Node = new Node("config/mainnet.cfg");
-            int initChainOk = Node.InitAndRunAsync().GetAwaiter().GetResult();
+            int initChainOk = Node.LaunchAsync().GetAwaiter().GetResult();
             if (initChainOk != 0)
             {
-                throw new InvalidOperationException("Node::InitAndRunAsync failed, check log");
+                throw new InvalidOperationException("Node::LaunchAsync failed, check log");
             }
         }
 

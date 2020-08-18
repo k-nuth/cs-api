@@ -129,63 +129,6 @@ namespace Knuth {
             get { return NodeNative.executor_get_network(nativeInstance_); }
         }
 
-        // /// <summary>
-        // /// Initialize the local dabatase structure.
-        // /// </summary>
-        // /// <returns>True iif local chain init succeeded</returns>
-        // public bool InitChain() {
-        //     Logger.Debug("Calling executor_initchain");
-        //     return NodeNative.executor_initchain(nativeInstance_) != 0;
-        // }
-
-        // /// <summary>
-        // /// Starts running the node; blockchain starts synchronizing (downloading).
-        // /// The call returns right away, and the handler is invoked
-        // /// when the node actually starts running.
-        // /// </summary>
-        // /// <returns> Error code (0 = success) </returns>
-        // public async Task<int> RunAsync() {
-        //     return await TaskHelper.ToTask<int>(tcs => {
-        //         Run(i => { tcs.TrySetResult(i); });   
-        //     });
-        // }
-
-        // /// <summary>
-        // /// Starts running the node; blockchain starts synchronizing (downloading).
-        // /// The call returns right away, and the handler is invoked
-        // /// when the node actually starts running.
-        // /// </summary>
-        // /// <param name="handler"> Callback which will be invoked when node starts running. </param>
-        // /// <returns> Error code (0 = success) </returns>
-        // private void Run(Action<int> handler) {
-        //     var handlerHandle = GCHandle.Alloc(handler);
-        //     var handlerPtr = (IntPtr)handlerHandle;
-        //     NodeNative.executor_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
-        // }
-
-        // /// <summary>
-        // /// Initialize if necessary and starts running the node; blockchain starts synchronizing (downloading).
-        // /// The call returns right away, and the handler is invoked
-        // /// when the node actually starts running.
-        // /// </summary>
-        // /// <returns> Error code (0 = success) </returns>
-        // public async Task<int> InitAndRunAsync() {
-        //     Console.WriteLine("InitAndRunAsync executor_print_thread_id()      1");
-        //     Knuth.Native.NodeNative.executor_print_thread_id();
-
-        //     return await TaskHelper.ToTask<int>(tcs => {
-        //         Console.WriteLine("InitAndRunAsync executor_print_thread_id()      2");
-        //         Knuth.Native.NodeNative.executor_print_thread_id();
-        //         InitAndRun(i => {
-        //             Console.WriteLine("InitAndRunAsync executor_print_thread_id()      3");
-        //             Knuth.Native.NodeNative.executor_print_thread_id();
-
-        //             tcs.TrySetResult(i);
-        //         });
-        //     });
-        // }
-
-
         /// <summary>
         /// Initialize if necessary and starts running the node; blockchain starts synchronizing (downloading).
         /// The call returns right away, and the handler is invoked
@@ -194,46 +137,14 @@ namespace Knuth {
         /// <returns> Error code (0 = success) </returns>
         public async Task<ErrorCode> LaunchAsync() {
             var completionSource = new TaskCompletionSource<ErrorCode>();
-            InitAndRun(ec => {
+            Launch(ec => {
                 completionSource.TrySetResult(ec);
             });
             return await completionSource.Task;
         }
 
-        // public async Task<int> InitAndRunVariantAsync() {
-        //     // Console.WriteLine("InitAndRunAsync executor_print_thread_id()      1");
-        //     // Knuth.Native.NodeNative.executor_print_thread_id();
-
-        //     var completionSource = new TaskCompletionSource<int>();
-        //     InitAndRunVariant(i => {
-        //         // Console.WriteLine("InitAndRunAsync executor_print_thread_id()      3");
-        //         // Knuth.Native.NodeNative.executor_print_thread_id();
-        //         completionSource.TrySetResult(i);
-        //     });
-        //     // return await completionSource.Task;
-        //     return await completionSource.Task.ConfigureAwait(false);
-        //     // return await completionSource.Task.ConfigureAwait(true);
-        // }
-
-
-        // /// <summary>
-        // /// Initialize if necessary and starts running the node; blockchain starts synchronizing (downloading).
-        // /// The call returns right away, and the handler is invoked
-        // /// when the node actually starts running.
-        // /// </summary>
-        // /// <param name="handler"> Callback which will be invoked when node starts running. </param>
-        // /// <returns> Error code (0 = success) </returns>
-        // private void InitAndRun(Action<int> handler) {
-        //     // Console.WriteLine("InitAndRun executor_print_thread_id()      1");
-        //     // Knuth.Native.NodeNative.executor_print_thread_id();
-
-        //     var handlerHandle = GCHandle.Alloc(handler);
-        //     var handlerPtr = (IntPtr)handlerHandle;
-        //     NodeNative.executor_init_and_run(nativeInstance_, handlerPtr, internalRunNodeHandler_);
-        // }
-
         //TODO(fernando): summary
-        private void InitAndRun(Action<ErrorCode> handler) {
+        private void Launch(Action<ErrorCode> handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
             Task.Run( () => {
@@ -242,7 +153,6 @@ namespace Knuth {
             });
         }
        
-
         /// <summary>
         /// Stops the node; that includes all activies, such as synchronization and networking.
         /// </summary>

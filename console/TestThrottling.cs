@@ -15,9 +15,9 @@
 //         static async Task DoSomething(Node node)  {
 //             var result = await node.LaunchAsync();
 //             if (result != ErrorCode.Success) {
-//                 Log.Error($"Node::InitAndRunAsync failed; error code: {result}");
+//                 Log.Error($"Node::LaunchAsync failed; error code: {result}");
 //                 return;
-//                 // throw new ApplicationException($"Node::InitAndRunAsync failed; error code: {result}");
+//                 // throw new ApplicationException($"Node::LaunchAsync failed; error code: {result}");
 //             }
 //         }
 

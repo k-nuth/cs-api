@@ -16,10 +16,10 @@ namespace Tests.Bch.Keoken
         public RegtestNodeFixture()
         {
             exec_ = new Node("config/regtest.cfg");
-            int initChainOk = exec_.InitAndRunAsync().GetAwaiter().GetResult();
+            int initChainOk = exec_.LaunchAsync().GetAwaiter().GetResult();
             if (initChainOk != 0)
             {
-                throw new InvalidOperationException("Node::InitAndRunAsync failed, check log");
+                throw new InvalidOperationException("Node::LaunchAsync failed, check log");
             }
 
             //Add mined blocks containing Keoken Transactions
