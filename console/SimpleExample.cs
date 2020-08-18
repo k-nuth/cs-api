@@ -11,24 +11,20 @@ namespace console
 {
     public class Program
     {
-        private static bool running_;
-
-
         static async Task Main(string[] args) {
             using (var node = new Knuth.Node("node.cfg")) {
                 await node.LaunchAsync();
-                Console.WriteLine("Knuth node has been launched");
+                Console.WriteLine("Knuth node has been launched.");
                 node.SubscribeToBlockChain(OnBlockArrived);
 
                 var height = await node.Chain.GetLastHeightAsync();
                 Console.WriteLine("Current height in local copy: " + height.Result);
 
                 if (node.Chain.IsStale) {
-                    Log.Information("Chain is doing IBD");
+                    Log.Information("Knuth is doing IBD");
                 }
 
                 await DiscoverThePowerOfKnuth(node);
-                Console.WriteLine("Shutting down node...");
             }
         }
 
