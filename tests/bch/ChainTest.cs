@@ -221,7 +221,7 @@ namespace Knuth.Tests
                 outgoingBlocks = outgoing;
                 handlerDone.Set();
             };
-            nodeFixture_.Node.Chain.SubscribeToBlockChain(handler);
+            nodeFixture_.Node.Chain.SubscribeBlockNotifications(handler);
             handlerDone.WaitOne();
             //Get the block from another service in order to cross-validate these
             Assert.NotNull(incomingBlocks);

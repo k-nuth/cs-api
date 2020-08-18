@@ -20,7 +20,7 @@
 //                 return;
 //             }
 
-//             node.SubscribeToBlockChain(OnBlockArrived);
+//             node.SubscribeBlockNotifications(OnBlockArrived);
 //             Log.Information("Synchronizing local copy of the blockchain...");
 //             running_ = true;
 //             while (running_) {
@@ -37,29 +37,33 @@
 //             }
 //         } 
 
-//         static async Task Main(string[] args) {
-//             string configFile = "node.cfg";
+// static async Task Main(string[] args) {
+//     string configFile = "node.cfg";
 
-//             var log = new LoggerConfiguration()
-//                 .MinimumLevel.Debug()
-//                 .WriteTo.ColoredConsole(outputTemplate: "{Timestamp:HH:mm} [{Level}] {Message}{NewLine}{Exception}")
-//                 .CreateLogger();
-                
-//             Log.Logger = log;
+//     var log = new LoggerConfiguration()
+//         .MinimumLevel.Debug()
+//         .WriteTo.ColoredConsole(outputTemplate: "{Timestamp:HH:mm} [{Level}] {Message}{NewLine}{Exception}")
+//         .CreateLogger();
+        
+//     Log.Logger = log;
 
-//             try {
-//                 Console.CancelKeyPress += OnSigInterrupt;
-//                 Log.Information("Initializing...");
-//                 using (var node = new Knuth.Node(configFile)) {
-//                     await DoSomething(node);
-//                     Log.Information("Shutting down node...");
-//                 }
-//             } catch (Exception ex) {
-//                 Log.Error(ex,"Error detected");
-//             }
-//             Log.CloseAndFlush();
-//             Log.Information("Node shutdown OK!");
+//     try {
+//         Console.CancelKeyPress += OnSigInterrupt;
+//         Log.Information("Initializing...");
+//         using (var node = new Knuth.Node(configFile)) {
+//             await DoSomething(node);
+//             Log.Information("Shutting down node...");
 //         }
+//     } catch (Exception ex) {
+//         Log.Error(ex,"Error detected");
+//     }
+//     Log.CloseAndFlush();
+//     Log.Information("Node shutdown OK!");
+// }
+// private static bool OnBlockArrived(ErrorCode errorCode, UInt64 u, BlockList incoming, BlockList outgoing) {
+//     Log.Information("Block received!");
+//     return true;
+// }
 
 //         private static void OnSigInterrupt(object sender, ConsoleCancelEventArgs args) {
 //             Log.Information("Stop signal detected.");
@@ -67,9 +71,5 @@
 //             running_ = false;
 //         }
 
-//         private static bool OnBlockArrived(ErrorCode errorCode, UInt64 u, BlockList incoming, BlockList outgoing) {
-//             Log.Information("Block received!");
-//             return true;
-//         }
 //     }
 // }

@@ -5,32 +5,43 @@
 using System;
 using System.Threading.Tasks;
 using Knuth;
-using Serilog;
 
 namespace console
 {
-    public class Program
-    {
+    public class Program {
         static async Task Main(string[] args) {
             using (var node = new Knuth.Node("node.cfg")) {
                 await node.LaunchAsync();
                 Console.WriteLine("Knuth node has been launched.");
-                node.SubscribeToBlockChain(OnBlockArrived);
+                node.SubscribeBlockNotifications(OnBlockArrived);
 
                 var height = await node.Chain.GetLastHeightAsync();
-                Console.WriteLine("Current height in local copy: " + height.Result);
+                Console.WriteLine($"Current height in local copy: {height.Result}");
 
                 if (node.Chain.IsStale) {
-                    Log.Information("Knuth is doing IBD");
+                    Console.WriteLine("Knuth is doing IBD.");
                 }
 
                 await DiscoverThePowerOfKnuth(node);
             }
         }
 
-        private static bool OnBlockArrived(ErrorCode errorCode, UInt64 u, BlockList incoming, BlockList outgoing) {
+        private static bool OnBlockArrived(ErrorCode errorCode, UInt64 height, BlockList incoming, BlockList outgoing) {
             Console.WriteLine($"{incoming.Count} blocks arrived!");
             return true;
+        }
+
+
+
+
+
+
+
+
+
+
+        public static async Task DiscoverThePowerOfKnuth(Node node) {
+
         }
     }
 }
