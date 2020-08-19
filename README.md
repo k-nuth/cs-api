@@ -1,4 +1,4 @@
-# Knuth C# binding
+# Knuth C#/.NET library
 
 C# binding for the Knuth API.
 
