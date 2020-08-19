@@ -145,7 +145,6 @@ class Build : NukeBuild
 
 //         DotNetCoreTest("./tests/bch", settings);
 //         DotNetCoreTest("./tests/btc", settings);
-//         DotNetCoreTest("./tests/bch.keoken", settings);
 //     });
 
 }

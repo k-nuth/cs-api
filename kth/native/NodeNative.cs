@@ -79,15 +79,9 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void executor_print_thread_id();
 
-#if KEOKEN
-        [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr executor_get_keoken_manager(IntPtr exec);
-#endif
-
-        //TODO Add when networking interface is ready
+        //TODO(fernando): Add when networking interface is ready
         //[DllImport(Constants.KTH_C_LIBRARY)]
         //public static extern IntPtr executor_get_p2p(IntPtr exec);
-
     }
 
 }

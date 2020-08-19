@@ -18,13 +18,12 @@ var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
 var conanChannel = System.IO.File.ReadAllText("./kth/conan/conan_channel").Trim();
 var conanVersion = System.IO.File.ReadAllText("./kth/conan/conan_version").Trim();
 
-void UpdateConan(string pathTarget, string currency, bool keoken, string marchId)
+void UpdateConan(string pathTarget, string currency, string marchId)
 {
     var fileTarget = System.IO.File.ReadAllText("./kth/build/Common.targets");
     fileTarget = fileTarget.Replace("$(KNUTH_CHANNEL)", conanChannel);
     fileTarget = fileTarget.Replace("$(KNUTH_VERSION)", conanVersion);
     fileTarget = fileTarget.Replace("$(KNUTH_CURRENCY)", currency);
-    fileTarget = fileTarget.Replace("$(KNUTH_KEOKEN)", keoken ? "True" : "False");
     fileTarget = fileTarget.Replace("$(KNUTH_MARCH_ID)", marchId);
     System.IO.File.WriteAllText(pathTarget,fileTarget);
 }
@@ -39,7 +38,6 @@ Task("Clean")
         CleanDirectory("./console/bin");
         CleanDirectory("./tests/bch/bin");
         CleanDirectory("./tests/btc/bin");
-        // CleanDirectory("./tests/bch.keoken/bin");
        
         if (DirectoryExists(outputDir))
         {
@@ -147,7 +145,6 @@ Task("Build")
 
 //         DotNetCoreTest("./tests/bch", settings);
 //         DotNetCoreTest("./tests/btc", settings);
-//         DotNetCoreTest("./tests/bch.keoken", settings);
 //     });
 
 Task("Package")

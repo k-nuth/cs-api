@@ -8,10 +8,6 @@ using System.Threading.Tasks;
 using Knuth.Logging;
 using Knuth.Native;
 
-#if KEOKEN
-using Knuth.Keoken;
-#endif
-
 namespace Knuth {
     /// <summary>
     /// Controls the execution of the Knuth bitcoin node.
@@ -37,9 +33,6 @@ namespace Knuth {
         public delegate bool TransactionHandler(ErrorCode errorCode, Transaction newTx);
 
         private Chain chain_;
-        #if KEOKEN
-        private KeokenManager keokenManager_;   
-        #endif
         private readonly IntPtr nativeInstance_;
         private readonly NodeNative.ReorganizeHandler internalBlockHandler_;
         private readonly NodeNative.RunNodeHandler internalRunNodeHandler_;
@@ -114,12 +107,6 @@ namespace Knuth {
         public Chain Chain {
             get { return chain_; }
         }
-
-#if KEOKEN
-        public KeokenManager KeokenManager {
-            get { return keokenManager_; }
-        }
-#endif
 
         /// <summary>
         /// The node's network. Won't be valid until node starts running
@@ -214,11 +201,6 @@ namespace Knuth {
                 System.Threading.Thread.Sleep(100);
             }
             NodeNative.executor_destruct(nativeInstance_);
-
-
-#if KEOKEN
-            keokenManager_?.Dispose();   
-#endif
         }
 
         private static int InternalBlockHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, UInt64 forkHeight, IntPtr incoming, IntPtr outgoing) {
@@ -260,11 +242,6 @@ namespace Knuth {
             try {
                 if (error == 0) {
                     chain_ = new Chain(NodeNative.executor_get_chain(nativeInstance_));
-                    
-#if KEOKEN
-                    keokenManager_ = new KeokenManager(NodeNative.executor_get_keoken_manager(nativeInstance_));
-#endif 
-                    
                     running_ = true;
                     stopped_ = false;
                 }
