@@ -1,20 +1,30 @@
+# Copyright (c) 2016-2020 Knuth Project developers.
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 language: csharp  
 sudo: required  
-dist: trusty
+dist: focal
 
-branches:
-  only:
-  - dev
-  - /^v\d+\.\d+\.\d+$/
-  - /^release-\d+\.\d+\.\d+$/
-  - /^feature-ci-.+$/
-  - /^feature_ci_.+$/
+# branches:
+#   only:
+#   - dev
+#   - /^v\d+\.\d+\.\d+$/
+#   - /^release-\d+\.\d+\.\d+$/
+#   - /^feature-ci-.+$/
+#   - /^feature_ci_.+$/
 
 configuration:
 - Release
 
 env:  
   - CLI_VERSION=latest
+
+cache:
+  timeout: 600
+  ccache: true
+  directories:
+    - $HOME/Library/Caches/Homebrew
 
 addons:  
   apt:
@@ -29,18 +39,16 @@ addons:
 linux: &linux
    os: linux
    sudo: required
+   dist: focal
    language: python
-   python: "3.6"
+   python: "3.7"
 
 
 osx: &osx
    os: osx
    language: csharp
 
-mono:
-  - latest
-
-dotnet: 2.1.300
+dotnet: 3.1.401
 
 matrix:
    include:
@@ -49,18 +57,21 @@ matrix:
           apt:
             sources:
               - ubuntu-toolchain-r-test
-            packages:
-              - g++-4.9
-              - gcc-4.9
-        env: UPDATE_DOCS=false MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+            # packages:
+            #   - g++-4.9
+            #   - gcc-4.9
+        # env: UPDATE_DOCS=false MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
       #- <<: *linux
       #  compiler: gcc 
       #  env: UPDATE_DOCS=true
 
       - <<: *osx
-        osx_image: xcode8.3
-        env: TRAVIS_PYTHON_VERSION=3.6 PYTHON_FULL_VERSION=3.6.2
+        osx_image: xcode11
+        env: TRAVIS_PYTHON_VERSION=3.7 PYTHON_FULL_VERSION=3.7.6
+
+before_cache:
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew cleanup; fi
 
 before_install:
   - |
@@ -99,33 +110,40 @@ install:
       
       pip install --upgrade pip
       pip install conan_package_tools --upgrade
-      pip install conan --upgrade
+      # pip install conan --upgrade
+      pip install kthbuild --upgrade
       pip install wheel --upgrade
       pip install twine --upgrade
       conan user
       
     
       if test "$TRAVIS_OS_NAME" != "osx"; then
-        # Install .NET Core 2.x
-        curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-        sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-        sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
+        # Install .NET Core 3.1
+
+        wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+        sudo dpkg -i packages-microsoft-prod.deb
         sudo apt-get update -y
-        sudo apt-get install dotnet-sdk-2.0.2 -y
-        sudo apt-get install -qq g++-4.9
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
+        sudo apt-get install -y apt-transport-https
+        sudo apt-get update -y
+        sudo apt-get install -y dotnet-sdk-3.1
+
+        # curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+        # sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+        # sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
+        # sudo apt-get update -y
+        # sudo apt-get install dotnet-sdk-2.0.2 -y
+
+
+        # sudo apt-get install -qq g++-4.9
+        # sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
+        # sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
+
+        # sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9.3 90
+        # sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9.3 90
+
         gcc --version
         g++ --version
         sudo ldconfig
-
-        # Install Mono, only to run cake
-        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-        sudo apt install apt-transport-https
-        echo "deb https://download.mono-project.com/repo/ubuntu stable-trusty main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-        sudo apt update
-        sudo apt install mono-devel
-
       fi
 
     #else
@@ -153,20 +171,20 @@ script:
       ./build.sh
 
     #else
-      #cd bitprim/docs
+      #cd kth/docs
       #doxygen Doxyfile
       #moxygen --anchors ./xml/
       
-      #git clone https://github.com/bitprim/bitprim-docs.git
+      #git clone https://github.com/k-nuth/docs.git
       #ls
-      #yes | cp -rf api.md ./bitprim/docs/bitprim-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
+      #yes | cp -rf api.md ./kth/docs/kth-docs/docs/developer_guide/dotnet/dotnet-interface-details.md
 
-      #cd bitprim-docs 
+      #cd kth-docs 
       #git checkout master
       
       #git add docs/developer_guide/dotnet/dotnet-interface-details.md
       #git commit -m "Updated Dotnet docs" || :
-      #git remote add origin-commit https://${GH_TOKEN}@github.com/bitprim/bitprim-docs.git > /dev/null 2>&1
+      #git remote add origin-commit https://${GH_TOKEN}@github.com/k-nuth/docs.git > /dev/null 2>&1
       #git push --quiet --set-upstream origin-commit master  || true
     
     fi

@@ -1,12 +1,12 @@
-#tool "nuget:?package=GitVersion.CommandLine&version=4.0.0-beta0012"
+// #tool "nuget:?package=GitVersion.CommandLine&version=5.1.3"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-var solutionName = "bitprim.sln";
+var solutionName = "kth.sln";
 
-var bitprimProjectBCH = "./bitprim-bch/bitprim-bch.csproj";
-var bitprimProjectBTC = "./bitprim-btc/bitprim-btc.csproj";
+var kthProjectBCH = "./kth-bch/kth-bch.csproj";
+var kthProjectBTC = "./kth-btc/kth-btc.csproj";
 var outputDir = "./build/";
 
 var platform = "/property:Platform=x64";
@@ -15,16 +15,16 @@ var publishToNuget = EnvironmentVariable("PUBLISH_TO_NUGET") ?? "false";
 
 var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
 
-var conanChannel = System.IO.File.ReadAllText("./bitprim/conan/conan_channel").Trim();
-var conanVersion = System.IO.File.ReadAllText("./bitprim/conan/conan_version").Trim();
+var conanChannel = System.IO.File.ReadAllText("./kth/conan/conan_channel").Trim();
+var conanVersion = System.IO.File.ReadAllText("./kth/conan/conan_version").Trim();
 
-void UpdateConan(string pathTarget, string currency, bool keoken)
+void UpdateConan(string pathTarget, string currency, string marchId)
 {
-    var fileTarget = System.IO.File.ReadAllText("./bitprim/build/Common.targets");
-    fileTarget = fileTarget.Replace("$(CONAN_CHANNEL)", conanChannel);
-    fileTarget = fileTarget.Replace("$(CONAN_VERSION)", conanVersion);
-    fileTarget = fileTarget.Replace("$(CONAN_CURRENCY)", currency);
-    fileTarget = fileTarget.Replace("$(CONAN_KEOKEN)", keoken ? "True" : "False");
+    var fileTarget = System.IO.File.ReadAllText("./kth/build/Common.targets");
+    fileTarget = fileTarget.Replace("$(KNUTH_CHANNEL)", conanChannel);
+    fileTarget = fileTarget.Replace("$(KNUTH_VERSION)", conanVersion);
+    fileTarget = fileTarget.Replace("$(KNUTH_CURRENCY)", currency);
+    fileTarget = fileTarget.Replace("$(KNUTH_MARCH_ID)", marchId);
     System.IO.File.WriteAllText(pathTarget,fileTarget);
 }
 
@@ -33,12 +33,11 @@ Task("Clean")
         
         Information("Cleaning... ");
 
-        CleanDirectory("./bitprim-bch/bin");
-        CleanDirectory("./bitprim-btc/bin");
-        CleanDirectory("./bitprim.console/bin");
-        CleanDirectory("./bitprim.tests.bch/bin");
-        CleanDirectory("./bitprim.tests.btc/bin");
-        // CleanDirectory("./bitprim.tests.bch.keoken/bin");
+        CleanDirectory("./kth-bch/bin");
+        CleanDirectory("./kth-btc/bin");
+        CleanDirectory("./console/bin");
+        CleanDirectory("./tests/bch/bin");
+        CleanDirectory("./tests/btc/bin");
        
         if (DirectoryExists(outputDir))
         {
@@ -54,31 +53,60 @@ Task("Restore")
         DotNetCoreRestore(solutionName);
     });
 
-GitVersion versionInfo = null;
+// GitVersion versionInfo = null;
+// Task("Version")
+//     .Does(() => {
+        
+//         GitVersion(new GitVersionSettings{
+//             UpdateAssemblyInfo = false,
+//             OutputType = GitVersionOutput.BuildServer
+//         });
+        
+//         versionInfo = GitVersion(new GitVersionSettings{ 
+//             OutputType = GitVersionOutput.Json });
+
+//         Information("Version calculated: " + versionInfo.MajorMinorPatch);
+//         Information("Version Nuget calculated: " + versionInfo.NuGetVersion);
+
+//     });
+
+string version = null;
 Task("Version")
     .Does(() => {
-        
-        GitVersion(new GitVersionSettings{
-            UpdateAssemblyInfo = false,
-            OutputType = GitVersionOutput.BuildServer
-        });
-        
-        versionInfo = GitVersion(new GitVersionSettings{ OutputType = GitVersionOutput.Json });        
 
-        Information("Version calculated: " + versionInfo.MajorMinorPatch);
-        Information("Version Nuget calculated: " + versionInfo.NuGetVersion);
+        Information("Running python get_version.py");
 
+        using(var process = StartAndReturnProcess("python", new ProcessSettings { 
+                    Arguments = "get_version.py",
+                    RedirectStandardOutput = true }))
+        {
+            process.WaitForExit();
+            // This should output 0 as valid arguments supplied
+            Information("python get_version.py exit code: {0}", process.GetExitCode());
+
+            var output = process.GetStandardOutput();
+            foreach (var o in output) {
+                Information("o: {0}", o);
+                version = o;
+                break;
+            }
+        }
+        Information("Version calculated: " + version);
+
+        // Information("Version calculated: " + versionInfo.MajorMinorPatch);
+        // Information("Version Nuget calculated: " + versionInfo.NuGetVersion);
     });
+
 
 
 Task("ConanVersion")
     .Does(() => {
-        
-        Information("Conan Channel " + conanChannel);
-        Information("Conan Version " + conanVersion);
+        Information("Knuth Channel " + conanChannel);
+        Information("Knuth Version " + conanVersion);
 
-        UpdateConan("./bitprim-bch/build/Common.targets","BCH", false);
-        UpdateConan("./bitprim-btc/build/Common.targets","BTC", false);
+        //TODO(fernando): march_id is hardcoded, see what to do.
+        UpdateConan("./kth-bch/build/Common.targets","BCH", false, "4fZKi37a595hP");
+        UpdateConan("./kth-btc/build/Common.targets","BTC", false, "4fZKi37a595hP");
     });
 
 
@@ -89,9 +117,16 @@ Task("Build")
     .IsDependentOn("Restore")
     .Does(() => {
 
+        // MSBuild(solutionName, new MSBuildSettings {
+        //     ArgumentCustomization = args => args.Append(platform 
+        //                                     + " /p:AssemblyVersion=" + versionInfo.MajorMinorPatch
+        //                                     )
+        //     ,Configuration = configuration
+        // });
+
         MSBuild(solutionName, new MSBuildSettings {
             ArgumentCustomization = args => args.Append(platform 
-                                            + " /p:AssemblyVersion=" + versionInfo.MajorMinorPatch
+                                            + " /p:AssemblyVersion=" + version
                                             )
             ,Configuration = configuration
         });
@@ -108,9 +143,8 @@ Task("Build")
 //                 Configuration = configuration
 //             };
 
-//         DotNetCoreTest("./bitprim.tests.bch", settings);
-//         DotNetCoreTest("./bitprim.tests.btc", settings);
-//         // DotNetCoreTest("./bitprim.tests.bch.keoken", settings);
+//         DotNetCoreTest("./tests/bch", settings);
+//         DotNetCoreTest("./tests/btc", settings);
 //     });
 
 Task("Package")
@@ -120,21 +154,27 @@ Task("Package")
 
         var settings = new DotNetCorePackSettings
         {
-            ArgumentCustomization = args=> args.Append(platform + " /p:PackageVersion=" + versionInfo.NuGetVersion),
+            // ArgumentCustomization = args=> args.Append(platform + " /p:PackageVersion=" + versionInfo.NuGetVersion),
+            ArgumentCustomization = args=> args.Append(platform + " /p:PackageVersion=" + version),
             OutputDirectory = outputDir,
             NoBuild = true,
             NoRestore = true,
             Configuration = configuration
         };
 
-        DotNetCorePack(bitprimProjectBCH, settings);
-        DotNetCorePack(bitprimProjectBTC, settings);
+        DotNetCorePack(kthProjectBCH, settings);
+        DotNetCorePack(kthProjectBTC, settings);
+
+        // System.IO.File.WriteAllLines(outputDir + "artifacts", new[]{
+        //     "nuget:kth-bch." + versionInfo.NuGetVersion + ".nupkg",
+        //     "nuget:kth-btc." + versionInfo.NuGetVersion + ".nupkg"
+        // });
 
         System.IO.File.WriteAllLines(outputDir + "artifacts", new[]{
-            "nuget:bitprim-bch." + versionInfo.NuGetVersion + ".nupkg",
-            "nuget:bitprim-btc." + versionInfo.NuGetVersion + ".nupkg"
+            "nuget:kth-bch." + version + ".nupkg",
+            "nuget:kth-btc." + version + ".nupkg"
         });
-        
+
     });
 
 Task("UpdateVersionInfo")
