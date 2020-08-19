@@ -39,7 +39,7 @@ Task("Clean")
         CleanDirectory("./console/bin");
         CleanDirectory("./tests/bch/bin");
         CleanDirectory("./tests/btc/bin");
-        CleanDirectory("./tests/bch.keoken/bin");
+        // CleanDirectory("./tests/bch.keoken/bin");
        
         if (DirectoryExists(outputDir))
         {
@@ -135,23 +135,24 @@ Task("Build")
 
     });
 
-Task("Test")
-    .IsDependentOn("Build")
-    .Does(() => {
+// Task("Test")
+//     .IsDependentOn("Build")
+//     .Does(() => {
 
-         var settings = new DotNetCoreTestSettings
-            {
-                ArgumentCustomization = args=> args.Append(platform + " -f netcoreapp2.0"),
-                Configuration = configuration
-            };
+//          var settings = new DotNetCoreTestSettings
+//             {
+//                 ArgumentCustomization = args=> args.Append(platform + " -f netcoreapp2.0"),
+//                 Configuration = configuration
+//             };
 
-        DotNetCoreTest("./tests/bch", settings);
-        DotNetCoreTest("./tests/btc", settings);
-        DotNetCoreTest("./tests/bch.keoken", settings);
-    });
+//         DotNetCoreTest("./tests/bch", settings);
+//         DotNetCoreTest("./tests/btc", settings);
+//         DotNetCoreTest("./tests/bch.keoken", settings);
+//     });
 
 Task("Package")
-    .IsDependentOn("Test")
+    // .IsDependentOn("Test")
+    .IsDependentOn("Build")
     .Does(() => {
 
         var settings = new DotNetCorePackSettings
