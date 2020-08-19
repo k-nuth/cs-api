@@ -3,7 +3,8 @@
   <Import Project="..\..\kth-bch\build\Common.targets" />
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
+    <!-- <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks> -->
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Platforms>AnyCPU;x64</Platforms>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>

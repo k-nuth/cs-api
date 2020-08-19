@@ -1,3 +1,7 @@
+// Copyright (c) 2016-2020 Knuth Project developers.
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 using Knuth;
 using System;
 using System.Threading.Tasks;
@@ -25,20 +29,20 @@ namespace Knuth
         /// Given a block height, retrieve only block hash and timestamp, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
-        Task<ApiCallResult<GetBlockHashTimestampResult>> FetchBlockByHeightHashTimestampAsync(UInt64 height);
+        Task<ApiCallResult<GetBlockHashTimestampResult>> GetBlockByHeightHashTimestampAsync(UInt64 height);
 
         /// <summary>
         /// Given a transaction hash, it fetches the height and position inside the block, asynchronously.
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
-        Task<ApiCallResult<GetTxPositionResult>> FetchTransactionPositionAsync(byte[] txHash, bool requireConfirmed);
+        Task<ApiCallResult<GetTxPositionResult>> GetTransactionPositionAsync(byte[] txHash, bool requireConfirmed);
 
         /// <summary>
-        /// Fetch the transaction input which spends the indicated output, asynchronously.
+        /// Get the transaction input which spends the indicated output, asynchronously.
         /// </summary>
         /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
-        Task<ApiCallResult<IPoint>> FetchSpendAsync(OutputPoint outputPoint);
+        Task<ApiCallResult<IPoint>> GetSpendAsync(OutputPoint outputPoint);
 
         /// <summary>
         /// Determine if a transaction is valid for submission to the blockchain.
@@ -53,62 +57,62 @@ namespace Knuth
         /// <param name="blockHash"> 32-byte array representation of the block hash.
         ///    Identifies it univocally.
         /// </param>
-        Task<ApiCallResult<UInt64>> FetchBlockHeightAsync(byte[] blockHash);
+        Task<ApiCallResult<UInt64>> GetBlockHeightAsync(byte[] blockHash);
 
         /// <summary>
         /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
         /// </summary>
-        Task<ApiCallResult<UInt64>> FetchLastHeightAsync();
+        Task<ApiCallResult<UInt64>> GetLastHeightAsync();
 
         /// <summary>
         /// Given a block hash, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        Task<DisposableApiCallResult<GetBlockDataResult<IBlock>>> FetchBlockByHashAsync(byte[] blockHash);
+        Task<DisposableApiCallResult<GetBlockDataResult<IBlock>>> GetBlockByHashAsync(byte[] blockHash);
 
         /// <summary>
         /// Given a block height, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
-        Task<DisposableApiCallResult<GetBlockDataResult<IBlock>>> FetchBlockByHeightAsync(UInt64 height);
+        Task<DisposableApiCallResult<GetBlockDataResult<IBlock>>> GetBlockByHeightAsync(UInt64 height);
 
         /// <summary>
         /// Given a block hash, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        Task<DisposableApiCallResult<GetBlockDataResult<IHeader>>> FetchBlockHeaderByHashAsync(byte[] blockHash);
+        Task<DisposableApiCallResult<GetBlockDataResult<IHeader>>> GetBlockHeaderByHashAsync(byte[] blockHash);
 
         /// <summary>
         /// Given a block height, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
-        Task<DisposableApiCallResult<GetBlockDataResult<IHeader>>> FetchBlockHeaderByHeightAsync(UInt64 height);
+        Task<DisposableApiCallResult<GetBlockDataResult<IHeader>>> GetBlockHeaderByHeightAsync(UInt64 height);
 
         /// <summary>
         /// Given a block hash, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        Task<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>> FetchMerkleBlockByHashAsync(byte[] blockHash);
+        Task<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>> GetMerkleBlockByHashAsync(byte[] blockHash);
 
         /// <summary>
         /// Given a block height, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
-        Task<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>> FetchMerkleBlockByHeightAsync(UInt64 height);
+        Task<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>> GetMerkleBlockByHeightAsync(UInt64 height);
 
         /// <summary>
         /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <returns> Tx hashes and serialized block size. Dispose result. </returns>
-        Task<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>> FetchBlockHeaderByHashTxSizesAsync(byte[] blockHash);
+        Task<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>> GetBlockHeaderByHashTxSizesAsync(byte[] blockHash);
 
         /// <summary>
         /// Get a transaction by its hash, asynchronously.
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True if the transaction must belong to a block </param>
-        Task<DisposableApiCallResult<GetTxDataResult>> FetchTransactionAsync(byte[] txHash, bool requireConfirmed);
+        Task<DisposableApiCallResult<GetTxDataResult>> GetTransactionAsync(byte[] txHash, bool requireConfirmed);
 
         /// <summary>
         /// Get a list of tx ids for a given payment address (asynchronously). Duplicates are already filtered out.
@@ -116,7 +120,7 @@ namespace Knuth
         /// <param name="address"> Bitcoin payment address to search </param>
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
-        Task<DisposableApiCallResult<INativeList<byte[]>>> FetchConfirmedTransactionsAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight);
+        Task<DisposableApiCallResult<INativeList<byte[]>>> GetConfirmedTransactionsAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight);
 
         /// <summary>
         /// Get a list of output points, values, and spends for a given payment address (asynchronously)
@@ -124,7 +128,7 @@ namespace Knuth
         /// <param name="address"> Bitcoin payment address to search </param>
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
-        Task<DisposableApiCallResult<INativeList<IHistoryCompact>>> FetchHistoryAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight);
+        Task<DisposableApiCallResult<INativeList<IHistoryCompact>>> GetHistoryAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight);
 
         /// <summary>
         /// Get metadata on potential payment transactions by stealth filter. Given a filter and a
@@ -132,7 +136,7 @@ namespace Knuth
         /// </summary>
         /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
         /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
-        //Task<DisposableApiCallResult<INativeList<IStealthCompact>>> FetchStealthAsync(Binary filter, UInt64 fromHeight);
+        //Task<DisposableApiCallResult<INativeList<IStealthCompact>>> GetStealthAsync(Binary filter, UInt64 fromHeight);
 
         /// <summary>
         /// Given a block, organize it (async).

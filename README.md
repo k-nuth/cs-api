@@ -77,7 +77,7 @@ dotnet add package kth-btc
 If you want to build from source, you need the following prerequisites:
 
 * .Net Framework 4.6.1
-* .Net Core 2.0
+* .Net Core 3.1
 * Powershell (Windows only)
 
 Run the following commands:
@@ -96,10 +96,6 @@ chmod +x build.sh
 ./build.sh
 
 ```
-
-If you have problems running build.ps1 please check this link 
-[https://cakebuild.net/docs/tutorials/powershell-security](https://cakebuild.net/docs/tutorials/powershell-security)
-
 
 ## Examples
 

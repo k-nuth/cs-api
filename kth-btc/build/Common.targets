@@ -1,24 +1,22 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="GetKnuthCAPI">
-    <Exec Command="conan remote list" ConsoleToMSBuild="true">
-      <Output TaskParameter="ConsoleOutput" PropertyName="ConanRemoteList" />
-    </Exec>
-    <Exec Command="conan remote update kthbuild_kth_temp_ https://api.bintray.com/conan/k-nuth/kth" Condition="$(ConanRemoteList.Contains('kthbuild_kth_temp_'))" ContinueOnError="WarnAndContinue" />
-    <Exec Command="conan remote add kthbuild_kth_temp_ https://api.bintray.com/conan/k-nuth/kth" Condition=" ! $(ConanRemoteList.Contains('kthbuild_kth_temp_'))" ContinueOnError="WarnAndContinue" />
-    
-    <Message Text="Conan Channel:  testing"/>
-    <Message Text="Conan Version:  0.1.0"/>
-    <Message Text="Conan Currency: BTC"/>
-    <Message Text="Conan Keoken:   False"/>
-    <Message Text="Conan March ID: 4fZKi37a595hP"/>
+
+    <Exec Command="conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config.zip" ContinueOnError="WarnAndContinue" />
+
+    <Message Text="Knuth Channel:  stable"/>
+    <Message Text="Knuth Version:  0.4.0"/>
+    <Message Text="Knuth Currency: BTC"/>
+    <Message Text="Knuth March ID: 4fZKi37a595hP"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/0.1.0@kth/testing;[generators];cmake;[options];c-api:shared=True;c-api:currency=BTC;c-api:keoken=False;c-api:db=full;c-api:march_id=4fZKi37a595hP;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];c-api/0.4.0@kth/stable;[generators];cmake;[options];c-api:shared=True;c-api:currency=BTC;c-api:db=default;c-api:march_id=4fZKi37a595hP;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
-    <Exec Command="conan install . --install-folder=. -r kthbuild_kth_temp_" Condition=" '$(OS)' != 'Windows_NT' " />
-    <Exec Command="conan install . --install-folder=. -r kthbuild_kth_temp_ -s compiler=&quot;Visual Studio&quot; -s compiler.version=16" Condition=" '$(OS)' == 'Windows_NT' "/>
+    
+    <Exec Command="conan install . --install-folder=. --update" Condition=" '$(OS)' != 'Windows_NT' " />
+    <Exec Command="conan install . --install-folder=. -s compiler=&quot;Visual Studio&quot; -s compiler.version=16 --update" Condition=" '$(OS)' == 'Windows_NT' "/>
+    
     <Message Text="OS = $(OS)" />
     <Copy SourceFiles="kth-c-api.dll" DestinationFiles="$(OutDir)libkth-c-api.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Copy SourceFiles="libkth-c-api.so" DestinationFiles="$(OutDir)libkth-c-api.so" Condition="Exists('libkth-c-api.so')"/>

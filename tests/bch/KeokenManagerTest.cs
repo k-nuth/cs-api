@@ -1,3 +1,7 @@
+// Copyright (c) 2016-2020 Knuth Project developers.
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #if KEOKEN          //TODO(fernando): check this!
 
 using System;
@@ -7,13 +11,13 @@ using Xunit;
 namespace Knuth.Tests
 {
     [Collection("ChainCollection")]
-    public class KeokenManagerTest : IClassFixture<ExecutorFixture>
+    public class KeokenManagerTest : IClassFixture<NodeFixture>
     {
-        private readonly ExecutorFixture executorFixture_;
+        private readonly NodeFixture nodeFixture_;
         
-        public KeokenManagerTest(ExecutorFixture fixture)
+        public KeokenManagerTest(NodeFixture fixture)
         {
-            executorFixture_ = fixture;   
+            nodeFixture_ = fixture;   
         }
 
         [Fact]
@@ -22,9 +26,9 @@ namespace Knuth.Tests
             using (var state = new KeokenMemoryState())
             {
                 DelegatedState.SetDelegatedState(state);
-                executorFixture_.Executor.KeokenManager.ConfigureState();
-                executorFixture_.Executor.KeokenManager.InitializeFromBlockchain();
-                Assert.Equal(true, executorFixture_.Executor.KeokenManager.Initialized);
+                nodeFixture_.Node.KeokenManager.ConfigureState();
+                nodeFixture_.Node.KeokenManager.InitializeFromBlockchain();
+                Assert.Equal(true, nodeFixture_.Node.KeokenManager.Initialized);
             }
             
             /*using (var delegatedState = new DelegatedState(state))
@@ -41,9 +45,9 @@ namespace Knuth.Tests
             using (var state = new KeokenMemoryState())
             {
                 DelegatedState.SetDelegatedState(state);
-                executorFixture_.Executor.KeokenManager.ConfigureState();
-                executorFixture_.Executor.KeokenManager.InitializeFromBlockchain();
-                using (var ret = executorFixture_.Executor.KeokenManager.GetAllAssetAddresses())
+                nodeFixture_.Node.KeokenManager.ConfigureState();
+                nodeFixture_.Node.KeokenManager.InitializeFromBlockchain();
+                using (var ret = nodeFixture_.Node.KeokenManager.GetAllAssetAddresses())
                 {
                     Assert.Equal<UInt64>(0,ret.Count);
                 }
@@ -56,9 +60,9 @@ namespace Knuth.Tests
             using (var state = new KeokenMemoryState())
             {
                 DelegatedState.SetDelegatedState(state);
-                executorFixture_.Executor.KeokenManager.ConfigureState();
-                executorFixture_.Executor.KeokenManager.InitializeFromBlockchain();
-                using (var ret = executorFixture_.Executor.KeokenManager.GetAssets())
+                nodeFixture_.Node.KeokenManager.ConfigureState();
+                nodeFixture_.Node.KeokenManager.InitializeFromBlockchain();
+                using (var ret = nodeFixture_.Node.KeokenManager.GetAssets())
                 {
                     Assert.Equal<UInt64>(0, ret.Count);
                 }
@@ -71,11 +75,11 @@ namespace Knuth.Tests
             using (var state = new KeokenMemoryState())
             {
                 DelegatedState.SetDelegatedState(state);
-                executorFixture_.Executor.KeokenManager.ConfigureState();
-                executorFixture_.Executor.KeokenManager.InitializeFromBlockchain();
+                nodeFixture_.Node.KeokenManager.ConfigureState();
+                nodeFixture_.Node.KeokenManager.InitializeFromBlockchain();
                 using (var address = new PaymentAddress("16TGufqQ9FPnEbixbD4ZjVabaP455roE6t"))
                 {
-                    using (var ret = executorFixture_.Executor.KeokenManager.GetAssetsByAddress(address))
+                    using (var ret = nodeFixture_.Node.KeokenManager.GetAssetsByAddress(address))
                     {
                         Assert.Equal<UInt64>(0, ret.Count);
                     }

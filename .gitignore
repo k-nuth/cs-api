@@ -13,8 +13,6 @@
 /tests/btc/kth-c-api.dll
 /console/kth-c-api.dll
 /console/libkth-c-api.so
-/tests/bch.keoken/libkth-c-api.dll
-/tests/bch.keoken/kth-c-api.dll
 
 /console/blockchain
 /console/hosts.cache
@@ -27,8 +25,6 @@
 
 /tools/*
 !tools/packages.config
-
-/build
 
 /docs/tutorials/*.cfg
 /docs/tutorials/*.cmake
@@ -84,14 +80,19 @@ tests/btc/bin/
 /console/conanbuildinfo.cmake
 /console/conanfile.txt
 
-/tests/bch.keoken/conaninfo.txt
-/tests/bch.keoken/conanfile.txt
-/tests/bch.keoken/conanbuildinfo.txt
-/tests/bch.keoken/conanbuildinfo.cmake
-/tests/bch.keoken/conan_imports_manifest.txt
 tests/btc/libkth-c-api.dylib
 tests/bch/libkth-c-api.dylib
 console/libkth-c-api.dylib
 console/graph_info.json
 tests/bch/graph_info.json
 tests/btc/graph_info.json
+
+.tmp/
+build/bin/
+build/obj/
+tests/bch.keoken/obj/
+
+console/conan.lock
+console/hosts*
+console/database/
+console/log

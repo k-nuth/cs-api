@@ -1,3 +1,7 @@
+// Copyright (c) 2016-2020 Knuth Project developers.
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 using System;
 
 namespace Knuth
@@ -60,7 +64,7 @@ namespace Knuth
     }
 
     /// <summary>
-    /// Return type for FetchBlockHeaderByHashTxSizesAsync
+    /// Return type for GetBlockHeaderByHashTxSizesAsync
     /// </summary>
     public sealed class GetBlockHeaderByHashTxSizeResult : IDisposable
     {
@@ -90,7 +94,7 @@ namespace Knuth
     }
 
     /// <summary>
-    /// Return type for FetchBlockByHeightHashTimestampAsync
+    /// Return type for GetBlockByHeightHashTimestampAsync
     /// </summary>
     public class GetBlockHashTimestampResult
     {
@@ -107,7 +111,7 @@ namespace Knuth
 
  
     /// <summary>
-    /// Return type for FetchTransactionAsync
+    /// Return type for GetTransactionAsync
     /// </summary>
     public class GetTxDataResult : IDisposable
     {

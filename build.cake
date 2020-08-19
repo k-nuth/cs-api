@@ -21,11 +21,11 @@ var conanVersion = System.IO.File.ReadAllText("./kth/conan/conan_version").Trim(
 void UpdateConan(string pathTarget, string currency, bool keoken, string marchId)
 {
     var fileTarget = System.IO.File.ReadAllText("./kth/build/Common.targets");
-    fileTarget = fileTarget.Replace("$(CONAN_CHANNEL)", conanChannel);
-    fileTarget = fileTarget.Replace("$(CONAN_VERSION)", conanVersion);
-    fileTarget = fileTarget.Replace("$(CONAN_CURRENCY)", currency);
-    fileTarget = fileTarget.Replace("$(CONAN_KEOKEN)", keoken ? "True" : "False");
-    fileTarget = fileTarget.Replace("$(CONAN_MARCH_ID)", marchId);
+    fileTarget = fileTarget.Replace("$(KNUTH_CHANNEL)", conanChannel);
+    fileTarget = fileTarget.Replace("$(KNUTH_VERSION)", conanVersion);
+    fileTarget = fileTarget.Replace("$(KNUTH_CURRENCY)", currency);
+    fileTarget = fileTarget.Replace("$(KNUTH_KEOKEN)", keoken ? "True" : "False");
+    fileTarget = fileTarget.Replace("$(KNUTH_MARCH_ID)", marchId);
     System.IO.File.WriteAllText(pathTarget,fileTarget);
 }
 
@@ -103,8 +103,8 @@ Task("Version")
 
 Task("ConanVersion")
     .Does(() => {
-        Information("Conan Channel " + conanChannel);
-        Information("Conan Version " + conanVersion);
+        Information("Knuth Channel " + conanChannel);
+        Information("Knuth Version " + conanVersion);
 
         //TODO(fernando): march_id is hardcoded, see what to do.
         UpdateConan("./kth-bch/build/Common.targets","BCH", false, "4fZKi37a595hP");

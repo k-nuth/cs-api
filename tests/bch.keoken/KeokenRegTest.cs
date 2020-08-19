@@ -1,3 +1,7 @@
+// Copyright (c) 2016-2020 Knuth Project developers.
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 using System;
 using System.Threading.Tasks;
 using Knuth.Keoken;
@@ -6,15 +10,15 @@ using Xunit;
 namespace Tests.Bch.Keoken
 {
     [Collection("KeokenCollection")]
-    public class KeokenRegTestRemove : IClassFixture<RegtestExecutorFixture>
+    public class KeokenRegTestRemove : IClassFixture<RegtestNodeFixture>
     {
-        private readonly RegtestExecutorFixture fixture_;
+        private readonly RegtestNodeFixture fixture_;
         private readonly KeokenManager keokenManager_;
 
-        public KeokenRegTestRemove(RegtestExecutorFixture fixture)
+        public KeokenRegTestRemove(RegtestNodeFixture fixture)
         {
             fixture_ = fixture;
-            keokenManager_ = fixture_.Executor.KeokenManager;
+            keokenManager_ = fixture_.Node.KeokenManager;
         }
 
         
@@ -37,15 +41,15 @@ namespace Tests.Bch.Keoken
     }    
 
     [Collection("KeokenCollection")]
-    public class KeokenRegTestReset : IClassFixture<RegtestExecutorFixture>
+    public class KeokenRegTestReset : IClassFixture<RegtestNodeFixture>
     {
-        private readonly RegtestExecutorFixture fixture_;
+        private readonly RegtestNodeFixture fixture_;
         private readonly KeokenManager keokenManager_;
 
-        public KeokenRegTestReset(RegtestExecutorFixture fixture)
+        public KeokenRegTestReset(RegtestNodeFixture fixture)
         {
             fixture_ = fixture;
-            keokenManager_ = fixture_.Executor.KeokenManager;
+            keokenManager_ = fixture_.Node.KeokenManager;
         }
 
         [Fact]
@@ -67,21 +71,21 @@ namespace Tests.Bch.Keoken
     }    
     
     [Collection("KeokenCollection")]
-    public class KeokenRegTest: IClassFixture<RegtestExecutorFixture>
+    public class KeokenRegTest: IClassFixture<RegtestNodeFixture>
     {
-        private readonly RegtestExecutorFixture fixture_;
+        private readonly RegtestNodeFixture fixture_;
         private readonly KeokenManager keokenManager_;
 
-        public KeokenRegTest(RegtestExecutorFixture fixture)
+        public KeokenRegTest(RegtestNodeFixture fixture)
         {
             fixture_ = fixture;
-            keokenManager_ = fixture_.Executor.KeokenManager;
+            keokenManager_ = fixture_.Node.KeokenManager;
         }
 
         [Fact]
-        public async Task TestFetchLastHeightAsync()
+        public async Task TestGetLastHeightAsync()
         {
-            var height = await fixture_.Executor.Chain.FetchLastHeightAsync();
+            var height = await fixture_.Node.Chain.GetLastHeightAsync();
             Assert.Equal<UInt64>(106, height.Result);
         }
 

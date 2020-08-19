@@ -6,11 +6,11 @@ namespace Knuth.tutorials
     public class KnuthCsAPI : IKnuthCsAPI, IDisposable
     {
         private IChain chain_;
-        private readonly Executor executor_;
+        private readonly Node node_;
 
         public KnuthCsAPI(string nodeConfigFile)
         {
-            executor_ = new Executor(nodeConfigFile);
+            node_ = new Node(nodeConfigFile);
         }
 
         ~KnuthCsAPI()
@@ -20,17 +20,17 @@ namespace Knuth.tutorials
 
         public IBlock GetBlockByHeight(UInt64 height)
         {
-            return chain_.FetchBlockByHeightAsync(height).Result.Result.BlockData;
+            return chain_.GetBlockByHeightAsync(height).Result.Result.BlockData;
         }
 
         public ITransaction GetTransactionByHash(string txHash)
         {
-            return chain_.FetchTransactionAsync(Binary.HexStringToByteArray(txHash), true).Result.Result.Tx;
+            return chain_.GetTransactionAsync(Binary.HexStringToByteArray(txHash), true).Result.Result.Tx;
         }
 
         public UInt64 GetCurrentBlockchainHeight()
         {
-            return chain_.FetchLastHeightAsync().Result.Result;
+            return chain_.GetLastHeightAsync().Result.Result;
         }
 
         public void Dispose(){
@@ -40,12 +40,12 @@ namespace Knuth.tutorials
 
         public void StartNode()
         {
-            var result = executor_.InitAndRunAsync().Result;
+            var result = node_.InitAndRunAsync().Result;
             if (result != 0)
             {
-                throw new ApplicationException("Executor::InitAndRunAsync failed; error code: " + result);
+                throw new ApplicationException("Node::InitAndRunAsync failed; error code: " + result);
             }
-            chain_ = executor_.Chain;
+            chain_ = node_.Chain;
         }
 
         protected virtual void Dispose(bool disposing){
@@ -54,8 +54,8 @@ namespace Knuth.tutorials
                 //Release managed resources and call Dispose for member variables
             }   
             //Release unmanaged resources
-            executor_.Stop();
-            executor_.Dispose();
+            node_.Stop();
+            node_.Dispose();
         }
     }
 }
