@@ -10,34 +10,34 @@ namespace Knuth.Native
     internal static class GetBlocksNative
     {
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern byte[] chain_get_blocks_stop_hash(IntPtr get_b);
+        public static extern byte[] kth_chain_get_blocks_stop_hash(IntPtr get_b);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern int /*bool*/ chain_get_blocks_is_valid(IntPtr get_b);
+        public static extern int /*bool*/ kth_chain_get_blocks_is_valid(IntPtr get_b);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr chain_get_blocks_construct_default();
+        public static extern IntPtr kth_chain_get_blocks_construct_default();
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr chain_get_blocks_construct(IntPtr start, byte[] stop);
+        public static extern IntPtr kth_chain_get_blocks_construct(IntPtr start, byte[] stop);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr chain_get_blocks_start_hashes(IntPtr get_b);
+        public static extern IntPtr kth_chain_get_blocks_start_hashes(IntPtr get_b);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern UInt64 /*size_t*/ chain_get_blocks_serialized_size(IntPtr get_b, UInt32 version);
+        public static extern UInt64 /*size_t*/ kth_chain_get_blocks_serialized_size(IntPtr get_b, UInt32 version);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern void chain_get_blocks_destruct(IntPtr get_b);
+        public static extern void kth_chain_get_blocks_destruct(IntPtr get_b);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern void chain_get_blocks_reset(IntPtr get_b);
+        public static extern void kth_chain_get_blocks_reset(IntPtr get_b);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern void chain_get_blocks_set_start_hashes(IntPtr get_b, IntPtr value);
+        public static extern void kth_chain_get_blocks_set_start_hashes(IntPtr get_b, IntPtr value);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern void chain_get_blocks_set_stop_hash(IntPtr get_b, byte[] value);
+        public static extern void kth_chain_get_blocks_set_stop_hash(IntPtr get_b, byte[] value);
 
         //virtual bool from_data(uint32_t version, const data_chunk& data);
         //virtual bool from_data(uint32_t version, std::istream& stream);

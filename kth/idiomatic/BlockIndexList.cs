@@ -14,28 +14,28 @@ namespace Knuth
     {
         protected override IntPtr CreateNativeList()
         {
-            return BlockIndexesNative.chain_block_indexes_construct_default();
+            return BlockIndexesNative.kth_chain_block_indexes_construct_default();
         }
 
         protected override uint GetNthNativeElement(uint n)
         {
-            return (uint) BlockIndexesNative.chain_block_indexes_nth(NativeInstance, (UIntPtr)n);
+            return (uint) BlockIndexesNative.kth_chain_block_indexes_nth(NativeInstance, (UIntPtr)n);
         }
 
         protected override uint GetCount()
         {
-            return (uint) BlockIndexesNative.chain_block_indexes_count(NativeInstance);
+            return (uint) BlockIndexesNative.kth_chain_block_indexes_count(NativeInstance);
         }
 
         protected override void AddElement(uint element)
         {
-            BlockIndexesNative.chain_block_indexes_push_back(NativeInstance, (UIntPtr) element);
+            BlockIndexesNative.kth_chain_block_indexes_push_back(NativeInstance, (UIntPtr) element);
         }
 
         protected override void DestroyNativeList()
         {
             //Logger.Log("Destroying block index list " + NativeInstance.ToString("X"));
-            BlockIndexesNative.chain_block_indexes_destruct(NativeInstance);
+            BlockIndexesNative.kth_chain_block_indexes_destruct(NativeInstance);
         }
 
         internal BlockIndexList(IntPtr nativeInstance) : base(nativeInstance)

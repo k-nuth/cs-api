@@ -21,7 +21,7 @@ namespace Knuth
         /// <param name="hexString"></param>
         public PaymentAddress(string hexString)
         {
-            nativeInstance_ = PaymentAddressNative.wallet_payment_address_construct_from_string(hexString);
+            nativeInstance_ = PaymentAddressNative.kth_wallet_payment_address_construct_from_string(hexString);
             ownsNativeObject_ = true;
         }
 
@@ -39,12 +39,12 @@ namespace Knuth
         /// <summary>
         /// Returns true iif this is a valid Base58 address.
         /// </summary>
-        public bool IsValid => PaymentAddressNative.wallet_payment_address_is_valid(nativeInstance_) != 0;
+        public bool IsValid => PaymentAddressNative.kth_wallet_payment_address_is_valid(nativeInstance_) != 0;
 
         /// <summary>
         /// Address version.
         /// </summary>
-        public byte Version => PaymentAddressNative.wallet_payment_address_version(nativeInstance_);
+        public byte Version => PaymentAddressNative.kth_wallet_payment_address_version(nativeInstance_);
 
         /// <summary>
         /// Human readable representation.
@@ -53,7 +53,7 @@ namespace Knuth
         {
             get
             {
-                using ( var addressString = new NativeString(PaymentAddressNative.wallet_payment_address_encoded(nativeInstance_)) )
+                using ( var addressString = new NativeString(PaymentAddressNative.kth_wallet_payment_address_encoded(nativeInstance_)) )
                 {
                     return addressString.ToString();
                 }
@@ -132,7 +132,7 @@ namespace Knuth
             //Release unmanaged resources
             if (ownsNativeObject_)
             {
-                PaymentAddressNative.wallet_payment_address_destruct(nativeInstance_);
+                PaymentAddressNative.kth_wallet_payment_address_destruct(nativeInstance_);
             }
         }
     }

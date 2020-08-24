@@ -97,7 +97,7 @@ namespace Knuth
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_height(nativeInstance_, contextPtr, managedHash, internalGetBlockHeightHandler_);
+            ChainNative.kth_chain_fetch_block_height(nativeInstance_, contextPtr, managedHash, internalGetBlockHeightHandler_);
         }
 
 
@@ -123,7 +123,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_last_height(nativeInstance_, handlerPtr, internalGetLastHeightHandler_);
+            ChainNative.kth_chain_fetch_last_height(nativeInstance_, handlerPtr, internalGetLastHeightHandler_);
         }
 
         #endregion //Chain
@@ -160,7 +160,7 @@ namespace Knuth
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, internalGetBlockHandlerByHash_);
+            ChainNative.kth_chain_fetch_block_by_hash(nativeInstance_, contextPtr, managedHash, internalGetBlockHandlerByHash_);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, internalGetBlockHandler_);
+            ChainNative.kth_chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, internalGetBlockHandler_);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace Knuth
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_header_by_hash_txs_size(nativeInstance_, contextPtr, managedHash, internalGetBlockHeaderByHashTxsSizeHandler_);
+            ChainNative.kth_chain_fetch_block_header_by_hash_txs_size(nativeInstance_, contextPtr, managedHash, internalGetBlockHeaderByHashTxsSizeHandler_);
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_by_height_timestamp(nativeInstance_, handlerPtr, height, internalGetBlockHeightTimestampHandler_);
+            ChainNative.kth_chain_fetch_block_by_height_timestamp(nativeInstance_, handlerPtr, height, internalGetBlockHeightTimestampHandler_);
         }
 
         #endregion //Block
@@ -299,7 +299,7 @@ namespace Knuth
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, internalGetBlockHeaderHandlerByHash_);
+            ChainNative.kth_chain_fetch_block_header_by_hash(nativeInstance_, contextPtr, managedHash, internalGetBlockHeaderHandlerByHash_);
         }
 
 
@@ -330,7 +330,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, internalGetBlockHeaderHandler_);
+            ChainNative.kth_chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, internalGetBlockHeaderHandler_);
         }
 
         #endregion //Block header
@@ -368,7 +368,7 @@ namespace Knuth
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, internalMerkleBlockGetHandlerByHash_);
+            ChainNative.kth_chain_fetch_merkle_block_by_hash(nativeInstance_, contextPtr, managedHash, internalMerkleBlockGetHandlerByHash_);
         }
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, internalMerkleBlockGetHandler_);
+            ChainNative.kth_chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, internalMerkleBlockGetHandler_);
         }
 
         #endregion //Merkle Block
@@ -445,7 +445,7 @@ namespace Knuth
                 hash = blockHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, internalGetCompactBlockHandler_);
+            ChainNative.kth_chain_fetch_compact_block_by_hash(nativeInstance_, contextPtr, managedHash, internalGetCompactBlockHandler_);
         }*/
 
         /*
@@ -483,7 +483,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, internalGetCompactBlockHandler_);
+            ChainNative.kth_chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, internalGetCompactBlockHandler_);
         }
         */
 
@@ -527,7 +527,7 @@ namespace Knuth
                 hash = txHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, internalGetTransactionHandler_);
+            ChainNative.kth_chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, internalGetTransactionHandler_);
         }
 
         /// <summary>
@@ -560,7 +560,7 @@ namespace Knuth
                 hash = txHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, internalGetTransactionPositionHandler_);
+            ChainNative.kth_chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, internalGetTransactionPositionHandler_);
         }
 
         #endregion //Transaction
@@ -585,7 +585,7 @@ namespace Knuth
         private void GetSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler)
         {
             IntPtr contextPtr = CreateContext(handler, outputPoint);
-            ChainNative.chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, internalGetSpendHandler_);
+            ChainNative.kth_chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, internalGetSpendHandler_);
         }
 
         #endregion //Spend
@@ -618,7 +618,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalGetHistoryHandler_);
+            ChainNative.kth_chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalGetHistoryHandler_);
         }
 
         /// <summary>
@@ -646,7 +646,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_confirmed_transactions(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalGetTxnsHandler_);
+            ChainNative.kth_chain_fetch_confirmed_transactions(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalGetTxnsHandler_);
         }
 
         #endregion //History
@@ -680,7 +680,7 @@ namespace Knuth
         private void GetStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
         {
             IntPtr contextPtr = CreateContext(handler, filter);
-            ChainNative.chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, internalGetStealthHandler_);
+            ChainNative.kth_chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, internalGetStealthHandler_);
         }
 
         #endregion //Stealth
@@ -717,7 +717,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, internalBlockLocatorGetHandler_);
+            ChainNative.kth_chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, internalBlockLocatorGetHandler_);
         }*/
 
         #endregion //Block indexes
@@ -744,7 +744,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, internalResultHandler_);
+            ChainNative.kth_chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, internalResultHandler_);
         }
 
         /// <summary>
@@ -766,7 +766,7 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance, internalResultHandler_);
+            ChainNative.kth_chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance, internalResultHandler_);
         }
 
         #endregion //Organizers
@@ -799,14 +799,14 @@ namespace Knuth
         {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
-            ChainNative.chain_validate_tx(nativeInstance_, handlerPtr, transaction.NativeInstance, internalValidateTxHandler_);
+            ChainNative.kth_chain_validate_tx(nativeInstance_, handlerPtr, transaction.NativeInstance, internalValidateTxHandler_);
         }
 
         /// <summary>
         /// Determine if the node is synchronized (i.e. has the latest copy of the blockchain/is at top height)
         /// </summary>
         public bool IsStale {
-            get { return ChainNative.chain_is_stale(nativeInstance_) != 0; }
+            get { return ChainNative.kth_chain_is_stale(nativeInstance_) != 0; }
         }
 
         #endregion //Misc
@@ -815,7 +815,7 @@ namespace Knuth
 
         public INativeList<ITransaction> GetMempoolTransactions(INativeList<PaymentAddress> addresses, bool useTestnetRules)
         {
-            IntPtr txs = ChainNative.chain_get_mempool_transactions_from_wallets
+            IntPtr txs = ChainNative.kth_chain_get_mempool_transactions_from_wallets
             (
                 nativeInstance_,
                 addresses.NativeInstance,

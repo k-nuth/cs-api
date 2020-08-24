@@ -18,7 +18,7 @@ namespace Knuth
         {
             get
             {
-                return NodeSettingsNative.node_settings_get_currency();
+                return NodeSettingsNative.kth_node_settings_get_currency();
             }
         }
 

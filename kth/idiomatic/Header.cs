@@ -24,7 +24,7 @@ namespace Knuth
         /// <summary>
         /// Returns true if and only if the header conforms to the Bitcoin protocol format.
         /// </summary>
-        public bool IsValid => HeaderNative.chain_header_is_valid(nativeInstance_) != 0;
+        public bool IsValid => HeaderNative.kth_chain_header_is_valid(nativeInstance_) != 0;
 
         /// <summary>
         /// Block hash in 32 byte array format.
@@ -34,7 +34,7 @@ namespace Knuth
             get
             {
                 var managedHash = new hash_t();
-                HeaderNative.chain_header_hash_out(nativeInstance_, ref managedHash);
+                HeaderNative.kth_chain_header_hash_out(nativeInstance_, ref managedHash);
                 return managedHash.hash;
             }
         }
@@ -47,7 +47,7 @@ namespace Knuth
             get
             {
                 var managedHash = new hash_t();
-                HeaderNative.chain_header_merkle_out(nativeInstance_, ref managedHash);
+                HeaderNative.kth_chain_header_merkle_out(nativeInstance_, ref managedHash);
                 return managedHash.hash;
             }
         }
@@ -61,7 +61,7 @@ namespace Knuth
             get
             {
                 var managedHash = new hash_t();
-                HeaderNative.chain_header_previous_block_hash_out(nativeInstance_, ref managedHash);
+                HeaderNative.kth_chain_header_previous_block_hash_out(nativeInstance_, ref managedHash);
                 return managedHash.hash;
             }
         }
@@ -73,7 +73,7 @@ namespace Knuth
         {
             get
             {
-                using ( var proofString = new NativeString(HeaderNative.chain_header_proof_str(nativeInstance_)) )
+                using ( var proofString = new NativeString(HeaderNative.kth_chain_header_proof_str(nativeInstance_)) )
                 {
                     return proofString.ToString();
                 }
@@ -85,8 +85,8 @@ namespace Knuth
         /// </summary>
         public UInt32 Bits
         {
-            get => HeaderNative.chain_header_bits(nativeInstance_);
-            set => HeaderNative.chain_header_set_bits(nativeInstance_, value);
+            get => HeaderNative.kth_chain_header_bits(nativeInstance_);
+            set => HeaderNative.kth_chain_header_set_bits(nativeInstance_, value);
         }
 
         /// <summary>
@@ -94,8 +94,8 @@ namespace Knuth
         /// </summary>
         public UInt32 Nonce
         {
-            get => HeaderNative.chain_header_nonce(nativeInstance_);
-            set => HeaderNative.chain_header_set_nonce(nativeInstance_, value);
+            get => HeaderNative.kth_chain_header_nonce(nativeInstance_);
+            set => HeaderNative.kth_chain_header_set_nonce(nativeInstance_, value);
         }
 
         /// <summary>
@@ -103,8 +103,8 @@ namespace Knuth
         /// </summary>
         public UInt32 Timestamp
         {
-            get => HeaderNative.chain_header_timestamp(nativeInstance_);
-            set => HeaderNative.chain_header_set_timestamp(nativeInstance_, value);
+            get => HeaderNative.kth_chain_header_timestamp(nativeInstance_);
+            set => HeaderNative.kth_chain_header_set_timestamp(nativeInstance_, value);
         }
 
         /// <summary>
@@ -112,8 +112,8 @@ namespace Knuth
         /// </summary>
         public UInt32 Version
         {
-            get => HeaderNative.chain_header_version(nativeInstance_);
-            set => HeaderNative.chain_header_set_version(nativeInstance_, value);
+            get => HeaderNative.kth_chain_header_version(nativeInstance_);
+            set => HeaderNative.kth_chain_header_set_version(nativeInstance_, value);
         }
 
         public void Dispose()
@@ -138,7 +138,7 @@ namespace Knuth
             if(ownsNativeObject_)
             {
                 //Logger.Log("Destroying header " + nativeInstance_.ToString("X"));
-                HeaderNative.chain_header_destruct(nativeInstance_);
+                HeaderNative.kth_chain_header_destruct(nativeInstance_);
                 //Logger.Log("Header " + nativeInstance_.ToString("X") + " destroyed!");
             }
         }

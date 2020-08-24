@@ -58,7 +58,7 @@ namespace Knuth {
         public Node(string configFile) 
             : this() 
         {
-            nativeInstance_ = NodeNative.executor_construct_fd(configFile, -1, -1);
+            nativeInstance_ = NodeNative.kth_node_construct_fd(configFile, -1, -1);
         }
 
         /// <summary> //TODO See BIT-20
@@ -69,7 +69,7 @@ namespace Knuth {
         /// <param name="stdErr"> File descriptor for redirecting standard error output. </param>
         // public Node(string configFile, int stdOut, int stdErr)
         // {
-        //     nativeInstance_ = NodeNative.executor_construct_fd(configFile, stdOut, stdErr);
+        //     nativeInstance_ = NodeNative.kth_node_construct_fd(configFile, stdOut, stdErr);
         // }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Knuth {
         public Node(string configFile, IntPtr stdOut, IntPtr stdErr) 
             : this() 
         {
-            nativeInstance_ = NodeNative.executor_construct_handles(configFile, stdOut, stdErr);
+            nativeInstance_ = NodeNative.kth_node_construct_handles(configFile, stdOut, stdErr);
         }
 
         ~Node() {
@@ -113,7 +113,7 @@ namespace Knuth {
         /// (i.e. Run or RunWait succeeded)
         /// </summary>
         public NetworkType NetworkType {
-            get { return NodeNative.executor_get_network(nativeInstance_); }
+            get { return NodeNative.kth_node_get_network(nativeInstance_); }
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Knuth {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
             Task.Run( () => {
-                NodeNative.executor_init_run_and_wait_for_signal(nativeInstance_, handlerPtr, internalRunNodeHandler_);
+                NodeNative.kth_node_init_run_and_wait_for_signal(nativeInstance_, handlerPtr, internalRunNodeHandler_);
                 stopped_ = true;
             });
         }
@@ -144,25 +144,25 @@ namespace Knuth {
         /// Stops the node; that includes all activies, such as synchronization and networking.
         /// </summary>
         public void Stop() {
-            NodeNative.executor_stop(nativeInstance_);
+            NodeNative.kth_node_stop(nativeInstance_);
         }
 
         /// <summary>
         /// Closes the node; that includes all activies, such as synchronization and networking.
         /// </summary>
         public void Close() {
-            NodeNative.executor_close(nativeInstance_);
+            NodeNative.kth_node_close(nativeInstance_);
         }
 
         /// <summary>
         /// Returns true if and only if the node is stopped
         /// </summary>
-        public bool IsStopped => NodeNative.executor_stopped(nativeInstance_) != 0;
+        public bool IsStopped => NodeNative.kth_node_stopped(nativeInstance_) != 0;
 
         /// <summary>
         /// Returns true if and only if and only if the config file is valid
         /// </summary>
-        public bool IsLoadConfigValid => NodeNative.executor_load_config_valid(nativeInstance_) != 0;
+        public bool IsLoadConfigValid => NodeNative.kth_node_load_config_valid(nativeInstance_) != 0;
 
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Knuth {
         public void SubscribeBlockNotifications(BlockHandler handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
-            NodeNative.chain_subscribe_blockchain(nativeInstance_, Chain.NativeInstance, handlerPtr, internalBlockHandler_);
+            NodeNative.kth_chain_subscribe_blockchain(nativeInstance_, Chain.NativeInstance, handlerPtr, internalBlockHandler_);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace Knuth {
         public void SubscribeTransactionNotifications(TransactionHandler handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
-            NodeNative.chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, internalTxHandler_);
+            NodeNative.kth_chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, internalTxHandler_);
         }
 
         protected virtual void Dispose(bool disposing) {
@@ -195,12 +195,12 @@ namespace Knuth {
                 //Release managed resources and call Dispose for member variables
             }
 
-            NodeNative.executor_signal_stop(nativeInstance_); 
+            NodeNative.kth_node_signal_stop(nativeInstance_); 
 
             while (running_ &&  ! stopped_) {
                 System.Threading.Thread.Sleep(100);
             }
-            NodeNative.executor_destruct(nativeInstance_);
+            NodeNative.kth_node_destruct(nativeInstance_);
         }
 
         private static int InternalBlockHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, UInt64 forkHeight, IntPtr incoming, IntPtr outgoing) {
@@ -209,7 +209,7 @@ namespace Knuth {
             var keepSubscription = false;
 
             try {
-                if (NodeNative.executor_stopped(node) != 0 || error == ErrorCode.ServiceStopped) {
+                if (NodeNative.kth_node_stopped(node) != 0 || error == ErrorCode.ServiceStopped) {
                     handlerHandle.Free();
                     closed = true;
                     return 0;
@@ -241,7 +241,7 @@ namespace Knuth {
             var handler = (handlerHandle.Target as Action<ErrorCode>);
             try {
                 if (error == 0) {
-                    chain_ = new Chain(NodeNative.executor_get_chain(nativeInstance_));
+                    chain_ = new Chain(NodeNative.kth_node_get_chain(nativeInstance_));
                     running_ = true;
                     stopped_ = false;
                 }
@@ -257,7 +257,7 @@ namespace Knuth {
             var keepSubscription = false;
 
             try {
-                if (NodeNative.executor_stopped(node) != 0 || error == ErrorCode.ServiceStopped) {
+                if (NodeNative.kth_node_stopped(node) != 0 || error == ErrorCode.ServiceStopped) {
                     handlerHandle.Free();
                     closed = true;
                     return 0;

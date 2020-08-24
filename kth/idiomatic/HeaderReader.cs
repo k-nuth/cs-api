@@ -20,7 +20,7 @@ namespace Knuth
         /// </summary>
         public HeaderReader()
         {
-            nativeInstance_ = GetHeadersNative.chain_get_headers_construct_default();
+            nativeInstance_ = GetHeadersNative.kth_chain_get_headers_construct_default();
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Knuth
         /// <param name="stop"> Stop at this block. </param>
         public HeaderReader(HashList start, byte[] stop)
         {
-            nativeInstance_ = GetHeadersNative.chain_get_headers_construct(start.NativeInstance, stop);
+            nativeInstance_ = GetHeadersNative.kth_chain_get_headers_construct(start.NativeInstance, stop);
         }
 
         ~HeaderReader()
@@ -45,7 +45,7 @@ namespace Knuth
         {
             get
             {
-                return GetHeadersNative.chain_get_headers_is_valid(nativeInstance_) != 0;
+                return GetHeadersNative.kth_chain_get_headers_is_valid(nativeInstance_) != 0;
             }
         }
 
@@ -56,11 +56,11 @@ namespace Knuth
         {
             get
             {
-                return GetHeadersNative.chain_get_headers_stop_hash(nativeInstance_);
+                return GetHeadersNative.kth_chain_get_headers_stop_hash(nativeInstance_);
             }
             set
             {
-                GetHeadersNative.chain_get_headers_set_stop_hash(nativeInstance_, value);
+                GetHeadersNative.kth_chain_get_headers_set_stop_hash(nativeInstance_, value);
             }
         }
 
@@ -71,11 +71,11 @@ namespace Knuth
         {
             get
             {
-                return new HashList(GetHeadersNative.chain_get_headers_start_hashes(nativeInstance_), false);
+                return new HashList(GetHeadersNative.kth_chain_get_headers_start_hashes(nativeInstance_), false);
             }
             set
             {
-                GetHeadersNative.chain_get_headers_set_start_hashes(nativeInstance_, value.NativeInstance);
+                GetHeadersNative.kth_chain_get_headers_set_start_hashes(nativeInstance_, value.NativeInstance);
             }
         }
 
@@ -86,7 +86,7 @@ namespace Knuth
         /// <returns> Sum of header sizes. </returns>
         public UInt64 GetSerializedSize(UInt32 version)
         {
-            return GetHeadersNative.chain_get_headers_serialized_size(nativeInstance_, version);
+            return GetHeadersNative.kth_chain_get_headers_serialized_size(nativeInstance_, version);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Knuth
         /// </summary>
         public void Reset()
         {
-            GetHeadersNative.chain_get_headers_reset(nativeInstance_);
+            GetHeadersNative.kth_chain_get_headers_reset(nativeInstance_);
         }
 
         internal HeaderReader(IntPtr nativeInstance)
@@ -119,7 +119,7 @@ namespace Knuth
             }
             //Release unmanaged resources
             //Logger.Log("Destroying header reader " + nativeInstance_.ToString("X"));
-            GetHeadersNative.chain_get_headers_destruct(nativeInstance_);
+            GetHeadersNative.kth_chain_get_headers_destruct(nativeInstance_);
         }
 
     }*/

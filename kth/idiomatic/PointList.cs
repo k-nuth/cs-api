@@ -12,28 +12,28 @@ namespace Knuth
     {
         protected override IntPtr CreateNativeList()
         {
-            return PointListNative.chain_point_list_construct_default();
+            return PointListNative.kth_chain_point_list_construct_default();
         }
 
         protected override Point GetNthNativeElement(uint n)
         {
-            return new Point(PointListNative.chain_point_list_nth(NativeInstance, (UIntPtr) n));
+            return new Point(PointListNative.kth_chain_point_list_nth(NativeInstance, (UIntPtr) n));
         }
 
         protected override uint GetCount()
         {
-            return (uint) PointListNative.chain_point_list_count(NativeInstance);
+            return (uint) PointListNative.kth_chain_point_list_count(NativeInstance);
         }
 
         protected override void AddElement(Point element)
         {
-            PointListNative.chain_point_list_push_back(NativeInstance, element.NativeInstance);
+            PointListNative.kth_chain_point_list_push_back(NativeInstance, element.NativeInstance);
         }
 
         protected override void DestroyNativeList()
         {
             //Logger.Log("Destroying point list " + NativeInstance.ToString("X"));
-            PointListNative.chain_point_list_destruct(NativeInstance);
+            PointListNative.kth_chain_point_list_destruct(NativeInstance);
         }
 
         internal PointList(IntPtr nativeInstance) : base(nativeInstance)

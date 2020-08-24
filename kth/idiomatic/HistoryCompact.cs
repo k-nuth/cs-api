@@ -43,7 +43,7 @@ namespace Knuth
                 return (PointKind)Enum.ToObject
                 (
                     typeof(PointKind),
-                    HistoryCompactNative.chain_history_compact_get_point_kind(nativeInstance_)
+                    HistoryCompactNative.kth_chain_history_compact_get_point_kind(nativeInstance_)
                 );
             }
         }
@@ -55,7 +55,7 @@ namespace Knuth
         {
             get
             {
-                return HistoryCompactNative.chain_history_compact_get_height(nativeInstance_);
+                return HistoryCompactNative.kth_chain_history_compact_get_height(nativeInstance_);
             }
         }
 
@@ -66,7 +66,7 @@ namespace Knuth
         {
             get
             {
-                return HistoryCompactNative.chain_history_compact_get_value_or_previous_checksum(nativeInstance_);
+                return HistoryCompactNative.kth_chain_history_compact_get_value_or_previous_checksum(nativeInstance_);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Knuth
         {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
-            point_ = new Point(HistoryCompactNative.chain_history_compact_get_point(nativeInstance_));
+            point_ = new Point(HistoryCompactNative.kth_chain_history_compact_get_point(nativeInstance_));
         }
 
         protected virtual void Dispose(bool disposing)
@@ -96,7 +96,7 @@ namespace Knuth
             if(ownsNativeObject_)
             {
                 //Logger.Log("Destroying history compact " + nativeInstance_.ToString("X") + " ...");
-                HistoryCompactNative.chain_history_compact_destruct(nativeInstance_);
+                HistoryCompactNative.kth_chain_history_compact_destruct(nativeInstance_);
                 //Logger.Log("History compact " + nativeInstance_.ToString("X") + " destroyed!");
             }
         }

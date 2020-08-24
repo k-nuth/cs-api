@@ -19,7 +19,7 @@ namespace Knuth
         /// </summary>
         public OutputPoint()
         {
-            NativeInstance = OutputPointNative.chain_output_point_construct();
+            NativeInstance = OutputPointNative.kth_chain_output_point_construct();
             ownsNativeObject_ = true;
         }
 
@@ -34,7 +34,7 @@ namespace Knuth
             {
                 hash = pointHash
             };
-            NativeInstance = OutputPointNative.chain_output_point_construct_from_hash_index(managedHash, index);
+            NativeInstance = OutputPointNative.kth_chain_output_point_construct_from_hash_index(managedHash, index);
             ownsNativeObject_ = true;
         }
 
@@ -51,7 +51,7 @@ namespace Knuth
             get
             {
                 var managedHash = new hash_t();
-                OutputPointNative.chain_output_point_get_hash_out(NativeInstance, ref managedHash);
+                OutputPointNative.kth_chain_output_point_get_hash_out(NativeInstance, ref managedHash);
                 return managedHash.hash;
             }
         }
@@ -59,7 +59,7 @@ namespace Knuth
         /// <summary>
         /// Transaction index (zero-based).
         /// </summary>
-        public UInt32 Index => OutputPointNative.chain_output_point_get_index(NativeInstance);
+        public UInt32 Index => OutputPointNative.kth_chain_output_point_get_index(NativeInstance);
 
         public void Dispose()
         {
@@ -84,7 +84,7 @@ namespace Knuth
             //Release unmanaged resources
             if(ownsNativeObject_)
             {
-                OutputPointNative.chain_output_point_destruct(NativeInstance);
+                OutputPointNative.kth_chain_output_point_destruct(NativeInstance);
             }
         }
     }

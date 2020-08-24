@@ -21,29 +21,29 @@ namespace Knuth
         protected override IntPtr CreateNativeList()
         {
             ownsNativeObject_ = true;
-            return PaymentAddressListNative.wallet_payment_address_list_construct_default();
+            return PaymentAddressListNative.kth_wallet_payment_address_list_construct_default();
         }
 
         protected override PaymentAddress GetNthNativeElement(UInt64 n)
         {
-            return new PaymentAddress(PaymentAddressListNative.wallet_payment_address_list_nth(NativeInstance, n));
+            return new PaymentAddress(PaymentAddressListNative.kth_wallet_payment_address_list_nth(NativeInstance, n));
         }
 
         protected override UInt64 GetCount()
         {
-            return PaymentAddressListNative.wallet_payment_address_list_count(NativeInstance);
+            return PaymentAddressListNative.kth_wallet_payment_address_list_count(NativeInstance);
         }
 
         protected override void AddElement(PaymentAddress element)
         {
-            PaymentAddressListNative.wallet_payment_address_list_push_back(NativeInstance, element.NativeInstance);
+            PaymentAddressListNative.kth_wallet_payment_address_list_push_back(NativeInstance, element.NativeInstance);
         }
 
         protected override void DestroyNativeList()
         {
             if(ownsNativeObject_)
             {
-                PaymentAddressListNative.wallet_payment_address_list_destruct(NativeInstance);
+                PaymentAddressListNative.kth_wallet_payment_address_list_destruct(NativeInstance);
             }
         }
 

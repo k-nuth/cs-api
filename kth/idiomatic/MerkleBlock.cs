@@ -24,7 +24,7 @@ namespace Knuth
         /// <summary>
         /// Returns true if and only if it the block contains txs hashes, and the header is valid.
         /// </summary>
-        public bool IsValid => MerkleBlockNative.chain_merkle_block_is_valid(nativeInstance_) != 0;
+        public bool IsValid => MerkleBlockNative.kth_chain_merkle_block_is_valid(nativeInstance_) != 0;
 
         /// <summary>
         /// The block's header.
@@ -34,12 +34,12 @@ namespace Knuth
         /// <summary>
         /// Transaction hashes list element count.
         /// </summary>
-        public UInt64 HashCount => (UInt64)MerkleBlockNative.chain_merkle_block_hash_count(nativeInstance_);
+        public UInt64 HashCount => (UInt64)MerkleBlockNative.kth_chain_merkle_block_hash_count(nativeInstance_);
 
         /// <summary>
         /// Amount of transactions inside the block.
         /// </summary>
-        public UInt64 TotalTransactionCount => (UInt64)MerkleBlockNative.chain_merkle_block_total_transaction_count(nativeInstance_);
+        public UInt64 TotalTransactionCount => (UInt64)MerkleBlockNative.kth_chain_merkle_block_total_transaction_count(nativeInstance_);
 
         /// <summary>
         /// Get the Nth transaction hash from the block.
@@ -49,7 +49,7 @@ namespace Knuth
         public byte[] GetNthHash(int n)
         {
             var managedHash = new hash_t();
-            MerkleBlockNative.chain_merkle_block_hash_nth_out(nativeInstance_, (UIntPtr)n, ref managedHash);
+            MerkleBlockNative.kth_chain_merkle_block_hash_nth_out(nativeInstance_, (UIntPtr)n, ref managedHash);
             return managedHash.hash;
         }
 
@@ -60,7 +60,7 @@ namespace Knuth
         /// <returns> Size in bytes. </returns>
         public UInt64 GetSerializedSize(UInt32 version)
         {
-            return (UInt64)MerkleBlockNative.chain_merkle_block_serialized_size(nativeInstance_, version);
+            return (UInt64)MerkleBlockNative.kth_chain_merkle_block_serialized_size(nativeInstance_, version);
         }
 
         public void Dispose()
@@ -74,13 +74,13 @@ namespace Knuth
         /// </summary>
         public void Reset()
         {
-            MerkleBlockNative.chain_merkle_block_reset(nativeInstance_);
+            MerkleBlockNative.kth_chain_merkle_block_reset(nativeInstance_);
         }
 
         internal MerkleBlock(IntPtr nativeInstance)
         {
             nativeInstance_ = nativeInstance;
-            header_ = new Header(MerkleBlockNative.chain_merkle_block_header(nativeInstance_), false);
+            header_ = new Header(MerkleBlockNative.kth_chain_merkle_block_header(nativeInstance_), false);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -92,7 +92,7 @@ namespace Knuth
             }
             //Release unmanaged resources
             //Logger.Log("Destroying merkle block " + nativeInstance_.ToString("X") + " ...");
-            MerkleBlockNative.chain_merkle_block_destruct(nativeInstance_);
+            MerkleBlockNative.kth_chain_merkle_block_destruct(nativeInstance_);
             //Logger.Log("Merkle block " + nativeInstance_.ToString("X") + " destroyed!");
         }
     }

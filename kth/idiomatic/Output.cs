@@ -22,9 +22,9 @@ namespace Knuth
         /// </summary>
         public Output()
         {
-            nativeInstance_ = OutputNative.chain_output_construct_default();
+            nativeInstance_ = OutputNative.kth_chain_output_construct_default();
             ownsNativeObject_ = true;
-            script_ = new Script(OutputNative.chain_output_script(nativeInstance_), false);
+            script_ = new Script(OutputNative.kth_chain_output_script(nativeInstance_), false);
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Knuth
         /// <param name="script"> Output script. </param>
         public Output(UInt64 value, Script script)
         {
-            nativeInstance_ = OutputNative.chain_output_construct(value, script.NativeInstance);
+            nativeInstance_ = OutputNative.kth_chain_output_construct(value, script.NativeInstance);
             ownsNativeObject_ = true;
-            script_ = new Script(OutputNative.chain_output_script(nativeInstance_), false);
+            script_ = new Script(OutputNative.kth_chain_output_script(nativeInstance_), false);
         }
 
         ~Output()
@@ -51,13 +51,13 @@ namespace Knuth
         {
             get
             {
-                return OutputNative.chain_output_is_valid(nativeInstance_) != 0;
+                return OutputNative.kth_chain_output_is_valid(nativeInstance_) != 0;
             }
         }
 
         public PaymentAddress PaymentAddress(bool useTestnetRules)
         {
-            return new PaymentAddress(OutputNative.chain_output_payment_address(nativeInstance_, useTestnetRules? 1:0));
+            return new PaymentAddress(OutputNative.kth_chain_output_payment_address(nativeInstance_, useTestnetRules? 1:0));
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Knuth
         {
             get
             {
-                return OutputNative.chain_output_value(nativeInstance_);
+                return OutputNative.kth_chain_output_value(nativeInstance_);
             }
         }
 
@@ -89,7 +89,7 @@ namespace Knuth
         {
             get
             {
-                return (UInt64)OutputNative.chain_output_signature_operations(nativeInstance_);
+                return (UInt64)OutputNative.kth_chain_output_signature_operations(nativeInstance_);
             }
         }
 
@@ -100,7 +100,7 @@ namespace Knuth
         /// <returns> Size in bytes. </returns>
         public UInt64 GetSerializedSize(bool wire)
         {
-            return (UInt64)OutputNative.chain_output_serialized_size(nativeInstance_, wire ? 1 : 0);
+            return (UInt64)OutputNative.kth_chain_output_serialized_size(nativeInstance_, wire ? 1 : 0);
         }
 
         public void Dispose()
@@ -113,7 +113,7 @@ namespace Knuth
         {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
-            script_ = new Script(OutputNative.chain_output_script(nativeInstance_), false);
+            script_ = new Script(OutputNative.kth_chain_output_script(nativeInstance_), false);
         }
 
         internal IntPtr NativeInstance
@@ -134,7 +134,7 @@ namespace Knuth
             if(ownsNativeObject_)
             {
                 //Logger.Log("Destroying output " + nativeInstance_.ToString("X") + " ...");
-                OutputNative.chain_output_destruct(nativeInstance_);
+                OutputNative.kth_chain_output_destruct(nativeInstance_);
                 //Logger.Log("Output " + nativeInstance_.ToString("X") + " destroyed!");
             }
         }

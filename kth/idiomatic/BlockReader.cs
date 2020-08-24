@@ -17,12 +17,12 @@ namespace Knuth
 
         public BlockReader()
         {
-            nativeInstance_ = GetBlocksNative.chain_get_blocks_construct_default();
+            nativeInstance_ = GetBlocksNative.kth_chain_get_blocks_construct_default();
         }
 
         public BlockReader(HashList start, byte[] stop)
         {
-            nativeInstance_ = GetBlocksNative.chain_get_blocks_construct(start.NativeInstance, stop);
+            nativeInstance_ = GetBlocksNative.kth_chain_get_blocks_construct(start.NativeInstance, stop);
         }
 
         ~BlockReader()
@@ -37,7 +37,7 @@ namespace Knuth
         {
             get
             {
-                return GetBlocksNative.chain_get_blocks_is_valid(nativeInstance_) != 0;
+                return GetBlocksNative.kth_chain_get_blocks_is_valid(nativeInstance_) != 0;
             }
         }
 
@@ -48,11 +48,11 @@ namespace Knuth
         {
             get
             {
-                return GetBlocksNative.chain_get_blocks_stop_hash(nativeInstance_);
+                return GetBlocksNative.kth_chain_get_blocks_stop_hash(nativeInstance_);
             }
             set
             {
-                GetBlocksNative.chain_get_blocks_set_stop_hash(nativeInstance_, value);
+                GetBlocksNative.kth_chain_get_blocks_set_stop_hash(nativeInstance_, value);
             }
         }
 
@@ -63,11 +63,11 @@ namespace Knuth
         {
             get
             {
-                return new HashList(GetBlocksNative.chain_get_blocks_start_hashes(nativeInstance_), false);
+                return new HashList(GetBlocksNative.kth_chain_get_blocks_start_hashes(nativeInstance_), false);
             }
             set
             {
-                GetBlocksNative.chain_get_blocks_set_start_hashes(nativeInstance_, value.NativeInstance);
+                GetBlocksNative.kth_chain_get_blocks_set_start_hashes(nativeInstance_, value.NativeInstance);
             }
         }
 
@@ -78,7 +78,7 @@ namespace Knuth
         /// <returns> UInt64 representation of the sum </returns>
         public UInt64 GetSerializedSize(UInt32 version)
         {
-            return GetBlocksNative.chain_get_blocks_serialized_size(nativeInstance_, version);
+            return GetBlocksNative.kth_chain_get_blocks_serialized_size(nativeInstance_, version);
         }
 
         public void Dispose()
@@ -92,7 +92,7 @@ namespace Knuth
         /// </summary>
         public void Reset()
         {
-            GetBlocksNative.chain_get_blocks_reset(nativeInstance_);
+            GetBlocksNative.kth_chain_get_blocks_reset(nativeInstance_);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -103,7 +103,7 @@ namespace Knuth
             }
             //Release unmanaged resources
             //Logger.Log("Destroying block reader " + nativeInstance_.ToString("X"));
-            GetBlocksNative.chain_get_blocks_destruct(nativeInstance_);
+            GetBlocksNative.kth_chain_get_blocks_destruct(nativeInstance_);
         }
     }
     */

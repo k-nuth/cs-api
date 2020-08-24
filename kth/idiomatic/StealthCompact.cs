@@ -28,7 +28,7 @@ namespace Knuth
         {
             get
             {
-                return StealthCompactNative.stealth_compact_get_ephemeral_public_key_hash(nativeInstance_);
+                return StealthCompactNative.kth_chain_stealth_compact_get_ephemeral_public_key_hash(nativeInstance_);
             }
         }
 
@@ -39,7 +39,7 @@ namespace Knuth
         {
             get
             {
-                return StealthCompactNative.stealth_compact_get_public_key_hash(nativeInstance_);
+                return StealthCompactNative.kth_chain_stealth_compact_get_public_key_hash(nativeInstance_);
             }
         }
 
@@ -50,7 +50,7 @@ namespace Knuth
         {
             get
             {
-                return StealthCompactNative.stealth_compact_get_transaction_hash(nativeInstance_);
+                return StealthCompactNative.kth_chain_stealth_compact_get_transaction_hash(nativeInstance_);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Knuth
             if(ownsNativeObject_)
             {
                 //Logger.Log("Destroying stealth compact " + nativeInstance_.ToString("X") + " ...");
-                StealthCompactNative.stealth_compact_destruct(nativeInstance_);
+                StealthCompactNative.kth_chain_stealth_compact_destruct(nativeInstance_);
                 //Logger.Log("Stealth compact " + nativeInstance_.ToString("X") + " destroyed!");
             }
         }

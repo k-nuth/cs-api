@@ -21,7 +21,7 @@ namespace Knuth
         /// </summary>
         public Transaction()
         {
-            nativeInstance_ = TransactionNative.chain_transaction_construct_default();
+            nativeInstance_ = TransactionNative.kth_chain_transaction_construct_default();
             ownsNativeObject_ = true;
         }
 
@@ -34,7 +34,7 @@ namespace Knuth
         {
             //the raw tx is already reversed
             byte[] array = Binary.HexStringToByteArray(hexString,false);
-            nativeInstance_ = TransactionNative.chain_transaction_factory_from_data(version,array,(UInt64)array.Length);
+            nativeInstance_ = TransactionNative.kth_chain_transaction_factory_from_data(version,array,(UInt64)array.Length);
             ownsNativeObject_ = true;
         }
 
@@ -47,7 +47,7 @@ namespace Knuth
         /// <param name="outputs"> A list with all the transaction outputs. </param>
         public Transaction(UInt32 version, UInt32 locktime, InputList inputs, OutputList outputs)
         {
-            nativeInstance_ = TransactionNative.chain_transaction_construct
+            nativeInstance_ = TransactionNative.kth_chain_transaction_construct
             (
                 version, locktime, inputs.NativeInstance, outputs.NativeInstance
             );
@@ -78,7 +78,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_is_coinbase(nativeInstance_) != 0;
+                return TransactionNative.kth_chain_transaction_is_coinbase(nativeInstance_) != 0;
             }
         }
 
@@ -90,7 +90,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_is_locktime_conflict(nativeInstance_) != 0;
+                return TransactionNative.kth_chain_transaction_is_locktime_conflict(nativeInstance_) != 0;
             }
         }
 
@@ -102,7 +102,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_is_missing_previous_outputs(nativeInstance_) != 0;
+                return TransactionNative.kth_chain_transaction_is_missing_previous_outputs(nativeInstance_) != 0;
             }
         }
 
@@ -114,7 +114,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_is_null_non_coinbase(nativeInstance_) != 0;
+                return TransactionNative.kth_chain_transaction_is_null_non_coinbase(nativeInstance_) != 0;
             }
         }
 
@@ -126,7 +126,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_is_oversized_coinbase(nativeInstance_) != 0;
+                return TransactionNative.kth_chain_transaction_is_oversized_coinbase(nativeInstance_) != 0;
             }
         }
 
@@ -139,7 +139,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_is_overspent(nativeInstance_) != 0;
+                return TransactionNative.kth_chain_transaction_is_overspent(nativeInstance_) != 0;
             }
         }
 
@@ -150,7 +150,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_is_valid(nativeInstance_) != 0;
+                return TransactionNative.kth_chain_transaction_is_valid(nativeInstance_) != 0;
             }
         }
 
@@ -162,7 +162,7 @@ namespace Knuth
             get
             {
                 var managedHash = new hash_t();
-                TransactionNative.chain_transaction_hash_out(nativeInstance_, ref managedHash);
+                TransactionNative.kth_chain_transaction_hash_out(nativeInstance_, ref managedHash);
                 return managedHash.hash;
             }
         }
@@ -174,7 +174,7 @@ namespace Knuth
         {
             get
             {
-                return new InputList(TransactionNative.chain_transaction_inputs(nativeInstance_), false);
+                return new InputList(TransactionNative.kth_chain_transaction_inputs(nativeInstance_), false);
             }
         }
 
@@ -185,7 +185,7 @@ namespace Knuth
         {
             get
             {
-                return new OutputList(TransactionNative.chain_transaction_outputs(nativeInstance_), false);
+                return new OutputList(TransactionNative.kth_chain_transaction_outputs(nativeInstance_), false);
             }
         }
 
@@ -196,7 +196,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_locktime(nativeInstance_);
+                return TransactionNative.kth_chain_transaction_locktime(nativeInstance_);
             }
         }
 
@@ -207,11 +207,11 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_version(nativeInstance_);
+                return TransactionNative.kth_chain_transaction_version(nativeInstance_);
             }
             set
             {
-                TransactionNative.chain_transaction_set_version(nativeInstance_, value);
+                TransactionNative.kth_chain_transaction_set_version(nativeInstance_, value);
             }
         }
 
@@ -222,7 +222,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_fees(nativeInstance_);
+                return TransactionNative.kth_chain_transaction_fees(nativeInstance_);
             }
         }
 
@@ -233,7 +233,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_signature_operations(nativeInstance_);
+                return TransactionNative.kth_chain_transaction_signature_operations(nativeInstance_);
             }
         }
 
@@ -244,7 +244,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_total_input_value(nativeInstance_);
+                return TransactionNative.kth_chain_transaction_total_input_value(nativeInstance_);
             }
         }
 
@@ -255,7 +255,7 @@ namespace Knuth
         {
             get
             {
-                return TransactionNative.chain_transaction_total_output_value(nativeInstance_);
+                return TransactionNative.kth_chain_transaction_total_output_value(nativeInstance_);
             }
         }
 
@@ -267,7 +267,7 @@ namespace Knuth
         public byte[] GetHashBySigHashType(UInt32 sigHashType)
         {
             var managedHash = new hash_t();
-            TransactionNative.chain_transaction_hash_sighash_type_out(nativeInstance_, sigHashType, ref managedHash);
+            TransactionNative.kth_chain_transaction_hash_sighash_type_out(nativeInstance_, sigHashType, ref managedHash);
             return managedHash.hash;
         }
 
@@ -279,7 +279,7 @@ namespace Knuth
         /// <returns> True if and only if transaction is double spend. </returns>
         public bool IsDoubleSpend(bool includeUnconfirmed)
         {
-            return TransactionNative.chain_transaction_is_double_spend(nativeInstance_, includeUnconfirmed ? 1 : 0) != 0;
+            return TransactionNative.kth_chain_transaction_is_double_spend(nativeInstance_, includeUnconfirmed ? 1 : 0) != 0;
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Knuth
         /// <returns></returns>
         public bool IsFinal(UInt64 blockHeight, UInt32 blockTime)
         {
-            return TransactionNative.chain_transaction_is_final(nativeInstance_, blockHeight, blockTime) != 0;
+            return TransactionNative.kth_chain_transaction_is_final(nativeInstance_, blockHeight, blockTime) != 0;
         }
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace Knuth
         /// <returns></returns>
         public bool IsImmature(UInt64 targetHeight)
         {
-            return TransactionNative.chain_transaction_is_immature(nativeInstance_, targetHeight) != 0;
+            return TransactionNative.kth_chain_transaction_is_immature(nativeInstance_, targetHeight) != 0;
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace Knuth
         public byte[] ToData(bool wire)
         {
             int txSize = 0;
-            var txData = new NativeBuffer(TransactionNative.chain_transaction_to_data(nativeInstance_, wire? 1:0, ref txSize));
+            var txData = new NativeBuffer(TransactionNative.kth_chain_transaction_to_data(nativeInstance_, wire? 1:0, ref txSize));
             return txData.CopyToManagedArray(txSize);
         }
 
@@ -325,7 +325,7 @@ namespace Knuth
         /// <returns> Size in bytes. </returns>
         public UInt64 GetSerializedSize(bool wire = true)
         {
-            return TransactionNative.chain_transaction_serialized_size(nativeInstance_, wire ? 1 : 0);
+            return TransactionNative.kth_chain_transaction_serialized_size(nativeInstance_, wire ? 1 : 0);
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace Knuth
         /// <returns></returns>
         public UInt64 GetSignatureOperationsBip16Active(bool bip16Active)
         {
-            return TransactionNative.chain_transaction_signature_operations_bip16_active(nativeInstance_, bip16Active ? 1 : 0);
+            return TransactionNative.kth_chain_transaction_signature_operations_bip16_active(nativeInstance_, bip16Active ? 1 : 0);
         }
 
         internal IntPtr NativeInstance
@@ -356,7 +356,7 @@ namespace Knuth
             if(ownsNativeObject_)
             {
                 //Logger.Log("Destroying transaction " + nativeInstance_.ToString("X") + " ...");
-                TransactionNative.chain_transaction_destruct(nativeInstance_);
+                TransactionNative.kth_chain_transaction_destruct(nativeInstance_);
                 //Logger.Log("Transaction " + nativeInstance_.ToString("X") + " destroyed!");
             }
         }

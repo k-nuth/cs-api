@@ -21,7 +21,7 @@ namespace Knuth
         /// </summary>
         public Input()
         {
-            nativeInstance_ = InputNative.chain_input_construct_default();
+            nativeInstance_ = InputNative.kth_chain_input_construct_default();
             ownsNativeObject_ = true;
         }
 
@@ -33,7 +33,7 @@ namespace Knuth
         /// <param name="sequence"> Zero-based, indexes this input in the input set. </param>
         public Input(Output previousOutput, Script script, UInt32 sequence)
         {
-            nativeInstance_ = InputNative.chain_input_construct(previousOutput.NativeInstance, script.NativeInstance, sequence);
+            nativeInstance_ = InputNative.kth_chain_input_construct(previousOutput.NativeInstance, script.NativeInstance, sequence);
             ownsNativeObject_ = true;
         }
 
@@ -49,7 +49,7 @@ namespace Knuth
         {
             get
             {
-                return InputNative.chain_input_is_final(nativeInstance_) != 0;
+                return InputNative.kth_chain_input_is_final(nativeInstance_) != 0;
             }
         }
 
@@ -60,7 +60,7 @@ namespace Knuth
         {
             get
             {
-                return InputNative.chain_input_is_valid(nativeInstance_) != 0;
+                return InputNative.kth_chain_input_is_valid(nativeInstance_) != 0;
             }
         }
 
@@ -71,7 +71,7 @@ namespace Knuth
         {
             get
             {
-                return new OutputPoint(InputNative.chain_input_previous_output(nativeInstance_), false);
+                return new OutputPoint(InputNative.kth_chain_input_previous_output(nativeInstance_), false);
             }
         }
 
@@ -82,7 +82,7 @@ namespace Knuth
         {
             get
             {
-                return new Script(InputNative.chain_input_script(nativeInstance_), false);
+                return new Script(InputNative.kth_chain_input_script(nativeInstance_), false);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Knuth
         {
             get
             {
-                return InputNative.chain_input_sequence(nativeInstance_);
+                return InputNative.kth_chain_input_sequence(nativeInstance_);
             }
         }
 
@@ -104,7 +104,7 @@ namespace Knuth
         /// <returns> Size in bytes. </returns>
         public UInt64 GetSerializedSize(bool wire)
         {
-            return (UInt64)InputNative.chain_input_serialized_size(nativeInstance_, wire ? 1 : 0);
+            return (UInt64)InputNative.kth_chain_input_serialized_size(nativeInstance_, wire ? 1 : 0);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Knuth
         /// <returns> Sigops count. </returns>
         public UInt64 GetSignatureOperationsCount(bool bip16Active)
         {
-            return (UInt64)InputNative.chain_input_signature_operations(nativeInstance_, bip16Active ? 1 : 0);
+            return (UInt64)InputNative.kth_chain_input_signature_operations(nativeInstance_, bip16Active ? 1 : 0);
         }
 
         public void Dispose()
@@ -147,7 +147,7 @@ namespace Knuth
             if(ownsNativeObject_)
             {
                 //Logger.Log("Destroying input " + nativeInstance_.ToString("X") + " ...");
-                InputNative.chain_input_destruct(nativeInstance_);
+                InputNative.kth_chain_input_destruct(nativeInstance_);
                 //Logger.Log("Input " + nativeInstance_.ToString("X") + " destroyed!");
             }
         }

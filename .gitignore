@@ -95,3 +95,4 @@ console/conan.lock
 console/hosts*
 console/database/
 console/log
+buildX/

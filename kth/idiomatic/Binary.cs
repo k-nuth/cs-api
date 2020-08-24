@@ -20,7 +20,7 @@ namespace Knuth
         /// </summary>
         public Binary()
         {
-            nativeInstance_ = BinaryNative.core_binary_construct();
+            nativeInstance_ = BinaryNative.kth_core_binary_construct();
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Knuth
         /// <param name="hexString">  Binary string. Example: '10111010101011011111000000001101' </param>
         public Binary(string hexString)
         {
-            nativeInstance_ = BinaryNative.core_binary_construct_string(hexString);
+            nativeInstance_ = BinaryNative.kth_core_binary_construct_string(hexString);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Knuth
         /// <param name="n"> Array length in amount of elements. </param>
         public Binary(UInt64 bitsSize, byte[] blocks, UInt64 n)
         {
-            nativeInstance_ = BinaryNative.core_binary_construct_blocks((UIntPtr)bitsSize, blocks, (UIntPtr)n);
+            nativeInstance_ = BinaryNative.kth_core_binary_construct_blocks((UIntPtr)bitsSize, blocks, (UIntPtr)n);
         }
 
         ~Binary()
@@ -126,7 +126,7 @@ namespace Knuth
         {
             get
             {
-                return BinaryNative.core_binary_encoded(nativeInstance_);
+                return BinaryNative.kth_core_binary_encoded(nativeInstance_);
             }
         }
 
@@ -152,7 +152,7 @@ namespace Knuth
             }
             //Release unmanaged resources
             
-            BinaryNative.core_binary_destruct(nativeInstance_);
+            BinaryNative.kth_core_binary_destruct(nativeInstance_);
             
         }
 
