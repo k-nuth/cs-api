@@ -96,3 +96,14 @@ console/hosts*
 console/database/
 console/log
 buildX/
+
+*.log
+hosts.cache
+
+blockchain/
+build-nuke/bin/
+build-nuke/obj/
+
+tests/bch/TestResults/
+tests/bch/conan.lock
+tests/bch/mono_crash.21acb2a948.0.json

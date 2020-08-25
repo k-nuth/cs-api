@@ -39,8 +39,7 @@ Task("Clean")
         CleanDirectory("./tests/bch/bin");
         CleanDirectory("./tests/btc/bin");
        
-        if (DirectoryExists(outputDir))
-        {
+        if (DirectoryExists(outputDir)) {
             DeleteDirectory(outputDir, new DeleteDirectorySettings {
                             Recursive = true,
                             Force = true
@@ -78,8 +77,7 @@ Task("Version")
 
         using(var process = StartAndReturnProcess("python", new ProcessSettings { 
                     Arguments = "get_version.py",
-                    RedirectStandardOutput = true }))
-        {
+                    RedirectStandardOutput = true })) {
             process.WaitForExit();
             // This should output 0 as valid arguments supplied
             Information("python get_version.py exit code: {0}", process.GetExitCode());
@@ -180,8 +178,7 @@ Task("Package")
 Task("UpdateVersionInfo")
     .IsDependentOn("Package")
     .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
-    .Does(() =>
-    {
+    .Does(() => {
         var isTag = AppVeyor.Environment.Repository.Tag.IsTag && !string.IsNullOrWhiteSpace(AppVeyor.Environment.Repository.Tag.Name);
         if (isTag) 
         {
@@ -192,11 +189,9 @@ Task("UpdateVersionInfo")
 Task("DeployNuget")
     .IsDependentOn("UpdateVersionInfo")
     .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
-    .Does(() =>
-    {
+    .Does(() => {
         var branchName = AppVeyor.Environment.Repository.Branch;
-        if (branchName != "master")
-        {
+        if (branchName != "master") {
             skipNuget = "true";
         }
 
@@ -205,16 +200,14 @@ Task("DeployNuget")
         Information("Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
         Information("Branch name:" + branchName);
          
-        if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]") && skipNuget == "false")
-        {
+        if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]") && skipNuget == "false") {
             var files = System.IO.File
             .ReadAllLines(outputDir + "artifacts")
             .Select(l => l.Split(':'))
             .Select(l => l[1])
             .ToList();
 
-            foreach (string f in files)
-            {
+            foreach (string f in files) {
                 Information("Pushing to nuget " + f);
                 NuGetPush(
                     outputDir + f,
