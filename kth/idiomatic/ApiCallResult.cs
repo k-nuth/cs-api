@@ -10,8 +10,7 @@ namespace Knuth
     /// Represents a result of calling a native API method
     /// </summary>
     /// <typeparam name="TResultData">The Result's type</typeparam>
-    public class ApiCallResult<TResultData>
-    {
+    public class ApiCallResult<TResultData> {
         /// <summary>
         /// Status code returned by native api
         /// </summary>
@@ -32,8 +31,7 @@ namespace Knuth
         /// <summary>
         /// Dispose method for resource cleanup
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             Result.Dispose();
         }
     }
@@ -57,8 +55,7 @@ namespace Knuth
         /// <summary>
         /// Dispose method for resource cleanup
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             BlockData.Dispose();
         }
     }
@@ -86,8 +83,7 @@ namespace Knuth
         /// <summary>
         /// Dispose method for resource cleanup
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             Header.Dispose();
             TransactionHashes.Dispose();
         }
@@ -128,8 +124,7 @@ namespace Knuth
         /// <summary>
         /// Dispose method for resource cleanup
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             Tx.Dispose();
         }
     }

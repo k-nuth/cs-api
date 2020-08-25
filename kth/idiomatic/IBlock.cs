@@ -66,7 +66,7 @@ namespace Knuth
         /// <summary>
         /// Amount of signature operations in the block.
         /// </summary>
-        UInt64 SignatureOperationsCount { get; }
+        UInt64 SignatureOperations { get; }
 
         /// <summary>
         /// The total amount of transactions that the block contains.
@@ -127,7 +127,7 @@ namespace Knuth
         /// </summary>
         /// <param name="bip16Active"> If and only if true, count bip16 active operations. </param>
         /// <returns> The amount of signature operations in this block </returns>
-        UInt64 GetSignatureOperationsCount(bool bip16Active);
+        UInt64 GetSignatureOperations(bool bip16Active);
 
         /// <summary>
         /// The sum of all inputs of all transactions in the block.

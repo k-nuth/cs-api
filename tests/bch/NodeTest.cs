@@ -4,26 +4,20 @@
 
 using Xunit;
 
-namespace Knuth.Tests
-{
+namespace Knuth.Tests {
     [Collection("ChainCollection")]
-    public class NodeTest
-    {
+    public class NodeTest {
         [Fact]
-        public void TestConfigValid()
-        {
-            using (var exec = new Node("config/valid.cfg"))
-            {
-                Assert.True(exec.IsLoadConfigValid); 
+        public void TestConfigValid() {
+            using (var node = new Node("config/valid.cfg")) {
+                Assert.True(node.IsLoadConfigValid); 
             }
         }
 
         [Fact]
-        public void TestConfigInvalid()
-        {
-            using (var exec = new Node("config/invalid.cfg"))
-            {
-                Assert.False(exec.IsLoadConfigValid); 
+        public void TestConfigInvalid() {
+            using (var node = new Node("config/invalid.cfg")) {
+                Assert.False(node.IsLoadConfigValid); 
             }
         }
     }

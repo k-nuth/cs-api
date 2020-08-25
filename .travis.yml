@@ -74,6 +74,7 @@ before_cache:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew cleanup; fi
 
 before_install:
+  - find / -name "*git2-7ce88e6*"
   - |
     if test "$TRAVIS_OS_NAME" == "osx"; then
       ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/;
@@ -88,7 +89,7 @@ before_install:
     git fetch origin
 
 install:
-  
+  - find / -name "*git2-7ce88e6*"
   - |
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
       # Install Conan    
@@ -164,7 +165,10 @@ install:
     fi
 
 script:
+  - find / -name "*git2-7ce88e6*"
+
   - |
+    find / -name "*git2-7ce88e6*"
     if [[ "${UPDATE_DOCS}" != "true" ]]; then
       
       chmod +x build.sh

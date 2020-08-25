@@ -1,4 +1,0 @@
-2020-08-15T03:30:57.671864 WARNING [network] Invalid xversion payload from [66.42.76.95:8333] object does not exist
-2020-08-15T03:30:57.683197 WARNING [network] Invalid xversion payload from [172.104.109.154:8333] object does not exist
-2020-08-15T03:31:01.233006 ERROR [network] Error seeding host addresses: unresponsive peer may be throttling
-2020-08-15T03:31:01.233072 ERROR [node] Node failed to start with error, unresponsive peer may be throttling.

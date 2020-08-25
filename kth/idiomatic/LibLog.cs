@@ -134,300 +134,235 @@ namespace Knuth.Logging
 #endif
     static partial class LogExtensions
     {
-        public static bool IsDebugEnabled(this ILog logger)
-        {
+        public static bool IsDebugEnabled(this ILog logger) {
             GuardAgainstNullLogger(logger);
             return logger.Log(LogLevel.Debug, null);
         }
 
-        public static bool IsErrorEnabled(this ILog logger)
-        {
+        public static bool IsErrorEnabled(this ILog logger) {
             GuardAgainstNullLogger(logger);
             return logger.Log(LogLevel.Error, null);
         }
 
-        public static bool IsFatalEnabled(this ILog logger)
-        {
+        public static bool IsFatalEnabled(this ILog logger) {
             GuardAgainstNullLogger(logger);
             return logger.Log(LogLevel.Fatal, null);
         }
 
-        public static bool IsInfoEnabled(this ILog logger)
-        {
+        public static bool IsInfoEnabled(this ILog logger) {
             GuardAgainstNullLogger(logger);
             return logger.Log(LogLevel.Info, null);
         }
 
-        public static bool IsTraceEnabled(this ILog logger)
-        {
+        public static bool IsTraceEnabled(this ILog logger) {
             GuardAgainstNullLogger(logger);
             return logger.Log(LogLevel.Trace, null);
         }
 
-        public static bool IsWarnEnabled(this ILog logger)
-        {
+        public static bool IsWarnEnabled(this ILog logger) {
             GuardAgainstNullLogger(logger);
             return logger.Log(LogLevel.Warn, null);
         }
 
-        public static void Debug(this ILog logger, Func<string> messageFunc)
-        {
+        public static void Debug(this ILog logger, Func<string> messageFunc) {
             GuardAgainstNullLogger(logger);
             logger.Log(LogLevel.Debug, WrapLogInternal(messageFunc));
         }
 
-        public static void Debug(this ILog logger, string message)
-        {
-            if (logger.IsDebugEnabled())
-            {
+        public static void Debug(this ILog logger, string message) {
+            if (logger.IsDebugEnabled()) {
                 logger.Log(LogLevel.Debug, message.AsFunc());
             }
         }
 
-        public static void Debug(this ILog logger, string message, params object[] args)
-        {
+        public static void Debug(this ILog logger, string message, params object[] args) {
             logger.DebugFormat(message, args);
         }
 
-        public static void Debug(this ILog logger, Exception exception, string message, params object[] args)
-        {
+        public static void Debug(this ILog logger, Exception exception, string message, params object[] args) {
             logger.DebugException(message, exception, args);
         }
 
-        public static void DebugFormat(this ILog logger, string message, params object[] args)
-        {
-            if (logger.IsDebugEnabled())
-            {
+        public static void DebugFormat(this ILog logger, string message, params object[] args) {
+            if (logger.IsDebugEnabled()) {
                 logger.LogFormat(LogLevel.Debug, message, args);
             }
         }
 
-        public static void DebugException(this ILog logger, string message, Exception exception)
-        {
-            if (logger.IsDebugEnabled())
-            {
+        public static void DebugException(this ILog logger, string message, Exception exception) {
+            if (logger.IsDebugEnabled()) {
                 logger.Log(LogLevel.Debug, message.AsFunc(), exception);
             }
         }
 
-        public static void DebugException(this ILog logger, string message, Exception exception, params object[] formatParams)
-        {
-            if (logger.IsDebugEnabled())
-            {
+        public static void DebugException(this ILog logger, string message, Exception exception, params object[] formatParams) {
+            if (logger.IsDebugEnabled()) {
                 logger.Log(LogLevel.Debug, message.AsFunc(), exception, formatParams);
             }
         }
 
-        public static void Error(this ILog logger, Func<string> messageFunc)
-        {
+        public static void Error(this ILog logger, Func<string> messageFunc) {
             GuardAgainstNullLogger(logger);
             logger.Log(LogLevel.Error, WrapLogInternal(messageFunc));
         }
 
-        public static void Error(this ILog logger, string message)
-        {
-            if (logger.IsErrorEnabled())
-            {
+        public static void Error(this ILog logger, string message) {
+            if (logger.IsErrorEnabled()) {
                 logger.Log(LogLevel.Error, message.AsFunc());
             }
         }
 
-        public static void Error(this ILog logger, string message, params object[] args)
-        {
+        public static void Error(this ILog logger, string message, params object[] args) {
             logger.ErrorFormat(message, args);
         }
 
-        public static void Error(this ILog logger, Exception exception, string message, params object[] args)
-        {
+        public static void Error(this ILog logger, Exception exception, string message, params object[] args) {
             logger.ErrorException(message, exception, args);
         }
 
-        public static void ErrorFormat(this ILog logger, string message, params object[] args)
-        {
-            if (logger.IsErrorEnabled())
-            {
+        public static void ErrorFormat(this ILog logger, string message, params object[] args) {
+            if (logger.IsErrorEnabled()) {
                 logger.LogFormat(LogLevel.Error, message, args);
             }
         }
 
-        public static void ErrorException(this ILog logger, string message, Exception exception, params object[] formatParams)
-        {
-            if (logger.IsErrorEnabled())
-            {
+        public static void ErrorException(this ILog logger, string message, Exception exception, params object[] formatParams) {
+            if (logger.IsErrorEnabled()) {
                 logger.Log(LogLevel.Error, message.AsFunc(), exception, formatParams);
             }
         }
 
-        public static void Fatal(this ILog logger, Func<string> messageFunc)
-        {
+        public static void Fatal(this ILog logger, Func<string> messageFunc) {
             logger.Log(LogLevel.Fatal, WrapLogInternal(messageFunc));
         }
 
-        public static void Fatal(this ILog logger, string message)
-        {
-            if (logger.IsFatalEnabled())
-            {
+        public static void Fatal(this ILog logger, string message) {
+            if (logger.IsFatalEnabled()) {
                 logger.Log(LogLevel.Fatal, message.AsFunc());
             }
         }
 
-        public static void Fatal(this ILog logger, string message, params object[] args)
-        {
+        public static void Fatal(this ILog logger, string message, params object[] args) {
             logger.FatalFormat(message, args);
         }
 
-        public static void Fatal(this ILog logger, Exception exception, string message, params object[] args)
-        {
+        public static void Fatal(this ILog logger, Exception exception, string message, params object[] args) {
             logger.FatalException(message, exception, args);
         }
 
-        public static void FatalFormat(this ILog logger, string message, params object[] args)
-        {
-            if (logger.IsFatalEnabled())
-            {
+        public static void FatalFormat(this ILog logger, string message, params object[] args) {
+            if (logger.IsFatalEnabled()) {
                 logger.LogFormat(LogLevel.Fatal, message, args);
             }
         }
 
-        public static void FatalException(this ILog logger, string message, Exception exception, params object[] formatParams)
-        {
-            if (logger.IsFatalEnabled())
-            {
+        public static void FatalException(this ILog logger, string message, Exception exception, params object[] formatParams) {
+            if (logger.IsFatalEnabled()) {
                 logger.Log(LogLevel.Fatal, message.AsFunc(), exception, formatParams);
             }
         }
 
-        public static void Info(this ILog logger, Func<string> messageFunc)
-        {
+        public static void Info(this ILog logger, Func<string> messageFunc) {
             GuardAgainstNullLogger(logger);
             logger.Log(LogLevel.Info, WrapLogInternal(messageFunc));
         }
 
-        public static void Info(this ILog logger, string message)
-        {
-            if (logger.IsInfoEnabled())
-            {
+        public static void Info(this ILog logger, string message) {
+            if (logger.IsInfoEnabled()) {
                 logger.Log(LogLevel.Info, message.AsFunc());
             }
         }
 
-        public static void Info(this ILog logger, string message, params object[] args)
-        {
+        public static void Info(this ILog logger, string message, params object[] args) {
             logger.InfoFormat(message, args);
         }
 
-        public static void Info(this ILog logger, Exception exception, string message, params object[] args)
-        {
+        public static void Info(this ILog logger, Exception exception, string message, params object[] args) {
             logger.InfoException(message, exception, args);
         }
 
-        public static void InfoFormat(this ILog logger, string message, params object[] args)
-        {
-            if (logger.IsInfoEnabled())
-            {
+        public static void InfoFormat(this ILog logger, string message, params object[] args) {
+            if (logger.IsInfoEnabled()) {
                 logger.LogFormat(LogLevel.Info, message, args);
             }
         }
 
-        public static void InfoException(this ILog logger, string message, Exception exception, params object[] formatParams)
-        {
-            if (logger.IsInfoEnabled())
-            {
+        public static void InfoException(this ILog logger, string message, Exception exception, params object[] formatParams) {
+            if (logger.IsInfoEnabled()) {
                 logger.Log(LogLevel.Info, message.AsFunc(), exception, formatParams);
             }
         }
 
-        public static void Trace(this ILog logger, Func<string> messageFunc)
-        {
+        public static void Trace(this ILog logger, Func<string> messageFunc) {
             GuardAgainstNullLogger(logger);
             logger.Log(LogLevel.Trace, WrapLogInternal(messageFunc));
         }
 
-        public static void Trace(this ILog logger, string message)
-        {
-            if (logger.IsTraceEnabled())
-            {
+        public static void Trace(this ILog logger, string message) {
+            if (logger.IsTraceEnabled()) {
                 logger.Log(LogLevel.Trace, message.AsFunc());
             }
         }
 
-        public static void Trace(this ILog logger, string message, params object[] args)
-        {
+        public static void Trace(this ILog logger, string message, params object[] args) {
             logger.TraceFormat(message, args);
         }
 
-        public static void Trace(this ILog logger, Exception exception, string message, params object[] args)
-        {
+        public static void Trace(this ILog logger, Exception exception, string message, params object[] args) {
             logger.TraceException(message, exception, args);
         }
 
-        public static void TraceFormat(this ILog logger, string message, params object[] args)
-        {
-            if (logger.IsTraceEnabled())
-            {
+        public static void TraceFormat(this ILog logger, string message, params object[] args) {
+            if (logger.IsTraceEnabled()) {
                 logger.LogFormat(LogLevel.Trace, message, args);
             }
         }
 
-        public static void TraceException(this ILog logger, string message, Exception exception, params object[] formatParams)
-        {
-            if (logger.IsTraceEnabled())
-            {
+        public static void TraceException(this ILog logger, string message, Exception exception, params object[] formatParams) {
+            if (logger.IsTraceEnabled()) {
                 logger.Log(LogLevel.Trace, message.AsFunc(), exception, formatParams);
             }
         }
 
-        public static void Warn(this ILog logger, Func<string> messageFunc)
-        {
+        public static void Warn(this ILog logger, Func<string> messageFunc) {
             GuardAgainstNullLogger(logger);
             logger.Log(LogLevel.Warn, WrapLogInternal(messageFunc));
         }
 
-        public static void Warn(this ILog logger, string message)
-        {
-            if (logger.IsWarnEnabled())
-            {
+        public static void Warn(this ILog logger, string message) {
+            if (logger.IsWarnEnabled()) {
                 logger.Log(LogLevel.Warn, message.AsFunc());
             }
         }
 
-        public static void Warn(this ILog logger, string message, params object[] args)
-        {
+        public static void Warn(this ILog logger, string message, params object[] args) {
             logger.WarnFormat(message, args);
         }
 
-        public static void Warn(this ILog logger, Exception exception, string message, params object[] args)
-        {
+        public static void Warn(this ILog logger, Exception exception, string message, params object[] args) {
             logger.WarnException(message, exception, args);
         }
 
-        public static void WarnFormat(this ILog logger, string message, params object[] args)
-        {
-            if (logger.IsWarnEnabled())
-            {
+        public static void WarnFormat(this ILog logger, string message, params object[] args) {
+            if (logger.IsWarnEnabled()) {
                 logger.LogFormat(LogLevel.Warn, message, args);
             }
         }
 
-        public static void WarnException(this ILog logger, string message, Exception exception, params object[] formatParams)
-        {
-            if (logger.IsWarnEnabled())
-            {
+        public static void WarnException(this ILog logger, string message, Exception exception, params object[] formatParams) {
+            if (logger.IsWarnEnabled()) {
                 logger.Log(LogLevel.Warn, message.AsFunc(), exception, formatParams);
             }
         }
 
         // ReSharper disable once UnusedParameter.Local
-        private static void GuardAgainstNullLogger(ILog logger)
-        {
-            if (logger == null)
-            {
+        private static void GuardAgainstNullLogger(ILog logger) {
+            if (logger == null) {
                 throw new ArgumentNullException("logger");
             }
         }
 
-        private static void LogFormat(this ILog logger, LogLevel logLevel, string message, params object[] args)
-        {
+        private static void LogFormat(this ILog logger, LogLevel logLevel, string message, params object[] args) {
             logger.Log(logLevel, message.AsFunc(), null, args);
         }
 
@@ -437,16 +372,13 @@ namespace Knuth.Logging
         private static T Return<T>(this T value) => value;
 
         // Allow passing callsite-logger-type to LogProviderBase using messageFunc
-        internal static Func<string> WrapLogSafeInternal(LoggerExecutionWrapper logger, Func<string> messageFunc)
-        {
-            string WrappedMessageFunc()
-            {
+        internal static Func<string> WrapLogSafeInternal(LoggerExecutionWrapper logger, Func<string> messageFunc) {
+            string WrappedMessageFunc() {
                 try
                 {
                     return messageFunc();
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     logger.WrappedLogger(LogLevel.Error, () => LoggerExecutionWrapper.FailedToGenerateLogMessage, ex);
                 }
                 return null;
@@ -456,8 +388,7 @@ namespace Knuth.Logging
         }
 
         // Allow passing callsite-logger-type to LogProviderBase using messageFunc
-        private static Func<string> WrapLogInternal(Func<string> messageFunc)
-        {
+        private static Func<string> WrapLogInternal(Func<string> messageFunc) {
             string WrappedMessageFunc() => messageFunc();
 
             return WrappedMessageFunc;
@@ -519,8 +450,7 @@ namespace Knuth.Logging
         private static readonly Lazy<ILogProvider> ResolvedLogProvider = new Lazy<ILogProvider>(ForceResolveLogProvider);
 
         [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
-        static LogProvider()
-        {
+        static LogProvider() {
             IsDisabled = false;
         }
 
@@ -528,8 +458,7 @@ namespace Knuth.Logging
         /// Sets the current log provider.
         /// </summary>
         /// <param name="logProvider">The log provider.</param>
-        public static void SetCurrentLogProvider(ILogProvider logProvider)
-        {
+        public static void SetCurrentLogProvider(ILogProvider logProvider) {
             s_currentLogProvider = logProvider;
 
             RaiseOnCurrentLogProviderSet();
@@ -583,8 +512,7 @@ namespace Knuth.Logging
 #else
         internal
 #endif
-        static ILog GetCurrentClassLogger()
-        {
+        static ILog GetCurrentClassLogger() {
             var stackFrame = new StackFrame(1, false);
             return GetLogger(stackFrame.GetMethod().DeclaringType);
         }
@@ -615,8 +543,7 @@ namespace Knuth.Logging
 #else
         internal
 #endif
-        static ILog GetLogger(string name)
-        {
+        static ILog GetLogger(string name) {
             var logProvider = CurrentLogProvider ?? ResolveLogProvider();
             return logProvider == null
                 ? NoOpLogger.Instance
@@ -634,8 +561,7 @@ namespace Knuth.Logging
 #else
         internal
 #endif
-        static IDisposable OpenNestedContext(string message)
-        {
+        static IDisposable OpenNestedContext(string message) {
             var logProvider = CurrentLogProvider ?? ResolveLogProvider();
 
             return logProvider == null
@@ -655,8 +581,7 @@ namespace Knuth.Logging
 #else
         internal
 #endif
-        static IDisposable OpenMappedContext(string key, object value, bool destructure = false)
-        {
+        static IDisposable OpenMappedContext(string key, object value, bool destructure = false) {
             var logProvider = CurrentLogProvider ?? ResolveLogProvider();
 
             return logProvider == null
@@ -694,36 +619,30 @@ namespace Knuth.Logging
         };
 
 #if !LIBLOG_PROVIDERS_ONLY
-        private static void RaiseOnCurrentLogProviderSet()
-        {
-            if (s_onCurrentLogProviderSet != null)
-            {
+        private static void RaiseOnCurrentLogProviderSet() {
+            if (s_onCurrentLogProviderSet != null) {
                 s_onCurrentLogProviderSet(s_currentLogProvider);
             }
         }
 #endif
 
-        internal static ILogProvider ResolveLogProvider()
-        {
+        internal static ILogProvider ResolveLogProvider() {
             return ResolvedLogProvider.Value;
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Console.WriteLine(System.String,System.Object,System.Object)")]
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        internal static ILogProvider ForceResolveLogProvider()
-        {
+        internal static ILogProvider ForceResolveLogProvider() {
             try
             {
-                foreach (var providerResolver in LogProviderResolvers)
-                {
+                foreach (var providerResolver in LogProviderResolvers) {
                     if (providerResolver.Item1())
                     {
                         return providerResolver.Item2();
                     }
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Debug.WriteLine(
                     "Exception occurred resolving a log provider. Logging for this assembly {0} is disabled. {1}",
                     typeof(LogProvider).GetAssemblyPortable().FullName,
@@ -740,8 +659,7 @@ namespace Knuth.Logging
         {
             internal static readonly NoOpLogger Instance = new NoOpLogger();
 
-            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters)
-            {
+            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters) {
                 return false;
             }
         }
@@ -759,8 +677,7 @@ namespace Knuth.Logging
         private readonly Func<bool> _getIsDisabled;
         internal const string FailedToGenerateLogMessage = "Failed to generate log message";
 
-        internal LoggerExecutionWrapper(Logger logger, Func<bool> getIsDisabled = null)
-        {
+        internal LoggerExecutionWrapper(Logger logger, Func<bool> getIsDisabled = null) {
             _logger = logger;
             _callsiteLogger = new CallSiteExtension();
             _getIsDisabled = getIsDisabled ?? (() => false);
@@ -769,32 +686,26 @@ namespace Knuth.Logging
         internal Logger WrappedLogger => _logger;
 
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception = null, params object[] formatParameters)
-        {
-            if (_getIsDisabled())
-            {
+        public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception = null, params object[] formatParameters) {
+            if (_getIsDisabled()) {
                 return false;
             }
-            if (messageFunc == null)
-            {
+            if (messageFunc == null) {
                 return _logger(logLevel, null);
             }
 #if !LIBLOG_NETSTANDARD
             // Callsite HACK - Using the messageFunc to provide the callsite-logger-type
             var lastExtensionMethod = _lastExtensionMethod;
-            if (lastExtensionMethod == null || !lastExtensionMethod.Equals(messageFunc))
-            {
+            if (lastExtensionMethod == null || !lastExtensionMethod.Equals(messageFunc)) {
                 // Callsite HACK - Cache the last validated messageFunc as Equals is faster than type-check
                 lastExtensionMethod = null;
                 var methodType = messageFunc.Method.DeclaringType;
-                if (methodType == typeof(LogExtensions) || (methodType != null && methodType.DeclaringType == typeof(LogExtensions)))
-                {
+                if (methodType == typeof(LogExtensions) || (methodType != null && methodType.DeclaringType == typeof(LogExtensions))) {
                     lastExtensionMethod = messageFunc;
                 }
             }
 
-            if (lastExtensionMethod != null)
-            {
+            if (lastExtensionMethod != null) {
                 // Callsite HACK - LogExtensions has called virtual ILog interface method to get here, callsite-stack is good
                 _lastExtensionMethod = lastExtensionMethod;
                 return _logger(logLevel, LogExtensions.WrapLogSafeInternal(this, messageFunc), exception, formatParameters);
@@ -803,8 +714,7 @@ namespace Knuth.Logging
             else
 #endif
             {
-                string WrappedMessageFunc()
-                {
+                string WrappedMessageFunc() {
                     try
                     {
                         return messageFunc();
@@ -837,8 +747,7 @@ namespace Knuth.Logging
                 LogLevel logLevel,
                 Func<string> messageFunc,
                 Exception exception,
-                object[] formatParameters)
-            {
+                object[] formatParameters) {
                 return logger(logLevel, messageFunc, exception, formatParameters);
             }
         }
@@ -874,8 +783,7 @@ namespace Knuth.LibLog.LogProviders
         private readonly Lazy<OpenMdc> _lazyOpenMdcMethod;
         private static readonly IDisposable NoopDisposableInstance = new DisposableAction();
 
-        protected LogProviderBase()
-        {
+        protected LogProviderBase() {
             _lazyOpenNdcMethod
                 = new Lazy<OpenNdc>(GetOpenNdcMethod);
             _lazyOpenMdcMethod
@@ -905,10 +813,8 @@ namespace Knuth.LibLog.LogProviders
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "LogManager")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "NLog")]
-        public NLogLogProvider()
-        {
-            if (!IsLoggerAvailable())
-            {
+        public NLogLogProvider() {
+            if (!IsLoggerAvailable()) {
                 throw new InvalidOperationException("NLog.LogManager not found");
             }
             _getLoggerByNameDelegate = GetGetLoggerMethodCall();
@@ -920,8 +826,7 @@ namespace Knuth.LibLog.LogProviders
 
         public static bool IsLoggerAvailable() => ProviderIsAvailableOverride && GetLogManagerType() != null;
 
-        protected override OpenNdc GetOpenNdcMethod()
-        {
+        protected override OpenNdc GetOpenNdcMethod() {
             var ndcContextType = Type.GetType("NLog.NestedDiagnosticsContext, NLog");
             var pushMethod = ndcContextType.GetMethodPortable("Push", typeof(string));
             var messageParam = Expression.Parameter(typeof(string), "message");
@@ -929,8 +834,7 @@ namespace Knuth.LibLog.LogProviders
             return Expression.Lambda<OpenNdc>(pushMethodCall, messageParam).Compile();
         }
 
-        protected override OpenMdc GetOpenMdcMethod()
-        {
+        protected override OpenMdc GetOpenMdcMethod() {
             var mdcContextType = Type.GetType("NLog.MappedDiagnosticsContext, NLog");
 
             var setMethod = mdcContextType.GetMethodPortable("Set", typeof(string), typeof(string));
@@ -948,20 +852,17 @@ namespace Knuth.LibLog.LogProviders
                 .Lambda<Action<string>>(removeMethodCall, keyParam)
                 .Compile();
 
-            return (key, value, _) =>
-            {
+            return (key, value, _) => {
                 set(key, value.ToString());
                 return new DisposableAction(() => remove(key));
             };
         }
 
-        private static Type GetLogManagerType()
-        {
+        private static Type GetLogManagerType() {
             return Type.GetType("NLog.LogManager, NLog");
         }
 
-        private static Func<string, object> GetGetLoggerMethodCall()
-        {
+        private static Func<string, object> GetGetLoggerMethodCall() {
             var logManagerType = GetLogManagerType();
             MethodInfo method = logManagerType.GetMethodPortable("GetLogger", typeof(string));
             var nameParam = Expression.Parameter(typeof(string), "name");
@@ -985,8 +886,7 @@ namespace Knuth.LibLog.LogProviders
             private static readonly object _levelError;
             private static readonly object _levelFatal;
 
-            static NLogLogger()
-            {
+            static NLogLogger() {
                 try
                 {
                     var logEventLevelType = Type.GetType("NLog.LogLevel, NLog");
@@ -1034,16 +934,13 @@ namespace Knuth.LibLog.LogProviders
                 catch { }
             }
 
-            internal NLogLogger(dynamic logger)
-            {
+            internal NLogLogger(dynamic logger) {
                 _logger = logger;
             }
 
             [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters)
-            {
-                if (messageFunc == null)
-                {
+            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters) {
+                if (messageFunc == null) {
                     return IsLogLevelEnable(logLevel);
                 }
 #if !LIBLOG_NETSTANDARD
@@ -1051,8 +948,7 @@ namespace Knuth.LibLog.LogProviders
 #endif
                 messageFunc = LogMessageFormatter.SimulateStructuredLogging(messageFunc, formatParameters);
 
-                if (_logEventInfoFact != null)
-                {
+                if (_logEventInfoFact != null) {
                     if (!IsLogLevelEnable(logLevel))
                     {
                         return false;
@@ -1077,13 +973,11 @@ namespace Knuth.LibLog.LogProviders
                     return true;
                 }
 
-                if (exception != null)
-                {
+                if (exception != null) {
                     return LogException(logLevel, messageFunc, exception);
                 }
 
-                switch (logLevel)
-                {
+                switch (logLevel) {
                     case LogLevel.Debug:
                         if (_logger.IsDebugEnabled)
                         {
@@ -1131,10 +1025,8 @@ namespace Knuth.LibLog.LogProviders
             }
 
             [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-            private bool LogException(LogLevel logLevel, Func<string> messageFunc, Exception exception)
-            {
-                switch (logLevel)
-                {
+            private bool LogException(LogLevel logLevel, Func<string> messageFunc, Exception exception) {
+                switch (logLevel) {
                     case LogLevel.Debug:
                         if (_logger.IsDebugEnabled)
                         {
@@ -1181,10 +1073,8 @@ namespace Knuth.LibLog.LogProviders
                 return false;
             }
 
-            private bool IsLogLevelEnable(LogLevel logLevel)
-            {
-                switch (logLevel)
-                {
+            private bool IsLogLevelEnable(LogLevel logLevel) {
+                switch (logLevel) {
                     case LogLevel.Debug:
                         return _logger.IsDebugEnabled;
                     case LogLevel.Info:
@@ -1200,10 +1090,8 @@ namespace Knuth.LibLog.LogProviders
                 }
             }
 
-            private object TranslateLevel(LogLevel logLevel)
-            {
-                switch (logLevel)
-                {
+            private object TranslateLevel(LogLevel logLevel) {
+                switch (logLevel) {
                     case LogLevel.Trace:
                         return _levelTrace;
                     case LogLevel.Debug:
@@ -1231,10 +1119,8 @@ namespace Knuth.LibLog.LogProviders
         private readonly Func<string, object> _getLoggerByNameDelegate;
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "LogManager")]
-        public Log4NetLogProvider()
-        {
-            if (!IsLoggerAvailable())
-            {
+        public Log4NetLogProvider() {
+            if (!IsLoggerAvailable()) {
                 throw new InvalidOperationException("log4net.LogManager not found");
             }
             _getLoggerByNameDelegate = GetGetLoggerMethodCall();
@@ -1246,8 +1132,7 @@ namespace Knuth.LibLog.LogProviders
 
         internal static bool IsLoggerAvailable() => ProviderIsAvailableOverride && GetLogManagerType() != null;
 
-        protected override OpenNdc GetOpenNdcMethod()
-        {
+        protected override OpenNdc GetOpenNdcMethod() {
             var logicalThreadContextType = Type.GetType("log4net.LogicalThreadContext, log4net");
             var stacksProperty = logicalThreadContextType.GetPropertyPortable("Stacks");
             var logicalThreadContextStacksType = stacksProperty.PropertyType;
@@ -1274,8 +1159,7 @@ namespace Knuth.LibLog.LogProviders
             return result;
         }
 
-        protected override OpenMdc GetOpenMdcMethod()
-        {
+        protected override OpenMdc GetOpenMdcMethod() {
             var logicalThreadContextType = Type.GetType("log4net.LogicalThreadContext, log4net");
             var propertiesProperty = logicalThreadContextType.GetPropertyPortable("Properties");
             var logicalThreadContextPropertiesType = propertiesProperty.PropertyType;
@@ -1302,20 +1186,17 @@ namespace Knuth.LibLog.LogProviders
                 .Lambda<Action<string>>(removeMethodCall, keyParam)
                 .Compile();
 
-            return (key, value, _) =>
-            {
+            return (key, value, _) => {
                 set(key, value.ToString());
                 return new DisposableAction(() => remove(key));
             };
         }
 
-        private static Type GetLogManagerType()
-        {
+        private static Type GetLogManagerType() {
             return Type.GetType("log4net.LogManager, log4net");
         }
 
-        private static Func<string, object> GetGetLoggerMethodCall()
-        {
+        private static Func<string, object> GetGetLoggerMethodCall() {
             var logManagerType = GetLogManagerType();
             var log4netAssembly = logManagerType.GetAssemblyPortable();
             var method = logManagerType.GetMethodPortable("GetLogger", typeof(Assembly),  typeof(string));
@@ -1345,11 +1226,9 @@ namespace Knuth.LibLog.LogProviders
             private static readonly Func<object, Type, object, string, Exception, object> _createLoggingEvent;
             private static readonly Action<object, string, object> _loggingEventPropertySetter;
 
-            static Log4NetLogger()
-            {
+            static Log4NetLogger() {
                 var logEventLevelType = Type.GetType("log4net.Core.Level, log4net");
-                if (logEventLevelType == null)
-                {
+                if (logEventLevelType == null) {
                     throw new InvalidOperationException("Type log4net.Core.Level was not found.");
                 }
 
@@ -1362,8 +1241,7 @@ namespace Knuth.LibLog.LogProviders
 
                 // Func<object, object, bool> isEnabledFor = (logger, level) => { return ((log4net.Core.ILogger)logger).IsEnabled(level); }
                 var loggerType = Type.GetType("log4net.Core.ILogger, log4net");
-                if (loggerType == null)
-                {
+                if (loggerType == null) {
                     throw new InvalidOperationException("Type log4net.Core.ILogger, was not found.");
                 }
                 var instanceParam = Expression.Parameter(typeof(object));
@@ -1382,14 +1260,12 @@ namespace Knuth.LibLog.LogProviders
             }
 
             [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ILogger")]
-            internal Log4NetLogger(dynamic logger)
-            {
+            internal Log4NetLogger(dynamic logger) {
                 _logger = logger.Logger;
             }
 
             private static Action<object, object> GetLogDelegate(Type loggerType, Type loggingEventType, UnaryExpression instanceCast,
-                                                 ParameterExpression instanceParam)
-            {
+                                                 ParameterExpression instanceParam) {
                 //Action<object, object, string, Exception> Log =
                 //(logger, callerStackBoundaryDeclaringType, level, message, exception) => { ((ILogger)logger).Log(new LoggingEvent(callerStackBoundaryDeclaringType, logger.Repository, logger.Name, level, message, exception)); }
                 var writeExceptionMethodInfo = loggerType.GetMethodPortable("Log",
@@ -1414,8 +1290,7 @@ namespace Knuth.LibLog.LogProviders
                 return logDelegate;
             }
 
-            private static Func<object, Type, object, string, Exception, object> GetCreateLoggingEvent(ParameterExpression instanceParam, UnaryExpression instanceCast, ParameterExpression levelParam, UnaryExpression levelCast, Type loggingEventType)
-            {
+            private static Func<object, Type, object, string, Exception, object> GetCreateLoggingEvent(ParameterExpression instanceParam, UnaryExpression instanceCast, ParameterExpression levelParam, UnaryExpression levelCast, Type loggingEventType) {
                 var callerStackBoundaryDeclaringTypeParam = Expression.Parameter(typeof(Type));
                 var messageParam = Expression.Parameter(typeof(string));
                 var exceptionParam = Expression.Parameter(typeof(Exception));
@@ -1454,8 +1329,7 @@ namespace Knuth.LibLog.LogProviders
                                                                       UnaryExpression instanceCast,
                                                                       UnaryExpression levelCast,
                                                                       ParameterExpression instanceParam,
-                                                                      ParameterExpression levelParam)
-            {
+                                                                      ParameterExpression levelParam) {
                 var isEnabledMethodInfo = loggerType.GetMethodPortable("IsEnabledFor", logEventLevelType);
                 var isEnabledMethodCall = Expression.Call(instanceCast, isEnabledMethodInfo, levelCast);
 
@@ -1466,8 +1340,7 @@ namespace Knuth.LibLog.LogProviders
                 return result;
             }
 
-            private static Action<object, string, object> GetLoggingEventPropertySetter(Type loggingEventType)
-            {
+            private static Action<object, string, object> GetLoggingEventPropertySetter(Type loggingEventType) {
                 var loggingEventParameter = Expression.Parameter(typeof(object), "loggingEvent");
                 var keyParameter = Expression.Parameter(typeof(string), "key");
                 var valueParameter = Expression.Parameter(typeof(object), "value");
@@ -1491,15 +1364,12 @@ namespace Knuth.LibLog.LogProviders
                 return result;
             }
 
-            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters)
-            {
-                if (messageFunc == null)
-                {
+            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters) {
+                if (messageFunc == null) {
                     return IsLogLevelEnable(logLevel);
                 }
 
-                if (!IsLogLevelEnable(logLevel))
-                {
+                if (!IsLogLevelEnable(logLevel)) {
                     return false;
                 }
 
@@ -1511,8 +1381,7 @@ namespace Knuth.LibLog.LogProviders
                                                                 out var patternMatches);
 
                 // determine correct caller - this might change due to jit optimizations with method inlining
-                if (s_callerStackBoundaryType == null)
-                {
+                if (s_callerStackBoundaryType == null) {
                     lock (CallerStackBoundaryTypeSync)
                     {
 #if !LIBLOG_NETSTANDARD
@@ -1544,22 +1413,18 @@ namespace Knuth.LibLog.LogProviders
                 return true;
             }
 
-            private void PopulateProperties(object loggingEvent, IEnumerable<string> patternMatches, object[] formatParameters)
-            {
+            private void PopulateProperties(object loggingEvent, IEnumerable<string> patternMatches, object[] formatParameters) {
                 var keyToValue =
                     patternMatches.Zip(formatParameters,
                                        (key, value) => new KeyValuePair<string, object>(key, value));
 
-                foreach (var keyValuePair in keyToValue)
-                {
+                foreach (var keyValuePair in keyToValue) {
                     _loggingEventPropertySetter(loggingEvent, keyValuePair.Key, keyValuePair.Value);
                 }
             }
 
-            private static bool IsInTypeHierarchy(Type currentType, Type checkType)
-            {
-                while (currentType != null && currentType != typeof(object))
-                {
+            private static bool IsInTypeHierarchy(Type currentType, Type checkType) {
+                while (currentType != null && currentType != typeof(object)) {
                     if (currentType == checkType)
                     {
                         return true;
@@ -1569,16 +1434,13 @@ namespace Knuth.LibLog.LogProviders
                 return false;
             }
 
-            private bool IsLogLevelEnable(LogLevel logLevel)
-            {
+            private bool IsLogLevelEnable(LogLevel logLevel) {
                 var level = TranslateLevel(logLevel);
                 return _isEnabledForDelegate(_logger, level);
             }
 
-            private object TranslateLevel(LogLevel logLevel)
-            {
-                switch (logLevel)
-                {
+            private object TranslateLevel(LogLevel logLevel) {
+                switch (logLevel) {
                     case LogLevel.Trace:
                     case LogLevel.Debug:
                         return _levelDebug;
@@ -1606,10 +1468,8 @@ namespace Knuth.LibLog.LogProviders
         private static Func<string, object, bool, IDisposable> s_pushProperty;
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "Serilog")]
-        public SerilogLogProvider()
-        {
-            if (!IsLoggerAvailable())
-            {
+        public SerilogLogProvider() {
+            if (!IsLoggerAvailable()) {
                 throw new InvalidOperationException("Serilog.Log not found");
             }
             _getLoggerByNameDelegate = GetForContextMethodCall();
@@ -1630,8 +1490,7 @@ namespace Knuth.LibLog.LogProviders
         protected override OpenMdc GetOpenMdcMethod() 
             => (key, value, destructure) => s_pushProperty(key, value, destructure);
 
-        private static Func<string, object, bool, IDisposable> GetPushProperty()
-        {
+        private static Func<string, object, bool, IDisposable> GetPushProperty() {
             var ndcContextType = Type.GetType("Serilog.Context.LogContext, Serilog") ?? 
                                   Type.GetType("Serilog.Context.LogContext, Serilog.FullNetFx");
 
@@ -1657,13 +1516,11 @@ namespace Knuth.LibLog.LogProviders
             return (key, value, destructure) => pushProperty(key, value, destructure);
         }
 
-        private static Type GetLogManagerType()
-        {
+        private static Type GetLogManagerType() {
             return Type.GetType("Serilog.Log, Serilog");
         }
 
-        private static Func<string, object> GetForContextMethodCall()
-        {
+        private static Func<string, object> GetForContextMethodCall() {
             var logManagerType = GetLogManagerType();
             var method = logManagerType.GetMethodPortable("ForContext", typeof(string), typeof(object), typeof(bool));
             var propertyNameParam = Expression.Parameter(typeof(string), "propertyName");
@@ -1705,11 +1562,9 @@ namespace Knuth.LibLog.LogProviders
             [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ILogger")]
             [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "LogEventLevel")]
             [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "Serilog")]
-            static SerilogLogger()
-            {
+            static SerilogLogger() {
                 var logEventLevelType = Type.GetType("Serilog.Events.LogEventLevel, Serilog");
-                if (logEventLevelType == null)
-                {
+                if (logEventLevelType == null) {
                     throw new InvalidOperationException("Type Serilog.Events.LogEventLevel was not found.");
                 }
                 DebugLevel = Enum.Parse(logEventLevelType, "Debug", false);
@@ -1721,8 +1576,7 @@ namespace Knuth.LibLog.LogProviders
 
                 // Func<object, object, bool> isEnabled = (logger, level) => { return ((SeriLog.ILogger)logger).IsEnabled(level); }
                 var loggerType = Type.GetType("Serilog.ILogger, Serilog");
-                if (loggerType == null)
-                {
+                if (loggerType == null) {
                     throw new InvalidOperationException("Type Serilog.ILogger was not found.");
                 }
                 var isEnabledMethodInfo = loggerType.GetMethodPortable("IsEnabled", logEventLevelType);
@@ -1779,21 +1633,17 @@ namespace Knuth.LibLog.LogProviders
             internal SerilogLogger(object logger) 
                 => _logger = logger;
 
-            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters)
-            {
+            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters) {
                 var translatedLevel = TranslateLevel(logLevel);
-                if (messageFunc == null)
-                {
+                if (messageFunc == null) {
                     return IsEnabled(_logger, translatedLevel);
                 }
 
-                if (!IsEnabled(_logger, translatedLevel))
-                {
+                if (!IsEnabled(_logger, translatedLevel)) {
                     return false;
                 }
 
-                if (exception != null)
-                {
+                if (exception != null) {
                     LogException(translatedLevel, messageFunc, exception, formatParameters);
                 }
                 else
@@ -1810,10 +1660,8 @@ namespace Knuth.LibLog.LogProviders
             private void LogException(object logLevel, Func<string> messageFunc, Exception exception, object[] formatParams) 
                 => WriteException(_logger, logLevel, exception, messageFunc(), formatParams);
 
-            private static object TranslateLevel(LogLevel logLevel)
-            {
-                switch (logLevel)
-                {
+            private static object TranslateLevel(LogLevel logLevel) {
+                switch (logLevel) {
                     case LogLevel.Fatal:
                         return FatalLevel;
                     case LogLevel.Error:
@@ -1856,10 +1704,8 @@ namespace Knuth.LibLog.LogProviders
         private readonly WriteDelegate _logWriteDelegate;
         private const string LoupeAgentDll = "Loupe.Agent.NETCore";
 
-        public LoupeLogProvider()
-        {
-            if (!IsLoggerAvailable())
-            {
+        public LoupeLogProvider() {
+            if (!IsLoggerAvailable()) {
                 throw new InvalidOperationException("Gibraltar.Agent.Log (Loupe) not found");
             }
 
@@ -1880,8 +1726,7 @@ namespace Knuth.LibLog.LogProviders
 
         private static Type GetLogManagerType() => Type.GetType($"Gibraltar.Agent.Log, {LoupeAgentDll}");
 
-        private static WriteDelegate GetLogWriteDelegate()
-        {
+        private static WriteDelegate GetLogWriteDelegate() {
             var logManagerType = GetLogManagerType();
             var logMessageSeverityType = Type.GetType($"Gibraltar.Agent.LogMessageSeverity, {LoupeAgentDll}");
             var logWriteModeType = Type.GetType($"Gibraltar.Agent.LogWriteMode, {LoupeAgentDll}");
@@ -1906,8 +1751,7 @@ namespace Knuth.LibLog.LogProviders
             private readonly WriteDelegate _logWriteDelegate;
             private readonly int _skipLevel;
 
-            internal LoupeLogger(string category, WriteDelegate logWriteDelegate)
-            {
+            internal LoupeLogger(string category, WriteDelegate logWriteDelegate) {
                 _category = category;
                 _logWriteDelegate = logWriteDelegate;
 #if DEBUG
@@ -1917,10 +1761,8 @@ namespace Knuth.LibLog.LogProviders
 #endif
             }
 
-            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters)
-            {
-                if (messageFunc == null)
-                {
+            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters) {
+                if (messageFunc == null) {
                     //nothing to log..
                     return true;
                 }
@@ -1933,10 +1775,8 @@ namespace Knuth.LibLog.LogProviders
                 return true;
             }
 
-            private static int ToLogMessageSeverity(LogLevel logLevel)
-            {
-                switch (logLevel)
-                {
+            private static int ToLogMessageSeverity(LogLevel logLevel) {
+                switch (logLevel) {
                     case LogLevel.Trace:
                         return TraceEventTypeValues.Verbose;
                     case LogLevel.Debug:
@@ -1969,11 +1809,9 @@ namespace Knuth.LibLog.LogProviders
         internal static readonly int Critical;
 
         [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
-        static TraceEventTypeValues()
-        {
+        static TraceEventTypeValues() {
             var assembly = typeof(Uri).GetAssemblyPortable(); // This is to get to the System.dll assembly in a PCL compatible way.
-            if (assembly == null)
-            {
+            if (assembly == null) {
                 return;
             }
             Type = assembly.GetType("System.Diagnostics.TraceEventType");
@@ -2007,34 +1845,27 @@ namespace Knuth.LibLog.LogProviders
         /// <param name="messageBuilder">The message builder.</param>
         /// <param name="formatParameters">The format parameters.</param>
         /// <returns></returns>
-        public static Func<string> SimulateStructuredLogging(Func<string> messageBuilder, object[] formatParameters)
-        {
-            if (formatParameters == null || formatParameters.Length == 0)
-            {
+        public static Func<string> SimulateStructuredLogging(Func<string> messageBuilder, object[] formatParameters) {
+            if (formatParameters == null || formatParameters.Length == 0) {
                 return messageBuilder;
             }
 
-            return () =>
-            {
+            return () => {
                 var targetMessage = messageBuilder();
                 return FormatStructuredMessage(targetMessage, formatParameters, out _);
             };
         }
 
-        private static string ReplaceFirst(string text, string search, string replace)
-        {
+        private static string ReplaceFirst(string text, string search, string replace) {
             var pos = text.IndexOf(search, StringComparison.Ordinal);
-            if (pos < 0)
-            {
+            if (pos < 0) {
                 return text;
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
 
-        public static string FormatStructuredMessage(string targetMessage, object[] formatParameters, out IEnumerable<string> patternMatches)
-        {
-            if (formatParameters.Length == 0)
-            {
+        public static string FormatStructuredMessage(string targetMessage, object[] formatParameters, out IEnumerable<string> patternMatches) {
+            if (formatParameters.Length == 0) {
                 patternMatches = Enumerable.Empty<string>();
                 return targetMessage;
             }
@@ -2042,13 +1873,11 @@ namespace Knuth.LibLog.LogProviders
             var processedArguments = new List<string>();
             patternMatches = processedArguments;
 
-            foreach (Match match in Pattern.Matches(targetMessage))
-            {
+            foreach (Match match in Pattern.Matches(targetMessage)) {
                 var arg = match.Groups["arg"].Value;
 
                 int notUsed;
-                if (!int.TryParse(arg, out notUsed))
-                {
+                if (!int.TryParse(arg, out notUsed)) {
                     var argumentIndex = processedArguments.IndexOf(arg);
                     if (argumentIndex == -1)
                     {
@@ -2064,8 +1893,7 @@ namespace Knuth.LibLog.LogProviders
             {
                 return string.Format(CultureInfo.InvariantCulture, targetMessage, formatParameters);
             }
-            catch (FormatException ex)
-            {
+            catch (FormatException ex) {
                 throw new FormatException("The input string '" + targetMessage + "' could not be formatted using string.Format", ex);
             }
         }
@@ -2076,8 +1904,7 @@ namespace Knuth.LibLog.LogProviders
 #endif
     internal static class TypeExtensions
     {
-        internal static ConstructorInfo GetConstructorPortable(this Type type, params Type[] types)
-        {
+        internal static ConstructorInfo GetConstructorPortable(this Type type, params Type[] types) {
 #if LIBLOG_NETSTANDARD
             return type.GetTypeInfo().DeclaredConstructors.FirstOrDefault
                        (constructor =>
@@ -2089,8 +1916,7 @@ namespace Knuth.LibLog.LogProviders
 #endif
         }
 
-        internal static MethodInfo GetMethodPortable(this Type type, string name)
-        {
+        internal static MethodInfo GetMethodPortable(this Type type, string name) {
 #if LIBLOG_NETSTANDARD
             return type.GetRuntimeMethods().SingleOrDefault(m => m.Name == name);
 #else
@@ -2098,8 +1924,7 @@ namespace Knuth.LibLog.LogProviders
 #endif
         }
 
-        internal static MethodInfo GetMethodPortable(this Type type, string name, params Type[] types)
-        {
+        internal static MethodInfo GetMethodPortable(this Type type, string name, params Type[] types) {
 #if LIBLOG_NETSTANDARD
             return type.GetRuntimeMethod(name, types);
 #else
@@ -2107,8 +1932,7 @@ namespace Knuth.LibLog.LogProviders
 #endif
         }
 
-        internal static PropertyInfo GetPropertyPortable(this Type type, string name)
-        {
+        internal static PropertyInfo GetPropertyPortable(this Type type, string name) {
 #if LIBLOG_NETSTANDARD
             return type.GetRuntimeProperty(name);
 #else
@@ -2116,8 +1940,7 @@ namespace Knuth.LibLog.LogProviders
 #endif
         }
 
-        internal static IEnumerable<FieldInfo> GetFieldsPortable(this Type type)
-        {
+        internal static IEnumerable<FieldInfo> GetFieldsPortable(this Type type) {
 #if LIBLOG_NETSTANDARD
             return type.GetRuntimeFields();
 #else
@@ -2125,8 +1948,7 @@ namespace Knuth.LibLog.LogProviders
 #endif
         }
 
-        internal static Type GetBaseTypePortable(this Type type)
-        {
+        internal static Type GetBaseTypePortable(this Type type) {
 #if LIBLOG_NETSTANDARD
             return type.GetTypeInfo().BaseType;
 #else
@@ -2135,26 +1957,22 @@ namespace Knuth.LibLog.LogProviders
         }
 
 #if LIBLOG_NETSTANDARD
-        internal static MethodInfo GetGetMethod(this PropertyInfo propertyInfo)
-        {
+        internal static MethodInfo GetGetMethod(this PropertyInfo propertyInfo) {
             return propertyInfo.GetMethod;
         }
 
-        internal static MethodInfo GetSetMethod(this PropertyInfo propertyInfo)
-        {
+        internal static MethodInfo GetSetMethod(this PropertyInfo propertyInfo) {
             return propertyInfo.SetMethod;
         }
 #endif
 
 #if !LIBLOG_NETSTANDARD
-        internal static object CreateDelegate(this MethodInfo methodInfo, Type delegateType)
-        {
+        internal static object CreateDelegate(this MethodInfo methodInfo, Type delegateType) {
             return Delegate.CreateDelegate(delegateType, methodInfo);
         }
 #endif
 
-        internal static Assembly GetAssemblyPortable(this Type type)
-        {
+        internal static Assembly GetAssemblyPortable(this Type type) {
 #if LIBLOG_NETSTANDARD
             return type.GetTypeInfo().Assembly;
 #else

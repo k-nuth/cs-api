@@ -2,23 +2,28 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+# build: off
 
-build: off
+branches:
+  only:
+  - master
+  - dev
+  - /^v\d+\.\d+\.\d+$/
+  - /^release-\d+\.\d+\.\d+$/
+  - /^feature-ci-.+$/
+  - /^feature_ci_.+$/
 
-# branches:
-#   only:
-#   - master
-#   - dev
-#   - /^v\d+\.\d+\.\d+$/
-#   - /^release-\d+\.\d+\.\d+$/
-#   - /^feature-ci-.+$/
-#   - /^feature_ci_.+$/
+pull_requests:
+  do_not_increment_build_number: true
 
 platform:
   - x64
 
 configuration:
-- Release
+  - Release
+
+nuget:
+  disable_publish_on_pr: true
 
 environment:
     PYTHON: "C:\\Python37"
@@ -52,6 +57,17 @@ install:
 
 build_script:
   - SET PATH=%PATH%;%PYTHON%/Scripts/
-  - powershell .\build.ps1 -Verbosity diagnostic
+  # - powershell .\build.ps1 -Verbosity diagnostic
+  - powershell .\build.ps1
 
 test: off
+
+deploy_script:
+  - ps: ./build.ps1 Pack
+  - ps: ./build.ps1 Push --NugetApiUrl "https://api.nuget.org/v3/index.json" --NugetApiKey $env:NUGET_API_KEY
+
+  # - ps: ./build.ps1 Push --NugetApiUrl "https://www.myget.org/F/cfrenzel-ci/api/v2/package" --NugetApiKey $env:MyGetApiKey
+  # - ps: | 
+  #     if ($env:APPVEYOR_REPO_TAG  -eq "true"){
+  #         ./build.ps1 Push --NugetApiUrl "https://api.nuget.org/v3/index.json" --NugetApiKey $env:NUGET_API_KEY
+  #     }

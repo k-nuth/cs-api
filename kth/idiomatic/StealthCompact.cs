@@ -16,8 +16,7 @@ namespace Knuth
         private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
-        ~StealthCompact()
-        {
+        ~StealthCompact() {
             Dispose(false);
         }
 
@@ -28,7 +27,7 @@ namespace Knuth
         {
             get
             {
-                return StealthCompactNative.stealth_compact_get_ephemeral_public_key_hash(nativeInstance_);
+                return StealthCompactNative.kth_chain_stealth_compact_get_ephemeral_public_key_hash(nativeInstance_);
             }
         }
 
@@ -39,7 +38,7 @@ namespace Knuth
         {
             get
             {
-                return StealthCompactNative.stealth_compact_get_public_key_hash(nativeInstance_);
+                return StealthCompactNative.kth_chain_stealth_compact_get_public_key_hash(nativeInstance_);
             }
         }
 
@@ -50,33 +49,28 @@ namespace Knuth
         {
             get
             {
-                return StealthCompactNative.stealth_compact_get_transaction_hash(nativeInstance_);
+                return StealthCompactNative.kth_chain_stealth_compact_get_transaction_hash(nativeInstance_);
             }
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        internal StealthCompact(IntPtr nativeInstance, bool ownsNativeObject = true)
-        {
+        internal StealthCompact(IntPtr nativeInstance, bool ownsNativeObject = true) {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            if(ownsNativeObject_)
-            {
+            if (ownsNativeObject_) {
                 //Logger.Log("Destroying stealth compact " + nativeInstance_.ToString("X") + " ...");
-                StealthCompactNative.stealth_compact_destruct(nativeInstance_);
+                StealthCompactNative.kth_chain_stealth_compact_destruct(nativeInstance_);
                 //Logger.Log("Stealth compact " + nativeInstance_.ToString("X") + " destroyed!");
             }
         }

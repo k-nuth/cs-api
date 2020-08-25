@@ -15,8 +15,7 @@ namespace Knuth
         private bool ownsNativeObject_;
         private IntPtr nativeInstance_;
 
-        ~Script()
-        {
+        ~Script() {
             Dispose(false);
         }
 
@@ -27,7 +26,7 @@ namespace Knuth
         {
             get
             {
-                return ScriptNative.chain_script_is_valid(nativeInstance_) != 0;
+                return ScriptNative.kth_chain_script_is_valid(nativeInstance_) != 0;
             }
         }
 
@@ -40,7 +39,7 @@ namespace Knuth
         {
             get
             {
-                return ScriptNative.chain_script_is_valid_operations(nativeInstance_) != 0;
+                return ScriptNative.kth_chain_script_is_valid_operations(nativeInstance_) != 0;
             }
         }
 
@@ -49,10 +48,9 @@ namespace Knuth
         /// </summary>
         /// <param name="prefix"> Tells whether to include script size in data </param>
         /// <returns> Byte array with script data </returns>
-        public byte[] ToData(bool prefix)
-        {
+        public byte[] ToData(bool prefix) {
             int scriptSize = 0;
-            var scriptData = new NativeBuffer(ScriptNative.chain_script_to_data(nativeInstance_, prefix? 1:0, ref scriptSize));
+            var scriptData = new NativeBuffer(ScriptNative.kth_chain_script_to_data(nativeInstance_, prefix? 1:0, ref scriptSize));
             return scriptData.CopyToManagedArray(scriptSize);
         }
 
@@ -61,10 +59,8 @@ namespace Knuth
         /// </summary>
         /// <param name="activeForks"> Tells which rule is active. </param>
         /// <returns> Human readable script. </returns>
-        public string ToString(UInt32 activeForks)
-        {
-            using ( NativeString scriptString = new NativeString(ScriptNative.chain_script_to_string(nativeInstance_, activeForks)) )
-            {
+        public string ToString(UInt32 activeForks) {
+            using ( NativeString scriptString = new NativeString(ScriptNative.kth_chain_script_to_string(nativeInstance_, activeForks)) ) {
                 return scriptString.ToString();
             }
         }
@@ -76,8 +72,7 @@ namespace Knuth
         {
             get
             {
-                using ( NativeString scriptTypeString = new NativeString(ScriptNative.chain_script_type(nativeInstance_)) )
-                {
+                using ( NativeString scriptTypeString = new NativeString(ScriptNative.kth_chain_script_type(nativeInstance_)) ) {
                     return scriptTypeString.ToString();
                 }
             }
@@ -90,7 +85,7 @@ namespace Knuth
         {
             get
             {
-                return (UInt64)ScriptNative.chain_script_satoshi_content_size(nativeInstance_);
+                return (UInt64)ScriptNative.kth_chain_script_satoshi_content_size(nativeInstance_);
             }
         }
 
@@ -99,9 +94,8 @@ namespace Knuth
         /// </summary>
         /// <param name="prevOutScript"> Reference to previous output script. </param>
         /// <returns> Embedded sigops count. </returns>
-        public UInt64 GetEmbeddedSigOps(Script prevOutScript)
-        {
-            return (UInt64)ScriptNative.chain_script_embedded_sigops(nativeInstance_, prevOutScript.nativeInstance_);
+        public UInt64 GetEmbeddedSigOps(Script prevOutScript) {
+            return (UInt64)ScriptNative.kth_chain_script_embedded_sigops(nativeInstance_, prevOutScript.nativeInstance_);
         }
 
         /// <summary>
@@ -109,19 +103,16 @@ namespace Knuth
         /// </summary>
         /// <param name="embedded"> Iif true, consider this an embedded script. </param>
         /// <returns> Sigops count. </returns>
-        public UInt64 GetSigOps(bool embedded)
-        {
-            return (UInt64)ScriptNative.chain_script_sigops(nativeInstance_, embedded ? 1 : 0);
+        public UInt64 GetSigOps(bool embedded) {
+            return (UInt64)ScriptNative.kth_chain_script_sigops(nativeInstance_, Helper.BoolToC(embedded));
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        internal Script(IntPtr nativeInstance, bool ownsNativeObject = true)
-        {
+        internal Script(IntPtr nativeInstance, bool ownsNativeObject = true) {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
         }
@@ -134,17 +125,14 @@ namespace Knuth
             }
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            if(ownsNativeObject_)
-            {
+            if (ownsNativeObject_) {
                 //Logger.Log("Destroying script " + nativeInstance_.ToString("X") + " ...");
-                ScriptNative.chain_script_destruct(nativeInstance_);
+                ScriptNative.kth_chain_script_destruct(nativeInstance_);
                 //Logger.Log("Script " + nativeInstance_.ToString("X") + " destroyed!");
             }
         }

@@ -5,12 +5,12 @@
     <Version>0.2.201</Version>
     <Authors>Knuth</Authors>
     <Company>Knuth</Company>
-    <Description>C# binding for Knuth Bitcoin platform</Description>
+    <Description>Bitcoin full node as a C# library</Description>
     <PackageProjectUrl>kth.cash</PackageProjectUrl>
     <RepositoryUrl>https://github.com/k-nuth/cs-api</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageTags>Bitcoin, C#, Litecoin, Bitcoin Cash</PackageTags>
-    <PackageReleaseNotes>Basic chain queries</PackageReleaseNotes>
+    <PackageTags>Bitcoin, C#, Litecoin, Bitcoin Cash, dotnet, blockchain</PackageTags>
+    <!-- <PackageReleaseNotes>Basic chain queries</PackageReleaseNotes> -->
     <NeutralLanguage>en-US</NeutralLanguage>
     <AssemblyVersion>0.1.1.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -29,9 +29,13 @@
 
   <ItemGroup>
     <!-- pack the target files -->
-    <Content Include="build\netstandard2.0\kth-bch.targets" PackagePath="build\netstandard2.0\kth-bch.targets" />  
-	  <Content Include="build\Common.targets" PackagePath="build\Common.targets" />
+    <!-- <Content Include="build\netstandard2.0\kth-bch.targets" PackagePath="build\netstandard2.0\kth-bch.targets" />  
+	<Content Include="build\Common.targets" PackagePath="build\Common.targets" /> -->
     
+    <Content Include="build/$(TargetFramework)/kth-bch.targets" PackagePath="build/$(TargetFramework)/kth-bch.targets" />  
+	<Content Include="build/Common.targets" PackagePath="build/Common.targets" />
+
+
 	  <!-- pack the conan file -->
     <!-- <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" />  -->
   </ItemGroup>

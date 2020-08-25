@@ -23,7 +23,7 @@ namespace Knuth
         {
             get
             {
-                return PointNative.chain_point_is_valid(nativeInstance_) != 0;
+                return PointNative.kth_chain_point_is_valid(nativeInstance_) != 0;
             }
         }
 
@@ -35,7 +35,7 @@ namespace Knuth
             get
             {
                 var managedHash = new hash_t();
-                PointNative.chain_point_get_hash_out(nativeInstance_, ref managedHash);
+                PointNative.kth_chain_point_get_hash_out(nativeInstance_, ref managedHash);
                 return managedHash.hash;
             }
         }
@@ -47,7 +47,7 @@ namespace Knuth
         {
             get
             {
-                return PointNative.chain_point_get_index(nativeInstance_);
+                return PointNative.kth_chain_point_get_index(nativeInstance_);
             }
         }
 
@@ -59,12 +59,11 @@ namespace Knuth
         {
             get
             {
-                return PointNative.chain_point_get_checksum(nativeInstance_);
+                return PointNative.kth_chain_point_get_checksum(nativeInstance_);
             }
         }
 
-        internal Point(IntPtr nativeInstance)
-        {
+        internal Point(IntPtr nativeInstance) {
             nativeInstance_ = nativeInstance;
         }
 

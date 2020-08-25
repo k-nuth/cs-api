@@ -4,35 +4,30 @@
 
 using Xunit;
 
-namespace Knuth.Tests
-{
+namespace Knuth.Tests {
     public class PaymentAddressTest
     {
         [Fact]
-        public void EmptyAddressShouldFail()
-        {
+        public void EmptyAddressShouldFail() {
             Assert.False(PaymentAddress.TryParse("", out PaymentAddress addr));
             Assert.Null(addr);
         }
 
 
         [Fact]
-        public void WhitespaceAddressShouldFail()
-        {
+        public void WhitespaceAddressShouldFail() {
             Assert.False(PaymentAddress.TryParse(" ", out PaymentAddress addr));
             Assert.Null(addr);
         }
 
         [Fact]
-        public void InvalidAddressShouldFail()
-        {
+        public void InvalidAddressShouldFail() {
             Assert.False(PaymentAddress.TryParse("abcd", out PaymentAddress addr));
             Assert.Null(addr);
         }
 
         [Fact]
-        public void MainnetCashAddrAddressOK()
-        {
+        public void MainnetCashAddrAddressOK() {
             Assert.True(PaymentAddress.TryParse("bitcoincash:qrcuqadqrzp2uztjl9wn5sthepkg22majyxw4gmv6p", out PaymentAddress addr));
             Assert.NotNull(addr);
             Assert.True(addr.IsValid);
@@ -40,8 +35,7 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public void MainnetCashAddrNoPrefixAddressOK()
-        {
+        public void MainnetCashAddrNoPrefixAddressOK() {
             Assert.True(PaymentAddress.TryParse("qrcuqadqrzp2uztjl9wn5sthepkg22majyxw4gmv6p", out PaymentAddress addr));
             Assert.NotNull(addr);
             Assert.True(addr.IsValid);
@@ -49,8 +43,7 @@ namespace Knuth.Tests
         }
 
         [Fact]
-        public void MainnetLegacyAddressOK()
-        {
+        public void MainnetLegacyAddressOK() {
             Assert.True(PaymentAddress.TryParse("1P3GQYtcWgZHrrJhUa4ctoQ3QoCU2F65nz", out PaymentAddress addr));
             Assert.NotNull(addr);
             Assert.True(addr.IsValid);

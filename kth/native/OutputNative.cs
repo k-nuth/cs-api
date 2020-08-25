@@ -11,31 +11,31 @@ namespace Knuth.Native
     {
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern int chain_output_is_valid(IntPtr output);
+        public static extern int kth_chain_output_is_valid(IntPtr output);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr chain_output_construct(UInt64 value, IntPtr script);
+        public static extern IntPtr kth_chain_output_construct(UInt64 value, IntPtr script);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr chain_output_construct_default();
+        public static extern IntPtr kth_chain_output_construct_default();
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr chain_output_script(IntPtr output);
+        public static extern IntPtr kth_chain_output_script(IntPtr output);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern UInt64 chain_output_value(IntPtr output);
+        public static extern UInt64 kth_chain_output_value(IntPtr output);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr chain_output_payment_address(IntPtr output, int /*bool*/ use_testnet_rules);
+        public static extern IntPtr kth_chain_output_payment_address(IntPtr output, int /*bool*/ use_testnet_rules);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern UIntPtr /*size_t*/ chain_output_serialized_size(IntPtr output, int /*bool*/ wire /*= true*/);
+        public static extern UIntPtr /*size_t*/ kth_chain_output_serialized_size(IntPtr output, int /*bool*/ wire /*= true*/);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern UIntPtr /*size_t*/ chain_output_signature_operations(IntPtr output);
+        public static extern UIntPtr /*size_t*/ kth_chain_output_signature_operations(IntPtr output);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern void chain_output_destruct(IntPtr output);
+        public static extern void kth_chain_output_destruct(IntPtr output);
 
     }
 

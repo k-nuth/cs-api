@@ -9,7 +9,7 @@ namespace Knuth.Native
     internal static class NodeSettingsNative
     {
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern CurrencyType node_settings_get_currency();
+        public static extern CurrencyType kth_node_settings_get_currency();
     }
 
 }

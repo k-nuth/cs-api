@@ -9,7 +9,7 @@
     <Message Text="Knuth March ID: $(KNUTH_MARCH_ID)"/>
     
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/$(KNUTH_VERSION)@kth/$(KNUTH_CHANNEL);[generators];cmake;[options];c-api:shared=True;c-api:currency=$(KNUTH_CURRENCY);c-api:db=default;c-api:march_id=$(KNUTH_MARCH_ID);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];c-api/$(KNUTH_VERSION)@kth/$(KNUTH_CHANNEL);[generators];cmake;[options];c-api:shared=True;c-api:currency=$(KNUTH_CURRENCY);c-api:db=full;c-api:march_id=$(KNUTH_MARCH_ID);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>

@@ -11,19 +11,19 @@ namespace Knuth.Native
     {
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr chain_block_indexes_construct_default();
+        public static extern IntPtr kth_chain_block_indexes_construct_default();
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern void chain_block_indexes_push_back(IntPtr list, UIntPtr /*size_t*/ index);
+        public static extern void kth_chain_block_indexes_push_back(IntPtr list, UIntPtr /*size_t*/ index);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern void chain_block_indexes_destruct(IntPtr list);
+        public static extern void kth_chain_block_indexes_destruct(IntPtr list);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern UIntPtr /*size_t*/ chain_block_indexes_count(IntPtr list);
+        public static extern UIntPtr /*size_t*/ kth_chain_block_indexes_count(IntPtr list);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern UIntPtr /*size_t*/ chain_block_indexes_nth(IntPtr list, UIntPtr /*size_t*/ n);
+        public static extern UIntPtr /*size_t*/ kth_chain_block_indexes_nth(IntPtr list, UIntPtr /*size_t*/ n);
 
     }
 

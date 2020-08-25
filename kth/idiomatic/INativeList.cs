@@ -17,20 +17,16 @@ namespace Knuth
         IntPtr NativeInstance { get; }
     }
 
-    public class ManagedReadableList<T> : INativeList<T>
-    {
-        public IEnumerator<T> GetEnumerator()
-        {
+    public class ManagedReadableList<T> : INativeList<T> {
+        public IEnumerator<T> GetEnumerator() {
             throw new NotImplementedException();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
+        IEnumerator IEnumerable.GetEnumerator() {
             return GetEnumerator();
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             throw new NotImplementedException();
         }
 
