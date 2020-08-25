@@ -159,19 +159,25 @@ class Build : NukeBuild
 
         .Executes(() => {
 
+            Info($"Publish to nuget: {publishToNuget}");
+            Info($"Commit message: {commitMessage}");
+            // Info($"Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
+            Info($"Branch name:" + branchName);
+            Info($"Skip nuget: {skipNuget}"); 
+
             // var branchName = AppVeyor.Environment.Repository.Branch;
             var branchName = Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
-            if (branchName != "master") {
+            // if (branchName != "master") {
+            //     skipNuget = "true";
+            // }
+
+            if (branchName == "dev" && branchName.StartsWith("release-") && branchName.StartsWith("feature")) {
                 skipNuget = "true";
             }
 
             var commitMessage = Environment.GetEnvironmentVariable("APPVEYOR_REPO_COMMIT_MESSAGE");
 
-            Info($"Publish to nuget: {publishToNuget}");
             Info($"Skip nuget: {skipNuget}"); 
-            // Info($"Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
-            Info($"Commit message: {commitMessage}");
-            Info($"Branch name:" + branchName);
 
             // if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]") && skipNuget == "false") {
             if (publishToNuget == "true" && skipNuget == "false" && ! commitMessage.Contains("[skip nuget]")) {
