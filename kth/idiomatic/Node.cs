@@ -55,10 +55,15 @@ namespace Knuth {
         /// Create node object. Does not init database or start execution yet.
         /// </summary>
         /// <param name="configFile"> Path to configuration file. </param>
-        public Node(string configFile) 
+        /// <param name="showNodeLog"> Print Native node stdout and stderr. </param>
+        public Node(string configFile, bool showNodeLog = false) 
             : this() 
         {
-            nativeInstance_ = NodeNative.kth_node_construct_fd(configFile, -1, -1);
+            if (showNodeLog) {
+                nativeInstance_ = NodeNative.kth_node_construct_fd(configFile, 0, 0);
+            } else {
+                nativeInstance_ = NodeNative.kth_node_construct_fd(configFile, -1, -1);
+            }
         }
 
         /// <summary> //TODO See BIT-20
@@ -228,7 +233,7 @@ namespace Knuth {
                     handlerHandle.Free();
                     closed = true;
                 }
-                return keepSubscription ? 1 : 0;
+                return Helper.BoolToC(keepSubscription);
             } finally {
                 if ( ! keepSubscription && ! closed) {
                     handlerHandle.Free();
@@ -272,7 +277,7 @@ namespace Knuth {
                     handlerHandle.Free();
                     closed = true;
                 }
-                return keepSubscription ? 1 : 0;
+                return Helper.BoolToC(keepSubscription);
             } finally {
                 if ( ! keepSubscription && ! closed) {
                     handlerHandle.Free();

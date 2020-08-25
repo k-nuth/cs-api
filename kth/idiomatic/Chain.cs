@@ -90,8 +90,7 @@ namespace Knuth
             });
         }
 
-        private void GetBlockHeight(byte[] blockHash, Action<ErrorCode, UInt64> handler)
-        {
+        private void GetBlockHeight(byte[] blockHash, Action<ErrorCode, UInt64> handler) {
             var managedHash = new hash_t
             {
                 hash = blockHash
@@ -104,14 +103,10 @@ namespace Knuth
         /// <summary>
         /// Gets the height of the highest block in the local copy of the blockchain, asynchronously.
         /// </summary>
-        public async Task<ApiCallResult<UInt64>> GetLastHeightAsync()
-        {
-            return await TaskHelper.ToTask<ApiCallResult<UInt64>>(tcs =>
-            {
-                GetLastHeight((code, height) =>
-                {
-                    tcs.TrySetResult(new ApiCallResult<UInt64>
-                    {
+        public async Task<ApiCallResult<UInt64>> GetLastHeightAsync() {
+            return await TaskHelper.ToTask<ApiCallResult<UInt64>>(tcs => {
+                GetLastHeight((code, height) => {
+                    tcs.TrySetResult(new ApiCallResult<UInt64> {
                         ErrorCode = code,
                         Result = height
                     });
@@ -119,8 +114,7 @@ namespace Knuth
             });
         }
 
-        private void GetLastHeight(Action<ErrorCode, UInt64> handler)
-        {
+        private void GetLastHeight(Action<ErrorCode, UInt64> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_fetch_last_height(nativeInstance_, handlerPtr, internalGetLastHeightHandler_);
@@ -134,14 +128,10 @@ namespace Knuth
         /// Given a block hash, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        public async Task<DisposableApiCallResult<GetBlockDataResult<IBlock>>> GetBlockByHashAsync(byte[] blockHash)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IBlock>>>(tcs =>
-            {
-                GetBlockByHash(blockHash, (code, block, height) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<IBlock>>
-                    {
+        public async Task<DisposableApiCallResult<GetBlockDataResult<IBlock>>> GetBlockByHashAsync(byte[] blockHash) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IBlock>>>(tcs => {
+                GetBlockByHash(blockHash, (code, block, height) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<IBlock>> {
                         ErrorCode = code,
                         Result = new GetBlockDataResult<IBlock>
                         {
@@ -153,8 +143,7 @@ namespace Knuth
             });
         }
 
-        private void GetBlockByHash(byte[] blockHash, Action<ErrorCode, Block, UInt64> handler)
-        {
+        private void GetBlockByHash(byte[] blockHash, Action<ErrorCode, Block, UInt64> handler) {
             var managedHash = new hash_t
             {
                 hash = blockHash
@@ -167,14 +156,10 @@ namespace Knuth
         /// Given a block height, retrieve the full block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
-        public async Task<DisposableApiCallResult<GetBlockDataResult<IBlock>>> GetBlockByHeightAsync(UInt64 height)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IBlock>>>(tcs =>
-            {
-                GetBlockByHeight(height, (code, block, blockHeight) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<IBlock>>
-                    {
+        public async Task<DisposableApiCallResult<GetBlockDataResult<IBlock>>> GetBlockByHeightAsync(UInt64 height) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IBlock>>>(tcs => {
+                GetBlockByHeight(height, (code, block, blockHeight) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<IBlock>> {
                         ErrorCode = code,
                         Result = new GetBlockDataResult<IBlock>
                         {
@@ -189,8 +174,7 @@ namespace Knuth
 
         }
 
-        private void GetBlockByHeight(UInt64 height, Action<ErrorCode, Block, UInt64> handler)
-        {
+        private void GetBlockByHeight(UInt64 height, Action<ErrorCode, Block, UInt64> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_fetch_block_by_height(nativeInstance_, handlerPtr, height, internalGetBlockHandler_);
@@ -200,18 +184,13 @@ namespace Knuth
         /// Given a block hash, retrieve block header, tx hashes and serialized block size, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        public async Task<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>> GetBlockHeaderByHashTxSizesAsync(byte[] blockHash)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>>(tcs =>
-            {
+        public async Task<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>> GetBlockHeaderByHashTxSizesAsync(byte[] blockHash) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>>(tcs => {
 
-                GetBlockHeaderByHashTxSizes(blockHash, (errorCode, header, height, hashes, size) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult>
-                    {
+                GetBlockHeaderByHashTxSizes(blockHash, (errorCode, header, height, hashes, size) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockHeaderByHashTxSizeResult> {
                         ErrorCode = errorCode,
-                        Result = new GetBlockHeaderByHashTxSizeResult
-                        {
+                        Result = new GetBlockHeaderByHashTxSizeResult {
                             Header = new GetBlockDataResult<IHeader> { BlockData = header, BlockHeight = height },
                             TransactionHashes = hashes,
                             SerializedBlockSize = size
@@ -223,8 +202,7 @@ namespace Knuth
             });
         }
 
-        private void GetBlockHeaderByHashTxSizes(byte[] blockHash, GetBlockHeaderByHashTxsSizeHandler handler)
-        {
+        private void GetBlockHeaderByHashTxSizes(byte[] blockHash, GetBlockHeaderByHashTxsSizeHandler handler) {
             var managedHash = new hash_t
             {
                 hash = blockHash
@@ -237,14 +215,10 @@ namespace Knuth
         /// Given a block height, retrieve only block hash and timestamp, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
-        public async Task<ApiCallResult<GetBlockHashTimestampResult>> GetBlockByHeightHashTimestampAsync(UInt64 height)
-        {
-            return await TaskHelper.ToTask<ApiCallResult<GetBlockHashTimestampResult>>(tcs =>
-            {
-                GetBlockByHeightHashTimestamp(height, (errorCode, hash, date, blockHeight) =>
-                {
-                    tcs.TrySetResult(new ApiCallResult<GetBlockHashTimestampResult>
-                    {
+        public async Task<ApiCallResult<GetBlockHashTimestampResult>> GetBlockByHeightHashTimestampAsync(UInt64 height) {
+            return await TaskHelper.ToTask<ApiCallResult<GetBlockHashTimestampResult>>(tcs => {
+                GetBlockByHeightHashTimestamp(height, (errorCode, hash, date, blockHeight) => {
+                    tcs.TrySetResult(new ApiCallResult<GetBlockHashTimestampResult> {
                         ErrorCode = errorCode,
                         Result = new GetBlockHashTimestampResult
                         {
@@ -257,8 +231,7 @@ namespace Knuth
             });
         }
 
-        private void GetBlockByHeightHashTimestamp(UInt64 height, GetBlockByHeightHashTimestampHandler handler)
-        {
+        private void GetBlockByHeightHashTimestamp(UInt64 height, GetBlockByHeightHashTimestampHandler handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_fetch_block_by_height_timestamp(nativeInstance_, handlerPtr, height, internalGetBlockHeightTimestampHandler_);
@@ -272,14 +245,10 @@ namespace Knuth
         /// Given a block hash, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        public async Task<DisposableApiCallResult<GetBlockDataResult<IHeader>>> GetBlockHeaderByHashAsync(byte[] blockHash)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IHeader>>>(tcs =>
-            {
-                GetBlockHeaderByHash(blockHash, (code, header, height) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<IHeader>>
-                    {
+        public async Task<DisposableApiCallResult<GetBlockDataResult<IHeader>>> GetBlockHeaderByHashAsync(byte[] blockHash) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IHeader>>>(tcs => {
+                GetBlockHeaderByHash(blockHash, (code, header, height) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<IHeader>> {
                         ErrorCode = code,
                         Result = new GetBlockDataResult<IHeader>
                         {
@@ -292,8 +261,7 @@ namespace Knuth
             });
         }
 
-        private void GetBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header, UInt64> handler)
-        {
+        private void GetBlockHeaderByHash(byte[] blockHash, Action<ErrorCode, Header, UInt64> handler) {
             var managedHash = new hash_t
             {
                 hash = blockHash
@@ -307,14 +275,10 @@ namespace Knuth
         /// Given a block height, get the header from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Block height </param>
-        public async Task<DisposableApiCallResult<GetBlockDataResult<IHeader>>> GetBlockHeaderByHeightAsync(UInt64 height)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IHeader>>>(tcs =>
-            {
-                GetBlockHeaderByHeight(height, (code, header, blockHeight) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<IHeader>>
-                    {
+        public async Task<DisposableApiCallResult<GetBlockDataResult<IHeader>>> GetBlockHeaderByHeightAsync(UInt64 height) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IHeader>>>(tcs => {
+                GetBlockHeaderByHeight(height, (code, header, blockHeight) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<IHeader>> {
                         ErrorCode = code,
                         Result = new GetBlockDataResult<IHeader>
                         {
@@ -326,8 +290,7 @@ namespace Knuth
             });
         }
 
-        private void GetBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header, UInt64> handler)
-        {
+        private void GetBlockHeaderByHeight(UInt64 height, Action<ErrorCode, Header, UInt64> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_fetch_block_header_by_height(nativeInstance_, handlerPtr, height, internalGetBlockHeaderHandler_);
@@ -341,14 +304,10 @@ namespace Knuth
         /// Given a block hash, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        public async Task<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>> GetMerkleBlockByHashAsync(byte[] blockHash)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>>(tcs =>
-            {
-                GetMerkleBlockByHash(blockHash, (code, merkleBlock, height) =>
-                {
-                    tcs.SetResult(new DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>
-                    {
+        public async Task<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>> GetMerkleBlockByHashAsync(byte[] blockHash) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>>(tcs => {
+                GetMerkleBlockByHash(blockHash, (code, merkleBlock, height) => {
+                    tcs.SetResult(new DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>> {
                         ErrorCode = code,
                         Result = new GetBlockDataResult<IMerkleBlock>
                         {
@@ -361,8 +320,7 @@ namespace Knuth
             });
         }
 
-        private void GetMerkleBlockByHash(byte[] blockHash, Action<ErrorCode, MerkleBlock, UInt64> handler)
-        {
+        private void GetMerkleBlockByHash(byte[] blockHash, Action<ErrorCode, MerkleBlock, UInt64> handler) {
             var managedHash = new hash_t
             {
                 hash = blockHash
@@ -375,14 +333,10 @@ namespace Knuth
         /// Given a block height, get the merkle block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
-        public async Task<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>> GetMerkleBlockByHeightAsync(UInt64 height)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>>(tcs =>
-            {
-                GetMerkleBlockByHeight(height, (code, merkleBlock, actualHeight) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>
-                    {
+        public async Task<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>> GetMerkleBlockByHeightAsync(UInt64 height) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>>>(tcs => {
+                GetMerkleBlockByHeight(height, (code, merkleBlock, actualHeight) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<IMerkleBlock>> {
                         ErrorCode = code,
                         Result = new GetBlockDataResult<IMerkleBlock>
                         {
@@ -397,8 +351,7 @@ namespace Knuth
             });
         }
 
-        private void GetMerkleBlockByHeight(UInt64 height, Action<ErrorCode, MerkleBlock, UInt64> handler)
-        {
+        private void GetMerkleBlockByHeight(UInt64 height, Action<ErrorCode, MerkleBlock, UInt64> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_fetch_merkle_block_by_height(nativeInstance_, handlerPtr, height, internalMerkleBlockGetHandler_);
@@ -412,14 +365,10 @@ namespace Knuth
         /// Given a block hash, get the compact block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
-        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> GetCompactBlockByHashAsync(byte[] blockHash)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>>(tcs =>
-            {
-                GetCompactBlockByHash(blockHash, (code, compactBlock, height) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
-                    {
+        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> GetCompactBlockByHashAsync(byte[] blockHash) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>>(tcs => {
+                GetCompactBlockByHash(blockHash, (code, compactBlock, height) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<CompactBlock>> {
                         ErrorCode = code,
                         Result = new GetBlockDataResult<CompactBlock>
                         {
@@ -438,8 +387,7 @@ namespace Knuth
         /// </summary>
         /// <param name="blockHash"> 32 bytes of the block hash </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        private void GetCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock, UInt64> handler)
-        {
+        private void GetCompactBlockByHash(byte[] blockHash, Action<ErrorCode, CompactBlock, UInt64> handler) {
             var managedHash = new hash_t
             {
                 hash = blockHash
@@ -453,14 +401,10 @@ namespace Knuth
         /// Given a block height, get the compact block from the block it identifies, asynchronously.
         /// </summary>
         /// <param name="height"> Desired block height </param>
-        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> GetCompactBlockByHeightAsync(UInt64 height)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>>(tcs =>
-            {
-                GetCompactBlockByHeight(height, (code, compactBlock, blockHeight) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<CompactBlock>>
-                    {
+        public async Task<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>> GetCompactBlockByHeightAsync(UInt64 height) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetBlockDataResult<CompactBlock>>>(tcs => {
+                GetCompactBlockByHeight(height, (code, compactBlock, blockHeight) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetBlockDataResult<CompactBlock>> {
                         ErrorCode = code,
                         Result = new GetBlockDataResult<CompactBlock>
                         {
@@ -479,8 +423,7 @@ namespace Knuth
         /// </summary>
         /// <param name="height"> Desired block height </param>
         /// <param name="handler"> Callback which will be invoked when the compact block is retrieved </param>
-        private void GetCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock, UInt64> handler)
-        {
+        private void GetCompactBlockByHeight(UInt64 height, Action<ErrorCode, CompactBlock, UInt64> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_fetch_compact_block_by_height(nativeInstance_, handlerPtr, height, internalGetCompactBlockHandler_);
@@ -496,38 +439,24 @@ namespace Knuth
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True if the transaction must belong to a block </param>
-        public async Task<DisposableApiCallResult<GetTxDataResult>> GetTransactionAsync(byte[] txHash, bool requireConfirmed)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<GetTxDataResult>>(tcs =>
-            {
-                GetTransaction(txHash, requireConfirmed, (code, transaction, index, height) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<GetTxDataResult>
-                    {
+        public async Task<DisposableApiCallResult<GetTxDataResult>> GetTransactionAsync(byte[] txHash, bool requireConfirmed) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<GetTxDataResult>>(tcs => {
+                GetTransaction(txHash, requireConfirmed, (code, transaction, index, height) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<GetTxDataResult> {
                         ErrorCode = code,
-                        Result = new GetTxDataResult
-                        {
+                        Result = new GetTxDataResult {
                             Tx = transaction,
-                            TxPosition = new GetTxPositionResult
-                            {
-                                Index = index,
-                                BlockHeight = height
-                            }
+                            TxPosition = new GetTxPositionResult {Index = index, BlockHeight = height }
                         }
                     });
-
                 });
             });
         }
 
-        private void GetTransaction(byte[] txHash, bool requireConfirmed, Action<ErrorCode, Transaction, UInt64, UInt64> handler)
-        {
-            var managedHash = new hash_t
-            {
-                hash = txHash
-            };
+        private void GetTransaction(byte[] txHash, bool requireConfirmed, Action<ErrorCode, Transaction, UInt64, UInt64> handler) {
+            var managedHash = new hash_t { hash = txHash };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.kth_chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, internalGetTransactionHandler_);
+            ChainNative.kth_chain_fetch_transaction(nativeInstance_, contextPtr, managedHash, Helper.BoolToC(requireConfirmed), internalGetTransactionHandler_);
         }
 
         /// <summary>
@@ -535,15 +464,11 @@ namespace Knuth
         /// </summary>
         /// <param name="txHash"> 32 bytes of transaction hash </param>
         /// <param name="requireConfirmed"> True iif the transaction must belong to a block </param>
-        public async Task<ApiCallResult<GetTxPositionResult>> GetTransactionPositionAsync(byte[] txHash, bool requireConfirmed)
-        {
-            return await TaskHelper.ToTask<ApiCallResult<GetTxPositionResult>>(tcs =>
-            {
+        public async Task<ApiCallResult<GetTxPositionResult>> GetTransactionPositionAsync(byte[] txHash, bool requireConfirmed) {
+            return await TaskHelper.ToTask<ApiCallResult<GetTxPositionResult>>(tcs => {
 
-                GetTransactionPosition(txHash, requireConfirmed, (code, index, height) =>
-                {
-                    tcs.TrySetResult(new ApiCallResult<GetTxPositionResult>
-                    {
+                GetTransactionPosition(txHash, requireConfirmed, (code, index, height) => {
+                    tcs.TrySetResult(new ApiCallResult<GetTxPositionResult> {
                         ErrorCode = code,
                         Result = new GetTxPositionResult { Index = index, BlockHeight = height }
                     });
@@ -553,14 +478,13 @@ namespace Knuth
             });
         }
 
-        private void GetTransactionPosition(byte[] txHash, bool requireConfirmed, Action<ErrorCode, UInt64, UInt64> handler)
-        {
+        private void GetTransactionPosition(byte[] txHash, bool requireConfirmed, Action<ErrorCode, UInt64, UInt64> handler) {
             var managedHash = new hash_t
             {
                 hash = txHash
             };
             IntPtr contextPtr = CreateContext(handler, managedHash);
-            ChainNative.kth_chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, requireConfirmed ? 1 : 0, internalGetTransactionPositionHandler_);
+            ChainNative.kth_chain_fetch_transaction_position(nativeInstance_, contextPtr, managedHash, Helper.BoolToC(requireConfirmed), internalGetTransactionPositionHandler_);
         }
 
         #endregion //Transaction
@@ -571,19 +495,15 @@ namespace Knuth
         /// Get the transaction input which spends the indicated output, asynchronously.
         /// </summary>
         /// <param name="outputPoint"> Tx hash and index pair where the output was spent. </param>
-        public async Task<ApiCallResult<IPoint>> GetSpendAsync(OutputPoint outputPoint)
-        {
-            return await TaskHelper.ToTask<ApiCallResult<IPoint>>(tcs =>
-            {
-                GetSpend(outputPoint, (code, point) =>
-                {
+        public async Task<ApiCallResult<IPoint>> GetSpendAsync(OutputPoint outputPoint) {
+            return await TaskHelper.ToTask<ApiCallResult<IPoint>>(tcs => {
+                GetSpend(outputPoint, (code, point) => {
                     tcs.TrySetResult(new ApiCallResult<IPoint> { ErrorCode = code, Result = point });
                 });
             });
         }
 
-        private void GetSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler)
-        {
+        private void GetSpend(OutputPoint outputPoint, Action<ErrorCode, Point> handler) {
             IntPtr contextPtr = CreateContext(handler, outputPoint);
             ChainNative.kth_chain_fetch_spend(nativeInstance_, contextPtr, outputPoint.NativeInstance, internalGetSpendHandler_);
         }
@@ -598,14 +518,10 @@ namespace Knuth
         /// <param name="address"> Bitcoin payment address to search </param>
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
-        public async Task<DisposableApiCallResult<INativeList<IHistoryCompact>>> GetHistoryAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<INativeList<IHistoryCompact>>>(tcs =>
-            {
-                GetHistory(address, limit, fromHeight, (code, history) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<INativeList<IHistoryCompact>>
-                    {
+        public async Task<DisposableApiCallResult<INativeList<IHistoryCompact>>> GetHistoryAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<INativeList<IHistoryCompact>>>(tcs => {
+                GetHistory(address, limit, fromHeight, (code, history) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<INativeList<IHistoryCompact>> {
                         ErrorCode = code,
                         Result = history
                     });
@@ -614,8 +530,7 @@ namespace Knuth
             });
         }
 
-        private void GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HistoryCompactList> handler)
-        {
+        private void GetHistory(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HistoryCompactList> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_fetch_history(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalGetHistoryHandler_);
@@ -627,14 +542,10 @@ namespace Knuth
         /// <param name="address"> Bitcoin payment address to search </param>
         /// <param name="limit"> Maximum amount of results to fetch </param>
         /// <param name="fromHeight"> Starting point to search for transactions </param>
-        public async Task<DisposableApiCallResult<INativeList<byte[]>>> GetConfirmedTransactionsAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<INativeList<byte[]>>>(tcs =>
-            {
-                GetConfirmedTransactions(address, limit, fromHeight, (code, txns) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<INativeList<byte[]>>
-                    {
+        public async Task<DisposableApiCallResult<INativeList<byte[]>>> GetConfirmedTransactionsAsync(PaymentAddress address, UInt64 limit, UInt64 fromHeight) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<INativeList<byte[]>>>(tcs => {
+                GetConfirmedTransactions(address, limit, fromHeight, (code, txns) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<INativeList<byte[]>> {
                         ErrorCode = code,
                         Result = txns
                     });
@@ -642,8 +553,7 @@ namespace Knuth
             });
         }
 
-        private void GetConfirmedTransactions(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HashList> handler)
-        {
+        private void GetConfirmedTransactions(PaymentAddress address, UInt64 limit, UInt64 fromHeight, Action<ErrorCode, HashList> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_fetch_confirmed_transactions(nativeInstance_, handlerPtr, address.NativeInstance, limit, fromHeight, internalGetTxnsHandler_);
@@ -659,13 +569,10 @@ namespace Knuth
         /// </summary>
         /// <param name="filter"> Must be at least 8 bits in length. example "10101010" </param>
         /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
-        /* public async Task<DisposableApiCallResult<INativeList<IStealthCompact>>> GetStealthAsync(Binary filter, UInt64 fromHeight)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<INativeList<IStealthCompact>>>(tcs =>
-            {
+        /* public async Task<DisposableApiCallResult<INativeList<IStealthCompact>>> GetStealthAsync(Binary filter, UInt64 fromHeight) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<INativeList<IStealthCompact>>>(tcs => {
                 
-                GetStealth(filter, fromHeight, (code, list) =>
-                {
+                GetStealth(filter, fromHeight, (code, list) => {
                     tcs.TrySetResult(new DisposableApiCallResult<INativeList<IStealthCompact>>()
                     {
                         ErrorCode = code,
@@ -677,8 +584,7 @@ namespace Knuth
             });
         }*/
 
-        private void GetStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler)
-        {
+        private void GetStealth(Binary filter, UInt64 fromHeight, Action<ErrorCode, StealthCompactList> handler) {
             IntPtr contextPtr = CreateContext(handler, filter);
             ChainNative.kth_chain_fetch_stealth(nativeInstance_, contextPtr, filter.NativeInstance, fromHeight, internalGetStealthHandler_);
         }
@@ -691,14 +597,10 @@ namespace Knuth
         /// Given a list of indexes, fetch a header reader for them, asynchronously
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
-        public async Task<DisposableApiCallResult<HeaderReader>> GetBlockLocatorAsync(BlockIndexList indexes)
-        {
-            return await TaskHelper.ToTask<DisposableApiCallResult<HeaderReader>>(tcs =>
-            {
-                GetBlockLocator(indexes, (code, headerReader) =>
-                {
-                    tcs.TrySetResult(new DisposableApiCallResult<HeaderReader>
-                    {
+        public async Task<DisposableApiCallResult<HeaderReader>> GetBlockLocatorAsync(BlockIndexList indexes) {
+            return await TaskHelper.ToTask<DisposableApiCallResult<HeaderReader>>(tcs => {
+                GetBlockLocator(indexes, (code, headerReader) => {
+                    tcs.TrySetResult(new DisposableApiCallResult<HeaderReader> {
                         ErrorCode = code,
                         Result = headerReader
                     });
@@ -713,8 +615,7 @@ namespace Knuth
         /// </summary>
         /// <param name="indexes"> Block indexes </param>
         /// <param name="handler"> Callback which will called when the reader is retrieved </param>
-        private void GetBlockLocator(BlockIndexList indexes, Action<ErrorCode, HeaderReader> handler)
-        {
+        private void GetBlockLocator(BlockIndexList indexes, Action<ErrorCode, HeaderReader> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_fetch_block_locator(nativeInstance_, handlerPtr, indexes.NativeInstance, internalBlockLocatorGetHandler_);
@@ -728,20 +629,16 @@ namespace Knuth
         /// Given a block, organize it (async).
         /// </summary>
         /// <param name="block"> The block to organize </param>
-        public async Task<ErrorCode> OrganizeBlockAsync(Block block)
-        {
-            return await TaskHelper.ToTask<ErrorCode>(tcs =>
-            {
-                OrganizeBlock(block, errorCode =>
-                {
+        public async Task<ErrorCode> OrganizeBlockAsync(Block block) {
+            return await TaskHelper.ToTask<ErrorCode>(tcs => {
+                OrganizeBlock(block, errorCode => {
                     tcs.TrySetResult(errorCode);      
                 });
                 
             });
         }
 
-        private void OrganizeBlock(Block block, Action<ErrorCode> handler)
-        {
+        private void OrganizeBlock(Block block, Action<ErrorCode> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_organize_block(nativeInstance_, handlerPtr, block.NativeInstance, internalResultHandler_);
@@ -751,19 +648,15 @@ namespace Knuth
         /// Given a transaction, organize it (async).
         /// </summary>
         /// <param name="transaction"> The transaction to organize. </param>
-        public async Task<ErrorCode> OrganizeTransactionAsync(Transaction transaction)
-        {
-            return await TaskHelper.ToTask<ErrorCode>(tcs =>
-            {
-                OrganizeTransaction(transaction, errorCode =>
-                {
+        public async Task<ErrorCode> OrganizeTransactionAsync(Transaction transaction) {
+            return await TaskHelper.ToTask<ErrorCode>(tcs => {
+                OrganizeTransaction(transaction, errorCode => {
                     tcs.TrySetResult(errorCode);      
                 });
             });
         }
 
-        private void OrganizeTransaction(Transaction transaction, Action<ErrorCode> handler)
-        {
+        private void OrganizeTransaction(Transaction transaction, Action<ErrorCode> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_organize_transaction(nativeInstance_, handlerPtr, transaction.NativeInstance, internalResultHandler_);
@@ -777,15 +670,11 @@ namespace Knuth
         /// Determine if a transaction is valid for submission to the blockchain.
         /// </summary>
         /// <param name="transaction"> Transaction to validate </param>
-        public async Task<ApiCallResult<string>> ValidateTransactionAsync(Transaction transaction)
-        {
-            return await TaskHelper.ToTask<ApiCallResult<string>>(tcs =>
-            {
+        public async Task<ApiCallResult<string>> ValidateTransactionAsync(Transaction transaction) {
+            return await TaskHelper.ToTask<ApiCallResult<string>>(tcs => {
                 
-                ValidateTransaction(transaction, (code, message) =>
-                {
-                    tcs.TrySetResult(new ApiCallResult<string>
-                    {
+                ValidateTransaction(transaction, (code, message) => {
+                    tcs.TrySetResult(new ApiCallResult<string> {
                         ErrorCode = code,
                         Result = message
                     });
@@ -795,8 +684,7 @@ namespace Knuth
             });
         }
 
-        private void ValidateTransaction(Transaction transaction, Action<ErrorCode, string> handler)
-        {
+        private void ValidateTransaction(Transaction transaction, Action<ErrorCode, string> handler) {
             GCHandle handlerHandle = GCHandle.Alloc(handler);
             IntPtr handlerPtr = (IntPtr)handlerHandle;
             ChainNative.kth_chain_validate_tx(nativeInstance_, handlerPtr, transaction.NativeInstance, internalValidateTxHandler_);
@@ -813,8 +701,7 @@ namespace Knuth
 
         #region Mempool
 
-        public INativeList<ITransaction> GetMempoolTransactions(INativeList<PaymentAddress> addresses, bool useTestnetRules)
-        {
+        public INativeList<ITransaction> GetMempoolTransactions(INativeList<PaymentAddress> addresses, bool useTestnetRules) {
             IntPtr txs = ChainNative.kth_chain_get_mempool_transactions_from_wallets
             (
                 nativeInstance_,
@@ -826,8 +713,7 @@ namespace Knuth
 
         #endregion //Mempool
 
-        private IntPtr CreateContext<TC, TP>(TC callback, TP parameters)
-        {
+        private IntPtr CreateContext<TC, TP>(TC callback, TP parameters) {
             // Both the callback and its parameters need to hold garbage collection off until
             // the callback is called, so a GCHandle is taken for an object containing both of them:
             // that is the context
@@ -836,8 +722,7 @@ namespace Knuth
             return (IntPtr)contextHandle;
         }
 
-        private static void GetBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr block, UInt64 height)
-        {
+        private static void GetBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr block, UInt64 height) {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
             {
@@ -851,8 +736,7 @@ namespace Knuth
             }
         }
 
-        private static void GetBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block, UInt64 height)
-        {
+        private static void GetBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr block, UInt64 height) {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
@@ -865,8 +749,7 @@ namespace Knuth
             }
         }
 
-        private static void GetBlockHeaderByHashTxsSizeInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr blockHeader, UInt64 blockHeight, IntPtr txHashes, UInt64 blockSerializedSize)
-        {
+        private static void GetBlockHeaderByHashTxsSizeInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr blockHeader, UInt64 blockHeight, IntPtr txHashes, UInt64 blockSerializedSize) {
             var contextHandle = (GCHandle)contextPtr;
             try
             {
@@ -880,8 +763,7 @@ namespace Knuth
             }
         }
 
-        private static void GetBlockByHeightHashTimestampInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, hash_t blockHash, UInt32 timestamp, UInt64 height)
-        {
+        private static void GetBlockByHeightHashTimestampInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, hash_t blockHash, UInt32 timestamp, UInt64 height) {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
@@ -900,8 +782,7 @@ namespace Knuth
         }
 
         private static void GetBlockHeaderByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-            IntPtr header, UInt64 height)
-        {
+            IntPtr header, UInt64 height) {
             var contextHandle = (GCHandle)contextPtr;
             try
             {
@@ -915,8 +796,7 @@ namespace Knuth
             }
         }
 
-        private static void GetBlockHeaderInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr header, UInt64 height)
-        {
+        private static void GetBlockHeaderInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr header, UInt64 height) {
             var handlerHandle = (GCHandle)context;
             try
             {
@@ -929,8 +809,7 @@ namespace Knuth
             }
         }
 
-        private static void GetBlockHeightInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 height)
-        {
+        private static void GetBlockHeightInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 height) {
             var contextHandle = (GCHandle)contextPtr;
             try
             {
@@ -944,8 +823,7 @@ namespace Knuth
             }
         }
         /*
-        private static void GetBlockLocatorInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr headerReader)
-        {
+        private static void GetBlockLocatorInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr headerReader) {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
@@ -958,8 +836,7 @@ namespace Knuth
             }
         }*/
         /*
-        private static void GetCompactBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr compactBlock, UInt64 height)
-        {
+        private static void GetCompactBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr compactBlock, UInt64 height) {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
@@ -973,8 +850,7 @@ namespace Knuth
             }
         }*/
 
-        private static void GetHistoryInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr history)
-        {
+        private static void GetHistoryInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr history) {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
@@ -987,8 +863,7 @@ namespace Knuth
             }
         }
 
-        private static void GetTransactionsInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr txns)
-        {
+        private static void GetTransactionsInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr txns) {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
@@ -1001,8 +876,7 @@ namespace Knuth
             }
         }
 
-        private static void GetLastHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, UInt64 height)
-        {
+        private static void GetLastHeightInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, UInt64 height) {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
@@ -1016,8 +890,7 @@ namespace Knuth
         }
 
         private static void GetMerkleBlockByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error,
-            IntPtr merkleBlock, UInt64 height)
-        {
+            IntPtr merkleBlock, UInt64 height) {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
             {
@@ -1031,8 +904,7 @@ namespace Knuth
             }
         }
 
-        private static void GetMerkleBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr merkleBlock, UInt64 height)
-        {
+        private static void GetMerkleBlockInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, IntPtr merkleBlock, UInt64 height) {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
@@ -1045,8 +917,7 @@ namespace Knuth
             }
         }
 
-        private static void GetSpendInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr inputPoint)
-        {
+        private static void GetSpendInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr inputPoint) {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
             {
@@ -1060,8 +931,7 @@ namespace Knuth
             }
         }
 
-        private static void GetStealthInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr stealth)
-        {
+        private static void GetStealthInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr stealth) {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
             {
@@ -1075,8 +945,7 @@ namespace Knuth
             }
         }
 
-        private static void GetTransactionByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr transaction, UInt64 index, UInt64 height)
-        {
+        private static void GetTransactionByHashInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, IntPtr transaction, UInt64 index, UInt64 height) {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
             {
@@ -1090,8 +959,7 @@ namespace Knuth
             }
         }
 
-        private static void GetTransactionPositionInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 index, UInt64 height)
-        {
+        private static void GetTransactionPositionInternalHandler(IntPtr chain, IntPtr contextPtr, ErrorCode error, UInt64 index, UInt64 height) {
             GCHandle contextHandle = (GCHandle)contextPtr;
             try
             {
@@ -1105,8 +973,7 @@ namespace Knuth
             }
         }
 
-        private static void ResultInternalHandler(IntPtr chain, IntPtr context, ErrorCode error)
-        {
+        private static void ResultInternalHandler(IntPtr chain, IntPtr context, ErrorCode error) {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {
@@ -1119,8 +986,7 @@ namespace Knuth
             }
         }
 
-        private static void ValidateTransactionInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, string message)
-        {
+        private static void ValidateTransactionInternalHandler(IntPtr chain, IntPtr context, ErrorCode error, string message) {
             GCHandle handlerHandle = (GCHandle)context;
             try
             {

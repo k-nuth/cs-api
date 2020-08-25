@@ -63,8 +63,7 @@ namespace Knuth
             }
         }
 
-        internal Point(IntPtr nativeInstance)
-        {
+        internal Point(IntPtr nativeInstance) {
             nativeInstance_ = nativeInstance;
         }
 

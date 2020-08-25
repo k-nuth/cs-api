@@ -10,41 +10,33 @@ namespace Knuth
     /// <summary>
     /// Represents a list of Outputs
     /// </summary>
-    public class OutputList : NativeReadableWritableList<Output>
-    {
+    public class OutputList : NativeReadableWritableList<Output> {
         private bool ownsNativeObject_;
 
-        protected override IntPtr CreateNativeList()
-        {
+        protected override IntPtr CreateNativeList() {
             ownsNativeObject_ = true;
             return OutputListNative.kth_chain_output_list_construct_default();
         }
 
-        protected override Output GetNthNativeElement(UInt64 n)
-        {
+        protected override Output GetNthNativeElement(UInt64 n) {
             return new Output(OutputListNative.kth_chain_output_list_nth(NativeInstance, n), false);
         }
 
-        protected override UInt64 GetCount()
-        {
+        protected override UInt64 GetCount() {
             return OutputListNative.kth_chain_output_list_count(NativeInstance);
         }
 
-        protected override void AddElement(Output element)
-        {
+        protected override void AddElement(Output element) {
             OutputListNative.kth_chain_output_list_push_back(NativeInstance, element.NativeInstance);
         }
 
-        protected override void DestroyNativeList()
-        {
-            if(ownsNativeObject_)
-            {
+        protected override void DestroyNativeList() {
+            if (ownsNativeObject_) {
                 OutputListNative.kth_chain_output_list_destruct(NativeInstance);
             }
         }
 
-        internal OutputList(IntPtr nativeInstance, bool ownsNativeObject = true) : base(nativeInstance)
-        {
+        internal OutputList(IntPtr nativeInstance, bool ownsNativeObject = true) : base(nativeInstance) {
             ownsNativeObject_ = ownsNativeObject;
         }
     }

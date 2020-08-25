@@ -5,7 +5,7 @@
 using Knuth.Native;
 using System;
 
-namespace Knuth
+namespace Knuth 
 {
 
     /// <summary>
@@ -17,8 +17,7 @@ namespace Knuth
         private readonly Header header_;
         private readonly IntPtr nativeInstance_;
 
-        public Block (UInt32 version, string hexString)
-        {
+        public Block (UInt32 version, string hexString) {
             //the raw block is already reversed
             byte[] array = Binary.HexStringToByteArray(hexString,false);
             nativeInstance_ = BlockNative.kth_chain_block_factory_from_data(version,array,(UInt64)array.Length);
@@ -26,21 +25,18 @@ namespace Knuth
             ownsNativeObject_ = true;
         }
 
-        internal Block(IntPtr nativeInstance, bool ownsNativeObject = true)
-        {
+        internal Block(IntPtr nativeInstance, bool ownsNativeObject = true) {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
             header_ = new Header(BlockNative.kth_chain_block_header(nativeInstance_), false);
         }
 
 
-        ~Block()
-        {
+        ~Block() {
             Dispose(false);
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -108,8 +104,7 @@ namespace Knuth
         {
             get
             {
-                using ( NativeString proofStr = new NativeString(BlockNative.kth_chain_block_proof(nativeInstance_)) )
-                {
+                using ( NativeString proofStr = new NativeString(BlockNative.kth_chain_block_proof(nativeInstance_))) {
                     return proofStr.ToString();
                 }
             }
@@ -128,7 +123,9 @@ namespace Knuth
         /// <summary>
         /// Amount of signature operations in the block.
         /// </summary>
-        public UInt64 SignatureOperationsCount => BlockNative.kth_chain_block_signature_operations(nativeInstance_);
+        // TODO(fernando): we are using kth_chain_transaction_signature_operations_bip16_active until https://github.com/k-nuth/kth/issues/39 be fixed
+        // public UInt64 SignatureOperations => BlockNative.kth_chain_block_signature_operations(nativeInstance_);
+        public UInt64 SignatureOperations => BlockNative.kth_chain_block_signature_operations_bip16_active(nativeInstance_, Helper.BoolToC(true));
 
         /// <summary>
         /// The total amount of transactions that the block contains.
@@ -140,8 +137,7 @@ namespace Knuth
         /// </summary>
         /// <param name="height"></param>
         /// <returns></returns>
-        public bool IsFinal(UInt64 height)
-        {
+        public bool IsFinal(UInt64 height) {
             return BlockNative.kth_chain_block_is_final(nativeInstance_, (UIntPtr)height) != 0;
         }
 
@@ -150,8 +146,7 @@ namespace Knuth
         /// </summary>
         /// <param name="height">The height which identifies the block to examine</param>
         /// <returns> True if and only if 1 if coinbase claim is not higher than the deserved reward. </returns>
-        public bool IsValidCoinbaseClaim(UInt64 height)
-        {
+        public bool IsValidCoinbaseClaim(UInt64 height) {
             return BlockNative.kth_chain_block_is_valid_coinbase_claim(nativeInstance_, (UIntPtr)height) != 0;
         }
 
@@ -160,8 +155,7 @@ namespace Knuth
         /// </summary>
         /// <param name="height"> The block's height. Identifies it univocally. </param>
         /// <returns>True if and only if the block's coinbase script is valid.</returns>
-        public bool IsValidCoinbaseScript(UInt64 height)
-        {
+        public bool IsValidCoinbaseScript(UInt64 height) {
             return BlockNative.kth_chain_block_is_valid_coinbase_script(nativeInstance_, (UIntPtr)height) != 0;
         }
 
@@ -170,8 +164,7 @@ namespace Knuth
         /// </summary>
         /// <param name="wire">if and only if true, include data size at the beginning.</param>
         /// <returns>Byte array with block data.</returns>
-        public byte[] ToData(bool wire)
-        {
+        public byte[] ToData(bool wire) {
             int blockSize = 0;
             var blockData = new NativeBuffer(BlockNative.kth_chain_block_to_data(nativeInstance_, wire? 1:0, ref blockSize));
             return blockData.CopyToManagedArray(blockSize);
@@ -182,8 +175,7 @@ namespace Knuth
         /// </summary>
         /// <param name="n"> Zero-based index </param>
         /// <returns> Full transaction object </returns>
-        public ITransaction GetNthTransaction(UInt64 n)
-        {
+        public ITransaction GetNthTransaction(UInt64 n) {
             return new Transaction(BlockNative.kth_chain_block_transaction_nth(nativeInstance_, (UIntPtr)n), false);
         }
 
@@ -192,8 +184,7 @@ namespace Knuth
         /// </summary>
         /// <param name="height"> The block's height. It identifies it univocally. </param>
         /// <returns> UInt64 representation of the block subsidy </returns>
-        public static UInt64 GetSubsidy(UInt64 height)
-        {
+        public static UInt64 GetSubsidy(UInt64 height) {
             return BlockNative.kth_chain_block_subsidy((UIntPtr)height);
         }
 
@@ -202,8 +193,7 @@ namespace Knuth
         /// </summary>
         /// <param name="height"> Block height in the chain; identifies it univocally. </param>
         /// <returns> UInt64 representation of the block's reward. </returns>
-        public UInt64 GetBlockReward(UInt64 height)
-        {
+        public UInt64 GetBlockReward(UInt64 height) {
             return BlockNative.kth_chain_block_reward(nativeInstance_, (UIntPtr)height);
         }
 
@@ -212,8 +202,7 @@ namespace Knuth
         /// </summary>
         /// <param name="version"> Protocol version. </param>
         /// <returns> UInt64 representation of the block size in bytes. </returns>
-        public UInt64 GetSerializedSize(UInt32 version)
-        {
+        public UInt64 GetSerializedSize(UInt32 version) {
             return BlockNative.kth_chain_block_serialized_size(nativeInstance_, version);
         }
 
@@ -222,12 +211,9 @@ namespace Knuth
         /// </summary>
         /// <param name="bip16Active"> If and only if true, count bip16 active operations. </param>
         /// <returns> The amount of signature operations in this block </returns>
-        public UInt64 GetSignatureOperationsCount(bool bip16Active)
-        {
-            return BlockNative.kth_chain_block_signature_operations_bip16_active
-            (
-                nativeInstance_, bip16Active ? 1 : 0
-            );
+        public UInt64 GetSignatureOperations(bool bip16Active) {
+            return BlockNative.kth_chain_block_signature_operations_bip16_active(nativeInstance_, Helper.BoolToC(bip16Active));
+            
         }
 
         /// <summary>
@@ -235,27 +221,19 @@ namespace Knuth
         /// </summary>
         /// <param name="withCoinbase">If and only if true, consider coinbase transactions. </param>
         /// <returns> UInt64 representation of the sum </returns>
-        public UInt64 GetTotalInputs(bool withCoinbase)
-        {
-            return BlockNative.kth_chain_block_total_inputs
-            (
-                nativeInstance_, withCoinbase ? 1 : 0
-            );
+        public UInt64 GetTotalInputs(bool withCoinbase) {
+            return BlockNative.kth_chain_block_total_inputs(nativeInstance_, Helper.BoolToC(withCoinbase));
         }
-
         
         internal IntPtr NativeInstance => nativeInstance_;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
                 Header.Dispose();
             }
             //Release unmanaged resources
-            if(ownsNativeObject_)
-            {
+            if (ownsNativeObject_) {
                 BlockNative.kth_chain_block_destruct(nativeInstance_);
             }
         }

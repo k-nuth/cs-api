@@ -12,17 +12,14 @@ namespace Knuth
     /// Abstract class to represent read-only lists of native objects
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class NativeReadableList<T> : INativeList<T>
-    {
+    public abstract class NativeReadableList<T> : INativeList<T> {
         protected IntPtr nativeInstance_;
 
-        protected NativeReadableList()
-        {
+        protected NativeReadableList() {
 
         }
 
-        protected NativeReadableList(IntPtr nativeInstance)
-        {
+        protected NativeReadableList(IntPtr nativeInstance) {
             nativeInstance_ = nativeInstance;
         }
 
@@ -30,34 +27,27 @@ namespace Knuth
         /// Enumerator of T
         /// </summary>
         /// <returns></returns>
-        public IEnumerator<T> GetEnumerator()
-        {
-            for (UInt64 i = 0; i < GetCount(); i++)
-            {
+        public IEnumerator<T> GetEnumerator() {
+            for (UInt64 i = 0; i < GetCount(); i++) {
                 yield return GetNthNativeElement(i);
             }
         }
 
-        ~NativeReadableList()
-        {
+        ~NativeReadableList() {
             Dispose(false);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
+        IEnumerator IEnumerable.GetEnumerator() {
             return GetEnumerator();
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources

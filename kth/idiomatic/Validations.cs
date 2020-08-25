@@ -18,14 +18,11 @@ namespace Knuth
         /// </summary>
         /// <param name="hex">Hex string</param>
         /// <returns>True iif hex is a valid base 58 address</returns>
-        public static bool IsValidPaymentAddress(string hex)
-        {
-            if(string.IsNullOrWhiteSpace(hex))
-            {
+        public static bool IsValidPaymentAddress(string hex) {
+            if (string.IsNullOrWhiteSpace(hex)) {
                 return false;
             }
-            using (var address = new PaymentAddress(hex))
-            {
+            using (var address = new PaymentAddress(hex)) {
                 return address.IsValid;
             }
         }
@@ -36,10 +33,8 @@ namespace Knuth
         /// </summary>
         /// <param name="hex">Hex string</param>
         /// <returns>True iif hex is a valid hash string</returns>
-        public static bool IsValidHash(string hex)
-        {
-            if(string.IsNullOrWhiteSpace(hex) || hex.Length != HASH_HEX_LENGTH)
-            {
+        public static bool IsValidHash(string hex) {
+            if (string.IsNullOrWhiteSpace(hex) || hex.Length != HASH_HEX_LENGTH) {
                 return false;
             }
             //Check if it is a hex string

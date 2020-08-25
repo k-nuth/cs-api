@@ -8,28 +8,23 @@ namespace Knuth.tutorials
         private IChain chain_;
         private readonly Node node_;
 
-        public KnuthCsAPI(string nodeConfigFile)
-        {
+        public KnuthCsAPI(string nodeConfigFile) {
             node_ = new Node(nodeConfigFile);
         }
 
-        ~KnuthCsAPI()
-        {
+        ~KnuthCsAPI() {
             Dispose(false);
         }
 
-        public IBlock GetBlockByHeight(UInt64 height)
-        {
+        public IBlock GetBlockByHeight(UInt64 height) {
             return chain_.GetBlockByHeightAsync(height).Result.Result.BlockData;
         }
 
-        public ITransaction GetTransactionByHash(string txHash)
-        {
+        public ITransaction GetTransactionByHash(string txHash) {
             return chain_.GetTransactionAsync(Binary.HexStringToByteArray(txHash), true).Result.Result.Tx;
         }
 
-        public UInt64 GetCurrentBlockchainHeight()
-        {
+        public UInt64 GetCurrentBlockchainHeight() {
             return chain_.GetLastHeightAsync().Result.Result;
         }
 
@@ -38,19 +33,16 @@ namespace Knuth.tutorials
             GC.SuppressFinalize(this);
         }
 
-        public void StartNode()
-        {
+        public void StartNode() {
             var result = node_.InitAndRunAsync().Result;
-            if (result != 0)
-            {
+            if (result != 0) {
                 throw new ApplicationException("Node::InitAndRunAsync failed; error code: " + result);
             }
             chain_ = node_.Chain;
         }
 
         protected virtual void Dispose(bool disposing){
-            if (disposing)
-            {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }   
             //Release unmanaged resources

@@ -29,9 +29,13 @@
 
   <ItemGroup>
     <!-- pack the target files -->
-    <Content Include="build\netstandard2.0\kth-bch.targets" PackagePath="build\netstandard2.0\kth-bch.targets" />  
-	  <Content Include="build\Common.targets" PackagePath="build\Common.targets" />
+    <!-- <Content Include="build\netstandard2.0\kth-bch.targets" PackagePath="build\netstandard2.0\kth-bch.targets" />  
+	<Content Include="build\Common.targets" PackagePath="build\Common.targets" /> -->
     
+    <Content Include="build/$(TargetFramework)/kth-bch.targets" PackagePath="build/$(TargetFramework)/kth-bch.targets" />  
+	<Content Include="build/Common.targets" PackagePath="build/Common.targets" />
+
+
 	  <!-- pack the conan file -->
     <!-- <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" />  -->
   </ItemGroup>

@@ -4,12 +4,10 @@ namespace Knuth.Tutorials
 {
     class Program
     {
-        static void Main(string[] args)
-        {
+        static void Main(string[] args) {
             try
             {
-                using(var kthApi = new KnuthCsAPI("bch-testnet.cfg"))
-                {
+                using(var kthApi = new KnuthCsAPI("bch-testnet.cfg")) {
                     var memoService = new MemoService(kthApi);
                     kthApi.StartNode();
                     Console.WriteLine("Scraping...");
@@ -23,14 +21,12 @@ namespace Knuth.Tutorials
                 }
                 Console.ReadKey();
             }
-            catch(Exception e)
-            {
+            catch(Exception e) {
                 Console.WriteLine("Fatal error: " + e);
             }
         }
 
-        static void OnScrapingProgressReport(string report)
-        {
+        static void OnScrapingProgressReport(string report) {
             Console.WriteLine(report);
         }
     }

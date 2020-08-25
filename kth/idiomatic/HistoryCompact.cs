@@ -17,8 +17,7 @@ namespace Knuth
         private IntPtr nativeInstance_;
         private Point point_;
 
-        ~HistoryCompact()
-        {
+        ~HistoryCompact() {
             Dispose(false);
         }
 
@@ -73,28 +72,23 @@ namespace Knuth
         /// <summary>
         /// Release resources
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        internal HistoryCompact(IntPtr nativeInstance, bool ownsNativeObject = true)
-        {
+        internal HistoryCompact(IntPtr nativeInstance, bool ownsNativeObject = true) {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
             point_ = new Point(HistoryCompactNative.kth_chain_history_compact_get_point(nativeInstance_));
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            if(ownsNativeObject_)
-            {
+            if (ownsNativeObject_) {
                 //Logger.Log("Destroying history compact " + nativeInstance_.ToString("X") + " ...");
                 HistoryCompactNative.kth_chain_history_compact_destruct(nativeInstance_);
                 //Logger.Log("History compact " + nativeInstance_.ToString("X") + " destroyed!");

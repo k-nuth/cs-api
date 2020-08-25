@@ -20,20 +20,17 @@ namespace Knuth
             nativePtr_ = nativePtr;
         }
 
-        ~NativeBuffer()
-        {
+        ~NativeBuffer() {
             Dispose(false);
         }
 
-        public byte[] CopyToManagedArray(int arraySize)
-        {
+        public byte[] CopyToManagedArray(int arraySize) {
             byte[] managedArray = new byte[arraySize];
             Marshal.Copy(nativePtr_, managedArray, 0, arraySize);
             return managedArray;
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -46,14 +43,12 @@ namespace Knuth
             }
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            Platform.platform_free(nativePtr_);
+            Platform.kth_platform_free(nativePtr_);
         }
     }
 }

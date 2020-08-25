@@ -16,8 +16,7 @@ namespace Knuth
         private readonly Header header_;
         private readonly IntPtr nativeInstance_;
 
-        ~MerkleBlock()
-        {
+        ~MerkleBlock() {
             Dispose(false);
         }
 
@@ -46,8 +45,7 @@ namespace Knuth
         /// </summary>
         /// <param name="n">Zerp-based index.</param>
         /// <returns> Transaction hash in 32 byte array format. </returns>
-        public byte[] GetNthHash(int n)
-        {
+        public byte[] GetNthHash(int n) {
             var managedHash = new hash_t();
             MerkleBlockNative.kth_chain_merkle_block_hash_nth_out(nativeInstance_, (UIntPtr)n, ref managedHash);
             return managedHash.hash;
@@ -58,13 +56,11 @@ namespace Knuth
         /// </summary>
         /// <param name="version"> Protocol version to consider when calculating size. </param>
         /// <returns> Size in bytes. </returns>
-        public UInt64 GetSerializedSize(UInt32 version)
-        {
+        public UInt64 GetSerializedSize(UInt32 version) {
             return (UInt64)MerkleBlockNative.kth_chain_merkle_block_serialized_size(nativeInstance_, version);
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -72,21 +68,17 @@ namespace Knuth
         /// <summary>
         /// Delete all the data inside the block.
         /// </summary>
-        public void Reset()
-        {
+        public void Reset() {
             MerkleBlockNative.kth_chain_merkle_block_reset(nativeInstance_);
         }
 
-        internal MerkleBlock(IntPtr nativeInstance)
-        {
+        internal MerkleBlock(IntPtr nativeInstance) {
             nativeInstance_ = nativeInstance;
             header_ = new Header(MerkleBlockNative.kth_chain_merkle_block_header(nativeInstance_), false);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
                 header_.Dispose();
             }

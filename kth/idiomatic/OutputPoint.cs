@@ -17,8 +17,7 @@ namespace Knuth
         /// <summary>
         /// Create an empty output point.
         /// </summary>
-        public OutputPoint()
-        {
+        public OutputPoint() {
             NativeInstance = OutputPointNative.kth_chain_output_point_construct();
             ownsNativeObject_ = true;
         }
@@ -28,8 +27,7 @@ namespace Knuth
         /// </summary>
         /// <param name="pointHash"></param>
         /// <param name="index"></param>
-        public OutputPoint(byte[] pointHash, UInt32 index)
-        {
+        public OutputPoint(byte[] pointHash, UInt32 index) {
             var managedHash = new hash_t
             {
                 hash = pointHash
@@ -38,8 +36,7 @@ namespace Knuth
             ownsNativeObject_ = true;
         }
 
-        ~OutputPoint()
-        {
+        ~OutputPoint() {
             Dispose(false);
         }
 
@@ -61,29 +58,24 @@ namespace Knuth
         /// </summary>
         public UInt32 Index => OutputPointNative.kth_chain_output_point_get_index(NativeInstance);
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        internal OutputPoint(IntPtr nativeInstance, bool ownsNativeObject = false)
-        {
+        internal OutputPoint(IntPtr nativeInstance, bool ownsNativeObject = false) {
             NativeInstance = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
         }
 
         internal IntPtr NativeInstance { get; }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            if(ownsNativeObject_)
-            {
+            if (ownsNativeObject_) {
                 OutputPointNative.kth_chain_output_point_destruct(NativeInstance);
             }
         }

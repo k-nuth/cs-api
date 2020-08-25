@@ -16,8 +16,7 @@ namespace Knuth
         private readonly bool ownsNativeObject_;
         private readonly IntPtr nativeInstance_;
 
-        ~Header()
-        {
+        ~Header() {
             Dispose(false);
         }
 
@@ -73,8 +72,7 @@ namespace Knuth
         {
             get
             {
-                using ( var proofString = new NativeString(HeaderNative.kth_chain_header_proof_str(nativeInstance_)) )
-                {
+                using ( var proofString = new NativeString(HeaderNative.kth_chain_header_proof_str(nativeInstance_)) ) {
                     return proofString.ToString();
                 }
             }
@@ -116,27 +114,22 @@ namespace Knuth
             set => HeaderNative.kth_chain_header_set_version(nativeInstance_, value);
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        internal Header(IntPtr nativeInstance, bool ownsNativeMem = true)
-        {
+        internal Header(IntPtr nativeInstance, bool ownsNativeMem = true) {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeMem;
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            if(ownsNativeObject_)
-            {
+            if (ownsNativeObject_) {
                 //Logger.Log("Destroying header " + nativeInstance_.ToString("X"));
                 HeaderNative.kth_chain_header_destruct(nativeInstance_);
                 //Logger.Log("Header " + nativeInstance_.ToString("X") + " destroyed!");

@@ -10,7 +10,7 @@ namespace Knuth.Native
     internal static class Platform
     {
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern void platform_free(IntPtr nativePtr);
+        public static extern void kth_platform_free(IntPtr nativePtr);
     }
 
 }

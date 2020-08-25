@@ -14,8 +14,7 @@ namespace Knuth
     {
         private IntPtr nativeInstance_;
 
-        ~CompactBlock()
-        {
+        ~CompactBlock() {
             Dispose(false);
         }
 
@@ -39,8 +38,7 @@ namespace Knuth
         /// </summary>
         /// <param name="n"> Zero-based index </param>
         /// <returns> Full transaction object </returns>
-        public Transaction GetNthTransaction(UInt64 n)
-        {
+        public Transaction GetNthTransaction(UInt64 n) {
             return new Transaction(CompactBlockNative.kth_chain_compact_block_transaction_nth(nativeInstance_, n), false);
         }
 
@@ -49,13 +47,11 @@ namespace Knuth
         /// </summary>
         /// <param name="version"> Protocol version to consider when calculating size. </param>
         /// <returns> Size in bytes. </returns>
-        public UInt64 GetSerializedSize(UInt32 version)
-        {
+        public UInt64 GetSerializedSize(UInt32 version) {
             return CompactBlockNative.kth_chain_compact_block_serialized_size(nativeInstance_, version);
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -63,20 +59,16 @@ namespace Knuth
         /// <summary>
         /// TODO: Document
         /// </summary>
-        public void Reset()
-        {
+        public void Reset() {
             CompactBlockNative.kth_chain_compact_block_reset(nativeInstance_);
         }
 
-        internal CompactBlock(IntPtr nativeInstance)
-        {
+        internal CompactBlock(IntPtr nativeInstance) {
             nativeInstance_ = nativeInstance;
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources

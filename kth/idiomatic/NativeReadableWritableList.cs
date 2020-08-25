@@ -12,15 +12,12 @@ namespace Knuth
     /// Abstract class to represent lists of native objects
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class NativeReadableWritableList<T> : NativeReadableList<T>
-    {
-        protected NativeReadableWritableList()
-        {
+    public abstract class NativeReadableWritableList<T> : NativeReadableList<T> {
+        protected NativeReadableWritableList() {
             nativeInstance_ = CreateNativeList();
         }
 
-        protected NativeReadableWritableList(IntPtr nativeInstance):base(nativeInstance)
-        {
+        protected NativeReadableWritableList(IntPtr nativeInstance):base(nativeInstance) {
             
         }
         
@@ -31,8 +28,7 @@ namespace Knuth
         /// Element to add; it is added at the end of the list
         /// </summary>
         /// <param name="element"></param>
-        public void Add(T element)
-        {
+        public void Add(T element) {
             AddElement(element);
         }
     }

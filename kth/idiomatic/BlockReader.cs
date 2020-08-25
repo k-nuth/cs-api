@@ -15,18 +15,15 @@ namespace Knuth
     {
         private IntPtr nativeInstance_;
 
-        public BlockReader()
-        {
+        public BlockReader() {
             nativeInstance_ = GetBlocksNative.kth_chain_get_blocks_construct_default();
         }
 
-        public BlockReader(HashList start, byte[] stop)
-        {
+        public BlockReader(HashList start, byte[] stop) {
             nativeInstance_ = GetBlocksNative.kth_chain_get_blocks_construct(start.NativeInstance, stop);
         }
 
-        ~BlockReader()
-        {
+        ~BlockReader() {
             Dispose(false);
         }
 
@@ -76,13 +73,11 @@ namespace Knuth
         /// </summary>
         /// <param name="version"> Protocol version to consider when calculating block size. </param>
         /// <returns> UInt64 representation of the sum </returns>
-        public UInt64 GetSerializedSize(UInt32 version)
-        {
+        public UInt64 GetSerializedSize(UInt32 version) {
             return GetBlocksNative.kth_chain_get_blocks_serialized_size(nativeInstance_, version);
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -90,15 +85,12 @@ namespace Knuth
         /// <summary>
         /// Go back to the beginning of the block set.
         /// </summary>
-        public void Reset()
-        {
+        public void Reset() {
             GetBlocksNative.kth_chain_get_blocks_reset(nativeInstance_);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources

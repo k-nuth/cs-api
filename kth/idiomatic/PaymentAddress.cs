@@ -19,20 +19,17 @@ namespace Knuth
         /// Create an address from its hex string representation.
         /// </summary>
         /// <param name="hexString"></param>
-        public PaymentAddress(string hexString)
-        {
+        public PaymentAddress(string hexString) {
             nativeInstance_ = PaymentAddressNative.kth_wallet_payment_address_construct_from_string(hexString);
             ownsNativeObject_ = true;
         }
 
-        internal PaymentAddress(IntPtr nativeInstance)
-        {
+        internal PaymentAddress(IntPtr nativeInstance) {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = false;
         }
 
-        ~PaymentAddress()
-        {
+        ~PaymentAddress() {
             Dispose(false);
         }
 
@@ -53,8 +50,7 @@ namespace Knuth
         {
             get
             {
-                using ( var addressString = new NativeString(PaymentAddressNative.kth_wallet_payment_address_encoded(nativeInstance_)) )
-                {
+                using ( var addressString = new NativeString(PaymentAddressNative.kth_wallet_payment_address_encoded(nativeInstance_)) ) {
                     return addressString.ToString();
                 }
             }
@@ -68,8 +64,7 @@ namespace Knuth
         /// for mainnet.
         /// </summary>
         /// <param name="includePrefix"> If and only if true, include cashaddr prefix (bchtest/bitcoincash) </param>
-        public string ToCashAddr(bool includePrefix)
-        {
+        public string ToCashAddr(bool includePrefix) {
             return SharpCashAddr.Converter.LegacyAddrToCashAddr(Encoded, includePrefix, out bool isP2PKH, out bool isMainnet);
         }
 
@@ -77,16 +72,14 @@ namespace Knuth
         /// (Only for BCH) Utility function for legacy-to-cashaddr conversion. 
         /// </summary>
         /// <param name="includePrefix"> If and only if true, include cashaddr prefix (bchtest/bitcoincash) </param>
-        public static string LegacyAddressToCashAddress(string legacyAddr, bool includePrefix)
-        {
+        public static string LegacyAddressToCashAddress(string legacyAddr, bool includePrefix) {
             return SharpCashAddr.Converter.LegacyAddrToCashAddr(legacyAddr, includePrefix, out bool isP2PKH, out bool isMainnet);
         }
 
         /// <summary>
         /// (Only for BCH) Utility function for cashaddr-to-legacy conversion. 
         /// </summary>
-        public static string CashAddressToLegacyAddress(string cashAddr)
-        {
+        public static string CashAddressToLegacyAddress(string cashAddr) {
             return SharpCashAddr.Converter.CashAddrToLegacyAddr(cashAddr, out bool isP2PKH, out bool isMainnet);
         }
 
@@ -98,16 +91,13 @@ namespace Knuth
         /// <param name="hex"> For BCH, it can be in cashaddr format, with or without prefix. </param>
         /// <param name="address"> If parsing fails (invalid address), this will be null; otherwise, it
         /// will contain a newly created PaymentAdress instance. </param>
-        public static bool TryParse(string hex, out PaymentAddress address)
-        {
-            if(string.IsNullOrWhiteSpace(hex))
-            {
+        public static bool TryParse(string hex, out PaymentAddress address) {
+            if (string.IsNullOrWhiteSpace(hex)) {
                 address = null;
                 return false;
             }
             address = new PaymentAddress(hex);
-            if( !address.IsValid )
-            {
+            if ( !address.IsValid ) {
                 address.Dispose();
                 address = null;
                 return false;
@@ -115,23 +105,19 @@ namespace Knuth
             return true;
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         internal IntPtr NativeInstance => nativeInstance_;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            if (ownsNativeObject_)
-            {
+            if (ownsNativeObject_) {
                 PaymentAddressNative.kth_wallet_payment_address_destruct(nativeInstance_);
             }
         }

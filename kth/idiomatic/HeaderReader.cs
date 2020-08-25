@@ -18,8 +18,7 @@ namespace Knuth
         /// <summary>
         /// Create an empty reader.
         /// </summary>
-        public HeaderReader()
-        {
+        public HeaderReader() {
             nativeInstance_ = GetHeadersNative.kth_chain_get_headers_construct_default();
         }
 
@@ -28,13 +27,11 @@ namespace Knuth
         /// </summary>
         /// <param name="start"> When all of these blocks are synced, start reading. </param>
         /// <param name="stop"> Stop at this block. </param>
-        public HeaderReader(HashList start, byte[] stop)
-        {
+        public HeaderReader(HashList start, byte[] stop) {
             nativeInstance_ = GetHeadersNative.kth_chain_get_headers_construct(start.NativeInstance, stop);
         }
 
-        ~HeaderReader()
-        {
+        ~HeaderReader() {
             Dispose(false);
         }
 
@@ -84,16 +81,14 @@ namespace Knuth
         /// </summary>
         /// <param name="version"> Protocol version to consider when calculating header size. </param>
         /// <returns> Sum of header sizes. </returns>
-        public UInt64 GetSerializedSize(UInt32 version)
-        {
+        public UInt64 GetSerializedSize(UInt32 version) {
             return GetHeadersNative.kth_chain_get_headers_serialized_size(nativeInstance_, version);
         }
 
         /// <summary>
         /// Release resources.
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -101,20 +96,16 @@ namespace Knuth
         /// <summary>
         /// Go back to first block in the set.
         /// </summary>
-        public void Reset()
-        {
+        public void Reset() {
             GetHeadersNative.kth_chain_get_headers_reset(nativeInstance_);
         }
 
-        internal HeaderReader(IntPtr nativeInstance)
-        {
+        internal HeaderReader(IntPtr nativeInstance) {
             nativeInstance_ = nativeInstance;
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources

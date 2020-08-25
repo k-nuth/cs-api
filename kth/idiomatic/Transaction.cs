@@ -19,8 +19,7 @@ namespace Knuth
         /// <summary>
         /// Create an empty tramsaction.
         /// </summary>
-        public Transaction()
-        {
+        public Transaction() {
             nativeInstance_ = TransactionNative.kth_chain_transaction_construct_default();
             ownsNativeObject_ = true;
         }
@@ -30,8 +29,7 @@ namespace Knuth
         /// </summary>
         /// <param name="version">Transaction protocol version. </param>
         /// <param name="hexString">Raw transaction in hex</param>
-        public Transaction(UInt32 version, string hexString)
-        {
+        public Transaction(UInt32 version, string hexString) {
             //the raw tx is already reversed
             byte[] array = Binary.HexStringToByteArray(hexString,false);
             nativeInstance_ = TransactionNative.kth_chain_transaction_factory_from_data(version,array,(UInt64)array.Length);
@@ -45,8 +43,7 @@ namespace Knuth
         /// <param name="locktime"> Transaction locktime. </param>
         /// <param name="inputs"> A list with all the transaction inputs. </param>
         /// <param name="outputs"> A list with all the transaction outputs. </param>
-        public Transaction(UInt32 version, UInt32 locktime, InputList inputs, OutputList outputs)
-        {
+        public Transaction(UInt32 version, UInt32 locktime, InputList inputs, OutputList outputs) {
             nativeInstance_ = TransactionNative.kth_chain_transaction_construct
             (
                 version, locktime, inputs.NativeInstance, outputs.NativeInstance
@@ -54,19 +51,16 @@ namespace Knuth
             ownsNativeObject_ = true;
         }
 
-        internal Transaction(IntPtr nativeInstance, bool ownsNativeObject = true)
-        {
+        internal Transaction(IntPtr nativeInstance, bool ownsNativeObject = true) {
             nativeInstance_ = nativeInstance;
             ownsNativeObject_ = ownsNativeObject;
         }
 
-        ~Transaction()
-        {
+        ~Transaction() {
             Dispose(false);
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -229,13 +223,10 @@ namespace Knuth
         /// <summary>
         /// Amount of signature operations in the transaction.
         /// </summary>
-        public UInt64 SignatureOperations
-        {
-            get
-            {
-                return TransactionNative.kth_chain_transaction_signature_operations(nativeInstance_);
-            }
-        }
+        // TODO(fernando): we are using kth_chain_transaction_signature_operations_bip16_active until https://github.com/k-nuth/kth/issues/38 be fixed
+        // public UInt64 SignatureOperations => TransactionNative.kth_chain_transaction_signature_operations(nativeInstance_);
+        public UInt64 SignatureOperations => TransactionNative.kth_chain_transaction_signature_operations_bip16_active(nativeInstance_, Helper.BoolToC(true));
+
 
         /// <summary>
         /// Sum of every input value in the transaction.
@@ -264,8 +255,7 @@ namespace Knuth
         /// </summary>
         /// <param name="sigHashType"> Sighash type. </param>
         /// <returns> Hash and sighash type. </returns>
-        public byte[] GetHashBySigHashType(UInt32 sigHashType)
-        {
+        public byte[] GetHashBySigHashType(UInt32 sigHashType) {
             var managedHash = new hash_t();
             TransactionNative.kth_chain_transaction_hash_sighash_type_out(nativeInstance_, sigHashType, ref managedHash);
             return managedHash.hash;
@@ -277,9 +267,8 @@ namespace Knuth
         /// </summary>
         /// <param name="includeUnconfirmed"> Iif true, consider unconfirmed transactions. </param>
         /// <returns> True if and only if transaction is double spend. </returns>
-        public bool IsDoubleSpend(bool includeUnconfirmed)
-        {
-            return TransactionNative.kth_chain_transaction_is_double_spend(nativeInstance_, includeUnconfirmed ? 1 : 0) != 0;
+        public bool IsDoubleSpend(bool includeUnconfirmed) {
+            return TransactionNative.kth_chain_transaction_is_double_spend(nativeInstance_, Helper.BoolToC(includeUnconfirmed)) != 0;
         }
 
         /// <summary>
@@ -289,8 +278,7 @@ namespace Knuth
         /// <param name="blockHeight"></param>
         /// <param name="blockTime"></param>
         /// <returns></returns>
-        public bool IsFinal(UInt64 blockHeight, UInt32 blockTime)
-        {
+        public bool IsFinal(UInt64 blockHeight, UInt32 blockTime) {
             return TransactionNative.kth_chain_transaction_is_final(nativeInstance_, blockHeight, blockTime) != 0;
         }
 
@@ -300,8 +288,7 @@ namespace Knuth
         /// </summary>
         /// <param name="targetHeight"></param>
         /// <returns></returns>
-        public bool IsImmature(UInt64 targetHeight)
-        {
+        public bool IsImmature(UInt64 targetHeight) {
             return TransactionNative.kth_chain_transaction_is_immature(nativeInstance_, targetHeight) != 0;
         }
 
@@ -310,8 +297,7 @@ namespace Knuth
         /// </summary>
         /// <param name="wire">Iif true, include data size at the beginning.</param>
         /// <returns>Byte array with transaction data.</returns>
-        public byte[] ToData(bool wire)
-        {
+        public byte[] ToData(bool wire) {
             int txSize = 0;
             var txData = new NativeBuffer(TransactionNative.kth_chain_transaction_to_data(nativeInstance_, wire? 1:0, ref txSize));
             return txData.CopyToManagedArray(txSize);
@@ -323,9 +309,8 @@ namespace Knuth
         /// <param name="wire"> If and only if true, size will
         /// include size of 'uint32' for storing spender output height </param>
         /// <returns> Size in bytes. </returns>
-        public UInt64 GetSerializedSize(bool wire = true)
-        {
-            return TransactionNative.kth_chain_transaction_serialized_size(nativeInstance_, wire ? 1 : 0);
+        public UInt64 GetSerializedSize(bool wire = true) {
+            return TransactionNative.kth_chain_transaction_serialized_size(nativeInstance_, Helper.BoolToC(wire));
         }
 
         /// <summary>
@@ -333,9 +318,8 @@ namespace Knuth
         /// </summary>
         /// <param name="bip16Active"> True if and only if BIP16 is active, false otherwise. </param>
         /// <returns></returns>
-        public UInt64 GetSignatureOperationsBip16Active(bool bip16Active)
-        {
-            return TransactionNative.kth_chain_transaction_signature_operations_bip16_active(nativeInstance_, bip16Active ? 1 : 0);
+        public UInt64 GetSignatureOperationsBip16Active(bool bip16Active) {
+            return TransactionNative.kth_chain_transaction_signature_operations_bip16_active(nativeInstance_, Helper.BoolToC(bip16Active));
         }
 
         internal IntPtr NativeInstance
@@ -346,15 +330,12 @@ namespace Knuth
             }
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
             //Release unmanaged resources
-            if(ownsNativeObject_)
-            {
+            if (ownsNativeObject_) {
                 //Logger.Log("Destroying transaction " + nativeInstance_.ToString("X") + " ...");
                 TransactionNative.kth_chain_transaction_destruct(nativeInstance_);
                 //Logger.Log("Transaction " + nativeInstance_.ToString("X") + " destroyed!");
