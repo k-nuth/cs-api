@@ -159,14 +159,16 @@ class Build : NukeBuild
 
         .Executes(() => {
 
+            // var branchName = AppVeyor.Environment.Repository.Branch;
+            var branchName = Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
+            var commitMessage = Environment.GetEnvironmentVariable("APPVEYOR_REPO_COMMIT_MESSAGE");
+
             Info($"Publish to nuget: {publishToNuget}");
             Info($"Commit message: {commitMessage}");
             // Info($"Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
             Info($"Branch name:" + branchName);
             Info($"Skip nuget: {skipNuget}"); 
 
-            // var branchName = AppVeyor.Environment.Repository.Branch;
-            var branchName = Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
             // if (branchName != "master") {
             //     skipNuget = "true";
             // }
@@ -174,8 +176,6 @@ class Build : NukeBuild
             if (branchName == "dev" && branchName.StartsWith("release-") && branchName.StartsWith("feature")) {
                 skipNuget = "true";
             }
-
-            var commitMessage = Environment.GetEnvironmentVariable("APPVEYOR_REPO_COMMIT_MESSAGE");
 
             Info($"Skip nuget: {skipNuget}"); 
 
