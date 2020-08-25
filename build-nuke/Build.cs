@@ -9,6 +9,7 @@ using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Utilities.Collections;
+using Nuke.Common.CI.AppVeyor;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
@@ -44,7 +45,7 @@ class Build : NukeBuild
         System.IO.File.WriteAllText(pathTarget, content);
     }
 
-    public static int Main () => Execute<Build>(x => x.Test);
+    public static int Main () => Execute<Build>(x => x.Compile);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
@@ -55,6 +56,15 @@ class Build : NukeBuild
 
     AbsolutePath TestsDirectory => RootDirectory / "tests";
     AbsolutePath OutputDirectory => RootDirectory / "output";
+    AbsolutePath NugetDirectory => OutputDirectory / "nuget";
+
+    [Parameter] string NugetApiUrl = "https://api.nuget.org/v3/index.json"; //default
+    [Parameter] string NugetApiKey;
+
+    // var publishToNuget = EnvironmentVariable("PUBLISH_TO_NUGET") ?? "false";
+    // var skipNuget = EnvironmentVariable("SKIP_NUGET") ?? "false";
+    string publishToNuget = Environment.GetEnvironmentVariable("PUBLISH_TO_NUGET") ?? "false";
+    string skipNuget = Environment.GetEnvironmentVariable("SKIP_NUGET") ?? "false";
 
     Target Clean => _ => _
         .Before(Restore)
@@ -70,13 +80,11 @@ class Build : NukeBuild
                 .SetProjectFile(Solution));
         });
 
-
-
     Target KnuthVersion => _ => _
         .Executes(() => {
             //TODO(fernando): march_id is hardcoded, see what to do.
-            UpdateConan("./kth-bch/build/Common.targets","BCH", "4fZKi37a595hP");
-            UpdateConan("./kth-btc/build/Common.targets","BTC", "4fZKi37a595hP");
+            UpdateConan("./kth-bch/build/Common.targets", "BCH", "4fZKi37a595hP");
+            UpdateConan("./kth-btc/build/Common.targets", "BTC", "4fZKi37a595hP");
         });
 
 
@@ -86,9 +94,6 @@ class Build : NukeBuild
         .DependsOn(KnuthVersion)
         .DependsOn(Restore)
         .Executes(() => {
-
-            Info("************************* Compile **************************************************");
-            Info("************************* Compile **************************************************");
 
             // Info($"GitVersion.AssemblySemVer:       {GitVersion.AssemblySemVer}");
             // Info($"GitVersion.AssemblySemFileVer:   {GitVersion.AssemblySemFileVer}");
@@ -108,11 +113,6 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() => {
 
-            Info("************************* TESTS **************************************************");
-            Info("************************* TESTS **************************************************");
-
-            // Info($"Solution: {Solution.GetProject("tests.bch")}");
-
             DotNetTest(s => s
                 // get the test project
                 .SetProjectFile(Solution.GetProject("tests.bch"))
@@ -131,7 +131,62 @@ class Build : NukeBuild
                 );
         });
 
+    Target Pack => _ => _
+        .DependsOn(Compile)
+        .Executes(() => {
+            DotNetPack(s => s
+                .SetProject(Solution.GetProject("kth-bch"))
+                .SetConfiguration(Configuration)
+                .EnableNoBuild()
+                .EnableNoRestore()
+                .SetDescription("Bitcoin full node as a C# library")
+                .SetPackageTags("bitcoin cash bch btc knuth kth blockchain c# cs dotnet .net")
+                .SetVersion(GitVersion.NuGetVersionV2)
+                .SetNoDependencies(true)
+                .SetOutputDirectory(NugetDirectory)
+                .SetAuthors("Knuth")
+                .SetPackageProjectUrl("https://github.com/k-nuth/cs-api")
+            );
+        });
 
+    Target Push => _ => _
+        .DependsOn(Pack)
+        .Requires(() => NugetApiUrl)
+        .Requires(() => NugetApiKey)
+        .Requires(() => Configuration.Equals(Configuration.Release))
+        // .Requires(() => AppVeyor.IsRunningAppVeyor)
+        .Requires(() => !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPVEYOR")))
+
+        .Executes(() => {
+
+            // var branchName = AppVeyor.Environment.Repository.Branch;
+            var branchName = Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
+            if (branchName != "master") {
+                skipNuget = "true";
+            }
+
+            var commitMessage = Environment.GetEnvironmentVariable("APPVEYOR_REPO_COMMIT_MESSAGE");
+
+            Info($"Publish to nuget: {publishToNuget}");
+            Info($"Skip nuget: {skipNuget}"); 
+            // Info($"Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
+            Info($"Commit message: {commitMessage}");
+            Info($"Branch name:" + branchName);
+
+            // if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]") && skipNuget == "false") {
+            if (publishToNuget == "true" && skipNuget == "false" && ! commitMessage.Contains("[skip nuget]")) {
+                GlobFiles(NugetDirectory, "*.nupkg")
+                    .NotEmpty()
+                    .Where(x => !x.EndsWith("symbols.nupkg"))
+                    .ForEach(x => {
+                        DotNetNuGetPush(s => s
+                            .SetTargetPath(x)
+                            .SetSource(NugetApiUrl)
+                            .SetApiKey(NugetApiKey)
+                        );
+                    });
+            }
+        });
 
 // Task("Test")
 //     .IsDependentOn("Build")
