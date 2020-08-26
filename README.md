@@ -12,6 +12,21 @@
 
 <p align="center"><img width="800px" src="docs/images/demo.png" /></p>
 
+Knuth C# API is a high performance implementation of the Bitcoin protocol focused on users requiring extra performance and flexibility. It is a Bitcoin node you can use as a library.
+
+## Prerequisites
+
+Knuth C# API is a wrapper over our C++ libraries, therefore in order to use the C# library we will need the toolchain to build the C++ libraries. Don't panic, you won't have to manually build our C++ libraries, you just have to provide some prerequisites, our build system will take care of the rest.
+
+* Python PIP package-management system 
+* Conan package manager, version 1.1.0 or newer. See [Conan Installation](http://docs.conan.io/en/latest/installation.html#install-with-pip-recommended).
+
+To speed up the compilation, we provide some pre-built C++ libraries for some common computer platforms, but case there are no pre-built binaries for your platform, our build system will automatically try to build from source code. In such a scenario, the following requirements must be added to the previous ones:
+
+* C++17 conforming compiler.
+* CMake building tool, version 3.8 or newer.
+
+
 Repository under construction, the first version will be released shortly.
 
 
