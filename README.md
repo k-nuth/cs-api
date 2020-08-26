@@ -21,7 +21,7 @@ Repository under construction, the first version will be released shortly.
 <!-- Links -->
 [badge.Travis]: https://travis-ci.org/k-nuth/cs-api.svg?branch=master
 <!-- [badge.Appveyor]: https://ci.appveyor.com/api/projects/status/github/k-nuth/cs-api?svg=true&branch=master -->
-[badge.Appveyor]: https://img.shields.io/appveyor/ci/k-nuth/cs-api.svg?style=flat-square&label=build&logo=appveyor&logoColor=white
+[badge.Appveyor]: https://img.shields.io/appveyor/ci/Knuth/cs-api.svg?style=flat-square&label=build&logo=appveyor&logoColor=white
 [badge.Cirrus]: https://api.cirrus-ci.com/github/k-nuth/cs-api.svg?branch=master
 [badge.version]: https://badge.fury.io/gh/k-nuth%2Fkth-cs-api.svg
 [badge.release]: https://img.shields.io/github/release/k-nuth/cs-api.svg
