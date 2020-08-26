@@ -33,8 +33,8 @@ Install and run Knuth is very easy:
 
 1. Create a new C# console project:
 ```
-$ mkdir KnuthHelloWorld
-$ cd KnuthHelloWorld
+$ mkdir HelloKnuth
+$ cd HelloKnuth
 $ dotnet new console
 ```
 
