@@ -29,8 +29,6 @@ To speed up the compilation, we provide some pre-built C++ libraries for some co
 
 ## Getting started
 
-Install and run Knuth is very easy:
-
 1. Create a new C# console project:
 ```
 $ mkdir HelloKnuth
