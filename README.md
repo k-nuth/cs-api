@@ -44,7 +44,7 @@ $ dotnet new console
 $ dotnet add package kth-bch
 ```
 
-3. Write some code:
+3. Edit `Program.cs` and write some code:
 
 4. Enjoy Knuth node as a C# library:
 
