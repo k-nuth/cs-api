@@ -1,6 +1,6 @@
 <img width="200px" src="https://github.com/k-nuth/cs-api/raw/master/docs/images/kth-purple.png" />
 
-# Knuth C# API
+# C# API
 
 > Bitcoin full node as a C# library
 
