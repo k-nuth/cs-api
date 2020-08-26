@@ -16,7 +16,7 @@ Knuth C# API is a high performance implementation of the Bitcoin protocol focuse
 
 ## Prerequisites
 
-Knuth C# API is a wrapper over our C++ libraries, therefore in order to use the C# library we will need the toolchain to build the C++ libraries. Don't panic, you won't have to manually build our C++ libraries, you just have to provide some prerequisites, our build system will take care of the rest.
+Knuth C# API is a wrapper over our [C++ libraries](https://github.com/k-nuth/node), therefore in order to use the C# library we will need the toolchain to build the C++ libraries. Don't panic, you won't have to manually build our C++ libraries, you just have to provide some prerequisites, our build system will take care of the rest.
 
 * [.NET Standard 2.0 compatible implementation](https://docs.microsoft.com/en-us/dotnet/standard/net-standard). We suggest [.Net Core 3.1](https://docs.microsoft.com/en-us/dotnet/core/install/).
 * [Python PIP package-management system](https://pip.pypa.io/en/stable/installing/).
