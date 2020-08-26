@@ -27,6 +27,33 @@ To speed up the compilation, we provide some pre-built C++ libraries for some co
 * CMake building tool, version 3.8 or newer.
 
 
+## Getting started
+
+Install and run Knuth is very easy:
+
+1. Create a new C# console project:
+```
+$ mkdir KnuthHelloWorld
+$ cd KnuthHelloWorld
+$ dotnet new console
+```
+
+2. Add a reference to our C# API package:
+
+```
+$ dotnet add package kth-bch
+```
+
+3. Write some code:
+
+4. Enjoy Knuth node as a C# library:
+
+```
+$ dotnet run
+```
+
+
+
 Repository under construction, the first version will be released shortly.
 
 
