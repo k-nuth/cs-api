@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Server Sent Event Sample</title>
+</head>
+<body>
+    <p>Open your web browser's console to see the eventing.</p>
+    <button id="middleware">Middleware</button>
+    <button id="controller">Controller</button>
+
+
+    <div id="height">0</div>
+
+
+    <script type="text/javascript">
+        var source;
+        
+        function listenForServerEvents(url) {
+            if (source) source.close();
+            
+            source = new EventSource(url);
+            
+            source.onmessage = function (event) {
+                console.log('onmessage: ' + event.data);
+                var res = event.data.split('|');
+                var height = res[0];
+                var timestamp = res[1];
+                document.getElementById("height").innerHTML = height;
+            };
+
+            source.onopen = function(event) {
+                console.log('onopen');
+            };
+
+            source.onerror = function(event) {
+                console.log('onerror');
+            };
+        }
+    
+        document.getElementById("middleware").addEventListener("click", function () {
+            listenForServerEvents("sse");
+        });
+        document.getElementById("controller").addEventListener("click", function () {
+            listenForServerEvents("api/sse");
+        });
+        listenForServerEvents('sse');
+    </script>
+</body>
