@@ -132,6 +132,7 @@ namespace Knuth {
             Launch(ec => {
                 completionSource.TrySetResult(ec);
             });
+            // await Task.Delay(100);   // Note: attempt to avoid deadlocks with C-API v0.4.3
             return await completionSource.Task;
         }
 
