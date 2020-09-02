@@ -9,13 +9,13 @@ namespace Knuth.Native.Config
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct BlockchainSettings {
-        public int cores;
+        public UInt32 cores;
         public bool priority;
         public float byte_fee_satoshis;
         public float sigop_fee_satoshis;
         public UInt64 minimum_output_satoshis;
-        public int notify_limit_hours;
-        public int reorganization_limit;
+        public UInt32 notify_limit_hours;
+        public UInt32 reorganization_limit;
         
         public UInt64 checkpoint_count;
         public IntPtr checkpoints;         //kth_checkpoint*
@@ -54,11 +54,10 @@ namespace Knuth.Native.Config
         public bool bip147;
 #endif //BCH
 
-    // #if defined(KTH_WITH_MEMPOOL)
+// #if defined(KTH_WITH_MEMPOOL)
         // UInt64 mempool_max_template_size;
         // UInt64 mempool_size_multiplier;
-    // #endif
-
+// #endif
     }
 
     public static class BlockchainSettingsNative

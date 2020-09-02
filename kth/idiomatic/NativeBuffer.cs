@@ -13,10 +13,10 @@ namespace Knuth
     /// is thrown, platform_free will be used to release it.
     /// Also, it prevents the user from forgetting to call platform_free.
     /// </summary>
-    internal class NativeBuffer : IDisposable{
+    internal class NativeBuffer : IDisposable {
         private IntPtr nativePtr_;
 
-        public NativeBuffer(IntPtr nativePtr){
+        public NativeBuffer(IntPtr nativePtr) {
             nativePtr_ = nativePtr;
         }
 
@@ -35,12 +35,8 @@ namespace Knuth
             GC.SuppressFinalize(this);
         }
 
-        protected IntPtr NativePtr
-        {
-            get
-            {
-                return nativePtr_;
-            }
+        protected IntPtr NativePtr {
+            get {return nativePtr_;}
         }
 
         protected virtual void Dispose(bool disposing) {

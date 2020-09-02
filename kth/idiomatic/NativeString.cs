@@ -12,10 +12,11 @@ namespace Knuth
     /// is thrown, platform_free will be used to release the native memory.
     /// Also, it prevents the user from forgetting to call platform_free.
     /// </summary>
-    internal class NativeString : NativeBuffer{
+    internal class NativeString : NativeBuffer {
 
-        public NativeString(IntPtr nativePtr) : base(nativePtr){
-        }
+        public NativeString(IntPtr nativePtr) 
+            : base(nativePtr) 
+        {}
 
         public override string ToString() => Marshal.PtrToStringAnsi(NativePtr);
 

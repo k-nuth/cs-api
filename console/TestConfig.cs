@@ -51,10 +51,29 @@ namespace console
             Console.WriteLine($"bch_axion:                {blockchainSettings.bch_axion}");
             Console.WriteLine($"axion_activation_time:    {blockchainSettings.axion_activation_time}");
             Console.WriteLine($"asert_half_life:          {blockchainSettings.asert_half_life}");
+
+            var dbSettings = Knuth.Native.Config.DatabaseSettingsNative.kth_config_database_settings_default(NetworkType.Mainnet);
+            Console.WriteLine($"directory:                {dbSettings.directory}");
+            Console.WriteLine($"flush_writes:             {dbSettings.flush_writes}");
+            Console.WriteLine($"file_growth_rate:         {dbSettings.file_growth_rate}");
+            Console.WriteLine($"index_start_height:       {dbSettings.index_start_height}");
+            Console.WriteLine($"reorg_pool_limit:         {dbSettings.reorg_pool_limit}");
+            Console.WriteLine($"db_max_size:              {dbSettings.db_max_size}");
+            Console.WriteLine($"safe_mode:                {dbSettings.safe_mode}");
+            Console.WriteLine($"cache_capacity:           {dbSettings.cache_capacity}");
         }        
+
         public static void Main(string[] args) {
             var blockSettings = Knuth.Config.BlockchainSettings.GetDefault(NetworkType.Mainnet);
             Console.WriteLine(blockSettings.Checkpoints.Count);
+
+            var netSettings = Knuth.Config.NetworkSettings.GetDefault(NetworkType.Mainnet);
+            Console.WriteLine(netSettings.Blacklists.Count);
+            Console.WriteLine(netSettings.Peers.Count);
+            Console.WriteLine(netSettings.Seeds.Count);
+            Console.WriteLine(netSettings.DebugFile);
+            Console.WriteLine(netSettings.ErrorFile);
+            Console.WriteLine(netSettings.UserAgentBlacklist.Count);
 
             TestNative();
         }

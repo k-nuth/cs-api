@@ -9,9 +9,9 @@ namespace Knuth.Native.Config
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct NodeSettings {
-        public int sync_peers;
-        public int sync_timeout_seconds;
-        public int block_latency_seconds;
+        public UInt32 sync_peers;
+        public UInt32 sync_timeout_seconds;
+        public UInt32 block_latency_seconds;
 
         [MarshalAs(UnmanagedType.Bool)]
         public bool refresh_transactions;

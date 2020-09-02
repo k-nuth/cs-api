@@ -14,13 +14,13 @@ namespace Knuth.Config
             return FromNative(native);
         }
 
-        public int Cores { get; set; }
+        public UInt32 Cores { get; set; }
         public bool Priority { get; set; }
         public float ByteFeeSatoshis { get; set; }
         public float SigopFeeSatoshis { get; set; }
         public UInt64 MinimumOutputSatoshis { get; set; }
-        public int NotifyLimitHours { get; set; }
-        public int ReorganizationLimit { get; set; }
+        public UInt32 NotifyLimitHours { get; set; }
+        public UInt32 ReorganizationLimit { get; set; }
         public IList<Checkpoint> Checkpoints { get; set; }
         public bool AllowCollisions { get; set; }
         public bool EasyBlocks { get; set; }
@@ -64,31 +64,6 @@ namespace Knuth.Config
             res.MinimumOutputSatoshis = native.minimum_output_satoshis;
             res.NotifyLimitHours = native.notify_limit_hours;
             res.ReorganizationLimit = native.reorganization_limit;
-            
-            // res.Checkpoints = native.checkpoints;
-
-
-            // InnerStruct[] iStructArray = new InnerStruct[count];
-            // int infoSize = Marshal.SizeOf(new iStructArray());
-            // for (int i = 0; i < count; i++)
-            // {
-            //     IntPtr targetPtr = new IntPtr(pIStruct.ToInt32() + infoSize * i);
-            //     iStructArray[i] = (InnerStruct)Marshal.PtrToStructure(targetPtr, typeof(InnerStruct));
-            // }            
-            
-
-            // var checks = new List<Checkpoint>();
-            // int infoSize = Marshal.SizeOf(new Native.Config.Checkpoint());
-            // int count = (int)native.checkpoint_count;
-            // IntPtr ptr = native.checkpoints;
-            // for (int i = 0; i < count; ++i) {
-            //     var mem = ptr.ToInt64() + infoSize * i;
-            //     IntPtr targetPtr = new IntPtr(mem);
-            //     var nativeCheckpoint = (Native.Config.Checkpoint)Marshal.PtrToStructure(targetPtr, typeof(Native.Config.Checkpoint));
-            //     var checkpoint = Checkpoint.FromNative(nativeCheckpoint);
-            //     checks.Add(checkpoint);
-            // }            
-
 
             res.Checkpoints = Helper.ArrayOfPointersToManaged<Checkpoint, Native.Config.Checkpoint>(native.checkpoints, native.checkpoint_count, Checkpoint.FromNative);
 

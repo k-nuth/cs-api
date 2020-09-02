@@ -13,13 +13,9 @@ namespace Knuth {
         }
 
         public static IList<TIdiomatic> ArrayOfPointersToManaged<TIdiomatic, TNative>(
-            IntPtr ptr, UInt64 count,
-            Func<TNative, TIdiomatic> converter
-        ) 
-            // where TNative : new()
-        {
+            IntPtr ptr, UInt64 count, Func<TNative, TIdiomatic> converter) {
             var res = new List<TIdiomatic>();
-            // int nativeStructSize = Marshal.SizeOf(new TNative());
+            res.Capacity = (int)count;
             int nativeStructSize = Marshal.SizeOf<TNative>();
             for (int i = 0; i < (int)count; ++i) {
                 var mem = ptr.ToInt64() + nativeStructSize * i;
@@ -30,5 +26,20 @@ namespace Knuth {
             }
             return res;     
         }
+
+        public static IList<string> ArrayOfStringsToManaged(IntPtr ptr, UInt64 count) {
+            var ptrArray = new IntPtr[count];
+            Marshal.Copy(ptr, ptrArray, 0, (int)count);
+            var res = new List<string>();
+            res.Capacity = (int)count;
+            for (int i = 0; i < (int)count; ++i) {
+                var str = Marshal.PtrToStringAnsi(ptrArray[i]);
+                res.Add(str);
+                // Marshal.FreeCoTaskMem(ptrArray[i]);
+            }
+            // Marshal.FreeCoTaskMem(ptr);
+            return res;     
+        }
+
     }
 }
