@@ -118,7 +118,7 @@ namespace Knuth {
         /// (i.e. Run or RunWait succeeded)
         /// </summary>
         public NetworkType NetworkType {
-            get { return NodeNative.kth_node_get_network(nativeInstance_); }
+            get { return NodeNative.kth_node_settings_get_network(nativeInstance_); }
         }
 
         /// <summary>

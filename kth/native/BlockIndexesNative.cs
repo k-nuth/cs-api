@@ -13,6 +13,8 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr kth_chain_block_indexes_construct_default();
 
+        //TODO(fernando): check everywhere for UIntPtr
+
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_block_indexes_push_back(IntPtr list, UIntPtr /*size_t*/ index);
 

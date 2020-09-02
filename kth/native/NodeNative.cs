@@ -70,8 +70,8 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern int /*bool*/ kth_node_stopped(IntPtr exec);
 
-        [DllImport(Constants.KTH_C_LIBRARY, EntryPoint = "node_settings_get_network")]
-        public static extern NetworkType kth_node_get_network(IntPtr node);
+        [DllImport(Constants.KTH_C_LIBRARY, EntryPoint = "kth_node_settings_get_network")]
+        public static extern NetworkType kth_node_settings_get_network(IntPtr node);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern int /*bool*/ kth_node_load_config_valid(IntPtr exec);

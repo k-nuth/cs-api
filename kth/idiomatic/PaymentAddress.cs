@@ -56,7 +56,7 @@ namespace Knuth
             }
         }
 
-        #if BCH
+#if BCH
 
         /// <summary>
         /// (Only for BCH) The native node only handles legacy addresses; this method
@@ -83,7 +83,7 @@ namespace Knuth
             return SharpCashAddr.Converter.CashAddrToLegacyAddr(cashAddr, out bool isP2PKH, out bool isMainnet);
         }
 
-        #endif
+#endif
 
         /// <summary>
         /// Try to parse a hex string which represents a payment address.
