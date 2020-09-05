@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Knuth {
     public static class Helper {
@@ -41,5 +42,33 @@ namespace Knuth {
             return res;     
         }
 
+
+        public static IntPtr ListToNative<TNative, TIdiomatic>(IList<TIdiomatic> list, 
+            Func<UInt64, IntPtr> allocator, Func<TIdiomatic, TNative> converter, ref UInt64 outCount) 
+        {
+            outCount = (UInt64)list.Count;
+            var buffer = allocator((UInt64)list.Count);
+
+            int nativeStructSize = Marshal.SizeOf<TNative>();
+
+            for (int i = 0; i < list.Count; ++i) {
+                var mem = buffer.ToInt64() + nativeStructSize * i;
+                var ptr = new IntPtr(mem);
+                var native = converter(list[i]);
+                Marshal.StructureToPtr(native, ptr, false);
+            }
+
+            return buffer;
+        }
+
+        public static IntPtr StringListToNative(IList<string> list, ref UInt64 outCount) {
+            outCount = (UInt64)list.Count;
+            var buffer = Native.Platform.kth_platform_allocate_array_of_strings((UInt64)list.Count);
+            for (int i = 0; i < list.Count; ++i) {
+                var str = list[i];
+                Native.Platform.kth_platform_allocate_and_copy_string_at(buffer, (UInt64)i, str);
+            }
+            return buffer;
+        }
     }
 }

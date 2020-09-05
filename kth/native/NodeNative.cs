@@ -37,10 +37,10 @@ namespace Knuth.Native
 
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr kth_node_construct_fd([MarshalAs(UnmanagedType.LPStr)]string path, int sout, int serr);
+        public static extern IntPtr kth_node_construct_fd(ref Knuth.Native.Config.Settings settings, int sout, int serr);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr kth_node_construct_handles([MarshalAs(UnmanagedType.LPStr)]string path, IntPtr sout, IntPtr serr);
+        public static extern IntPtr kth_node_construct_handles(ref Knuth.Native.Config.Settings settings, IntPtr sout, IntPtr serr);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_node_destruct(IntPtr exec);

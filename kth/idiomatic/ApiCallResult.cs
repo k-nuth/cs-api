@@ -10,6 +10,16 @@ namespace Knuth
     /// Represents a result of calling a native API method
     /// </summary>
     /// <typeparam name="TResultData">The Result's type</typeparam>
+    public class ApiCallResultWithMessage<TResultData> {
+        public bool Ok { get; set; }
+        public string ErrorMessage { get; set; }
+        public TResultData Result { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a result of calling a native API method
+    /// </summary>
+    /// <typeparam name="TResultData">The Result's type</typeparam>
     public class ApiCallResult<TResultData> {
         /// <summary>
         /// Status code returned by native api

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace Knuth.Config
 {
-    public struct BlockchainSettings {
+    public class BlockchainSettings {
         public static BlockchainSettings GetDefault(NetworkType network) {
             var native = Knuth.Native.Config.BlockchainSettingsNative.kth_config_blockchain_settings_default(network);
             return FromNative(native);
@@ -54,8 +54,54 @@ namespace Knuth.Config
         public bool Bip147 { get; set; }
 #endif //BCH
 
+        public Knuth.Native.Config.BlockchainSettings ToNative() {
+            var native = new Knuth.Native.Config.BlockchainSettings();
+            native.cores = this.Cores;
+            native.priority = this.Priority;
+            native.byte_fee_satoshis = this.ByteFeeSatoshis;
+            native.sigop_fee_satoshis = this.SigopFeeSatoshis;
+            native.minimum_output_satoshis = this.MinimumOutputSatoshis;
+            native.notify_limit_hours = this.NotifyLimitHours;
+            native.reorganization_limit = this.ReorganizationLimit;
 
-        private static BlockchainSettings FromNative(Knuth.Native.Config.BlockchainSettings native) {
+            native.checkpoints = Helper.ListToNative(this.Checkpoints, 
+                Knuth.Native.Config.CheckpointNative.kth_config_checkpoint_allocate_n,
+                x => x.ToNative(),
+                ref native.checkpoint_count);
+
+            native.allow_collisions = this.AllowCollisions;
+            native.easy_blocks = this.EasyBlocks;
+            native.retarget = this.Retarget;
+            native.bip16 = this.Bip16;
+            native.bip30 = this.Bip30;
+            native.bip34 = this.Bip34;
+            native.bip66 = this.Bip66;
+            native.bip65 = this.Bip65;
+            native.bip90 = this.Bip90;
+            native.bip68 = this.Bip68;
+            native.bip112 = this.Bip112;
+            native.bip113 = this.Bip113;
+
+#if BCH        //TODO(fernando): rename to CURRENCY_BCH or something like that
+            native.bch_uahf = this.BchUahf;
+            native.bch_daa_cw144 = this.BchDaaCw144;
+            native.bch_monolith = this.BchMonolith;
+            native.bch_magnetic_anomaly = this.BchMagneticAnomaly;
+            native.bch_great_wall = this.BchGreatWall;
+            native.bch_graviton = this.BchGraviton;
+            native.bch_phonon = this.BchPhonon;
+            native.bch_axion = this.BchAxion;
+            native.axion_activation_time = this.AxionActivationTime;
+            native.asert_half_life = this.AsertHalfLife;
+#else
+            native.bip141 = this.Bip141;
+            native.bip141 = this.Bip141;
+            native.bip147 = this.Bip147;
+#endif //BCH
+            return native;
+        }
+
+        public static BlockchainSettings FromNative(Knuth.Native.Config.BlockchainSettings native) {
             var res = new BlockchainSettings();
             res.Cores = native.cores;
             res.Priority = native.priority;

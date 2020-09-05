@@ -70,5 +70,8 @@ namespace Knuth.Native.Config
     {
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern NetworkSettings kth_config_network_settings_default(NetworkType network);
+
+        [DllImport(Constants.KTH_C_LIBRARY)]
+        public static extern void kth_config_network_settings_test_something(NetworkSettings settings);
     }
 }

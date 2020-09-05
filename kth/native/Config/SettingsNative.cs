@@ -9,22 +9,25 @@ namespace Knuth.Native.Config
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Settings {
-        public int sync_peers;
-        public int sync_timeout_seconds;
-        public int block_latency_seconds;
+        public Native.Config.NodeSettings node;
+        public Native.Config.BlockchainSettings chain;
+        public Native.Config.DatabaseSettings database;
+        public Native.Config.NetworkSettings network;
 
-        [MarshalAs(UnmanagedType.Bool)]
-        public bool refresh_transactions;
-        
-        [MarshalAs(UnmanagedType.Bool)]
-        public bool compact_blocks_high_bandwidth;
+        // kth_node_settings node;
+        // kth_blockchain_settings chain;
+        // kth_database_settings database;
+        // kth_network_settings network;        
     }
 
     public static class SettingsNative
     {
-        [DllImport(Constants.KTH_C_LIBRARY)]
+        // [DllImport(Constants.KTH_C_LIBRARY)]
         // public static extern NodeSettings kth_config_node_settings_default(NetworkType network);
-        public static extern NodeSettings kth_config_node_settings_default(int network);
+
+        // [DllImport(Constants.KTH_C_LIBRARY, CharSet=Constants.KTH_OS_CHARSET)]
+        [DllImport(Constants.KTH_C_LIBRARY, CharSet=CharSet.Ansi)]
+        public static extern Settings kth_config_settings_get_from_file(string path, out bool ok, out string error_message);
 
     }
 }

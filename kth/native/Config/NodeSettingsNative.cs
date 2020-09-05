@@ -22,11 +22,7 @@ namespace Knuth.Native.Config
 
     public static class NodeSettingsNative
     {
-        // kth_node_settings kth_config_node_settings_default(kth_network_t network);
-
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern NodeSettings kth_config_node_settings_default(NetworkType network);
-        // public static extern NodeSettings kth_config_node_settings_default(int network);
-
     }
 }

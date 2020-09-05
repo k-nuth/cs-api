@@ -22,6 +22,10 @@
     <DefineConstants>$(DefineConstants);BCH</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <DefineConstants>$(DefineConstants);_NOT_WINDOWS</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
       <Compile Include="..\kth\**/*.cs" />
       <None Include="..\kth\docs\Doxyfile" Link="docs\Doxyfile" /> 

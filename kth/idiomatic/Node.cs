@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Knuth.Logging;
 using Knuth.Native;
+using Knuth.Config;
 
 namespace Knuth {
     /// <summary>
@@ -54,15 +55,16 @@ namespace Knuth {
         /// <summary>
         /// Create node object. Does not init database or start execution yet.
         /// </summary>
-        /// <param name="configFile"> Path to configuration file. </param>
+        /// <param name="settings"> Settings object. </param>
         /// <param name="showNodeLog"> Print Native node stdout and stderr. </param>
-        public Node(string configFile, bool showNodeLog = false) 
+        public Node(Settings settings, bool showNodeLog = false) 
             : this() 
         {
+            var native = settings.ToNative();
             if (showNodeLog) {
-                nativeInstance_ = NodeNative.kth_node_construct_fd(configFile, 0, 0);
+                nativeInstance_ = NodeNative.kth_node_construct_fd(ref native, 0, 0);
             } else {
-                nativeInstance_ = NodeNative.kth_node_construct_fd(configFile, -1, -1);
+                nativeInstance_ = NodeNative.kth_node_construct_fd(ref native, -1, -1);
             }
         }
 
@@ -80,13 +82,15 @@ namespace Knuth {
         /// <summary>
         /// Create node. Does not init database or start execution yet.
         /// </summary>
-        /// <param name="configFile"> Path to configuration file. </param>
+        /// <param name="settings"> Settings object. </param>
         /// <param name="stdOut"> Handle for redirecting standard output. </param>
         /// <param name="stdErr"> Handle for redirecting standard output. </param>
-        public Node(string configFile, IntPtr stdOut, IntPtr stdErr) 
+        public Node(Settings settings, IntPtr stdOut, IntPtr stdErr) 
             : this() 
         {
-            nativeInstance_ = NodeNative.kth_node_construct_handles(configFile, stdOut, stdErr);
+            //TODO(fernando): free the memory of the native object
+            var native = settings.ToNative();
+            nativeInstance_ = NodeNative.kth_node_construct_handles(ref native, stdOut, stdErr);
         }
 
         ~Node() {

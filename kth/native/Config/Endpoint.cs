@@ -8,15 +8,17 @@ using System.Runtime.InteropServices;
 namespace Knuth.Native.Config
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct Checkpoint {
-        public hash_t hash;
-        public UInt64 height;
-
+    public struct Endpoint {
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string scheme;
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string host;
+        public UInt16 port;
     }
 
-    public static class CheckpointNative
+    public static class EndpointNative
     {
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr kth_config_checkpoint_allocate_n(UInt64 n);
-    }       
+        public static extern IntPtr kth_config_endpoint_allocate_n(UInt64 n);
+    }
 }

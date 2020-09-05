@@ -6,9 +6,16 @@ using System;
 
 namespace Knuth.Config
 {
-    public struct Checkpoint {
+    public class Checkpoint {
         public byte[] Hash { get; set; }
         public UInt64 Height { get; set; }
+
+        public Knuth.Native.Config.Checkpoint ToNative() {
+            var native = new Knuth.Native.Config.Checkpoint();
+            native.height = this.Height;
+            native.hash.hash = this.Hash;
+            return native;
+        }
 
         public static Checkpoint FromNative(Knuth.Native.Config.Checkpoint native) {
             var res = new Checkpoint();
