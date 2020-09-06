@@ -170,12 +170,6 @@ namespace Knuth {
         public bool IsStopped => NodeNative.kth_node_stopped(nativeInstance_) != 0;
 
         /// <summary>
-        /// Returns true if and only if and only if the config file is valid
-        /// </summary>
-        public bool IsLoadConfigValid => NodeNative.kth_node_load_config_valid(nativeInstance_) != 0;
-
-
-        /// <summary>
         /// Be notified (called back) when the local copy of the blockchain is reorganized.
         /// </summary>
         /// <param name="handler"> Callback which will be called when blocks are added or removed.

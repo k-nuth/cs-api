@@ -9,16 +9,14 @@ namespace Knuth.Tests {
     public class NodeTest {
         [Fact]
         public void TestConfigValid() {
-            using (var node = new Node("config/valid.cfg")) {
-                Assert.True(node.IsLoadConfigValid); 
-            }
+            var config = Knuth.Config.Settings.GetFromFile("config/valid.cfg");
+            Assert.True(config.Ok);
         }
 
         [Fact]
         public void TestConfigInvalid() {
-            using (var node = new Node("config/invalid.cfg")) {
-                Assert.False(node.IsLoadConfigValid); 
-            }
+            var config = Knuth.Config.Settings.GetFromFile("config/invalid.cfg");
+            Assert.False(config.Ok);
         }
     }
 }
