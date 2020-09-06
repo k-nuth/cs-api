@@ -7,7 +7,8 @@ using System;
 namespace Knuth.Tests {
     public class NodeFixture : IDisposable {
         public NodeFixture() {
-            Node = new Node("config/mainnet.cfg");
+            var config = Knuth.Config.Settings.GetFromFile("config/mainnet.cfg");
+            Node = new Node(config.Result);
             var res = Node.LaunchAsync().GetAwaiter().GetResult();
             if (res != ErrorCode.Success) {
                 throw new InvalidOperationException("Node::LaunchAsync failed, check log");
