@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants);BCH</DefineConstants>
+    <DefineConstants>$(DefineConstants);KTH_CS_CURRENCY_BCH</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
