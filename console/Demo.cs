@@ -10,7 +10,9 @@ namespace console
 {
     public class Program {
         static async Task Main(string[] args) {
-            var config = Knuth.Config.Settings.GetFromFile("/home/fernando/dev/kth/cs-api/console/node.cfg");
+            
+            // var config = Knuth.Config.Settings.GetFromFile("/home/fernando/dev/kth/cs-api/console/node.cfg");
+            var config = Knuth.Config.Settings.GetFromFile("/Users/fernando/dev/kth/cs-api/console/node_macos.cfg");
 
             if ( ! config.Ok) {
                 Console.WriteLine(config.ErrorMessage);
