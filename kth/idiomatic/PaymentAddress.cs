@@ -56,7 +56,7 @@ namespace Knuth
             }
         }
 
-#if BCH
+#if KTH_CS_CURRENCY_BCH
 
         /// <summary>
         /// (Only for BCH) The native node only handles legacy addresses; this method
@@ -82,7 +82,6 @@ namespace Knuth
         public static string CashAddressToLegacyAddress(string cashAddr) {
             return SharpCashAddr.Converter.CashAddrToLegacyAddr(cashAddr, out bool isP2PKH, out bool isMainnet);
         }
-
 #endif
 
         /// <summary>
