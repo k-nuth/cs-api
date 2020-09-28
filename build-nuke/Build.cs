@@ -84,7 +84,7 @@ class Build : NukeBuild
         .Executes(() => {
             //TODO(fernando): march_id is hardcoded, see what to do.
             UpdateConan("./kth-bch/build/Common.targets", "BCH", "4fZKi37a595hP");
-            UpdateConan("./kth-btc/build/Common.targets", "BTC", "4fZKi37a595hP");
+            // UpdateConan("./kth-btc/build/Common.targets", "BTC", "4fZKi37a595hP");
         });
 
 
@@ -193,56 +193,4 @@ class Build : NukeBuild
                     });
             }
         });
-
-// Task("Test")
-//     .IsDependentOn("Build")
-//     .Does(() => {
-
-//          var settings = new DotNetCoreTestSettings
-//             {
-//                 ArgumentCustomization = args=> args.Append(platform + " -f netcoreapp2.0"),
-//                 Configuration = configuration
-//             };
-
-//         DotNetCoreTest("./tests/bch", settings);
-//         DotNetCoreTest("./tests/btc", settings);
-//     });
-
 }
-
-
-
-
-    // string version = null;
-    // Target Version => _ => _
-    //     .Executes(() => {
-    //         Info("Running python get_version.py");
-
-    //         // var process = StartProcess("python", "xunit " +
-    //         //                             "-nobuild " +
-    //         //                             $"-xml {testFile.DoubleQuoteIfNeeded()}",
-    //         //         workingDirectory: projectDirectory)
-    //         //     .AssertWaitForExit();
-
-
-    //         // using(var process = StartProcess("python", new ToolSettings {Arguments = "get_version.py", RedirectOutput = true })
-    //         //         .AssertWaitForExit()) {
-
-    //         using(var process = StartProcess("python", "get_version.py", null, null, null, true, false, null, null)
-    //                 .AssertWaitForExit()) {
-
-    //             Info($"python get_version.py exit code: {process.ExitCode}");
-
-    //             var output = process.Output;
-    //             foreach (var o in output) {
-    //                 Info($"o: {o.Text}");
-    //                 version = o.Text;
-    //                 break;
-    //             }
-    //         }
-    //         Info($"Version calculated: {version}");
-
-    //         // Info("Version calculated: " + versionInfo.MajorMinorPatch);
-    //         // Info("Version Nuget calculated: " + versionInfo.NuGetVersion);
-    //     });
-
