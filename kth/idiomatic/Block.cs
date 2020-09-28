@@ -127,10 +127,6 @@ namespace Knuth
         // public UInt64 SignatureOperations => BlockNative.kth_chain_block_signature_operations(nativeInstance_);
         public UInt64 SignatureOperations => BlockNative.kth_chain_block_signature_operations_bip16_active(nativeInstance_, Helper.BoolToC(true));
 
-        /// <summary>
-        /// The total amount of transactions that the block contains.
-        /// </summary>
-        public UInt64 TransactionCount => BlockNative.kth_chain_block_transaction_count(nativeInstance_);
 
         /// <summary>
         /// Returns true if and only if every transaction in the block is final or not.
@@ -171,13 +167,29 @@ namespace Knuth
         }
 
         /// <summary>
+        /// The total amount of transactions that the block contains.
+        /// </summary>
+        // public UInt64 TransactionCount => BlockNative.kth_chain_block_transaction_count(nativeInstance_);
+        public UInt64 TransactionCount {
+            get {
+                var nativeTransactionList = BlockNative.kth_chain_block_transactions(nativeInstance_);
+                var count = TransactionListNative.kth_chain_transaction_list_count(nativeTransactionList);
+                return count;
+            }
+        }
+
+        /// <summary>
         /// Given a position in the block, returns the corresponding transaction.
         /// </summary>
         /// <param name="n"> Zero-based index </param>
         /// <returns> Full transaction object </returns>
         public ITransaction GetNthTransaction(UInt64 n) {
-            return new Transaction(BlockNative.kth_chain_block_transaction_nth(nativeInstance_, (UIntPtr)n), false);
+            // return new Transaction(BlockNative.kth_chain_block_transaction_nth(nativeInstance_, (UIntPtr)n), false);
+            var nativeTransactionList = BlockNative.kth_chain_block_transactions(nativeInstance_);
+            return new Transaction(TransactionListNative.kth_chain_transaction_list_nth(nativeTransactionList, n), false);
         }
+
+        
 
         /// <summary>
         /// The block subsidy. It's the same value for all blocks.
