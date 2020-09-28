@@ -56,8 +56,14 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr kth_chain_block_header(IntPtr block);
 
+        // [DllImport(Constants.KTH_C_LIBRARY)]
+        // public static extern UInt64 kth_chain_block_transaction_count(IntPtr block);
+
+        // [DllImport(Constants.KTH_C_LIBRARY)]
+        // public static extern IntPtr kth_chain_block_transaction_nth(IntPtr block, UIntPtr n);
+
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr kth_chain_block_transaction_nth(IntPtr block, UIntPtr n);
+        public static extern IntPtr kth_chain_block_transactions(IntPtr block);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern UInt64 kth_chain_block_claim(IntPtr block);
@@ -82,9 +88,6 @@ namespace Knuth.Native
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern UInt64 kth_chain_block_total_inputs(IntPtr block, int /*bool*/ with_coinbase /*= true*/);
-
-        [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern UInt64 kth_chain_block_transaction_count(IntPtr block);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_block_destruct(IntPtr block);
