@@ -67,7 +67,6 @@ namespace Knuth.Tests {
             Assert.Equal("[304402204e45e16932b8af514961a1d3a1a25fdf3f4f7732e9d624c6c61548ab5fb8cd410220181522ec8eca07de4860a4acdd12909d831cc56cbbac4622082221a8768d1d0901]", script.ToString(0));
         }
 
-
         private void CheckFirstNonCoinbaseTxFromHeight170Outputs(ITransaction tx) {
             Assert.Equal(2UL, tx.Outputs.Count);
             Assert.Equal(5000000000UL, tx.TotalOutputValue);
