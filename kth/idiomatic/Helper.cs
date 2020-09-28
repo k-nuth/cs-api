@@ -29,9 +29,13 @@ namespace Knuth {
         }
 
         public static IList<string> ArrayOfStringsToManaged(IntPtr ptr, UInt64 count) {
+            var res = new List<string>();
+            if (count == 0) {
+                return res;
+            }
+
             var ptrArray = new IntPtr[count];
             Marshal.Copy(ptr, ptrArray, 0, (int)count);
-            var res = new List<string>();
             res.Capacity = (int)count;
             for (int i = 0; i < (int)count; ++i) {
                 var str = Marshal.PtrToStringAnsi(ptrArray[i]);
