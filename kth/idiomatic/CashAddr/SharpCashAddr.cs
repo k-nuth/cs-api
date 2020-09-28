@@ -1,4 +1,4 @@
-#if BCH
+#if KTH_CS_CURRENCY_BCH
 
 using System;
 using System.Collections.Generic;
