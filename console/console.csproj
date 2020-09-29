@@ -29,8 +29,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <!-- <Target Name="CopyNativeLib" AfterTargets="Build">
-    <Copy SourceFiles="libkth-c-api.so" DestinationFiles="$(OutDir)libkth-c-api.so" Condition="Exists('libkth-c-api.so')"/>
-  </Target> -->
 </Project>
