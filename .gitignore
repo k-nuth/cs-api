@@ -108,3 +108,4 @@ tests/bch/TestResults/
 tests/bch/conan.lock
 tests/bch/mono_crash.21acb2a948.0.json
 output/
+tests/bch/libkth-c-api*
