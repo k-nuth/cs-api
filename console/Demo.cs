@@ -12,7 +12,11 @@ namespace console
         static async Task Main(string[] args) {
             
             // var config = Knuth.Config.Settings.GetFromFile("/home/fernando/dev/kth/cs-api/console/node.cfg");
-            var config = Knuth.Config.Settings.GetFromFile("/Users/fernando/dev/kth/cs-api/console/node_macos.cfg");
+            // var config = Knuth.Config.Settings.GetFromFile("/Users/fernando/dev/kth/cs-api/console/node_macos.cfg");
+            var config = Knuth.Config.Settings.GetFromFile("C:\\development\\kth\\cs-api\\console\\node_win.cfg");
+            // var config = Knuth.Config.Settings.GetFromFile("C:\\development\\kth\\cs-api\\tests\\bch\\config\\non_existing_file.cfg");
+            // var config = Knuth.Config.Settings.GetFromFile("C:\\development\\kth\\cs-api\\tests\\bch\\config\\invalid.cfg");
+
             if ( ! config.Ok) {
                 Console.WriteLine(config.ErrorMessage);
                 return;
@@ -26,12 +30,11 @@ namespace console
             Console.WriteLine("Currency: other");
 #endif
 
-
             // var config = Knuth.Config.Settings.GetDefault(NetworkType.Mainnet);
 
             Console.WriteLine("Launching node...");
 
-            using (var node = new Knuth.Node(config.Result, true)) {
+            using (var node = new Knuth.Node(config.Result, false)) {
             // using (var node = new Knuth.Node(config, true)) {
                 await node.LaunchAsync();
                 Console.WriteLine("Knuth node has been launched.");
