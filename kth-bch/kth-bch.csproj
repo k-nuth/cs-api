@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants);BCH</DefineConstants>
+    <DefineConstants>$(DefineConstants);KTH_CS_CURRENCY_BCH</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
@@ -32,16 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- pack the target files -->
-    <!-- <Content Include="build\netstandard2.0\kth-bch.targets" PackagePath="build\netstandard2.0\kth-bch.targets" />  
-	<Content Include="build\Common.targets" PackagePath="build\Common.targets" /> -->
-    
+      <!-- pack the target files -->
     <Content Include="build/$(TargetFramework)/kth-bch.targets" PackagePath="build/$(TargetFramework)/kth-bch.targets" />  
-	<Content Include="build/Common.targets" PackagePath="build/Common.targets" />
-
-
-	  <!-- pack the conan file -->
-    <!-- <Content Include="content\conanfile.txt" PackagePath="content\conanfile.txt" />  -->
+    <Content Include="build/Common.targets" PackagePath="build/Common.targets" />
   </ItemGroup>
 
   <ItemGroup>

@@ -22,6 +22,7 @@ namespace Knuth.Config
         public UInt32 NotifyLimitHours { get; set; }
         public UInt32 ReorganizationLimit { get; set; }
         public IList<Checkpoint> Checkpoints { get; set; }
+        public bool FixCheckpoints { get; set; }
         public bool AllowCollisions { get; set; }
         public bool EasyBlocks { get; set; }
         public bool Retarget { get; set; }
@@ -35,24 +36,24 @@ namespace Knuth.Config
         public bool Bip112 { get; set; }
         public bool Bip113 { get; set; }
 
-#if BCH        //TODO(fernando): rename to CURRENCY_BCH or something like that
+#if KTH_CS_CURRENCY_BCH        //TODO(fernando): rename to CURRENCY_BCH or something like that
         public bool BchUahf { get; set; }
         public bool BchDaaCw144 { get; set; }
-        public bool BchMonolith { get; set; }
-        public bool BchMagneticAnomaly { get; set; }
-        public bool BchGreatWall { get; set; }
-        public bool BchGraviton { get; set; }
-        public bool BchPhonon { get; set; }
-        public bool BchAxion { get; set; }
-            
-        public UInt64 AxionActivationTime { get; set; }
-
+        public bool BchPythagoras { get; set; }
+        public bool BchEuclid { get; set; }
+        public bool BchPisano { get; set; }
+        public bool BchMersenne { get; set; }
+        public bool BchFermat { get; set; }
+        public bool BchEuler { get; set; }
+        public bool BchGauss { get; set; }
+        public UInt64 EulerActivationTime { get; set; }
+        public UInt64 GaussActivationTime { get; set; }
         public UInt64 AsertHalfLife { get; set; }
 #else
         public bool Bip141 { get; set; }
         public bool Bip143 { get; set; }
         public bool Bip147 { get; set; }
-#endif //BCH
+#endif //KTH_CS_CURRENCY_BCH
 
         public Knuth.Native.Config.BlockchainSettings ToNative() {
             var native = new Knuth.Native.Config.BlockchainSettings();
@@ -69,6 +70,7 @@ namespace Knuth.Config
                 x => x.ToNative(),
                 ref native.checkpoint_count);
 
+            native.fix_checkpoints = this.FixCheckpoints;
             native.allow_collisions = this.AllowCollisions;
             native.easy_blocks = this.EasyBlocks;
             native.retarget = this.Retarget;
@@ -82,22 +84,24 @@ namespace Knuth.Config
             native.bip112 = this.Bip112;
             native.bip113 = this.Bip113;
 
-#if BCH        //TODO(fernando): rename to CURRENCY_BCH or something like that
+#if KTH_CS_CURRENCY_BCH        //TODO(fernando): rename to CURRENCY_BCH or something like that
             native.bch_uahf = this.BchUahf;
             native.bch_daa_cw144 = this.BchDaaCw144;
-            native.bch_monolith = this.BchMonolith;
-            native.bch_magnetic_anomaly = this.BchMagneticAnomaly;
-            native.bch_great_wall = this.BchGreatWall;
-            native.bch_graviton = this.BchGraviton;
-            native.bch_phonon = this.BchPhonon;
-            native.bch_axion = this.BchAxion;
-            native.axion_activation_time = this.AxionActivationTime;
+            native.bch_pythagoras = this.BchPythagoras;
+            native.bch_euclid = this.BchEuclid;
+            native.bch_pisano = this.BchPisano;
+            native.bch_mersenne = this.BchMersenne;
+            native.bch_fermat = this.BchFermat;
+            native.bch_euler = this.BchEuler;
+            native.bch_gauss = this.BchGauss;
+            native.euler_activation_time = this.EulerActivationTime;
+            native.gauss_activation_time = this.GaussActivationTime;
             native.asert_half_life = this.AsertHalfLife;
 #else
             native.bip141 = this.Bip141;
             native.bip141 = this.Bip141;
             native.bip147 = this.Bip147;
-#endif //BCH
+#endif //KTH_CS_CURRENCY_BCH
             return native;
         }
 
@@ -110,9 +114,8 @@ namespace Knuth.Config
             res.MinimumOutputSatoshis = native.minimum_output_satoshis;
             res.NotifyLimitHours = native.notify_limit_hours;
             res.ReorganizationLimit = native.reorganization_limit;
-
             res.Checkpoints = Helper.ArrayOfPointersToManaged<Checkpoint, Native.Config.Checkpoint>(native.checkpoints, native.checkpoint_count, Checkpoint.FromNative);
-
+            res.FixCheckpoints = native.fix_checkpoints;
             res.AllowCollisions = native.allow_collisions;
             res.EasyBlocks = native.easy_blocks;
             res.Retarget = native.retarget;
@@ -126,22 +129,24 @@ namespace Knuth.Config
             res.Bip112 = native.bip112;
             res.Bip113 = native.bip113;
 
-#if BCH        //TODO(fernando): rename to CURRENCY_BCH or something like that
+#if KTH_CS_CURRENCY_BCH        //TODO(fernando): rename to CURRENCY_BCH or something like that
             res.BchUahf = native.bch_uahf;
             res.BchDaaCw144 = native.bch_daa_cw144;
-            res.BchMonolith = native.bch_monolith;
-            res.BchMagneticAnomaly = native.bch_magnetic_anomaly;
-            res.BchGreatWall = native.bch_great_wall;
-            res.BchGraviton = native.bch_graviton;
-            res.BchPhonon = native.bch_phonon;
-            res.BchAxion = native.bch_axion;
-            res.AxionActivationTime = native.axion_activation_time;
+            res.BchPythagoras = native.bch_pythagoras;
+            res.BchEuclid = native.bch_euclid;
+            res.BchPisano = native.bch_pisano;
+            res.BchMersenne = native.bch_mersenne;
+            res.BchFermat = native.bch_fermat;
+            res.BchEuler = native.bch_euler;
+            res.BchGauss = native.bch_gauss;
+            res.EulerActivationTime = native.euler_activation_time;
+            res.GaussActivationTime = native.gauss_activation_time;
             res.AsertHalfLife = native.asert_half_life;
 #else
             res.Bip141 = native.bip141;
             res.Bip141 = native.bip141;
             res.Bip147 = native.bip147;
-#endif //BCH
+#endif //KTH_CS_CURRENCY_BCH
             return res;
         }
 

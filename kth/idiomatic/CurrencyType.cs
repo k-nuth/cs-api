@@ -18,7 +18,7 @@ namespace Knuth
         /// </summary>
         Bitcoin = 1,
         /// <summary>
-        /// Bitcoint Cash (BCH)
+        /// Bitcoin Cash (BCH)
         /// </summary>
         BitcoinCash = 2,
         /// <summary>

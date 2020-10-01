@@ -10,14 +10,29 @@ namespace console
 {
     public class Program {
         static async Task Main(string[] args) {
-            var config = Knuth.Config.Settings.GetFromFile("/home/fernando/dev/kth/cs-api/console/node.cfg");
-
+            
+            // var config = Knuth.Config.Settings.GetFromFile("/home/fernando/dev/kth/cs-api/console/node.cfg");
+            var config = Knuth.Config.Settings.GetFromFile("/Users/fernando/dev/kth/cs-api/console/node_macos.cfg");
             if ( ! config.Ok) {
                 Console.WriteLine(config.ErrorMessage);
                 return;
             }
 
-            using (var node = new Knuth.Node(config.Result)) {
+            Console.WriteLine("Starting demo");
+
+#if KTH_CS_CURRENCY_BCH
+            Console.WriteLine("Currency: BCH");
+#else
+            Console.WriteLine("Currency: other");
+#endif
+
+
+            // var config = Knuth.Config.Settings.GetDefault(NetworkType.Mainnet);
+
+            Console.WriteLine("Launching node...");
+
+            using (var node = new Knuth.Node(config.Result, true)) {
+            // using (var node = new Knuth.Node(config, true)) {
                 await node.LaunchAsync();
                 Console.WriteLine("Knuth node has been launched.");
                 node.SubscribeBlockNotifications(OnBlockArrived);

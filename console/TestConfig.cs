@@ -29,6 +29,7 @@
 //             Console.WriteLine($"reorganization_limit:     {blockchainSettings.reorganization_limit}");
 //             Console.WriteLine($"checkpoint_count:         {blockchainSettings.checkpoint_count}");
 //             Console.WriteLine($"checkpoints:              {blockchainSettings.checkpoints}");
+//             Console.WriteLine($"fix_checkpoints:         {blockchainSettings.fix_checkpoints}");
 //             Console.WriteLine($"allow_collisions:         {blockchainSettings.allow_collisions}");
 //             Console.WriteLine($"easy_blocks:              {blockchainSettings.easy_blocks}");
 //             Console.WriteLine($"retarget:                 {blockchainSettings.retarget}");
@@ -43,13 +44,15 @@
 //             Console.WriteLine($"bip113:                   {blockchainSettings.bip113}");
 //             Console.WriteLine($"bch_uahf:                 {blockchainSettings.bch_uahf}");
 //             Console.WriteLine($"bch_daa_cw144:            {blockchainSettings.bch_daa_cw144}");
-//             Console.WriteLine($"bch_monolith:             {blockchainSettings.bch_monolith}");
-//             Console.WriteLine($"bch_magnetic_anomaly:     {blockchainSettings.bch_magnetic_anomaly}");
-//             Console.WriteLine($"bch_great_wall:           {blockchainSettings.bch_great_wall}");
-//             Console.WriteLine($"bch_graviton:             {blockchainSettings.bch_graviton}");
-//             Console.WriteLine($"bch_phonon:               {blockchainSettings.bch_phonon}");
-//             Console.WriteLine($"bch_axion:                {blockchainSettings.bch_axion}");
-//             Console.WriteLine($"axion_activation_time:    {blockchainSettings.axion_activation_time}");
+//             Console.WriteLine($"bch_pythagoras:             {blockchainSettings.bch_pythagoras}");
+//             Console.WriteLine($"bch_euclid:     {blockchainSettings.bch_euclid}");
+//             Console.WriteLine($"bch_pisano:           {blockchainSettings.bch_pisano}");
+//             Console.WriteLine($"bch_mersenne:             {blockchainSettings.bch_mersenne}");
+//             Console.WriteLine($"bch_fermat:               {blockchainSettings.bch_fermat}");
+//             Console.WriteLine($"bch_euler:                {blockchainSettings.bch_euler}");
+//             Console.WriteLine($"euler_activation_time:    {blockchainSettings.euler_activation_time}");
+//             Console.WriteLine($"bch_gauss:                {blockchainSettings.bch_gauss}");
+//             Console.WriteLine($"gauss_activation_time:    {blockchainSettings.gauss_activation_time}");
 //             Console.WriteLine($"asert_half_life:          {blockchainSettings.asert_half_life}");
 
 //             var dbSettings = Knuth.Native.Config.DatabaseSettingsNative.kth_config_database_settings_default(NetworkType.Mainnet);

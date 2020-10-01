@@ -41,13 +41,13 @@ environment:
 assembly_info:
   patch: false
 
-init:
-  - ps: |
-      if ($Env:APPVEYOR_REPO_BRANCH -ceq "master" -And [string]::IsNullOrEmpty($Env:APPVEYOR_REPO_TAG_NAME)) {
-        Write-Host $Env:APPVEYOR_REPO_BRANCH
-        Write-Host "branch is master without tags, exiting"
-        Exit-AppveyorBuild
-      }
+# init:
+  # - ps: |
+  #     if ($Env:APPVEYOR_REPO_BRANCH -ceq "master" -And [string]::IsNullOrEmpty($Env:APPVEYOR_REPO_TAG_NAME)) {
+  #       Write-Host $Env:APPVEYOR_REPO_BRANCH
+  #       Write-Host "branch is master without tags, exiting"
+  #       Exit-AppveyorBuild
+  #     }
       
 install:
   - set PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%;
@@ -58,9 +58,13 @@ install:
 build_script:
   - SET PATH=%PATH%;%PYTHON%/Scripts/
   # - powershell .\build.ps1 -Verbosity diagnostic
-  - powershell .\build.ps1
+  - powershell .\build.ps1 Compile
+  - powershell .\build.ps1 Test
+  - powershell .\build.ps1 Test
 
-test: off
+# # test: off
+# test:
+#   - ps: ./build.ps1 Test
 
 deploy_script:
   - ps: ./build.ps1 Pack
