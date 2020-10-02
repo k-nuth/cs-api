@@ -140,7 +140,6 @@ namespace Knuth {
             return await completionSource.Task;
         }
 
-        //TODO(fernando): summary
         private void Launch(Action<ErrorCode> handler) {
             var handlerHandle = GCHandle.Alloc(handler);
             var handlerPtr = (IntPtr)handlerHandle;
@@ -240,7 +239,7 @@ namespace Knuth {
             }
         }
 
-        private  void InternalRunNodeHandler(IntPtr node, IntPtr handlerPtr, int error) {
+        private void InternalRunNodeHandler(IntPtr node, IntPtr handlerPtr, int error) {
             var handlerHandle = (GCHandle)handlerPtr;
             var handler = (handlerHandle.Target as Action<ErrorCode>);
             try {
