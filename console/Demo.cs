@@ -34,20 +34,22 @@ namespace console
 
             Console.WriteLine("Launching node...");
 
-            using (var node = new Knuth.Node(config.Result, false)) {
+            using (var node = new Knuth.Node(config.Result, true)) {
             // using (var node = new Knuth.Node(config, true)) {
-                await node.LaunchAsync();
-                Console.WriteLine("Knuth node has been launched.");
-                node.SubscribeBlockNotifications(OnBlockArrived);
+                var res = await node.LaunchAsync();
+                Console.WriteLine(res);
+
+                // Console.WriteLine("Knuth node has been launched.");
+                // node.SubscribeBlockNotifications(OnBlockArrived);
 
                 var height = await node.Chain.GetLastHeightAsync();
                 Console.WriteLine($"Current height in local copy: {height.Result}");
 
-                if (node.Chain.IsStale) {
-                    Console.WriteLine("Knuth is doing IBD.");
-                }
+                // if (node.Chain.IsStale) {
+                //     Console.WriteLine("Knuth is doing IBD.");
+                // }
 
-                await DiscoverThePowerOfKnuth(node);
+                // await DiscoverThePowerOfKnuth(node);
             }
         }
 

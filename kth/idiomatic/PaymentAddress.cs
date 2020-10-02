@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 using System;
+using System.Runtime.InteropServices;
 using Knuth.Native;
 
 namespace Knuth
@@ -46,17 +47,25 @@ namespace Knuth
         /// <summary>
         /// Human readable representation.
         /// </summary>
-        public string Encoded
-        {
-            get
-            {
-                using ( var addressString = new NativeString(PaymentAddressNative.kth_wallet_payment_address_encoded(nativeInstance_)) ) {
+        public string Encoded {
+            get {
+                using (var addressString = new NativeString(PaymentAddressNative.kth_wallet_payment_address_encoded(nativeInstance_))) {
                     return addressString.ToString();
                 }
             }
         }
 
 #if KTH_CS_CURRENCY_BCH
+        /// <summary>
+        /// Human readable representation.
+        /// </summary>
+        public string EncodedCashAddr {
+            get {
+                using (var addressString = new NativeString(PaymentAddressNative.kth_wallet_payment_address_encoded_cashaddr(nativeInstance_))) {
+                    return addressString.ToString();
+                }
+            }
+        }
 
         /// <summary>
         /// (Only for BCH) The native node only handles legacy addresses; this method

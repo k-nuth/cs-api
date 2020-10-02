@@ -12,8 +12,10 @@ namespace Knuth
 
 #if _NOT_WINDOWS
         internal const CharSet KTH_OS_CHARSET = CharSet.Ansi;
+        internal const UnmanagedType KTH_STR_PTR = UnmanagedType.LPStr;
 #else
         internal const CharSet KTH_OS_CHARSET = CharSet.Unicode;
+        internal const UnmanagedType KTH_STR_PTR = UnmanagedType.LPWStr;
 #endif        
     }
 }

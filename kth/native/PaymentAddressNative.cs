@@ -16,10 +16,15 @@ namespace Knuth.Native
         public static extern int kth_wallet_payment_address_is_valid(IntPtr payment_address);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr kth_wallet_payment_address_construct_from_string([MarshalAs(UnmanagedType.LPStr)]string address);
+        public static extern IntPtr kth_wallet_payment_address_construct_from_string(
+            [MarshalAs(UnmanagedType.LPStr)]string address
+        );
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr kth_wallet_payment_address_encoded(IntPtr payment_address);
+
+        [DllImport(Constants.KTH_C_LIBRARY)]
+        public static extern IntPtr kth_wallet_payment_address_encoded_cashaddr(IntPtr payment_address);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_wallet_payment_address_destruct(IntPtr payment_address);

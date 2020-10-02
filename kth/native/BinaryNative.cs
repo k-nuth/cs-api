@@ -22,8 +22,9 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr kth_core_binary_construct_blocks(UIntPtr /*size_t*/ bits_size, byte[] blocks, UIntPtr /*size_t*/ n);
 
+        //TODO(fernando): check how to deallocate this string, is it automatically?
         [DllImport(Constants.KTH_C_LIBRARY)]
-        [return: MarshalAs(UnmanagedType.LPStr)] //TODO Check return value is deallocated correctly
+        [return: MarshalAs(UnmanagedType.LPStr)]
         public static extern string kth_core_binary_encoded(IntPtr binary);
 
         [DllImport(Constants.KTH_C_LIBRARY)]

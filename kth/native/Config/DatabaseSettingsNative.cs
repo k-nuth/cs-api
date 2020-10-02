@@ -10,7 +10,7 @@ namespace Knuth.Native.Config
     [StructLayout(LayoutKind.Sequential)]
     public struct DatabaseSettings {
         
-        [MarshalAs(UnmanagedType.LPStr)]
+        [MarshalAs(Constants.KTH_STR_PTR)]
         public string directory;
         public bool flush_writes;
         public UInt16 file_growth_rate;

@@ -19,10 +19,10 @@ namespace Knuth.Config
         }
 
         public static ApiCallResultWithMessage<Settings> GetFromFile(string path) {
-            bool ok;
             string errorMessage;
-            var native = Knuth.Native.Config.SettingsNative.kth_config_settings_get_from_file(path, out ok, out errorMessage);
-            
+            IntPtr nativePtr;
+            var ok = Knuth.Native.Config.SettingsNative.kth_config_settings_get_from_file(path, out nativePtr, out errorMessage);
+
             if ( ! ok) {
                 return new ApiCallResultWithMessage<Settings> {
                     Ok = false,
@@ -31,11 +31,13 @@ namespace Knuth.Config
                 };
             }
 
+            var native = (Native.Config.Settings)Marshal.PtrToStructure(nativePtr, typeof(Native.Config.Settings));
             var res = new Settings();
             res.Chain = BlockchainSettings.FromNative(native.chain);
             res.Database = DatabaseSettings.FromNative(native.database);
             res.Network = NetworkSettings.FromNative(native.network);
             res.Node = NodeSettings.FromNative(native.node);
+            Knuth.Native.Config.SettingsNative.kth_config_settings_destruct(nativePtr);
 
             return new ApiCallResultWithMessage<Settings> {
                 Ok = true,
