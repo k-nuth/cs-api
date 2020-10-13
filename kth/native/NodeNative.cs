@@ -45,8 +45,8 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_node_destruct(IntPtr exec);
 
-        [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern void kth_node_stop(IntPtr exec);
+        // [DllImport(Constants.KTH_C_LIBRARY)]
+        // public static extern void kth_node_stop(IntPtr exec);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_node_signal_stop(IntPtr exec);

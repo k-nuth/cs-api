@@ -153,7 +153,11 @@ namespace Knuth {
         /// Stops the node; that includes all activies, such as synchronization and networking.
         /// </summary>
         public void Stop() {
-            NodeNative.kth_node_stop(nativeInstance_);
+            // NodeNative.kth_node_stop(nativeInstance_);
+            NodeNative.kth_node_signal_stop(nativeInstance_); 
+            while (running_ &&  ! stopped_) {
+                System.Threading.Thread.Sleep(100);
+            }
         }
 
         /// <summary>
@@ -197,12 +201,7 @@ namespace Knuth {
             if (disposing) {
                 //Release managed resources and call Dispose for member variables
             }
-
-            NodeNative.kth_node_signal_stop(nativeInstance_); 
-
-            while (running_ &&  ! stopped_) {
-                System.Threading.Thread.Sleep(100);
-            }
+            Stop();
             NodeNative.kth_node_destruct(nativeInstance_);
         }
 
