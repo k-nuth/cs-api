@@ -61,36 +61,7 @@ namespace Knuth {
             : this() 
         {
             var native = settings.ToNative();
-            if (showNodeLog) {
-                nativeInstance_ = NodeNative.kth_node_construct_fd(ref native, 0, 0);
-            } else {
-                nativeInstance_ = NodeNative.kth_node_construct_fd(ref native, -1, -1);
-            }
-        }
-
-        /// <summary> //TODO See BIT-20
-        /// Create node object. Does not init database or start execution yet.
-        /// </summary>
-        /// <param name="configFile"> Path to configuration file. </param>
-        /// <param name="stdOut"> File descriptor for redirecting standard output. </param>
-        /// <param name="stdErr"> File descriptor for redirecting standard error output. </param>
-        // public Node(string configFile, int stdOut, int stdErr)
-        // {
-        //     nativeInstance_ = NodeNative.kth_node_construct_fd(configFile, stdOut, stdErr);
-        // }
-
-        /// <summary>
-        /// Create node. Does not init database or start execution yet.
-        /// </summary>
-        /// <param name="settings"> Settings object. </param>
-        /// <param name="stdOut"> Handle for redirecting standard output. </param>
-        /// <param name="stdErr"> Handle for redirecting standard output. </param>
-        public Node(Settings settings, IntPtr stdOut, IntPtr stdErr) 
-            : this() 
-        {
-            //TODO(fernando): free the memory of the native object
-            var native = settings.ToNative();
-            nativeInstance_ = NodeNative.kth_node_construct_handles(ref native, stdOut, stdErr);
+            nativeInstance_ = NodeNative.kth_node_construct(ref native, showNodeLog ? 1 : 0);
         }
 
         ~Node() {
