@@ -56,7 +56,8 @@ namespace HelloKnuth {
         static async Task Main(string[] args) {
             Console.CancelKeyPress += OnSigInterrupt;
 
-            using (var node = new Knuth.Node("mainnet.cfg")) {
+            var config = Knuth.Config.Settings.GetDefault(NetworkType.Mainnet);
+            using (var node = new Knuth.Node(config)) {
                 await node.LaunchAsync();
                 Console.WriteLine("Knuth node has been launched.");
 
