@@ -44,7 +44,7 @@ $ dotnet add package kth-bch
 
 3. Edit `Program.cs` and write some code:
 
-```
+```CSharp
 using System;
 using System.Threading.Tasks;
 using Knuth;
