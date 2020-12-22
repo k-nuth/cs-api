@@ -97,6 +97,10 @@ namespace HelloKnuth {
 $ dotnet run
 ```
 
+## Issues
+
+Each of our modules has its own Github repository, but in case you want to create an issue, please do so in our [main repository](https://github.com/k-nuth/kth/issues).
+
 
 <!-- Links -->
 [badge.Travis]: https://travis-ci.org/k-nuth/cs-api.svg?branch=master
