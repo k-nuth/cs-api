@@ -2,7 +2,7 @@
 
 # C# API
 
-> Bitcoin full node as a C# library
+> Bitcoin Cash full node as a C# library
 
 [![Latest Release](https://img.shields.io/nuget/v/kth-bch?logo=nuget&label=release&style=for-the-badge)](https://www.nuget.org/packages/kth-bch)
 <a target="_blank" href="https://ci.appveyor.com/projects/k-nuth/cs-api">![Build Status][badge.Appveyor]</a> 
@@ -12,7 +12,7 @@
 
 <p align="center"><img width="800px" src="docs/images/demo.png" /></p>
 
-Knuth C# API is a high performance implementation of the Bitcoin protocol focused on users requiring extra performance and flexibility. It is a Bitcoin node you can use as a library.
+Knuth C# API is a high performance implementation of the Bitcoin Cash protocol focused on users requiring extra performance and flexibility. It is a Bitcoin Cash node you can use as a library.
 
 ## Prerequisites
 
