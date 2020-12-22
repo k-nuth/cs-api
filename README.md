@@ -98,10 +98,6 @@ $ dotnet run
 ```
 
 
-
-Repository under construction, the first version will be released shortly.
-
-
 <!-- Links -->
 [badge.Travis]: https://travis-ci.org/k-nuth/cs-api.svg?branch=master
 <!-- [badge.Appveyor]: https://ci.appveyor.com/api/projects/status/github/k-nuth/cs-api?svg=true&branch=master -->
