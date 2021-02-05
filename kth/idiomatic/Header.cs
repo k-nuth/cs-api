@@ -9,7 +9,7 @@ namespace Knuth
 {
 
     /// <summary>
-    /// Represents a full Bitcoin blockchain block.
+    /// Represents a Bitcoin block header.
     /// </summary>
     public class Header : IHeader
     {
@@ -26,7 +26,7 @@ namespace Knuth
         public bool IsValid => HeaderNative.kth_chain_header_is_valid(nativeInstance_) != 0;
 
         /// <summary>
-        /// Block hash in 32 byte array format.
+        /// Header/Block hash in 32 byte array format.
         /// </summary>
         public byte[] Hash
         {
@@ -117,6 +117,18 @@ namespace Knuth
         public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Raw header data.
+        /// </summary>
+        /// <param name="version">Version of the header.</param>
+        /// <returns>Byte array with header data.</returns>
+        public byte[] ToData(UInt32 version) {
+            int headerSize = 0;
+            using (var headerData = new NativeBuffer(HeaderNative.kth_chain_header_to_data(nativeInstance_, version, ref headerSize))) {
+                return headerData.CopyToManagedArray(headerSize);
+            }
         }
 
         internal Header(IntPtr nativeInstance, bool ownsNativeMem = true) {
