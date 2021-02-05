@@ -15,7 +15,6 @@ namespace Knuth
     /// </summary>
     internal class NativeBuffer : IDisposable {
         private IntPtr nativePtr_;
-
         public NativeBuffer(IntPtr nativePtr) {
             nativePtr_ = nativePtr;
         }
