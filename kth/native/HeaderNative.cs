@@ -53,6 +53,10 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_header_set_version(IntPtr header, UInt32 version);
 
+        //Note: Returned memory must be freed manually using platform_free
+        [DllImport(Constants.KTH_C_LIBRARY)]
+        public static extern IntPtr kth_chain_header_to_data(IntPtr header, UInt32 version, ref int size);
+
     }
 
 }
