@@ -53,5 +53,13 @@ namespace Knuth
         /// Header protocol version.
         /// </summary>
         UInt32 Version { get; set; }
+
+
+        /// <summary>
+        /// Raw header data.
+        /// </summary>
+        /// <param name="version">Version of the header.</param>
+        /// <returns>Byte array with header data.</returns>
+        byte[] ToData(UInt32 version);
     }
 }
