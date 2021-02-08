@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <VersionString>$([System.String]::Copy('0.9.0').Replace('.','_'))</VersionString>
+    <VersionString>$([System.String]::Copy('0.9.1').Replace('.','_'))</VersionString>
   </PropertyGroup>
 
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
@@ -48,7 +48,7 @@
     <Message Text="LibDestinationPath:  $(LibDestinationPath)"/>
     <Message Text="LibDestinationPath2: $(LibDestinationPath2)"/>
     <Message Text="Knuth Channel:       stable"/>
-    <Message Text="Knuth Version:       0.9.0"/>
+    <Message Text="Knuth Version:       0.9.1"/>
     <Message Text="Knuth Currency:      BCH"/>
     <Message Text="Knuth March ID:      4fZKi37a595hP"/>
     
@@ -57,7 +57,7 @@
         Condition="'$(HaveToExecConan)'=='True'" />
 
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/0.9.0@kth/stable;[generators];cmake;[options];c-api:shared=True;c-api:currency=BCH;c-api:db=full;c-api:march_id=4fZKi37a595hP;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];c-api/0.9.1@kth/stable;[generators];cmake;[options];c-api:shared=True;c-api:currency=BCH;c-api:db=full;c-api:march_id=4fZKi37a595hP;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true" Condition="'$(HaveToExecConan)'=='True'"/>
 
     <Exec Command="conan install . --install-folder=. --update" 
