@@ -112,3 +112,5 @@ tests/bch/libkth-c-api*
 console/.vscode/
 tests/btc/conan.lock
 console/.vs/
+HelloKnuth/
+HelloKnuth2/
