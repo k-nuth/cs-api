@@ -13,6 +13,15 @@ namespace Knuth {
             return x ? 1 : 0;
         }
 
+        public static string PtrToString(IntPtr ptr) {
+#if _NOT_WINDOWS
+            var str = Marshal.PtrToStringAnsi(ptr);
+#else
+            var str = Marshal.PtrToStringUni(ptr);
+#endif        
+            return str;
+        }
+
         public static IList<TIdiomatic> ArrayOfPointersToManaged<TIdiomatic, TNative>(
             IntPtr ptr, UInt64 count, Func<TNative, TIdiomatic> converter) {
             var res = new List<TIdiomatic>();
