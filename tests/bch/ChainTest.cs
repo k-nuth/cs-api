@@ -404,6 +404,9 @@ namespace Knuth.Tests {
             using (var address = new PaymentAddress("bchtest:qp7d6x2weeca9fn6eakwvgd9ryq8g6h0tuyks75rt7")) {
                 using (var ret = await nodeFixture_.Node.Chain.GetHistoryAsync(address,10,1))
                 {
+                    foreach (var x in ret.Result) {
+
+                    }
                     Assert.True(ret.Result.Count >= 0); 
                 }
             }
