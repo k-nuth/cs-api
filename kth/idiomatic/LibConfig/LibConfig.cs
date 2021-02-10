@@ -33,24 +33,22 @@ namespace Knuth
             public DbMode DbMode;
             public bool DbReadonly;
             public bool DebugMode;
-        } 
+        }
+        
         public static Settings Get() {
             var native = Knuth.Native.LibConfig.LibConfigNative.kth_libconfig_get();
             var ret = new Settings {
                 LogLibrary = (LogLibrary)native.log_library,
                 UseLibmdbx = native.use_libmdbx,
-                Version = Helper.PtrToString(native.version),
-                Microarchitecture = Helper.PtrToString(native.microarchitecture),
-                MicroarchitectureId = Helper.PtrToString(native.microarchitecture_id),
+                Version = Marshal.PtrToStringAnsi(native.version),
+                Microarchitecture = Marshal.PtrToStringAnsi(native.microarchitecture),
+                MicroarchitectureId = Marshal.PtrToStringAnsi(native.microarchitecture_id),
                 Currency = (CurrencyType)native.currency,
                 Mempool = native.mempool,
                 DbMode = (DbMode)native.db_mode,
                 DbReadonly = native.db_readonly,
                 DebugMode = native.debug_mode
-
             };
-
-            // var ret = new Native.LibConfig.Settings();
             return ret;
         }
     }
