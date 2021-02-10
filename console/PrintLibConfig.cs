@@ -11,16 +11,16 @@ namespace console
     public class Program {
         static async Task Main(string[] args) {
             var config = Knuth.LibConfig.Get();
-            Console.WriteLine("log_library:          {}", config.LogLibrary);
-            Console.WriteLine("use_libmdbx:          {}", config.UseLibmdbx);
-            Console.WriteLine("version:              {}", config.Version);
-            Console.WriteLine("microarchitecture:    {}", config.Microarchitecture);
-            Console.WriteLine("microarchitecture_id: {}", config.MicroarchitectureId);
-            Console.WriteLine("currency:             {}", config.Currency);
-            Console.WriteLine("mempool:              {}", config.Mempool);
-            Console.WriteLine("db_mode:              {}", config.DbMode);
-            Console.WriteLine("db_readonly:          {}", config.DbReadonly);
-            Console.WriteLine("debug_mode:           {}", config.DebugMode);
+            Console.WriteLine("LogLibrary:          {0}", config.LogLibrary);
+            Console.WriteLine("UseLibmdbx:          {0}", config.UseLibmdbx);
+            Console.WriteLine("Version:             {0}", config.Version);
+            Console.WriteLine("Microarchitecture:   {0}", config.Microarchitecture);
+            Console.WriteLine("MicroarchitectureId: {0}", config.MicroarchitectureId);
+            Console.WriteLine("Currency:            {0}", config.Currency);
+            Console.WriteLine("Mempool:             {0}", config.Mempool);
+            Console.WriteLine("DbMode:              {0}", config.DbMode);
+            Console.WriteLine("DbReadonly:          {0}", config.DbReadonly);
+            Console.WriteLine("DebugMode:           {0}", config.DebugMode);
         }
     }
 }
