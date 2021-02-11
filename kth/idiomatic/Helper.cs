@@ -22,6 +22,15 @@ namespace Knuth {
             return str;
         }
 
+        public static IntPtr StringToPtr(string s) {
+#if _NOT_WINDOWS
+            var str = Marshal.StringToHGlobalAnsi(s);
+#else
+            var str = Marshal.StringToHGlobalUni(s);
+#endif        
+            return str;
+        }
+
         public static IList<TIdiomatic> ArrayOfPointersToManaged<TIdiomatic, TNative>(
             IntPtr ptr, UInt64 count, Func<TNative, TIdiomatic> converter) {
             var res = new List<TIdiomatic>();
