@@ -30,8 +30,13 @@ namespace Knuth.Native.Config
         //     out IntPtr settingsPtr, 
         //     [MarshalAs(UnmanagedType.LPStr)] out string error_message);
 
+        // [DllImport(Constants.KTH_C_LIBRARY, CharSet = Constants.KTH_OS_CHARSET, CallingConvention = CallingConvention.Cdecl)]
+        // public static extern bool kth_config_settings_get_from_file(IntPtr path, 
+        //     out IntPtr settingsPtr, 
+        //     [MarshalAs(UnmanagedType.LPStr)] out string error_message);
+
         [DllImport(Constants.KTH_C_LIBRARY, CharSet = Constants.KTH_OS_CHARSET, CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool kth_config_settings_get_from_file(IntPtr path, 
+        public static extern bool kth_config_settings_get_from_file(string path, 
             out IntPtr settingsPtr, 
             [MarshalAs(UnmanagedType.LPStr)] out string error_message);
 

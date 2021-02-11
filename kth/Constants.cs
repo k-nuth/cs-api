@@ -10,12 +10,13 @@ namespace Knuth
     {
         internal const string KTH_C_LIBRARY = "libkth-c-api";
 
-#if _NOT_WINDOWS
-        internal const CharSet KTH_OS_CHARSET = CharSet.Ansi;
-        internal const UnmanagedType KTH_STR_PTR = UnmanagedType.LPStr;
-#else
-        internal const CharSet KTH_OS_CHARSET = CharSet.Unicode;
-        internal const UnmanagedType KTH_STR_PTR = UnmanagedType.LPWStr;
-#endif        
+        internal const CharSet KTH_OS_CHARSET = CharSet.Auto;
+// #if _NOT_WINDOWS
+//         internal const CharSet KTH_OS_CHARSET = CharSet.Ansi;
+//         internal const UnmanagedType KTH_STR_PTR = UnmanagedType.LPStr;
+// #else
+//         internal const CharSet KTH_OS_CHARSET = CharSet.Unicode;
+//         internal const UnmanagedType KTH_STR_PTR = UnmanagedType.LPWStr;
+// #endif        
     }
 }
