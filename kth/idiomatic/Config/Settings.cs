@@ -25,8 +25,12 @@ namespace Knuth.Config
         public static ApiCallResultWithMessage<Settings> GetFromFile(string path) {
             string errorMessage;
             IntPtr nativePtr;
-            var ok = Knuth.Native.Config.SettingsNative.kth_config_settings_get_from_file(path, out nativePtr, out errorMessage);
+            Console.WriteLine("C# GetFromFile path: {0}", path);
+            var pathPtr = Helper.StringToPtr(path);
+            var pathBack = Helper.PtrToString(pathPtr);
+            Console.WriteLine("C# GetFromFile pathBack: {0}", pathBack);
 
+            var ok = Knuth.Native.Config.SettingsNative.kth_config_settings_get_from_file(pathPtr, out nativePtr, out errorMessage);
             if ( ! ok) {
                 return new ApiCallResultWithMessage<Settings> {
                     Ok = false,
