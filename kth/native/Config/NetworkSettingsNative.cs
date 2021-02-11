@@ -30,8 +30,9 @@ namespace Knuth.Native.Config
         public UInt32 channel_germination_seconds;
         public UInt32 host_pool_capacity;
         
-        [MarshalAs(Constants.KTH_STR_PTR)]
-        public string hosts_file;
+        // [MarshalAs(Constants.KTH_STR_PTR)]
+        // public string hosts_file;
+        public IntPtr hosts_file;
 
         public Authority self;
         public UInt64 blacklist_count;
@@ -44,14 +45,17 @@ namespace Knuth.Native.Config
         public IntPtr seeds;
 
         
-        [MarshalAs(Constants.KTH_STR_PTR)]
-        public string debug_file;
+        // [MarshalAs(Constants.KTH_STR_PTR)]
+        // public string debug_file;
+        public IntPtr debug_file;
         
-        [MarshalAs(Constants.KTH_STR_PTR)]
-        public string error_file;
+        // [MarshalAs(Constants.KTH_STR_PTR)]
+        // public string error_file;
+        public IntPtr error_file;
         
-        [MarshalAs(Constants.KTH_STR_PTR)]
-        public string archive_directory;
+        // [MarshalAs(Constants.KTH_STR_PTR)]
+        // public string archive_directory;
+        public IntPtr archive_directory;
 
         public UInt64 rotation_size;
         public UInt64 minimum_free_space;
