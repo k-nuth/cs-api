@@ -15,8 +15,10 @@ namespace Knuth {
 
         public static string PtrToString(IntPtr ptr) {
 #if _NOT_WINDOWS
+            Console.WriteLine("PtrToString - #if _NOT_WINDOWS");
             var str = Marshal.PtrToStringAnsi(ptr);
 #else
+            Console.WriteLine("PtrToString - #else _NOT_WINDOWS");
             var str = Marshal.PtrToStringUni(ptr);
 #endif        
             return str;
@@ -24,8 +26,10 @@ namespace Knuth {
 
         public static IntPtr StringToPtr(string s) {
 #if _NOT_WINDOWS
+            Console.WriteLine("StringToPtr - #if _NOT_WINDOWS");
             var str = Marshal.StringToHGlobalAnsi(s);
 #else
+            Console.WriteLine("StringToPtr - #else _NOT_WINDOWS");
             var str = Marshal.StringToHGlobalUni(s);
 #endif        
             return str;
