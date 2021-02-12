@@ -20,22 +20,7 @@ namespace Knuth.Native.Config
         // [DllImport(Constants.KTH_C_LIBRARY)]
         // public static extern NodeSettings kth_config_settings_default(NetworkType network);
 
-        // [DllImport(Constants.KTH_C_LIBRARY, CharSet = Constants.KTH_OS_CHARSET, CallingConvention = CallingConvention.Cdecl)]
-        // public static extern bool kth_config_settings_get_from_file([MarshalAs(Constants.KTH_STR_PTR)] string path, 
-        //     out Settings settings, 
-        //     [MarshalAs(UnmanagedType.LPStr)] out string error_message);
-
-        // [DllImport(Constants.KTH_C_LIBRARY, CharSet = Constants.KTH_OS_CHARSET, CallingConvention = CallingConvention.Cdecl)]
-        // public static extern bool kth_config_settings_get_from_file([MarshalAs(Constants.KTH_STR_PTR)] string path, 
-        //     out IntPtr settingsPtr, 
-        //     [MarshalAs(UnmanagedType.LPStr)] out string error_message);
-
-        // [DllImport(Constants.KTH_C_LIBRARY, CharSet = Constants.KTH_OS_CHARSET, CallingConvention = CallingConvention.Cdecl)]
-        // public static extern bool kth_config_settings_get_from_file(IntPtr path, 
-        //     out IntPtr settingsPtr, 
-        //     [MarshalAs(UnmanagedType.LPStr)] out string error_message);
-
-        [DllImport(Constants.KTH_C_LIBRARY, CharSet = Constants.KTH_OS_CHARSET, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(Constants.KTH_C_LIBRARY, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         public static extern bool kth_config_settings_get_from_file(string path, 
             out IntPtr settingsPtr, 
             [MarshalAs(UnmanagedType.LPStr)] out string error_message);
