@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace Knuth.Native.Config
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     public struct NetworkSettings {
         public UInt32 threads;
         public UInt32 protocol_maximum;
@@ -29,48 +29,24 @@ namespace Knuth.Native.Config
         public UInt32 channel_expiration_minutes;
         public UInt32 channel_germination_seconds;
         public UInt32 host_pool_capacity;
-        
-        // [MarshalAs(Constants.KTH_STR_PTR)]
-        [MarshalAs(UnmanagedType.LPTStr)]
         public string hosts_file;
-        // public IntPtr hosts_file;
-
         public Authority self;
         public UInt64 blacklist_count;
         public IntPtr blacklists;
-
         public UInt64 peer_count;
         public IntPtr peers;
-
         public UInt64 seed_count;
         public IntPtr seeds;
-
-        
-        // [MarshalAs(Constants.KTH_STR_PTR)]
-        [MarshalAs(UnmanagedType.LPTStr)]
         public string debug_file;
-        // public IntPtr debug_file;
-        
-        // [MarshalAs(Constants.KTH_STR_PTR)]
-        [MarshalAs(UnmanagedType.LPTStr)]
         public string error_file;
-        // public IntPtr error_file;
-        
-        // [MarshalAs(Constants.KTH_STR_PTR)]
-        [MarshalAs(UnmanagedType.LPTStr)]
         public string archive_directory;
-        // public IntPtr archive_directory;
-
         public UInt64 rotation_size;
         public UInt64 minimum_free_space;
         public UInt64 maximum_archive_size;
         public UInt64 maximum_archive_files;
-        
         public Authority statistics_server;
-
         public bool verbose;
         public bool use_ipv6;
-
         public UInt64 user_agent_blacklist_count;
         public IntPtr user_agent_blacklist;
     }
