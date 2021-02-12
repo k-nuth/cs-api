@@ -9,13 +9,13 @@ namespace Knuth.Native.Config
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Endpoint {
-        // [MarshalAs(UnmanagedType.LPStr)]
-        // public string scheme;
-        // [MarshalAs(UnmanagedType.LPStr)]
-        // public string host;
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string scheme;
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string host;
 
-        public IntPtr scheme;
-        public IntPtr host;
+        // public IntPtr scheme;
+        // public IntPtr host;
         public UInt16 port;
     }
 

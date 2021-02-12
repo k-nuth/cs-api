@@ -9,10 +9,10 @@ namespace Knuth.Native.Config
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Authority {
-        // [MarshalAs(UnmanagedType.LPStr)]
-        // public string ip;
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string ip;
 
-        public IntPtr ip;
+        // public IntPtr ip;
         public UInt16 port;
     }
 

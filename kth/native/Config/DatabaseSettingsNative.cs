@@ -11,8 +11,9 @@ namespace Knuth.Native.Config
     public struct DatabaseSettings {
         
         // [MarshalAs(Constants.KTH_STR_PTR)]
-        // public string directory;
-        public IntPtr directory;
+        [MarshalAs(UnmanagedType.LPTStr)]
+        public string directory;
+        // public IntPtr directory;
 
         public bool flush_writes;
         public UInt16 file_growth_rate;
