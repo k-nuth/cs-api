@@ -7,30 +7,20 @@ using System.Runtime.InteropServices;
 
 namespace Knuth.Native.Config
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     public struct DatabaseSettings {
-        
-        // [MarshalAs(Constants.KTH_STR_PTR)]
-        [MarshalAs(UnmanagedType.LPTStr)]
         public string directory;
-        // public IntPtr directory;
-
         public bool flush_writes;
         public UInt16 file_growth_rate;
         public UInt32 index_start_height;
-
-// #ifdef KTH_DB_NEW
         public UInt32 reorg_pool_limit;
         public UInt64 db_max_size;
         public bool safe_mode;
-// #endif // KTH_DB_NEW
-
         public UInt32 cache_capacity;
     }
 
     public static class DatabaseSettingsNative
     {
-
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern DatabaseSettings kth_config_database_settings_default(NetworkType network);
     }
