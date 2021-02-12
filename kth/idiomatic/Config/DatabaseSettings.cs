@@ -25,7 +25,6 @@ namespace Knuth.Config
 
         public Knuth.Native.Config.DatabaseSettings ToNative() {
             var native = new Knuth.Native.Config.DatabaseSettings();
-            // native.directory = Helper.StringToPtr(this.Directory);
             native.directory = this.Directory;
             native.flush_writes = this.FlushWrites;
             native.file_growth_rate = this.FileGrowthRate;
@@ -40,8 +39,6 @@ namespace Knuth.Config
         public static DatabaseSettings FromNative(Knuth.Native.Config.DatabaseSettings native) {
             var res = new DatabaseSettings();
             res.Directory = native.directory;
-            // res.Directory = Helper.PtrToString(native.directory);
-
             res.FlushWrites = native.flush_writes;
             res.FileGrowthRate = native.file_growth_rate;
             res.IndexStartHeight = native.index_start_height;
