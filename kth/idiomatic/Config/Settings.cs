@@ -15,10 +15,6 @@ namespace Knuth.Config
             res.Database = DatabaseSettings.GetDefault(network);
             res.Network = NetworkSettings.GetDefault(network);
             res.Node = NodeSettings.GetDefault(network);
-
-            //TODO(fernando): remove this in c-api version > 0.8.0. It is a workaround.
-            res.Network.Services = 1;
-            res.Network.HostPoolCapacity = 1000;
             return res;
         }
 
