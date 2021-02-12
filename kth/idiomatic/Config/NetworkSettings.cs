@@ -73,7 +73,8 @@ namespace Knuth.Config
             native.channel_expiration_minutes = this.ChannelExpirationMinutes;
             native.channel_germination_seconds = this.ChannelGerminationSeconds;
             native.host_pool_capacity = this.HostPoolCapacity;
-            native.hosts_file = Helper.StringToPtr(this.HostsFile);
+            // native.hosts_file = Helper.StringToPtr(this.HostsFile);
+            native.hosts_file = this.HostsFile;
             
             native.self = this.Self.ToNative();
 
@@ -92,9 +93,13 @@ namespace Knuth.Config
                 x => x.ToNative(),
                 ref native.seed_count);
 
-            native.debug_file = Helper.StringToPtr(this.DebugFile);
-            native.error_file = Helper.StringToPtr(this.ErrorFile);
-            native.archive_directory = Helper.StringToPtr(this.ArchiveDirectory);
+            // native.debug_file = Helper.StringToPtr(this.DebugFile);
+            // native.error_file = Helper.StringToPtr(this.ErrorFile);
+            // native.archive_directory = Helper.StringToPtr(this.ArchiveDirectory);
+            native.debug_file = this.DebugFile;
+            native.error_file = this.ErrorFile;
+            native.archive_directory = this.ArchiveDirectory;
+
             native.rotation_size = this.RotationSize;
             native.minimum_free_space = this.MinimumFreeSpace;
             native.maximum_archive_size = this.MaximumArchiveSize;
@@ -128,14 +133,22 @@ namespace Knuth.Config
             res.ChannelExpirationMinutes = native.channel_expiration_minutes;
             res.ChannelGerminationSeconds = native.channel_germination_seconds;
             res.HostPoolCapacity = native.host_pool_capacity;
-            res.HostsFile = Helper.PtrToString(native.hosts_file);
+
+            // res.HostsFile = Helper.PtrToString(native.hosts_file);
+            res.HostsFile = native.hosts_file;
+
             res.Self = Authority.FromNative(native.self);
             res.Blacklists = Helper.ArrayOfPointersToManaged<Authority, Native.Config.Authority>(native.blacklists, native.blacklist_count, Authority.FromNative);
             res.Peers = Helper.ArrayOfPointersToManaged<Endpoint, Native.Config.Endpoint>(native.peers, native.peer_count, Endpoint.FromNative);
             res.Seeds = Helper.ArrayOfPointersToManaged<Endpoint, Native.Config.Endpoint>(native.seeds, native.seed_count, Endpoint.FromNative);
-            res.DebugFile = Helper.PtrToString(native.debug_file);
-            res.ErrorFile = Helper.PtrToString(native.error_file);
-            res.ArchiveDirectory = Helper.PtrToString(native.archive_directory);
+            
+            // res.DebugFile = Helper.PtrToString(native.debug_file);
+            // res.ErrorFile = Helper.PtrToString(native.error_file);
+            // res.ArchiveDirectory = Helper.PtrToString(native.archive_directory);
+            res.DebugFile = native.debug_file;
+            res.ErrorFile = native.error_file;
+            res.ArchiveDirectory = native.archive_directory;
+
             res.RotationSize = native.rotation_size;
             res.MinimumFreeSpace = native.minimum_free_space;
             res.MaximumArchiveSize = native.maximum_archive_size;
