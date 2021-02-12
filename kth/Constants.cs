@@ -10,7 +10,7 @@ namespace Knuth
     {
         internal const string KTH_C_LIBRARY = "libkth-c-api";
 
-        internal const CharSet KTH_OS_CHARSET = CharSet.Auto;
+        // internal const CharSet KTH_OS_CHARSET = CharSet.Auto;
 // #if _NOT_WINDOWS
 //         internal const CharSet KTH_OS_CHARSET = CharSet.Ansi;
 //         internal const UnmanagedType KTH_STR_PTR = UnmanagedType.LPStr;
