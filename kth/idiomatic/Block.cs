@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2020 Knuth Project developers.
+// Copyright (c) 2016-2021 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,8 +19,8 @@ namespace Knuth
 
         public Block (UInt32 version, string hexString) {
             //the raw block is already reversed
-            byte[] array = Binary.HexStringToByteArray(hexString,false);
-            nativeInstance_ = BlockNative.kth_chain_block_factory_from_data(version,array,(UInt64)array.Length);
+            byte[] array = Binary.HexStringToByteArray(hexString, false);
+            nativeInstance_ = BlockNative.kth_chain_block_factory_from_data(version, array, (UInt64)array.Length);
             header_ = new Header(BlockNative.kth_chain_block_header(nativeInstance_), false);
             ownsNativeObject_ = true;
         }
@@ -30,7 +30,6 @@ namespace Knuth
             ownsNativeObject_ = ownsNativeObject;
             header_ = new Header(BlockNative.kth_chain_block_header(nativeInstance_), false);
         }
-
 
         ~Block() {
             Dispose(false);
