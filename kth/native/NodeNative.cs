@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2020 Knuth Project developers.
+// Copyright (c) 2016-2021 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -33,8 +33,7 @@ namespace Knuth.Native
         public static extern void kth_node_init_and_run(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern void kth_node_init_run_and_wait_for_signal(IntPtr exec, IntPtr ctx, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
-
+        public static extern void kth_node_init_run_and_wait_for_signal(IntPtr exec, IntPtr ctx, StartModules mods, [MarshalAs(UnmanagedType.FunctionPtr)]RunNodeHandler handler);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr kth_node_construct(ref Knuth.Native.Config.Settings settings, int stdout_enabled);
@@ -53,7 +52,6 @@ namespace Knuth.Native
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_node_close_on_new_thread(IntPtr exec);
-
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_subscribe_blockchain(IntPtr exec, IntPtr chain, IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)]ReorganizeHandler handler);
