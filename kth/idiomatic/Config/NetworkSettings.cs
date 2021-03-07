@@ -36,7 +36,7 @@ namespace Knuth.Config
         public UInt32 HostPoolCapacity { get; set; }
         public string HostsFile { get; set; }
         public Authority Self { get; set; }
-        public IList<Authority> Blacklists { get; set; }
+        public IList<Authority> Blacklist { get; set; }
         public IList<Endpoint> Peers { get; set; }
         public IList<Endpoint> Seeds { get; set; }
         public string DebugFile { get; set; }
@@ -78,7 +78,7 @@ namespace Knuth.Config
             
             native.self = this.Self.ToNative();
 
-            native.blacklists = Helper.ListToNative(this.Blacklists, 
+            native.blacklists = Helper.ListToNative(this.Blacklist, 
                 Knuth.Native.Config.AuthorityNative.kth_config_authority_allocate_n,
                 x => x.ToNative(),
                 ref native.blacklist_count);
@@ -138,7 +138,7 @@ namespace Knuth.Config
             res.HostsFile = native.hosts_file;
 
             res.Self = Authority.FromNative(native.self);
-            res.Blacklists = Helper.ArrayOfPointersToManaged<Authority, Native.Config.Authority>(native.blacklists, native.blacklist_count, Authority.FromNative);
+            res.Blacklist = Helper.ArrayOfPointersToManaged<Authority, Native.Config.Authority>(native.blacklists, native.blacklist_count, Authority.FromNative);
             res.Peers = Helper.ArrayOfPointersToManaged<Endpoint, Native.Config.Endpoint>(native.peers, native.peer_count, Endpoint.FromNative);
             res.Seeds = Helper.ArrayOfPointersToManaged<Endpoint, Native.Config.Endpoint>(native.seeds, native.seed_count, Endpoint.FromNative);
             
