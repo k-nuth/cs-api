@@ -24,10 +24,6 @@ jobs:
       with:
         python-version: "3.8"
 
-    - name: Install kthbuild
-      run: dotnet restore
-
-
   # - "python --version"
   # - python -m pip install --upgrade pip
   # - "%PYTHON%/Scripts/pip.exe install kthbuild --upgrade"
