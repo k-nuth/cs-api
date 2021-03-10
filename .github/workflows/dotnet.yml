@@ -9,17 +9,63 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    # runs-on: windows-2019
+    # runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies
+        dotnet-version: 3.1.x
+        # dotnet-version: 5.0.x
+    - uses: actions/setup-python@v1
+      with:
+        python-version: "3.8"
+
+    - name: Install kthbuild
       run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
+
+
+  # - "python --version"
+  # - python -m pip install --upgrade pip
+  # - "%PYTHON%/Scripts/pip.exe install kthbuild --upgrade"
+
+    - name: Install Dependencies (Windows)
+      run: |
+        set PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%;
+        python.exe --version
+        cmake --version
+        python.exe -m pip install --upgrade pip
+        pip.exe install kthbuild --upgrade
+        conan user
+      shell: cmd
+
+    - name: Compile
+      run: .\build.ps1 Compile
+      shell: powershell
+
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: .\build.ps1 Test
+      shell: powershell
+
+    - name: Pack
+      run: ./build.ps1 Pack
+      shell: powershell
+
+    - name: Push
+      run: |
+        Write-Host "NUGET_API_KEY: $Env:NUGET_API_KEY"
+        ./build.ps1 Push --NugetApiUrl "https://api.nuget.org/v3/index.json" --NugetApiKey $env:NUGET_API_KEY
+      shell: powershell
+
+
+
+
+    # - name: Restore dependencies
+    #   run: dotnet restore
+    # - name: Build
+    #   run: dotnet build --no-restore
+    # - name: Test
+    #   run: dotnet test --no-build --verbosity normal
