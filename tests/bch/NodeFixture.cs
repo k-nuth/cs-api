@@ -8,8 +8,10 @@ using System.Collections.Generic;
 namespace Knuth.Tests {
     public class NodeFixture : IDisposable {
         public NodeFixture() {
-            var config = Knuth.Config.Settings.GetFromFile("config/mainnet.cfg");
-            Node = new Node(config.Result);
+            var config = Knuth.Config.Settings.GetDefault(NetworkType.Mainnet);
+            config.Database.DbMaxSize = 2 * 1024 * 1024;    // 2MiB
+
+            Node = new Node(config, false);
             var res = Node.LaunchAsync(StartModules.JustChain).GetAwaiter().GetResult();
             if (res != ErrorCode.Success) {
                 throw new InvalidOperationException("Node::LaunchAsync failed, check log");
@@ -31,6 +33,12 @@ namespace Knuth.Tests {
         }
 
         private void fillBlocks() {
+            var hash = Binary.HexStringToByteArray("00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee");
+            var ret = Node.Chain.GetBlockHeightAsync(hash).GetAwaiter().GetResult();
+            if (ret.Result == 170) {
+                return;
+            }
+
             var hexBlocks = new List<string> {
                   "010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd1e4ba744bbbe680e1fee14677ba1a3c3540bf7b1cdb606e857233e0e61bc6649ffff001d01e362990101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0704ffff001d0104ffffffff0100f2052a0100000043410496b538e853519c726a2c91e61ec11600ae1390813a627c66fb8be7947be63c52da7589379515d4e0a604f8141781e62294721166bf621e73a82cbf2342c858eeac00000000"
                 , "010000004860eb18bf1b1620e37e9490fc8a427514416fd75159ab86688e9a8300000000d5fdcc541e25de1c7a5addedf24858b8bb665c9f36ef744ee42c316022c90f9bb0bc6649ffff001d08d2bd610101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0704ffff001d010bffffffff0100f2052a010000004341047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77ac00000000"
