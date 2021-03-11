@@ -63,17 +63,14 @@ namespace Knuth
         public static string ByteArrayToHexString(byte[] ba, bool reverse) {
             StringBuilder hexString = new StringBuilder(ba.Length * 2);
             if (reverse) {
-                for (int i=0; i<ba.Length; i++) {
+                for (int i=0; i < ba.Length; ++i) {
+                    hexString.AppendFormat("{0:x2}", ba[i]);
+                }
+            } else {
+                for (int i = ba.Length - 1; i >= 0; --i) {
                     hexString.AppendFormat("{0:x2}", ba[i]);
                 }
             }
-            else
-            {
-                for (int i=ba.Length-1; i>=0; i--) {
-                    hexString.AppendFormat("{0:x2}", ba[i]);
-                }
-            }
-
             return hexString.ToString();
         }
 
