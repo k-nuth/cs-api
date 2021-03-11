@@ -57,8 +57,14 @@ jobs:
     - name: Push
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        GHA_COMMIT_MSG: ${{ github.event.head_commit.message }}        
       run: |
-        Write-Host "NUGET_API_KEY: $Env:NUGET_API_KEY"
+        Write-Host "NUGET_API_KEY:  $Env:NUGET_API_KEY"
+        Write-Host "GHA_COMMIT_MSG: $Env:GHA_COMMIT_MSG"
+
+        $Env:GHA_BRANCH = "${{ github.ref }}".Split("/")[2]
+        Write-Host "My branch name is $Env:GHA_BRANCH"
+
         ./build.ps1 Push --NugetApiUrl "https://api.nuget.org/v3/index.json" --NugetApiKey $env:NUGET_API_KEY
       shell: powershell
 

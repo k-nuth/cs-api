@@ -154,14 +154,19 @@ class Build : NukeBuild
         .Requires(() => NugetApiUrl)
         .Requires(() => NugetApiKey)
         .Requires(() => Configuration.Equals(Configuration.Release))
+
         // .Requires(() => AppVeyor.IsRunningAppVeyor)
-        .Requires(() => !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPVEYOR")))
+        // .Requires(() => !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPVEYOR")))
+        .Requires(() => !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GHA_BRANCH")))
 
         .Executes(() => {
 
             // var branchName = AppVeyor.Environment.Repository.Branch;
-            var branchName = Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
-            var commitMessage = Environment.GetEnvironmentVariable("APPVEYOR_REPO_COMMIT_MESSAGE");
+            // var branchName = Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
+            // var commitMessage = Environment.GetEnvironmentVariable("APPVEYOR_REPO_COMMIT_MESSAGE");
+
+            var branchName = Environment.GetEnvironmentVariable("GHA_BRANCH");
+            var commitMessage = Environment.GetEnvironmentVariable("GHA_COMMIT_MSG");
 
             Info($"Publish to nuget: {publishToNuget}");
             Info($"Commit message: {commitMessage}");
