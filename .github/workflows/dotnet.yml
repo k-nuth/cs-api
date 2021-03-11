@@ -55,12 +55,12 @@ jobs:
       shell: powershell
 
     - name: Push
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: |
         Write-Host "NUGET_API_KEY: $Env:NUGET_API_KEY"
         ./build.ps1 Push --NugetApiUrl "https://api.nuget.org/v3/index.json" --NugetApiKey $env:NUGET_API_KEY
       shell: powershell
-
-
 
 
     # - name: Restore dependencies
