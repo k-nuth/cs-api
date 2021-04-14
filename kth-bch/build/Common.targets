@@ -1,20 +1,23 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <VersionString>$([System.String]::Copy('0.14.0').Replace('.','_'))</VersionString>
+    <VersionString>$([System.String]::Copy('0.16.0').Replace('.','_'))</VersionString>
   </PropertyGroup>
 
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
     <LibNamePrefix></LibNamePrefix>
     <LibExtension>.dll</LibExtension>
+    <ConanSettings></ConanSettings>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
     <LibNamePrefix>lib</LibNamePrefix>
     <LibExtension>.so</LibExtension>
+    <ConanSettings>-s compiler.libcxx=libstdc++11</ConanSettings>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
     <LibNamePrefix>lib</LibNamePrefix>
     <LibExtension>.dylib</LibExtension>
+    <ConanSettings></ConanSettings>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -36,33 +39,34 @@
     <PropertyGroup Condition="Exists('$(LibDestinationPath)') ">
         <HaveToExecConan>False</HaveToExecConan>
     </PropertyGroup>
-  
+
     <Message Text="Operating System:    $(OS)"/>
     <Message Text="HaveToExecConan:     $(HaveToExecConan)"/>
     <Message Text="VersionString:       $(VersionString)"/>
     <Message Text="LibNamePrefix:       $(LibNamePrefix)"/>
     <Message Text="LibExtension:        $(LibExtension)"/>
+    <Message Text="ConanSettings:       $(ConanSettings)"/>
     <Message Text="LibImport:           $(LibImport)"/>
     <Message Text="LibSourceName:       $(LibSourceName)"/>
     <Message Text="LibDestinationName:  $(LibDestinationName)"/>
     <Message Text="LibDestinationPath:  $(LibDestinationPath)"/>
     <Message Text="LibDestinationPath2: $(LibDestinationPath2)"/>
     <Message Text="Knuth Channel:       stable"/>
-    <Message Text="Knuth Version:       0.14.0"/>
+    <Message Text="Knuth Version:       0.16.0"/>
     <Message Text="Knuth Currency:      BCH"/>
     <Message Text="Knuth March ID:      4fZKi37a595hP"/>
-    
-    <Exec Command="conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config.zip" 
+
+    <Exec Command="conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config.zip"
         ContinueOnError="WarnAndContinue"
         Condition="'$(HaveToExecConan)'=='True'" />
 
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/0.14.0@kth/stable;[generators];cmake;[options];c-api:shared=True;c-api:currency=BCH;c-api:db=full;c-api:march_id=4fZKi37a595hP;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];c-api/0.16.0@kth/stable;[generators];cmake;[options];c-api:shared=True;c-api:currency=BCH;c-api:db=full;c-api:march_id=4fZKi37a595hP;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true" Condition="'$(HaveToExecConan)'=='True'"/>
 
-    <Exec Command="conan install . --install-folder=. --update" 
+    <Exec Command="conan install . --install-folder=. $(ConanSettings) --update"
         Condition=" '$(OS)' != 'Windows_NT' And '$(HaveToExecConan)'=='True' " />
-    <Exec Command="conan install . --install-folder=. -s compiler=&quot;Visual Studio&quot; -s compiler.version=16 --update" 
+    <Exec Command="conan install . --install-folder=. -s compiler=&quot;Visual Studio&quot; -s compiler.version=16 --update"
         Condition=" '$(OS)' == 'Windows_NT' And '$(HaveToExecConan)'=='True' "/>
 
     <Copy SourceFiles="$(LibSourceName)" DestinationFiles="$(LibDestinationPath)" Condition="'$(HaveToExecConan)'=='True'"/>
