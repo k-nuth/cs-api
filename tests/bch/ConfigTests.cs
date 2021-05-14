@@ -47,9 +47,9 @@ namespace Knuth.Tests {
             Assert.True(config.Chain.BchMersenne);
             Assert.True(config.Chain.BchFermat);
             Assert.False(config.Chain.BchEuler);
-            Assert.False(config.Chain.BchGauss);
-            Assert.Equal(config.Chain.GaussActivationTime, 1621080000UL);
-            Assert.Equal(config.Chain.AsertHalfLife, 2UL * 24 * 60 * 60); //two days    
+            // Assert.False(config.Chain.BchGauss);
+            // Assert.Equal(config.Chain.GaussActivationTime, 1621080000UL);
+            Assert.Equal(config.Chain.AsertHalfLife, 2UL * 24 * 60 * 60); //two days
             // ------------------------------------------------------------------------------------
             Assert.Equal(config.Database.Directory, "blockchain");
             Assert.False(config.Database.FlushWrites);
@@ -146,9 +146,9 @@ namespace Knuth.Tests {
             Assert.True(config.Chain.BchMersenne);
             Assert.True(config.Chain.BchFermat);
             Assert.False(config.Chain.BchEuler);
-            Assert.False(config.Chain.BchGauss);
-            Assert.Equal(config.Chain.GaussActivationTime, 1621080000UL);
-            Assert.Equal(config.Chain.AsertHalfLife, 60UL * 60); //one hour    
+            // Assert.False(config.Chain.BchGauss);
+            // Assert.Equal(config.Chain.GaussActivationTime, 1621080000UL);
+            Assert.Equal(config.Chain.AsertHalfLife, 60UL * 60); //one hour
             // ------------------------------------------------------------------------------------
             Assert.Equal(config.Database.Directory, "blockchain");
             Assert.False(config.Database.FlushWrites);
@@ -207,6 +207,6 @@ namespace Knuth.Tests {
             Assert.Equal(config.Node.BlockLatencySeconds, 60U);
             Assert.True(config.Node.RefreshTransactions);
             Assert.True(config.Node.CompactBlocksHighBandwidth);
-        }    
+        }
     }
 }

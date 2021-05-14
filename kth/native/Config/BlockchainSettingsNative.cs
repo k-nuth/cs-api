@@ -31,7 +31,7 @@ namespace Knuth.Native.Config
         public bool bip68;
         public bool bip112;
         public bool bip113;
-      
+
 #if KTH_CS_CURRENCY_BCH        //TODO(fernando): rename to CURRENCY_BCH or something like that
         public bool bch_uahf;
         public bool bch_daa_cw144;
@@ -41,9 +41,9 @@ namespace Knuth.Native.Config
         public bool bch_mersenne;
         public bool bch_fermat;
         public bool bch_euler;
-        public bool bch_gauss;
+        // public bool bch_gauss;
         public UInt64 euler_activation_time;
-        public UInt64 gauss_activation_time;
+        // public UInt64 gauss_activation_time;
         public UInt64 asert_half_life;
 #else
         public bool bip141;

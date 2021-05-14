@@ -45,9 +45,8 @@ namespace Knuth.Config
         public bool BchMersenne { get; set; }
         public bool BchFermat { get; set; }
         public bool BchEuler { get; set; }
-        public bool BchGauss { get; set; }
-        public UInt64 EulerActivationTime { get; set; }
-        public UInt64 GaussActivationTime { get; set; }
+        // public bool BchGauss { get; set; }
+        // public UInt64 GaussActivationTime { get; set; }
         public UInt64 AsertHalfLife { get; set; }
 #else
         public bool Bip141 { get; set; }
@@ -65,7 +64,7 @@ namespace Knuth.Config
             native.notify_limit_hours = this.NotifyLimitHours;
             native.reorganization_limit = this.ReorganizationLimit;
 
-            native.checkpoints = Helper.ListToNative(this.Checkpoints, 
+            native.checkpoints = Helper.ListToNative(this.Checkpoints,
                 Knuth.Native.Config.CheckpointNative.kth_config_checkpoint_allocate_n,
                 x => x.ToNative(),
                 ref native.checkpoint_count);
@@ -93,9 +92,8 @@ namespace Knuth.Config
             native.bch_mersenne = this.BchMersenne;
             native.bch_fermat = this.BchFermat;
             native.bch_euler = this.BchEuler;
-            native.bch_gauss = this.BchGauss;
-            native.euler_activation_time = this.EulerActivationTime;
-            native.gauss_activation_time = this.GaussActivationTime;
+            // native.bch_gauss = this.BchGauss;
+            // native.gauss_activation_time = this.GaussActivationTime;
             native.asert_half_life = this.AsertHalfLife;
 #else
             native.bip141 = this.Bip141;
@@ -138,9 +136,8 @@ namespace Knuth.Config
             res.BchMersenne = native.bch_mersenne;
             res.BchFermat = native.bch_fermat;
             res.BchEuler = native.bch_euler;
-            res.BchGauss = native.bch_gauss;
-            res.EulerActivationTime = native.euler_activation_time;
-            res.GaussActivationTime = native.gauss_activation_time;
+            // res.BchGauss = native.bch_gauss;
+            // res.GaussActivationTime = native.gauss_activation_time;
             res.AsertHalfLife = native.asert_half_life;
 #else
             res.Bip141 = native.bip141;
