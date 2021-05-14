@@ -46,7 +46,7 @@ namespace Knuth.Tests {
             Assert.True(config.Chain.BchPisano);
             Assert.True(config.Chain.BchMersenne);
             Assert.True(config.Chain.BchFermat);
-            Assert.False(config.Chain.BchEuler);
+            Assert.True(config.Chain.BchEuler);
             // Assert.False(config.Chain.BchGauss);
             // Assert.Equal(config.Chain.GaussActivationTime, 1621080000UL);
             Assert.Equal(config.Chain.AsertHalfLife, 2UL * 24 * 60 * 60); //two days
@@ -145,7 +145,7 @@ namespace Knuth.Tests {
             Assert.True(config.Chain.BchPisano);
             Assert.True(config.Chain.BchMersenne);
             Assert.True(config.Chain.BchFermat);
-            Assert.False(config.Chain.BchEuler);
+            Assert.True(config.Chain.BchEuler);
             // Assert.False(config.Chain.BchGauss);
             // Assert.Equal(config.Chain.GaussActivationTime, 1621080000UL);
             Assert.Equal(config.Chain.AsertHalfLife, 60UL * 60); //one hour
