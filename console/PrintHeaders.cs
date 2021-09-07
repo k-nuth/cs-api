@@ -1,4 +1,4 @@
-﻿// // Copyright (c) 2016-2020 Knuth Project developers.
+﻿// // Copyright (c) 2016-2021 Knuth Project developers.
 // // Distributed under the MIT software license, see the accompanying
 // // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,9 +21,9 @@
 //             Console.WriteLine($"DbMode:              {buildConfig.DbMode}");
 //             Console.WriteLine($"DbReadonly:          {buildConfig.DbReadonly}");
 //             Console.WriteLine($"DebugMode:           {buildConfig.DebugMode}");
-            
-//             // var config = Knuth.Config.Settings.GetFromFile("/home/fernando/kth-exec/kth-bch-mainnet-pruned.cfg");
-//             var config = Knuth.Config.Settings.GetFromFile("/Users/fernando/dev/kth/cs-api/console/kth-bch-mainnet-pruned.cfg");
+
+//             var config = Knuth.Config.Settings.GetFromFile("/home/fernando/kth-exec/kth-bch-mainnet-pruned.cfg");
+//             // var config = Knuth.Config.Settings.GetFromFile("/Users/fernando/dev/kth/cs-api/console/kth-bch-mainnet-pruned.cfg");
 
 //             if ( ! config.Ok) {
 //                 Console.WriteLine(config.ErrorMessage);
@@ -41,15 +41,19 @@
 //             Console.WriteLine("Launching node...");
 
 //             using (var node = new Knuth.Node(config.Result, true)) {
-//                 var res = await node.LaunchAsync();
+//                 var res = await node.LaunchAsync(StartModules.JustChain);
 //                 Console.WriteLine(res);
 //                 Console.WriteLine("Knuth node has been launched.");
 
 //                 var heightRes = await node.Chain.GetLastHeightAsync();
 //                 Console.WriteLine($"Current height in local copy: {heightRes.Result}");
 
-//                 for (ulong i = 0; i < heightRes.Result; ++i) {
+//                 for (ulong i = 0; i <= heightRes.Result; ++i) {
 //                     var headerRes = await node.Chain.GetBlockHeaderByHeightAsync(i);
+//                     var data = headerRes.Result.BlockData.ToData(1);
+//                     // Console.WriteLine(data);
+//                     var hexStr = Binary.ByteArrayToHexString(data, true);
+//                     Console.WriteLine(hexStr);
 //                 }
 
 //             }
