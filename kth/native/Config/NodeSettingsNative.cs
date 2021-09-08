@@ -15,9 +15,12 @@ namespace Knuth.Native.Config
 
         [MarshalAs(UnmanagedType.Bool)]
         public bool refresh_transactions;
-        
+
         [MarshalAs(UnmanagedType.Bool)]
         public bool compact_blocks_high_bandwidth;
+
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool ds_proofs_enabled;
     }
 
     public static class NodeSettingsNative

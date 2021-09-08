@@ -19,6 +19,7 @@ namespace Knuth.Config
         public UInt32 BlockLatencySeconds { get; set; }
         public bool RefreshTransactions { get; set; }
         public bool CompactBlocksHighBandwidth { get; set; }
+        public bool DsProofsEnabled { get; set; }
 
         public Knuth.Native.Config.NodeSettings ToNative() {
             var native = new Knuth.Native.Config.NodeSettings();
@@ -27,6 +28,7 @@ namespace Knuth.Config
             native.block_latency_seconds = this.BlockLatencySeconds;
             native.refresh_transactions = this.RefreshTransactions;
             native.compact_blocks_high_bandwidth = this.CompactBlocksHighBandwidth;
+            native.ds_proofs_enabled = this.DsProofsEnabled;
             return native;
         }
 
@@ -37,6 +39,7 @@ namespace Knuth.Config
             res.BlockLatencySeconds = native.block_latency_seconds;
             res.RefreshTransactions = native.refresh_transactions;
             res.CompactBlocksHighBandwidth = native.compact_blocks_high_bandwidth;
+            res.DsProofsEnabled = native.ds_proofs_enabled;
             return res;
         }
     }

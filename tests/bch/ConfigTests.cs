@@ -108,6 +108,8 @@ namespace Knuth.Tests {
             Assert.Equal(config.Node.BlockLatencySeconds, 60U);
             Assert.True(config.Node.RefreshTransactions);
             Assert.True(config.Node.CompactBlocksHighBandwidth);
+            Assert.False(config.Node.DsProofsEnabled);
+
         }
 
 
@@ -207,6 +209,7 @@ namespace Knuth.Tests {
             Assert.Equal(config.Node.BlockLatencySeconds, 60U);
             Assert.True(config.Node.RefreshTransactions);
             Assert.True(config.Node.CompactBlocksHighBandwidth);
+            Assert.False(config.Node.DsProofsEnabled);
         }
     }
 }
