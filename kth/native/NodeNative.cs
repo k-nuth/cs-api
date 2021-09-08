@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace Knuth.Native
 {
-    // internal 
+    // internal
     public static class NodeNative
     {
         //Delegates for callbacks
@@ -21,6 +21,10 @@ namespace Knuth.Native
         //typedef int (*transaction_handler_t)(chain_t, void*, error_code_t, transaction_t);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int TransactionHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, IntPtr transaction);
+
+        // typedef kth_bool_t (*kth_subscribe_ds_proof_handler_t)(kth_node_t, kth_chain_t, void*, kth_error_code_t, kth_double_spend_proof_t);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int DsProofHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, IntPtr dsp);
 
         //Functions
         [DllImport(Constants.KTH_C_LIBRARY)]
@@ -58,6 +62,10 @@ namespace Knuth.Native
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_subscribe_transaction(IntPtr exec, IntPtr chain, IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)]TransactionHandler handler);
+
+        // void kth_chain_subscribe_ds_proof(kth_node_t exec, kth_chain_t chain, void* ctx, kth_subscribe_ds_proof_handler_t handler);
+        [DllImport(Constants.KTH_C_LIBRARY)]
+        public static extern void kth_chain_subscribe_ds_proof(IntPtr exec, IntPtr chain, IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)]DsProofHandler handler);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern IntPtr kth_node_get_chain(IntPtr exec);

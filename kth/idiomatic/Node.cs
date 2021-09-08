@@ -24,7 +24,7 @@ namespace Knuth {
         /// <param name="outgoing">List of outgoing blocks</param>
         /// <returns></returns>
         public delegate bool BlockHandler(ErrorCode errorCode, UInt64 height, BlockList incoming, BlockList outgoing);
-        
+
         /// <summary>
         /// Contains information about new transactions
         /// </summary>
@@ -33,11 +33,14 @@ namespace Knuth {
         /// <returns></returns>
         public delegate bool TransactionHandler(ErrorCode errorCode, Transaction newTx);
 
+        public delegate bool DsProofHandler(ErrorCode errorCode, DoubleSpendProof dsp);
+
         private Chain chain_;
         private readonly IntPtr nativeInstance_;
         private readonly NodeNative.ReorganizeHandler internalBlockHandler_;
         private readonly NodeNative.RunNodeHandler internalRunNodeHandler_;
         private readonly NodeNative.TransactionHandler internalTxHandler_;
+        private readonly NodeNative.DsProofHandler internalDsProofHandler_;
 
         private bool running_;
         private bool stopped_;
@@ -50,6 +53,7 @@ namespace Knuth {
             internalBlockHandler_ = InternalBlockHandler;
             internalRunNodeHandler_ = InternalRunNodeHandler;
             internalTxHandler_ = InternalTransactionHandler;
+            internalDsProofHandler_ = InternalDsProofHandler;
         }
 
         /// <summary>
@@ -57,8 +61,8 @@ namespace Knuth {
         /// </summary>
         /// <param name="settings"> Settings object. </param>
         /// <param name="showNodeLog"> Print Native node stdout and stderr. </param>
-        public Node(Settings settings, bool showNodeLog = false) 
-            : this() 
+        public Node(Settings settings, bool showNodeLog = false)
+            : this()
         {
             var native = settings.ToNative();
             nativeInstance_ = NodeNative.kth_node_construct(ref native, showNodeLog ? 1 : 0);
@@ -119,13 +123,13 @@ namespace Knuth {
                 stopped_ = true;
             });
         }
-       
+
         /// <summary>
         /// Stops the node; that includes all activies, such as synchronization and networking.
         /// </summary>
         public void Stop() {
             // NodeNative.kth_node_stop(nativeInstance_);
-            NodeNative.kth_node_signal_stop(nativeInstance_); 
+            NodeNative.kth_node_signal_stop(nativeInstance_);
             while (running_ &&  ! stopped_) {
                 System.Threading.Thread.Sleep(100);
             }
@@ -168,6 +172,12 @@ namespace Knuth {
             NodeNative.kth_chain_subscribe_transaction(nativeInstance_, Chain.NativeInstance, handlerPtr, internalTxHandler_);
         }
 
+        public void SubscribeDsProofNotifications(DsProofHandler handler) {
+            var handlerHandle = GCHandle.Alloc(handler);
+            var handlerPtr = (IntPtr)handlerHandle;
+            NodeNative.kth_chain_subscribe_ds_proof(nativeInstance_, Chain.NativeInstance, handlerPtr, internalDsProofHandler_);
+        }
+
         protected virtual void Dispose(bool disposing) {
             if (disposing) {
                 //Release managed resources and call Dispose for member variables
@@ -191,9 +201,9 @@ namespace Knuth {
                 var incomingBlocks = incoming != IntPtr.Zero? new BlockList(incoming) : null;
                 var outgoingBlocks = outgoing != IntPtr.Zero? new BlockList(outgoing) : null;
                 var handler = (handlerHandle.Target as BlockHandler);
-                
+
                 keepSubscription = handler(error, forkHeight, incomingBlocks, outgoingBlocks);
-            
+
                 incomingBlocks?.Dispose();
                 outgoingBlocks?.Dispose();
 
@@ -235,12 +245,12 @@ namespace Knuth {
                     closed = true;
                     return 0;
                 }
-                
+
                 var newTransaction = transaction != IntPtr.Zero? new Transaction(transaction) : null;
                 var handler = (handlerHandle.Target as TransactionHandler);
-                
+
                 keepSubscription = handler(error, newTransaction);
-                
+
                 if ( ! keepSubscription ) {
                     handlerHandle.Free();
                     closed = true;
@@ -249,7 +259,36 @@ namespace Knuth {
             } finally {
                 if ( ! keepSubscription && ! closed) {
                     handlerHandle.Free();
-                }       
+                }
+            }
+        }
+
+        private static int InternalDsProofHandler(IntPtr node, IntPtr chain, IntPtr context, ErrorCode error, IntPtr dsp) {
+            var handlerHandle = (GCHandle)context;
+            var closed = false;
+            var keepSubscription = false;
+
+            try {
+                if (NodeNative.kth_node_stopped(node) != 0 || error == ErrorCode.ServiceStopped) {
+                    handlerHandle.Free();
+                    closed = true;
+                    return 0;
+                }
+
+                var newDsp = dsp != IntPtr.Zero? new DoubleSpendProof(dsp) : null;
+                var handler = (handlerHandle.Target as DsProofHandler);
+
+                keepSubscription = handler(error, newDsp);
+
+                if ( ! keepSubscription ) {
+                    handlerHandle.Free();
+                    closed = true;
+                }
+                return Helper.BoolToC(keepSubscription);
+            } finally {
+                if ( ! keepSubscription && ! closed) {
+                    handlerHandle.Free();
+                }
             }
         }
     }
