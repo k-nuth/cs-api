@@ -4,7 +4,8 @@
 
   <PropertyGroup>
     <!-- <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks> -->
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <!-- <TargetFrameworks>netcoreapp3.1</TargetFrameworks> -->
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Platforms>AnyCPU;x64</Platforms>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
