@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016-2021 Knuth Project developers.
+﻿// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +14,7 @@ namespace Knuth.Tests {
             using (var tx = new Transaction(1, HEX_TX)) {
                 var hash = Binary.ByteArrayToHexString(tx.Hash);
                 Assert.Equal(hash,"d4c7289fdc74dc5043372f343863c635799b40355f7cae46c915eb5fc07598c7");
-                Assert.True(tx.IsValid); 
+                Assert.True(tx.IsValid);
             }
         }
     }

@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -272,7 +272,7 @@ namespace Knuth
         }
 
         /// <summary>
-        /// Returns true if and only if the transaction is final, 
+        /// Returns true if and only if the transaction is final,
         /// false otherwise.
         /// </summary>
         /// <param name="blockHeight"></param>

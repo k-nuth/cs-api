@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -31,7 +31,7 @@ namespace Knuth
         }
 
         /// <summary>
-        /// Script validity is independent of individual operation validity. 
+        /// Script validity is independent of individual operation validity.
         /// Operations are considered invalid if there is a trailing invalid/default op
         /// or if a push op has a size mismatch.
         /// </summary>

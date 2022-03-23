@@ -1,4 +1,4 @@
-﻿// // Copyright (c) 2016-2021 Knuth Project developers.
+﻿// // Copyright (c) 2016-2022 Knuth Project developers.
 // // Distributed under the MIT software license, see the accompanying
 // // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -35,19 +35,19 @@
 
 //                 // return;
 //             }
-//         } 
-        
+//         }
+
 
 //         static async Task Main(string[] args) {
 //             // string configFile = "node.cfg";
 //             string configFile = "/home/fernando/dev/kth/cs-api/tests/bch/config/invalid.cfg";
-            
+
 
 //             var log = new LoggerConfiguration()
 //                 .MinimumLevel.Debug()
 //                 .WriteTo.ColoredConsole(outputTemplate: "{Timestamp:HH:mm} [{Level}] {Message}{NewLine}{Exception}")
 //                 .CreateLogger();
-                
+
 //             Log.Logger = log;
 
 //             try {

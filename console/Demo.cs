@@ -1,4 +1,4 @@
-﻿// // Copyright (c) 2016-2021 Knuth Project developers.
+﻿// // Copyright (c) 2016-2022 Knuth Project developers.
 // // Distributed under the MIT software license, see the accompanying
 // // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,7 +10,7 @@
 // {
 //     public class Program {
 //         static async Task Main(string[] args) {
-            
+
 // //             // var config = Knuth.Config.Settings.GetFromFile("/home/fernando/dev/kth/cs-api/console/node.cfg");
 // //             var config = Knuth.Config.Settings.GetFromFile("/Users/fernando/dev/kth/cs-api/console/node_macos.cfg");
 // //             // var config = Knuth.Config.Settings.GetFromFile("C:\\development\\kth\\cs-api\\console\\node_win.cfg");

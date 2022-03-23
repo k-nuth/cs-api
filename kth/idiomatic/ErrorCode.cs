@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -47,7 +47,7 @@ namespace Knuth {
         /// </summary>
         ServiceStopped = 1,
         /// <summary>
-        /// The operation failed 
+        /// The operation failed
         /// </summary>
         OperationFailed = 2,
         /// <summary>

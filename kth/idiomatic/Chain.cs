@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -525,8 +525,8 @@ namespace Knuth
                         ErrorCode = code,
                         Result = history
                     });
-                    
-                });   
+
+                });
             });
         }
 
@@ -571,16 +571,16 @@ namespace Knuth
         /// <param name="fromHeight"> Starting height in the chain to search for transactions </param>
         /* public async Task<DisposableApiCallResult<INativeList<IStealthCompact>>> GetStealthAsync(Binary filter, UInt64 fromHeight) {
             return await TaskHelper.ToTask<DisposableApiCallResult<INativeList<IStealthCompact>>>(tcs => {
-                
+
                 GetStealth(filter, fromHeight, (code, list) => {
                     tcs.TrySetResult(new DisposableApiCallResult<INativeList<IStealthCompact>>()
                     {
                         ErrorCode = code,
                         Result = list
                     });
-                    
+
                 });
-                
+
             });
         }*/
 
@@ -604,9 +604,9 @@ namespace Knuth
                         ErrorCode = code,
                         Result = headerReader
                     });
-                    
+
                 });
-                
+
             });
         }*/
 
@@ -632,9 +632,9 @@ namespace Knuth
         public async Task<ErrorCode> OrganizeBlockAsync(Block block) {
             return await TaskHelper.ToTask<ErrorCode>(tcs => {
                 OrganizeBlock(block, errorCode => {
-                    tcs.TrySetResult(errorCode);      
+                    tcs.TrySetResult(errorCode);
                 });
-                
+
             });
         }
 
@@ -651,7 +651,7 @@ namespace Knuth
         public async Task<ErrorCode> OrganizeTransactionAsync(Transaction transaction) {
             return await TaskHelper.ToTask<ErrorCode>(tcs => {
                 OrganizeTransaction(transaction, errorCode => {
-                    tcs.TrySetResult(errorCode);      
+                    tcs.TrySetResult(errorCode);
                 });
             });
         }
@@ -672,15 +672,15 @@ namespace Knuth
         /// <param name="transaction"> Transaction to validate </param>
         public async Task<ApiCallResult<string>> ValidateTransactionAsync(Transaction transaction) {
             return await TaskHelper.ToTask<ApiCallResult<string>>(tcs => {
-                
+
                 ValidateTransaction(transaction, (code, message) => {
                     tcs.TrySetResult(new ApiCallResult<string> {
                         ErrorCode = code,
                         Result = message
                     });
-                    
+
                 });
-                
+
             });
         }
 

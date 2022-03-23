@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,18 +10,18 @@ namespace Knuth
 {
     public class LibConfig {
         public enum LogLibrary {
-            Boost = 0, 
-            Spdlog = 1, 
-            Binlog = 2, 
+            Boost = 0,
+            Spdlog = 1,
+            Binlog = 2,
         }
 
         public enum DbMode {
-            Legacy = 0, 
-            Pruned = 1, 
-            Normal = 2, 
+            Legacy = 0,
+            Pruned = 1,
+            Normal = 2,
             FullIndexed = 3
         }
-        
+
         public struct Settings {
             public LogLibrary LogLibrary;
             public bool UseLibmdbx;
@@ -34,7 +34,7 @@ namespace Knuth
             public bool DbReadonly;
             public bool DebugMode;
         }
-        
+
         public static Settings Get() {
             var native = Knuth.Native.LibConfig.LibConfigNative.kth_libconfig_get();
             var ret = new Settings {

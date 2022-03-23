@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,7 +13,7 @@ namespace Knuth.Tests {
         private const string TESTNET_CASH_ADDR = "bchtest:qqtynp0zz0ltgrtm9nm5z4u536fue4nc5y0rkx0r6a";
         private const string TESTNET_CASH_ADDR_NO_PREFIX = "qqtynp0zz0ltgrtm9nm5z4u536fue4nc5y0rkx0r6a";
         private const string TESTNET_LEGACY_ADDR = "mhYoEjuWJhZsJehPomAQJRnQ713UvYBFa3";
-        
+
 
         [Fact]
         public void ConvertLegacyTestnetToCashAddr() {

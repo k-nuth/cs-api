@@ -1,11 +1,11 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 using Knuth.Native;
 using System;
 
-namespace Knuth 
+namespace Knuth
 {
 
     /// <summary>
@@ -188,7 +188,7 @@ namespace Knuth
             return new Transaction(TransactionListNative.kth_chain_transaction_list_nth(nativeTransactionList, n), false);
         }
 
-        
+
 
         /// <summary>
         /// The block subsidy. It's the same value for all blocks.
@@ -224,7 +224,7 @@ namespace Knuth
         /// <returns> The amount of signature operations in this block </returns>
         public UInt64 GetSignatureOperations(bool bip16Active) {
             return BlockNative.kth_chain_block_signature_operations_bip16_active(nativeInstance_, Helper.BoolToC(bip16Active));
-            
+
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Knuth
         public UInt64 GetTotalInputs(bool withCoinbase) {
             return BlockNative.kth_chain_block_total_inputs(nativeInstance_, Helper.BoolToC(withCoinbase));
         }
-        
+
         internal IntPtr NativeInstance => nativeInstance_;
 
         protected virtual void Dispose(bool disposing) {

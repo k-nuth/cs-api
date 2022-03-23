@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -100,7 +100,7 @@ namespace Knuth.Tests {
             Assert.True(script1.OperationsAreValid);
             Assert.Equal(67UL, script1.SatoshiContentSize);
             Assert.Equal("[0411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3] checksig", script1.ToString(0));
-        }        
+        }
 
         private void CheckFirstNonCoinbaseTxFromHeight170(ITransaction tx, string txHashHexStr) {
             Assert.Equal<UInt32>(1, tx.Version);
@@ -238,7 +238,7 @@ namespace Knuth.Tests {
                 Assert.Equal(ret.ErrorCode, ErrorCode.Success);
                 Assert.Equal<UInt64>(0, ret.Result.TxPosition.BlockHeight);
                 Assert.Equal<UInt64>(0, ret.Result.TxPosition.Index);
-                
+
             }
         }
 
@@ -282,7 +282,7 @@ namespace Knuth.Tests {
             }
         }
 
-     
+
         /*[Fact]
         public void TestSubscribeToBlockchain() {
             var handlerDone = new AutoResetEvent(false);
@@ -387,15 +387,15 @@ namespace Knuth.Tests {
         public async Task GetCompactBlockByHashAsync() {
             var hash = Binary.HexStringToByteArray("000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943");
             using (var ret = await nodeFixture_.Node.Chain.GetCompactBlockByHashAsync(hash)) {
-                Assert.True(ret.Result.BlockData.IsValid); 
+                Assert.True(ret.Result.BlockData.IsValid);
             }
         }*/
-        
+
         /*
         [Fact]
         public async Task GetCompactBlockByHeightAsync() {
             using (var ret = await nodeFixture_.Node.Chain.GetCompactBlockByHeightAsync(1)) {
-                Assert.True(ret.Result.BlockData.IsValid); 
+                Assert.True(ret.Result.BlockData.IsValid);
             }
         }*/
 
@@ -407,7 +407,7 @@ namespace Knuth.Tests {
                     foreach (var x in ret.Result) {
 
                     }
-                    Assert.True(ret.Result.Count >= 0); 
+                    Assert.True(ret.Result.Count >= 0);
                 }
             }
         }
@@ -416,7 +416,7 @@ namespace Knuth.Tests {
         public async Task GetConfirmedTransactionsAsync() {
             using (var address = new PaymentAddress("bchtest:qp7d6x2weeca9fn6eakwvgd9ryq8g6h0tuyks75rt7"))
             using (var ret = await nodeFixture_.Node.Chain.GetConfirmedTransactionsAsync(address,10,1)) {
-                Assert.True(ret.Result.Count >= 0); 
+                Assert.True(ret.Result.Count >= 0);
             }
         }
 
@@ -456,7 +456,7 @@ namespace Knuth.Tests {
         public void CreateBlockFromHex() {
             var hex = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4adae5494dffff7f20020000000101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000";
             using (Block b = new Block(1, hex)) {
-                Assert.True(b.IsValid); 
+                Assert.True(b.IsValid);
             }
         }
     }

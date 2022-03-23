@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -32,11 +32,11 @@ namespace Knuth
             BlockIndexesNative.kth_chain_block_indexes_destruct(NativeInstance);
         }
 
-        internal BlockIndexList(IntPtr nativeInstance) : base(nativeInstance) {            
+        internal BlockIndexList(IntPtr nativeInstance) : base(nativeInstance) {
         }
 
         public BlockIndexList() {
-            
+
         }
     }*/
 

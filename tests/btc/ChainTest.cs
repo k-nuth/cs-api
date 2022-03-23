@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -63,14 +63,14 @@ namespace Knuth.Tests {
             }
         }
 
-      
+
 
         [Fact]
         public async Task TestGetBlockHeightAsync() {
             //https://blockchain.info/es/block-height/0
             var hash = Binary.HexStringToByteArray("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
             var ret = await nodeFixture_.Node.Chain.GetBlockHeightAsync(hash);
-            
+
             Assert.Equal(ErrorCode.Success, ret.ErrorCode);
             Assert.Equal<UInt64>(0, ret.Result);
         }
@@ -121,7 +121,7 @@ namespace Knuth.Tests {
                 Assert.Equal(ErrorCode.Success, ret.ErrorCode);
                 Assert.Equal<UInt64>(0, ret.Result.Count);
             }
-           
+
         } */
 
         [Fact]
@@ -136,7 +136,7 @@ namespace Knuth.Tests {
                 Assert.Equal<UInt64>(1, ret.Result.TxPosition.Index);
                 CheckFirstNonCoinbaseTxFromHeight170(ret.Result.Tx, txHashHexStr);
             }
-            
+
         }
 
         [Fact]
@@ -205,7 +205,7 @@ namespace Knuth.Tests {
             Assert.Equal("0000000000000000000000000000000000000000000000000000000000000000", Binary.ByteArrayToHexString(header.PreviousBlockHash));
             Assert.Equal<UInt32>(1, header.Version);
             Assert.Equal<UInt32>(486604799, header.Bits);
-            Assert.Equal<UInt32>(2083236893, header.Nonce);            
+            Assert.Equal<UInt32>(2083236893, header.Nonce);
             DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
             Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
         }
@@ -316,7 +316,7 @@ namespace Knuth.Tests {
 
         private async Task WaitUntilBlock(UInt64 desiredHeight, string callerName) {
             ErrorCode error = 0;
-            UInt64 height = 0;            
+            UInt64 height = 0;
             while (error == 0 && height < desiredHeight){
                 Console.WriteLine("--->" + callerName + " checking height: " + height);
                 var errorAndHeight = await GetLastHeight();
@@ -374,14 +374,14 @@ namespace Knuth.Tests {
         public async Task GetCompactBlockByHashAsync() {
             var hash = Binary.HexStringToByteArray("00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048");
             using (var ret = await nodeFixture_.Node.Chain.GetCompactBlockByHashAsync(hash)) {
-                Assert.True(ret.Result.BlockData.IsValid); 
+                Assert.True(ret.Result.BlockData.IsValid);
             }
         }*/
         /*
         [Fact]
         public async Task GetCompactBlockByHeightAsync() {
             using (var ret = await nodeFixture_.Node.Chain.GetCompactBlockByHeightAsync(1)) {
-                Assert.True(ret.Result.BlockData.IsValid); 
+                Assert.True(ret.Result.BlockData.IsValid);
             }
         }*/
 
@@ -389,15 +389,15 @@ namespace Knuth.Tests {
         public async Task GetHistoryAsync() {
             using (var address = new PaymentAddress("1PDatg81sEwirJU3QUKcGLyfQC6epZNyiL"))
             using (var ret = await nodeFixture_.Node.Chain.GetHistoryAsync(address,10,1)) {
-                Assert.True(ret.Result.Count >= 0); 
-            }     
+                Assert.True(ret.Result.Count >= 0);
+            }
         }
 
         [Fact]
         public async Task GetConfirmedTransactionsAsync() {
             using (var address = new PaymentAddress("1PDatg81sEwirJU3QUKcGLyfQC6epZNyiL"))
             using (var ret = await nodeFixture_.Node.Chain.GetConfirmedTransactionsAsync(address,10,1)) {
-                Assert.True(ret.Result.Count >= 0); 
+                Assert.True(ret.Result.Count >= 0);
             }
         }
 
@@ -409,7 +409,7 @@ namespace Knuth.Tests {
             }
         }
 
-        
+
         [Fact]
         public async Task OrganizeTransactionAsync() {
             using (var block = await nodeFixture_.Node.Chain.GetBlockByHeightAsync(0)) {

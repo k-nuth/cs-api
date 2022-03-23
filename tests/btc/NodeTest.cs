@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016-2021 Knuth Project developers.
+﻿// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,14 +11,14 @@ namespace Knuth.Tests {
         [Fact]
         public void TestConfigValid() {
             using (var exec_ = new Node("config/valid.cfg")) {
-                Assert.True(exec_.IsLoadConfigValid); 
+                Assert.True(exec_.IsLoadConfigValid);
             }
         }
 
         [Fact]
         public void TestConfigInvalid() {
             using (var exec_ = new Node("config/invalid.cfg")) {
-                Assert.False(exec_.IsLoadConfigValid); 
+                Assert.False(exec_.IsLoadConfigValid);
             }
         }
     }

@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,7 +18,7 @@ namespace Knuth {
 //             var str = Marshal.PtrToStringAnsi(ptr);
 // #else
 //             var str = Marshal.PtrToStringUni(ptr);
-// #endif        
+// #endif
 //             return str;
 //         }
 
@@ -27,7 +27,7 @@ namespace Knuth {
 //             var str = Marshal.StringToHGlobalAnsi(s);
 // #else
 //             var str = Marshal.StringToHGlobalUni(s);
-// #endif        
+// #endif
 //             return str;
 //         }
 
@@ -43,7 +43,7 @@ namespace Knuth {
                 var managedElement = converter(nativeElement);
                 res.Add(managedElement);
             }
-            return res;     
+            return res;
         }
 
         public static IList<string> ArrayOfStringsToManaged(IntPtr ptr, UInt64 count) {
@@ -61,12 +61,12 @@ namespace Knuth {
                 // Marshal.FreeCoTaskMem(ptrArray[i]);
             }
             // Marshal.FreeCoTaskMem(ptr);
-            return res;     
+            return res;
         }
 
 
-        public static IntPtr ListToNative<TNative, TIdiomatic>(IList<TIdiomatic> list, 
-            Func<UInt64, IntPtr> allocator, Func<TIdiomatic, TNative> converter, ref UInt64 outCount) 
+        public static IntPtr ListToNative<TNative, TIdiomatic>(IList<TIdiomatic> list,
+            Func<UInt64, IntPtr> allocator, Func<TIdiomatic, TNative> converter, ref UInt64 outCount)
         {
             outCount = (UInt64)list.Count;
             var buffer = allocator((UInt64)list.Count);

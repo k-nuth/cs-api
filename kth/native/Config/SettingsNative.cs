@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,8 +21,8 @@ namespace Knuth.Native.Config
         // public static extern NodeSettings kth_config_settings_default(NetworkType network);
 
         [DllImport(Constants.KTH_C_LIBRARY, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool kth_config_settings_get_from_file(string path, 
-            out IntPtr settingsPtr, 
+        public static extern bool kth_config_settings_get_from_file(string path,
+            out IntPtr settingsPtr,
             [MarshalAs(UnmanagedType.LPStr)] out string error_message);
 
 

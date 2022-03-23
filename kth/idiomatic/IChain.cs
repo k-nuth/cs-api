@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -151,6 +151,6 @@ namespace Knuth
         /// <param name="transaction"> Transaction to add. </param>
         /// <returns> ErrorCode with operation result. See ErrorCode enumeration. </returns>
         Task<ErrorCode> OrganizeTransactionAsync(Transaction transaction);
-       
+
     }
 }

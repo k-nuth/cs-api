@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2021 Knuth Project developers.
+# Copyright (c) 2016-2022 Knuth Project developers.
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -48,7 +48,7 @@ assembly_info:
   #       Write-Host "branch is master without tags, exiting"
   #       Exit-AppveyorBuild
   #     }
-      
+
 install:
   - set PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%;
   - "python --version"
@@ -71,7 +71,7 @@ deploy_script:
   - ps: ./build.ps1 Push --NugetApiUrl "https://api.nuget.org/v3/index.json" --NugetApiKey $env:NUGET_API_KEY
 
   # - ps: ./build.ps1 Push --NugetApiUrl "https://www.myget.org/F/cfrenzel-ci/api/v2/package" --NugetApiKey $env:MyGetApiKey
-  # - ps: | 
+  # - ps: |
   #     if ($env:APPVEYOR_REPO_TAG  -eq "true"){
   #         ./build.ps1 Push --NugetApiUrl "https://api.nuget.org/v3/index.json" --NugetApiKey $env:NUGET_API_KEY
   #     }

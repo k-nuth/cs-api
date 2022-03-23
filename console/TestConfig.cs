@@ -1,4 +1,4 @@
-﻿// // Copyright (c) 2016-2021 Knuth Project developers.
+﻿// // Copyright (c) 2016-2022 Knuth Project developers.
 // // Distributed under the MIT software license, see the accompanying
 // // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,7 +18,7 @@
 //             Console.WriteLine($"block_latency_seconds:          {nodeSettings.block_latency_seconds}");
 //             Console.WriteLine($"refresh_transactions:           {nodeSettings.refresh_transactions}");
 //             Console.WriteLine($"compact_blocks_high_bandwidth:  {nodeSettings.compact_blocks_high_bandwidth}");
-            
+
 //             var blockchainSettings = Knuth.Native.Config.BlockchainSettingsNative.kth_config_blockchain_settings_default(NetworkType.Mainnet);
 //             Console.WriteLine($"cores:                    {blockchainSettings.cores}");
 //             Console.WriteLine($"priority:                 {blockchainSettings.priority}");
@@ -64,7 +64,7 @@
 //             Console.WriteLine($"db_max_size:              {dbSettings.db_max_size}");
 //             Console.WriteLine($"safe_mode:                {dbSettings.safe_mode}");
 //             Console.WriteLine($"cache_capacity:           {dbSettings.cache_capacity}");
-//         }        
+//         }
 
 //         public static void TestsFromFile() {
 //             var okSettings = Knuth.Config.Settings.GetFromFile("/home/fernando/dev/kth/cs-api/console/node.cfg");

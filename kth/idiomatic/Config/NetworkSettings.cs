@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -75,20 +75,20 @@ namespace Knuth.Config
             native.host_pool_capacity = this.HostPoolCapacity;
             // native.hosts_file = Helper.StringToPtr(this.HostsFile);
             native.hosts_file = this.HostsFile;
-            
+
             native.self = this.Self.ToNative();
 
-            native.blacklists = Helper.ListToNative(this.Blacklist, 
+            native.blacklists = Helper.ListToNative(this.Blacklist,
                 Knuth.Native.Config.AuthorityNative.kth_config_authority_allocate_n,
                 x => x.ToNative(),
                 ref native.blacklist_count);
 
-            native.peers = Helper.ListToNative(this.Peers, 
+            native.peers = Helper.ListToNative(this.Peers,
                 Knuth.Native.Config.EndpointNative.kth_config_endpoint_allocate_n,
                 x => x.ToNative(),
                 ref native.peer_count);
 
-            native.seeds = Helper.ListToNative(this.Seeds, 
+            native.seeds = Helper.ListToNative(this.Seeds,
                 Knuth.Native.Config.EndpointNative.kth_config_endpoint_allocate_n,
                 x => x.ToNative(),
                 ref native.seed_count);
@@ -141,7 +141,7 @@ namespace Knuth.Config
             res.Blacklist = Helper.ArrayOfPointersToManaged<Authority, Native.Config.Authority>(native.blacklists, native.blacklist_count, Authority.FromNative);
             res.Peers = Helper.ArrayOfPointersToManaged<Endpoint, Native.Config.Endpoint>(native.peers, native.peer_count, Endpoint.FromNative);
             res.Seeds = Helper.ArrayOfPointersToManaged<Endpoint, Native.Config.Endpoint>(native.seeds, native.seed_count, Endpoint.FromNative);
-            
+
             // res.DebugFile = Helper.PtrToString(native.debug_file);
             // res.ErrorFile = Helper.PtrToString(native.error_file);
             // res.ArchiveDirectory = Helper.PtrToString(native.archive_directory);

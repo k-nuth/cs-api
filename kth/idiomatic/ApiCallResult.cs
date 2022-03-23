@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -25,7 +25,7 @@ namespace Knuth
         /// Status code returned by native api
         /// </summary>
         public ErrorCode ErrorCode { get; set; }
-        
+
         /// <summary>
         /// The result of an API Method
         /// </summary>
@@ -56,7 +56,7 @@ namespace Knuth
         /// Return the block's data
         /// </summary>
         public TBlockData BlockData { get; set; }
-        
+
         /// <summary>
         /// The block's height
         /// </summary>
@@ -79,12 +79,12 @@ namespace Knuth
         /// Block Data
         /// </summary>
         public GetBlockDataResult<IHeader> Header { get; set; }
-        
+
         /// <summary>
         /// List of transaction hashes
         /// </summary>
         public INativeList<byte[]> TransactionHashes { get; set; }
-        
+
         /// <summary>
         /// Serialized block size in bytes
         /// </summary>
@@ -105,17 +105,17 @@ namespace Knuth
     public class GetBlockHashTimestampResult
     {
         /// <summary>
-        /// Block's hash 
+        /// Block's hash
         /// </summary>
         public byte[] BlockHash { get; set; }
-        
+
         /// <summary>
         /// Block's TimeStamp
         /// </summary>
         public DateTime BlockTimestamp { get; set; }
     }
 
- 
+
     /// <summary>
     /// Return type for GetTransactionAsync
     /// </summary>
@@ -125,7 +125,7 @@ namespace Knuth
         /// The requested transaction
         /// </summary>
         public ITransaction Tx { get; set; }
-        
+
         /// <summary>
         /// Transaction position as a block height - index pair
         /// </summary>
@@ -138,9 +138,9 @@ namespace Knuth
             Tx.Dispose();
         }
     }
-    
+
     /// <summary>
-    /// Type used by GetTxDataResult. Has block information 
+    /// Type used by GetTxDataResult. Has block information
     /// </summary>
     public struct GetTxPositionResult
     {
@@ -148,7 +148,7 @@ namespace Knuth
         /// Transaction index inside a block
         /// </summary>
         public UInt64 Index { get; set; }
-        
+
         /// <summary>
         /// Block's Height
         /// </summary>

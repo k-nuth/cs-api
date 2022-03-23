@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -78,7 +78,7 @@ namespace Knuth
         }
 
         /// <summary>
-        /// (Only for BCH) Utility function for legacy-to-cashaddr conversion. 
+        /// (Only for BCH) Utility function for legacy-to-cashaddr conversion.
         /// </summary>
         /// <param name="includePrefix"> If and only if true, include cashaddr prefix (bchtest/bitcoincash) </param>
         public static string LegacyAddressToCashAddress(string legacyAddr, bool includePrefix) {
@@ -86,7 +86,7 @@ namespace Knuth
         }
 
         /// <summary>
-        /// (Only for BCH) Utility function for cashaddr-to-legacy conversion. 
+        /// (Only for BCH) Utility function for cashaddr-to-legacy conversion.
         /// </summary>
         public static string CashAddressToLegacyAddress(string cashAddr) {
             return SharpCashAddr.Converter.CashAddrToLegacyAddr(cashAddr, out bool isP2PKH, out bool isMainnet);

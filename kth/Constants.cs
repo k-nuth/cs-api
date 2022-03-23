@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,6 +17,6 @@ namespace Knuth
 // #else
 //         internal const CharSet KTH_OS_CHARSET = CharSet.Unicode;
 //         internal const UnmanagedType KTH_STR_PTR = UnmanagedType.LPWStr;
-// #endif        
+// #endif
     }
 }

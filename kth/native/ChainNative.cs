@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2021 Knuth Project developers.
+// Copyright (c) 2016-2022 Knuth Project developers.
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,7 +6,7 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace Knuth.Native
-{    
+{
     internal static class ChainNative
     {
         // Chain-----------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ namespace Knuth.Native
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_last_height(IntPtr chain, IntPtr context, GetLastHeightHandler handler);
-        
+
         // Block-----------------------------------------------------------------------------------
 
         //typedef void (*block_fetch_handler_t)(chain_t, void*, error_code_t, block_t block, uint64_t /*size_t*/ h);
@@ -42,20 +42,20 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_block_by_hash(IntPtr chain, IntPtr context, hash_t hash, GetBlockHandler handler);
 
-        
+
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_block_header_by_hash_txs_size(IntPtr chain, IntPtr ctx, hash_t hash, GetBlockHeaderByHashTxsSizeHandler handler);
 
-        
+
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_block_by_height(IntPtr chain, IntPtr context, UInt64 height, GetBlockHandler handler);
 
-        
+
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_block_by_height_timestamp(IntPtr chain, IntPtr context, UInt64 height, GetBlockHeightTimestampHandler handler);
 
-        
-        
+
+
         // Block header------------------------------------------------------------------------------
         //typedef void (*block_header_fetch_handler_t)(chain_t, void*, error_code_t, header_t header, UInt64 /*size_t*/ h);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -63,11 +63,11 @@ namespace Knuth.Native
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_block_header_by_hash(IntPtr chain, IntPtr context, hash_t hash, GetBlockHeaderHandler handler);
-      
+
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_block_header_by_height(IntPtr chain, IntPtr context, UInt64 height, GetBlockHeaderHandler handler);
 
-        
+
         // Merkle block-----------------------------------------------------------------------------
 
         //typedef void (*merkle_block_fetch_handler_t)(chain_t, void*, error_code_t, merkle_block_t block, uint64_t /*size_t*/ h);
@@ -80,7 +80,7 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_merkle_block_by_height(IntPtr chain, IntPtr context, UInt64 height, MerkleBlockGetHandler handler);
 
-        
+
         // Compact block -------------------------------------------------------------------------
 
         //typedef void (*compact_block_fetch_handler_t)(chain_t, void*, error_code_t, compact_block_t block, uint64_t /*size_t*/ h);
@@ -90,11 +90,11 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_compact_block_by_hash(IntPtr chain, IntPtr context, hash_t hash, GetCompactBlockHandler handler);
 
-        
+
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_compact_block_by_height(IntPtr chain, IntPtr context, UInt64 height, GetCompactBlockHandler handler);
 
-        
+
         // Transaction
 
         //typedef void (*transaction_fetch_handler_t)(chain_t, void*, error_code_t, transaction_t transaction, uint64_t /*size_t*/ i, uint64_t /*size_t*/ h);
@@ -108,11 +108,11 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_transaction(IntPtr chain, IntPtr context, hash_t hash, int require_confirmed, GetTransactionHandler handler);
 
-        
+
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_transaction_position(IntPtr chain, IntPtr context, hash_t hash, int require_confirmed, GetTransactionPositionHandler handler);
 
-        
+
         // Spend ---------------------------------------------------------------------------------------------
 
         //typedef void (*spend_fetch_handler_t)(chain_t, void*, error_code_t, input_point_t input_point);
@@ -138,7 +138,7 @@ namespace Knuth.Native
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_confirmed_transactions(IntPtr chain, IntPtr context, IntPtr address, UInt64 limit, UInt64 from_height, GetTransactionsHandler handler);
 
-        
+
         // Stealth ---------------------------------------------------------------------
 
         //typedef void (*stealth_fetch_handler_t)(chain_t chain, void*, error_code_t, kth_chain_stealth_compact_list_t stealth);
@@ -158,7 +158,7 @@ namespace Knuth.Native
         //[DllImport(Constants.KTH_C_LIBRARY)]
         //public static extern void kth_chain_async_block_locator(IntPtr chain, IntPtr context, IntPtr heights, BlockLocatorGetHandler handler);
 
-        
+
         // Organizers.
         //-------------------------------------------------------------------------
 
@@ -168,7 +168,7 @@ namespace Knuth.Native
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_organize_block(IntPtr chain, IntPtr context, IntPtr block, ResultHandler handler);
- 
+
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_chain_async_organize_transaction(IntPtr chain, IntPtr context, IntPtr transaction, ResultHandler handler);
 
