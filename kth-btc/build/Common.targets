@@ -7,16 +7,16 @@
     <Message Text="Knuth Version:  0.4.8"/>
     <Message Text="Knuth Currency: BTC"/>
     <Message Text="Knuth March ID: 4fZKi37a595hP"/>
-    
+
     <WriteLinesToFile
       File="conanfile.txt" Lines="[requires];c-api/0.4.8@kth/stable;[generators];cmake;[options];c-api:shared=True;c-api:currency=BTC;c-api:db=full;c-api:march_id=4fZKi37a595hP;[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true"/>
 
     <Message Text="Operating System: $(OS)"/>
-    
-    <Exec Command="conan install . --install-folder=. --update" Condition=" '$(OS)' != 'Windows_NT' " />
-    <Exec Command="conan install . --install-folder=. -s compiler=&quot;Visual Studio&quot; -s compiler.version=16 --update" Condition=" '$(OS)' == 'Windows_NT' "/>
-    
+
+    <Exec Command="conan install . --install-folder=. --update --build=missing" Condition=" '$(OS)' != 'Windows_NT' " />
+    <Exec Command="conan install . --install-folder=. -s compiler=&quot;Visual Studio&quot; -s compiler.version=16 --update --build=missing" Condition=" '$(OS)' == 'Windows_NT' "/>
+
     <Message Text="OS = $(OS)" />
     <Copy SourceFiles="kth-c-api.dll" DestinationFiles="$(OutDir)libkth-c-api.dll" Condition=" '$(OS)' == 'Windows_NT' "/>
     <Copy SourceFiles="libkth-c-api.so" DestinationFiles="$(OutDir)libkth-c-api.so" Condition="Exists('libkth-c-api.so')"/>

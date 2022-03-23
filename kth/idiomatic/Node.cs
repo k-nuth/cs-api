@@ -5,7 +5,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Knuth.Logging;
+// using Knuth.Logging;
 using Knuth.Native;
 using Knuth.Config;
 
@@ -14,7 +14,7 @@ namespace Knuth {
     /// Controls the execution of the Knuth bitcoin node.
     /// </summary>
     public class Node : IDisposable {
-        private static readonly ILog Logger = LogProvider.For<Node>();
+        // private static readonly ILog Logger = LogProvider.For<Node>();
         /// <summary>
         /// Contains information about new blocks
         /// </summary>
