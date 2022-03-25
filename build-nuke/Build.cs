@@ -95,7 +95,6 @@ class Build : NukeBuild
         .Executes(() => {
             //TODO(fernando): march_id is hardcoded, see what to do.
             UpdateConan("./kth-bch/build/Common.targets", "BCH", "4fZKi37a595hP");
-            // UpdateConan("./kth-btc/build/Common.targets", "BTC", "4fZKi37a595hP");
         });
 
 

@@ -9,8 +9,6 @@
 /kth-c-api.dll
 /tests/bch/libkth-c-api.dll
 /tests/bch/kth-c-api.dll
-/tests/btc/libkth-c-api.dll
-/tests/btc/kth-c-api.dll
 /console/kth-c-api.dll
 /console/libkth-c-api.so
 
@@ -42,20 +40,11 @@
 
 console/obj
 kth-bch/obj/
-kth-btc/obj/
 tests/bch/obj/
-tests/btc/obj/
 
 console/bin/
 kth-bch/bin/
-kth-btc/bin/
 tests/bch/bin/
-tests/btc/bin/
-
-
-
-
-
 
 /conanbuildinfo.cmake
 /conanbuildinfo.txt
@@ -68,24 +57,16 @@ tests/btc/bin/
 /tests/bch/conanbuildinfo.cmake
 /tests/bch/conan_imports_manifest.txt
 
-/tests/btc/conaninfo.txt
-/tests/btc/conanfile.txt
-/tests/btc/conanbuildinfo.txt
-/tests/btc/conanbuildinfo.cmake
-/tests/btc/conan_imports_manifest.txt
-
 /console/conaninfo.txt
 /console/conanbuildinfo.txt
 /console/conan_imports_manifest.txt
 /console/conanbuildinfo.cmake
 /console/conanfile.txt
 
-tests/btc/libkth-c-api.dylib
 tests/bch/libkth-c-api.dylib
 console/libkth-c-api.dylib
 console/graph_info.json
 tests/bch/graph_info.json
-tests/btc/graph_info.json
 
 .tmp/
 build/bin/
@@ -110,7 +91,6 @@ tests/bch/mono_crash.21acb2a948.0.json
 output/
 tests/bch/libkth-c-api*
 console/.vscode/
-tests/btc/conan.lock
 console/.vs/
 HelloKnuth/
 HelloKnuth2/
