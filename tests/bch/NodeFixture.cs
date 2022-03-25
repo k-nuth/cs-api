@@ -8,10 +8,11 @@ using System.Collections.Generic;
 namespace Knuth.Tests {
     public class NodeFixture : IDisposable {
         public NodeFixture() {
+            Console.WriteLine("******************* NodeFixture() *********************");
             var config = Knuth.Config.Settings.GetDefault(NetworkType.Mainnet);
             config.Database.DbMaxSize = 2 * 1024 * 1024;    // 2MiB
 
-            Node = new Node(config, false);
+            Node = new Node(config, true);
             var res = Node.LaunchAsync(StartModules.JustChain).GetAwaiter().GetResult();
             if (res != ErrorCode.Success) {
                 throw new InvalidOperationException("Node::LaunchAsync failed, check log");

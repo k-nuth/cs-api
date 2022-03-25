@@ -112,7 +112,6 @@ namespace Knuth.Tests {
 
         }
 
-
         [Fact]
         public async Task TestDefaultTestnet4Settings() {
             var config = Knuth.Config.Settings.GetDefault(NetworkType.Testnet4);
