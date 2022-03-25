@@ -133,6 +133,7 @@ class Build : NukeBuild
                 // write the trx files for azure pipelines
                 // .SetLogger("trx")
                 // .SetLogOutput(true)
+                .EnableProcessLogOutput()
                 // collect code coverage to use services like codecov or coveralls
                 // .SetArgumentConfigurator(arguments => arguments.Add("/p:CollectCoverage={0}", true)
                 //     .Add("/p:CoverletOutput={0}/", OutputDirectory / "coverage")
