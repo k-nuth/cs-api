@@ -96,3 +96,6 @@ HelloKnuth/
 HelloKnuth2/
 HelloKnuth3/
 tests/tempo
+.nuke/
+console/blockchain-170/internal_db/data.mdb
+console/blockchain-170/internal_db/lock.mdb

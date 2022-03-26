@@ -42,7 +42,8 @@ namespace Knuth.Native.Config
         public bool bch_fermat;
         public bool bch_euler;
         // public bool bch_gauss;
-        // public UInt64 gauss_activation_time;
+        public UInt64 gauss_activation_time;
+        public UInt64 descartes_activation_time;
         public UInt64 asert_half_life;
 #else
         public bool bip141;

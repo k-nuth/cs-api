@@ -48,7 +48,8 @@ namespace Knuth.Tests {
             Assert.True(config.Chain.BchFermat);
             Assert.True(config.Chain.BchEuler);
             // Assert.False(config.Chain.BchGauss);
-            // Assert.Equal(config.Chain.GaussActivationTime, 1621080000UL);
+            Assert.Equal(config.Chain.GaussActivationTime, 1652616000UL);
+            Assert.Equal(config.Chain.DescartesActivationTime, 1684152000UL);
             Assert.Equal(config.Chain.AsertHalfLife, 2UL * 24 * 60 * 60); //two days
             // ------------------------------------------------------------------------------------
             Assert.Equal(config.Database.Directory, "blockchain");
@@ -148,7 +149,8 @@ namespace Knuth.Tests {
             Assert.True(config.Chain.BchFermat);
             Assert.True(config.Chain.BchEuler);
             // Assert.False(config.Chain.BchGauss);
-            // Assert.Equal(config.Chain.GaussActivationTime, 1621080000UL);
+            Assert.Equal(config.Chain.GaussActivationTime, 1652616000UL);
+            Assert.Equal(config.Chain.DescartesActivationTime, 1684152000UL);
             Assert.Equal(config.Chain.AsertHalfLife, 60UL * 60); //one hour
             // ------------------------------------------------------------------------------------
             Assert.Equal(config.Database.Directory, "blockchain");
