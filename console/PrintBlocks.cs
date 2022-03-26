@@ -38,7 +38,7 @@ namespace console
             Console.WriteLine($"DbMode:              {buildConfig.DbMode}");
             Console.WriteLine($"DbReadonly:          {buildConfig.DbReadonly}");
             Console.WriteLine($"DebugMode:           {buildConfig.DebugMode}");
-            
+
             var config = Knuth.Config.Settings.GetDefault(NetworkType.Mainnet);
 
             Console.WriteLine();

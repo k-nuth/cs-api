@@ -9,10 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests.bch", "tests\bch\test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "console", "console\console.csproj", "{DFA8C018-ABBD-4008-B4E1-EE0DE14477D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kth-btc", "kth-btc\kth-btc.csproj", "{6D2DD63A-143A-4F39-B219-2E8F226E53BD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests.btc", "tests\btc\tests.btc.csproj", "{E6A24977-E057-473A-AE03-CFA116823883}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

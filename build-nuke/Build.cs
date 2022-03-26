@@ -1,25 +1,36 @@
 using System;
 using System.Linq;
 using Nuke.Common;
+using Nuke.Common.CI;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
-using Nuke.Common.Tools.DotNet;
+
+// using Nuke.Common.Tools.DotNet;
+
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Utilities.Collections;
-using Nuke.Common.CI.AppVeyor;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
+
+
+
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
+using static Nuke.Common.Tools.DotNet.DotNetRestoreSettingsExtensions;
+using static Nuke.Common.Tools.DotNet.DotNetBuildSettingsExtensions;
+using static Nuke.Common.Tools.DotNet.DotNetTestSettingsExtensions;
+using static Nuke.Common.Tools.DotNet.DotNetPackSettingsExtensions;
+// using static Nuke.Common.Tools.DotNet.DotNetPushSettingsExtensions;
+using static Nuke.Common.Tools.DotNet.DotNetNuGetPushSettingsExtensions;
+
 using static Nuke.Common.Logger;
 using static Nuke.Common.Tooling.ProcessTasks;
 // using static Nuke.Common.Tooling.ToolSettings;
 
-[CheckBuildProjectConfigurations]
-[UnsetVisualStudioEnvironmentVariables]
+
 class Build : NukeBuild
 {
     /// Support plugins are available for:
@@ -84,7 +95,6 @@ class Build : NukeBuild
         .Executes(() => {
             //TODO(fernando): march_id is hardcoded, see what to do.
             UpdateConan("./kth-bch/build/Common.targets", "BCH", "4fZKi37a595hP");
-            // UpdateConan("./kth-btc/build/Common.targets", "BTC", "4fZKi37a595hP");
         });
 
 
@@ -109,7 +119,7 @@ class Build : NukeBuild
         });
 
 
-    Target Test => _ => _
+   Target Test => _ => _
         .DependsOn(Compile)
         .Executes(() => {
 
@@ -120,8 +130,9 @@ class Build : NukeBuild
                 .EnableNoBuild()
                 .EnableNoRestore()
                 // write the trx files for azure pipelines
-                .SetLogger("trx")
-                .SetLogOutput(true)
+                // .SetLogger("trx")
+                // .SetLogOutput(true)
+                .EnableProcessLogOutput()
                 // collect code coverage to use services like codecov or coveralls
                 // .SetArgumentConfigurator(arguments => arguments.Add("/p:CollectCoverage={0}", true)
                 //     .Add("/p:CoverletOutput={0}/", OutputDirectory / "coverage")
@@ -172,7 +183,7 @@ class Build : NukeBuild
             Info($"Commit message: {commitMessage}");
             // Info($"Commit message:" + AppVeyor.Environment.Repository.Commit.Message);
             Info($"Branch name:" + branchName);
-            Info($"Skip nuget: {skipNuget}"); 
+            Info($"Skip nuget: {skipNuget}");
 
             // if (branchName != "master") {
             //     skipNuget = "true";
@@ -182,20 +193,50 @@ class Build : NukeBuild
                 skipNuget = "true";
             }
 
-            Info($"Skip nuget: {skipNuget}"); 
+            Info($"Skip nuget: {skipNuget}");
 
             // if (publishToNuget == "true" && !AppVeyor.Environment.Repository.Commit.Message.Contains("[skip nuget]") && skipNuget == "false") {
             if (publishToNuget == "true" && skipNuget == "false" && ! commitMessage.Contains("[skip nuget]")) {
-                GlobFiles(NugetDirectory, "*.nupkg")
-                    .NotEmpty()
-                    .Where(x => !x.EndsWith("symbols.nupkg"))
-                    .ForEach(x => {
-                        DotNetNuGetPush(s => s
-                            .SetTargetPath(x)
-                            .SetSource(NugetApiUrl)
-                            .SetApiKey(NugetApiKey)
-                        );
-                    });
+                // GlobFiles(NugetDirectory, "*.nupkg")
+                //     .NotEmpty()
+                //     .Where(x => !x.EndsWith("symbols.nupkg"))
+                //     .ForEach(x => {
+                //         DotNetNuGetPush(s => s
+                //             .SetTargetPath(x)
+                //             .SetSource(NugetApiUrl)
+                //             .SetApiKey(NugetApiKey)
+                //         );
+                //     });
+
+
+                DotNetNuGetPush(s => s
+                        .SetSource(NugetApiUrl)
+                        // .SetSymbolSource(SymbolSource)
+                        .SetApiKey(NugetApiKey)
+                        .CombineWith(
+                            NugetDirectory
+                                .GlobFiles("*.nupkg")
+                                .NotEmpty(),
+                                // .Where(x => !x.EndsWith("symbols.nupkg")),
+                            (cs, v) => cs
+                                .SetTargetPath(v)),
+                    degreeOfParallelism: 5
+                    // continueOnFailure: true
+                    );
+
+                // DotNetNuGetPush(s => s
+                //         .SetSource(Source)
+                //         .SetSymbolSource(SymbolSource)
+                //         .SetApiKey(ApiKey)
+                //         .CombineWith(
+                //             OutputDirectory
+                //                 .GlobFiles("*.nupkg")
+                //                 .NotEmpty(),
+                //             (cs, v) => cs
+                //                 .SetTargetPath(v)),
+                //     degreeOfParallelism: 5,
+                //     continueOnFailure: true);
+
             }
         });
 }

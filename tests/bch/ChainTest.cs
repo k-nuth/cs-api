@@ -4,20 +4,48 @@
 
 using System;
 using Xunit;
+using Xunit.Abstractions;
 using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Knuth.Tests {
+
+    public class MakeConsoleWork : IDisposable {
+        private readonly ITestOutputHelper _output;
+        private readonly TextWriter _originalOut;
+        private readonly TextWriter _textWriter;
+
+        public MakeConsoleWork(ITestOutputHelper output) {
+            _output = output;
+            _originalOut = Console.Out;
+            _textWriter = new StringWriter();
+            Console.SetOut(_textWriter);
+        }
+
+        public void Dispose() {
+            _output.WriteLine(_textWriter.ToString());
+            Console.SetOut(_originalOut);
+        }
+    }
+
     [Collection("ChainCollection")]
-    public class ChainTest : IClassFixture<NodeFixture> {
+    public class ChainTest : MakeConsoleWork, IClassFixture<NodeFixture> {
+    // public class ChainTest : IClassFixture<NodeFixture> {
         private const int FIRST_NON_COINBASE_BLOCK_HEIGHT = 170;
         private readonly NodeFixture nodeFixture_;
 
-        public ChainTest(NodeFixture fixture) {
+        // public ChainTest(NodeFixture fixture) {
+        //     nodeFixture_ = fixture;
+        //     Console.WriteLine("******************** ChainTest ************************ ");
+        // }
+
+        public ChainTest(ITestOutputHelper output, NodeFixture fixture) : base(output) {
             nodeFixture_ = fixture;
+            Console.WriteLine("******************** ChainTest ************************ ");
         }
+
         private async Task<Tuple<ErrorCode, UInt64>> GetLastHeight() {
             var ret = await nodeFixture_.Node.Chain.GetLastHeightAsync();
             return new Tuple<ErrorCode, UInt64>(ret.ErrorCode, ret.Result);
@@ -127,8 +155,45 @@ namespace Knuth.Tests {
             CheckFirstNonCoinbaseTxFromHeight170Outputs(tx);
         }
 
+        // private static dynamic GetBlockDataFromExternalSource(UInt64 height) {
+        //     string uri = @"https://blockchain.info/block-height/" + height + "?format=json";
+        //     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+        //     using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+        //     using (Stream stream = response.GetResponseStream())
+        //     using (StreamReader reader = new StreamReader(stream)) {
+        //         var jsonObject = JsonConvert.DeserializeObject<dynamic>(reader.ReadToEnd());
+        //         return jsonObject;
+        //     }
+        // }
+
+        private static void VerifyGenesisBlockHeader(IHeader header) {
+            Assert.NotNull(header);
+            Assert.Equal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", Binary.ByteArrayToHexString(header.Hash));
+            Assert.Equal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", Binary.ByteArrayToHexString(header.Merkle));
+            Assert.Equal("0000000000000000000000000000000000000000000000000000000000000000", Binary.ByteArrayToHexString(header.PreviousBlockHash));
+            Assert.Equal<UInt32>(1, header.Version);
+            Assert.Equal<UInt32>(486604799, header.Bits);
+            Assert.Equal<UInt32>(2083236893, header.Nonce);
+            DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
+            Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
+        }
+
+        private static void VerifyBlock170Header(IHeader header) {
+            Assert.NotNull(header);
+            Assert.Equal("00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee", Binary.ByteArrayToHexString(header.Hash));
+            Assert.Equal("7dac2c5666815c17a3b36427de37bb9d2e2c5ccec3f8633eb91a4205cb4c10ff", Binary.ByteArrayToHexString(header.Merkle));
+            Assert.Equal("000000002a22cfee1f2c846adbd12b3e183d4f97683f85dad08a79780a84bd55", Binary.ByteArrayToHexString(header.PreviousBlockHash));
+            Assert.Equal<UInt32>(1, header.Version);
+            Assert.Equal<UInt32>(486604799, header.Bits);
+            Assert.Equal<UInt32>(1889418792, header.Nonce);
+            DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
+            Assert.Equal("2009-01-12 03:30:25", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
+        }
+
         [Fact]
         public async Task TestGetLastHeight() {
+            Console.WriteLine("******************** TestGetLastHeight ************************ ");
+
             Tuple<ErrorCode, UInt64> errorAndHeight = await GetLastHeight();
             Assert.Equal(ErrorCode.Success, errorAndHeight.Item1);
         }
@@ -282,7 +347,6 @@ namespace Knuth.Tests {
             }
         }
 
-
         /*[Fact]
         public void TestSubscribeToBlockchain() {
             var handlerDone = new AutoResetEvent(false);
@@ -304,41 +368,6 @@ namespace Knuth.Tests {
             dynamic blockDataFromExternalSource = GetBlockDataFromExternalSource(height);
             Assert.Equal(blockDataFromExternalSource.blocks[0].hash, ByteArrayToHexString(firstIncomingBlock.Hash));
         }*/
-
-        private static dynamic GetBlockDataFromExternalSource(UInt64 height) {
-            string uri = @"https://blockchain.info/block-height/" + height + "?format=json";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream)) {
-                var jsonObject = JsonConvert.DeserializeObject<dynamic>(reader.ReadToEnd());
-                return jsonObject;
-            }
-        }
-
-        private static void VerifyGenesisBlockHeader(IHeader header) {
-            Assert.NotNull(header);
-            Assert.Equal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", Binary.ByteArrayToHexString(header.Hash));
-            Assert.Equal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", Binary.ByteArrayToHexString(header.Merkle));
-            Assert.Equal("0000000000000000000000000000000000000000000000000000000000000000", Binary.ByteArrayToHexString(header.PreviousBlockHash));
-            Assert.Equal<UInt32>(1, header.Version);
-            Assert.Equal<UInt32>(486604799, header.Bits);
-            Assert.Equal<UInt32>(2083236893, header.Nonce);
-            DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
-            Assert.Equal("2009-01-03 18:15:05", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
-        }
-
-        private static void VerifyBlock170Header(IHeader header) {
-            Assert.NotNull(header);
-            Assert.Equal("00000000d1145790a8694403d4063f323d499e655c83426834d4ce2f8dd4a2ee", Binary.ByteArrayToHexString(header.Hash));
-            Assert.Equal("7dac2c5666815c17a3b36427de37bb9d2e2c5ccec3f8633eb91a4205cb4c10ff", Binary.ByteArrayToHexString(header.Merkle));
-            Assert.Equal("000000002a22cfee1f2c846adbd12b3e183d4f97683f85dad08a79780a84bd55", Binary.ByteArrayToHexString(header.PreviousBlockHash));
-            Assert.Equal<UInt32>(1, header.Version);
-            Assert.Equal<UInt32>(486604799, header.Bits);
-            Assert.Equal<UInt32>(1889418792, header.Nonce);
-            DateTime utcTime = DateTimeOffset.FromUnixTimeSeconds(header.Timestamp).DateTime;
-            Assert.Equal("2009-01-12 03:30:25", utcTime.ToString("yyyy-MM-dd HH:mm:ss"));
-        }
 
         [Fact]
         public async Task GetBlockHeaderByHashTxSizesAsync() {
