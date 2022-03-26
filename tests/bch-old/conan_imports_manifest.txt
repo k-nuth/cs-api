@@ -1,2 +1,0 @@
-1648218841
-/home/fernando/dev/kth/cs-api/tests/bch/libkth-c-api.so: c7119c26018ed79ec286b47c7902fd0b
