@@ -66,7 +66,7 @@
 
     <Exec Command="conan install . --install-folder=. $(ConanSettings) --update --build=missing"
         Condition=" '$(OS)' != 'Windows_NT' And '$(HaveToExecConan)'=='True' " />
-    <Exec Command="conan install . --install-folder=. -s compiler=&quot;Visual Studio&quot; -s compiler.version=16 --update --build=missing"
+    <Exec Command="conan install . --install-folder=. -s compiler=&quot;Visual Studio&quot; -s compiler.version=17 --update --build=missing"
         Condition=" '$(OS)' == 'Windows_NT' And '$(HaveToExecConan)'=='True' "/>
 
     <Copy SourceFiles="$(LibSourceName)" DestinationFiles="$(LibDestinationPath)" Condition="'$(HaveToExecConan)'=='True'"/>
