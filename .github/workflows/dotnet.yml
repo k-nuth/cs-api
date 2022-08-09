@@ -50,7 +50,9 @@ jobs:
       shell: bash
 
     - name: Test
-      run: ./build.sh Test
+      run: |
+        find . -name "libkth-c-api.so"
+        ./build.sh Test
       shell: bash
 
     - name: Pack
