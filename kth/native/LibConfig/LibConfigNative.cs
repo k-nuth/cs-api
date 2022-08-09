@@ -12,7 +12,6 @@ namespace Knuth.Native.LibConfig
         public int log_library;
         public bool use_libmdbx;
         public IntPtr version;
-        public IntPtr microarchitecture;
         public IntPtr microarchitecture_id;
         public int currency;
         public bool mempool;

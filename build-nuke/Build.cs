@@ -7,16 +7,12 @@ using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
-
 // using Nuke.Common.Tools.DotNet;
-
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
-
-
 
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.DotNet.DotNetRestoreSettingsExtensions;
@@ -94,7 +90,7 @@ class Build : NukeBuild
     Target KnuthVersion => _ => _
         .Executes(() => {
             //TODO(fernando): march_id is hardcoded, see what to do.
-            UpdateConan("./kth-bch/build/Common.targets", "BCH", "4fZKi37a595hP");
+            UpdateConan("./kth-bch/build/Common.targets", "BCH", "ZLm9Pjh");
         });
 
 

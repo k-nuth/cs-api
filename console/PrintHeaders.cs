@@ -14,14 +14,13 @@
 //             Console.WriteLine($"LogLibrary:          {buildConfig.LogLibrary}");
 //             Console.WriteLine($"UseLibmdbx:          {buildConfig.UseLibmdbx}");
 //             Console.WriteLine($"Version:             {buildConfig.Version}");
-//             Console.WriteLine($"Microarchitecture:   {buildConfig.Microarchitecture}");
 //             Console.WriteLine($"MicroarchitectureId: {buildConfig.MicroarchitectureId}");
 //             Console.WriteLine($"Currency:            {buildConfig.Currency}");
 //             Console.WriteLine($"Mempool:             {buildConfig.Mempool}");
 //             Console.WriteLine($"DbMode:              {buildConfig.DbMode}");
 //             Console.WriteLine($"DbReadonly:          {buildConfig.DbReadonly}");
 //             Console.WriteLine($"DebugMode:           {buildConfig.DebugMode}");
-            
+
 //             // var config = Knuth.Config.Settings.GetFromFile("/home/fernando/kth-exec/kth-bch-mainnet-pruned.cfg");
 //             var config = Knuth.Config.Settings.GetFromFile("/Users/fernando/dev/kth/cs-api/console/kth-bch-mainnet-pruned.cfg");
 

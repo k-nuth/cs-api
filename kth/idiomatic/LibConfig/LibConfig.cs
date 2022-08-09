@@ -26,7 +26,6 @@ namespace Knuth
             public LogLibrary LogLibrary;
             public bool UseLibmdbx;
             public string Version;
-            public string Microarchitecture;
             public string MicroarchitectureId;
             public CurrencyType Currency;
             public bool Mempool;
@@ -41,7 +40,6 @@ namespace Knuth
                 LogLibrary = (LogLibrary)native.log_library,
                 UseLibmdbx = native.use_libmdbx,
                 Version = Marshal.PtrToStringAnsi(native.version),
-                Microarchitecture = Marshal.PtrToStringAnsi(native.microarchitecture),
                 MicroarchitectureId = Marshal.PtrToStringAnsi(native.microarchitecture_id),
                 Currency = (CurrencyType)native.currency,
                 Mempool = native.mempool,

@@ -11,10 +11,10 @@ on: [push, pull_request]
 jobs:
   build:
 
-    runs-on: windows-2022
+    # runs-on: windows-2022
     # runs-on: windows-latest
     # runs-on: windows-2019
-    # runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -38,25 +38,24 @@ jobs:
 
     - name: Install Dependencies (Windows)
       run: |
-        set PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%;
-        python.exe --version
+        python --version
         cmake --version
-        python.exe -m pip install --upgrade pip
-        pip.exe install kthbuild --upgrade
+        pip install  --upgrade pip
+        pip install kthbuild --upgrade
         conan user
-      shell: cmd
+      shell: bash
 
     - name: Compile
-      run: .\build.ps1 Compile
-      shell: powershell
+      run: ./build.sh Compile
+      shell: bash
 
     - name: Test
-      run: .\build.ps1 Test
-      shell: powershell
+      run: ./build.sh Test
+      shell: bash
 
     - name: Pack
-      run: ./build.ps1 Pack
-      shell: powershell
+      run: ./build.sh Pack
+      shell: bash
 
     - name: Push
       env:
@@ -64,15 +63,19 @@ jobs:
         GHA_COMMIT_MSG: ${{ github.event.head_commit.message }}
         PUBLISH_TO_NUGET: "true"
       run: |
-        Write-Host "NUGET_API_KEY:  $Env:NUGET_API_KEY"
-        Write-Host "GHA_COMMIT_MSG: $Env:GHA_COMMIT_MSG"
+        # Write-Host "NUGET_API_KEY:  $Env:NUGET_API_KEY"
+        # Write-Host "GHA_COMMIT_MSG: $Env:GHA_COMMIT_MSG"
+        echo "NUGET_API_KEY: ${NUGET_API_KEY}"
+        echo "GHA_COMMIT_MSG: ${GHA_COMMIT_MSG}"
 
-        $Env:GHA_BRANCH = "${{ github.ref }}".Split("/")[2]
-        Write-Host "My branch name is $Env:GHA_BRANCH"
+        # $Env:GHA_BRANCH = "${{ github.ref }}".Split("/")[2]
+        # Write-Host "My branch name is $Env:GHA_BRANCH"
+        # ./build.sh Push --NugetApiUrl "https://api.nuget.org/v3/index.json" --NugetApiKey $env:NUGET_API_KEY
 
-        ./build.ps1 Push --NugetApiUrl "https://api.nuget.org/v3/index.json" --NugetApiKey $env:NUGET_API_KEY
-      shell: powershell
-
+        export GHA_BRANCH=$(echo '${{ github.ref }}' | awk -F '/' '{print $3}')
+        echo "My branch name is $GHA_BRANCH"
+        ./build.sh Push --NugetApiUrl "https://api.nuget.org/v3/index.json" --NugetApiKey $NUGET_API_KEY
+      shell: bash
 
     # - name: Restore dependencies
     #   run: dotnet restore
