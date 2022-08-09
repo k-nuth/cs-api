@@ -51,6 +51,7 @@ jobs:
 
     - name: Test
       run: |
+        pwd
         find . -name "libkth-c-api.so"
         ./build.sh Test
       shell: bash
