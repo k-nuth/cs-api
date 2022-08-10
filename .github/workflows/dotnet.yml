@@ -49,6 +49,11 @@ jobs:
 
     - name: Pre-Compile
       run: |
+        conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config.zip
+        conan profile new default --detect
+        conan profile show default
+        conan profile update settings.compiler.libcxx=libstdc++11 default
+        conan profile show default
         conan install c-api/0.26.0@kth/stable -o c-api:shared=True -o c-api:db=full
       shell: bash
 
