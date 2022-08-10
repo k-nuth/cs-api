@@ -14,8 +14,8 @@ jobs:
     # runs-on: windows-2022
     # runs-on: windows-latest
     # runs-on: windows-2019
-    # runs-on: ubuntu-latest
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    # runs-on: ubuntu-22.04
 
 
     steps:
