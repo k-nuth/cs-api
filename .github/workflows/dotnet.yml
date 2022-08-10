@@ -58,6 +58,8 @@ jobs:
         conan profile update settings.compiler.libcxx=libstdc++11 default
         conan profile show default
 
+
+        conan config set general.revisions_enabled=1
         echo "-----------------------------------------------------------"
         conan config get
         echo "-----------------------------------------------------------"
