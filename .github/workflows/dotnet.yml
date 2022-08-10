@@ -38,7 +38,7 @@ jobs:
   # - python -m pip install --upgrade pip
   # - "%PYTHON%/Scripts/pip.exe install kthbuild --upgrade"
 
-    - name: Install Dependencies (Windows)
+    - name: Install Dependencies (Unix)
       run: |
         python --version
         cmake --version
@@ -57,6 +57,11 @@ jobs:
         conan profile show default
         conan profile update settings.compiler.libcxx=libstdc++11 default
         conan profile show default
+
+        echo "-----------------------------------------------------------"
+        conan config get
+        echo "-----------------------------------------------------------"
+
         conan install c-api/0.26.0@kth/stable -o c-api:shared=True -o c-api:db=full
       shell: bash
 
