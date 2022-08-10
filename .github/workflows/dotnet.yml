@@ -47,6 +47,11 @@ jobs:
         conan user
       shell: bash
 
+    - name: Pre-Compile
+      run: |
+        conan install c-api/0.26.0@kth/stable -o c-api:shared=True -o c-api:db=full
+      shell: bash
+
     - name: Compile
       run: ./build.sh Compile
       shell: bash
