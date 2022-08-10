@@ -44,6 +44,9 @@ jobs:
         cmake --version
         pip install  --upgrade pip
         pip install kthbuild --upgrade
+        conan --version
+        pip install conan --upgrade
+        conan --version
         conan user
       shell: bash
 
