@@ -1,0 +1,311 @@
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+# GCC 12
+  docker run --rm -it --entrypoint bash docker.io/conanio/gcc12-ubuntu16.04:latest
+
+  # Install dotnet for Ubuntu 16.04
+    wget https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
+
+    sudo apt-get update
+    sudo apt-get install apt-transport-https
+    sudo apt-get install -y dotnet-sdk-6.0
+    sudo apt-get install -y aspnetcore-runtime-6.0
+    sudo apt-get install -y vim
+
+  # Install other dependencies
+      python --version
+      cmake --version
+      pip install  --upgrade pip
+      pip install kthbuild --upgrade
+      pip install conan --upgrade
+      conan user
+      conan config set general.revisions_enabled=0
+
+  # Check libstdc++ version
+    /sbin/ldconfig -p | grep stdc++
+
+    # Docker+Ubuntu
+    strings /usr/local/lib64/libstdc++.so.6 | grep LIBCXX
+    strings /usr/local/lib64/libstdc++.so.6 | grep CXXABI
+    # Fedora
+    strings /lib64/libstdc++.so.6 | grep LIBCXX
+    strings /lib64/libstdc++.so.6 | grep CXXABI
+
+
+
+
+
+  # Check program
+    cd
+    mkdir test-c-api
+    cd test-c-api
+    vi conanfile.txt
+      [requires]
+      c-api/0.27.0@kth/stable
+      [generators]
+      cmake
+      [options]
+      c-api:shared=True
+      c-api:currency=BCH
+      c-api:db=full
+      c-api:march_id=ZLm9Pjh
+      [imports]
+      include/kth, *.h -> ./include/kth
+      include/kth, *.hpp -> ./include/kth
+      lib, *.so -> ./lib
+
+    vi main.cpp
+      #include <iostream>
+      #include <kth/capi/libconfig/libconfig.h>
+      int main(int argc, char* argv[]) {
+          auto config = kth_libconfig_get();
+          std::cout << "log_library:          " << config.log_library << '\n';
+          std::cout << "use_libmdbx:          " << config.use_libmdbx << '\n';
+          std::cout << "version:              " << config.version << '\n';
+          std::cout << "microarchitecture_id: " << config.microarchitecture_id << '\n';
+          std::cout << "currency:             " << config.currency << '\n';
+          std::cout << "mempool:              " << config.mempool << '\n';
+          std::cout << "db_mode:              " << config.db_mode << '\n';
+          std::cout << "db_readonly:          " << config.db_readonly << '\n';
+          std::cout << "debug_mode:           " << config.debug_mode << '\n';
+      }
+
+    conan install .
+    g++ -Iinclude -Llib -lkth-c-api main.cpp
+
+
+  # Pre download C-API with Conan
+    conan install c-api/0.27.0@kth/stable -o c-api:shared=True -o c-api:db=full
+      # -o c-api:march_id=ZLm9Pjh
+
+  # Clone repo
+    git clone https://github.com/k-nuth/cs-api.git
+    cd cs-api
+
+
+  # Compile
+    ./build.sh Compile
+
+  # Test
+    pwd
+    find . -name "*kth-c-api*"
+    ./build.sh Test
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+# GCC 11
+  docker run --rm -it --entrypoint bash docker.io/conanio/gcc11-ubuntu16.04:latest
+
+  # Install dotnet for Ubuntu 16.04
+    wget https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
+
+    sudo apt-get update
+    sudo apt-get install apt-transport-https
+    sudo apt-get install -y dotnet-sdk-6.0
+    sudo apt-get install -y aspnetcore-runtime-6.0
+    sudo apt-get install -y vim
+
+  # Install other dependencies
+      python --version
+      cmake --version
+      pip install  --upgrade pip
+      pip install kthbuild --upgrade
+      pip install conan --upgrade
+      conan user
+      conan config set general.revisions_enabled=0
+
+  # Check libstdc++ version
+    /sbin/ldconfig -p | grep stdc++
+    strings /usr/local/lib64/libstdc++.so.6 | grep LIBCXX
+    strings /usr/local/lib64/libstdc++.so.6 | grep CXXABI
+
+  # Check program
+    cd
+    mkdir test-c-api
+    cd test-c-api
+    vi conanfile.txt
+      [requires]
+      c-api/0.27.0@kth/stable
+      [generators]
+      cmake
+      [options]
+      c-api:shared=True
+      c-api:currency=BCH
+      c-api:db=full
+      c-api:march_id=ZLm9Pjh
+      [imports]
+      include/kth, *.h -> ./include/kth
+      include/kth, *.hpp -> ./include/kth
+      lib, *.so -> ./lib
+
+    vi main.cpp
+      #include <iostream>
+      #include <kth/capi/libconfig/libconfig.h>
+      int main(int argc, char* argv[]) {
+          auto config = kth_libconfig_get();
+          std::cout << "log_library:          " << config.log_library << '\n';
+          std::cout << "use_libmdbx:          " << config.use_libmdbx << '\n';
+          std::cout << "version:              " << config.version << '\n';
+          std::cout << "microarchitecture_id: " << config.microarchitecture_id << '\n';
+          std::cout << "currency:             " << config.currency << '\n';
+          std::cout << "mempool:              " << config.mempool << '\n';
+          std::cout << "db_mode:              " << config.db_mode << '\n';
+          std::cout << "db_readonly:          " << config.db_readonly << '\n';
+          std::cout << "debug_mode:           " << config.debug_mode << '\n';
+      }
+
+    conan install .
+    g++ -Iinclude -Llib -lkth-c-api main.cpp
+
+
+  # Pre download C-API with Conan
+    conan install c-api/0.27.0@kth/stable -o c-api:shared=True -o c-api:db=full
+      # -o c-api:march_id=ZLm9Pjh
+
+  # Clone repo
+    git clone https://github.com/k-nuth/cs-api.git
+    cd cs-api
+
+
+  # Compile
+    ./build.sh Compile
+
+  # Test
+    pwd
+    find . -name "*kth-c-api*"
+    ./build.sh Test
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+# GCC 10
+  docker run --rm -it --entrypoint bash docker.io/conanio/gcc10-ubuntu16.04:latest
+
+  # Install dotnet for Ubuntu 16.04
+    wget https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
+
+    sudo apt-get update
+    sudo apt-get install apt-transport-https
+    sudo apt-get install -y dotnet-sdk-6.0
+    sudo apt-get install -y aspnetcore-runtime-6.0
+    sudo apt-get install -y vim
+
+  # Install other dependencies
+      python --version
+      cmake --version
+      pip install  --upgrade pip
+      pip install kthbuild --upgrade
+      pip install conan --upgrade
+      conan user
+      conan config set general.revisions_enabled=0
+
+  # Check libstdc++ version
+    /sbin/ldconfig -p | grep stdc++
+    strings /usr/local/lib64/libstdc++.so.6 | grep LIBCXX
+    strings /usr/local/lib64/libstdc++.so.6 | grep CXXABI
+
+      CXXABI_1.3.13
+      CXXABI_1.3.13
+      GLIBCXX_3.4.29
+      GLIBCXX_3.4.29
+
+
+
+  # Check program
+    cd
+    mkdir test-c-api
+    cd test-c-api
+    vi conanfile.txt
+      [requires]
+      c-api/0.27.0@kth/stable
+      [generators]
+      cmake
+      [options]
+      c-api:shared=True
+      c-api:currency=BCH
+      c-api:db=full
+      c-api:march_id=ZLm9Pjh
+      [imports]
+      include/kth, *.h -> ./include/kth
+      include/kth, *.hpp -> ./include/kth
+      lib, *.so -> ./lib
+
+    vi main.cpp
+      #include <iostream>
+      #include <kth/capi/libconfig/libconfig.h>
+      int main(int argc, char* argv[]) {
+          auto config = kth_libconfig_get();
+          std::cout << "log_library:          " << config.log_library << '\n';
+          std::cout << "use_libmdbx:          " << config.use_libmdbx << '\n';
+          std::cout << "version:              " << config.version << '\n';
+          std::cout << "microarchitecture_id: " << config.microarchitecture_id << '\n';
+          std::cout << "currency:             " << config.currency << '\n';
+          std::cout << "mempool:              " << config.mempool << '\n';
+          std::cout << "db_mode:              " << config.db_mode << '\n';
+          std::cout << "db_readonly:          " << config.db_readonly << '\n';
+          std::cout << "debug_mode:           " << config.debug_mode << '\n';
+      }
+
+    conan install .
+    g++ -Iinclude -Llib -lkth-c-api main.cpp
+
+  # Pre download C-API with Conan
+    conan install c-api/0.27.0@kth/stable -o c-api:shared=True -o c-api:db=full
+      # -o c-api:march_id=ZLm9Pjh
+
+  # Clone repo
+    git clone https://github.com/k-nuth/cs-api.git
+    cd cs-api
+
+
+  # Compile
+    ./build.sh Compile
+
+  # Test
+    pwd
+    find . -name "*kth-c-api*"
+    ./build.sh Test
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+# GCC 9
+  docker run --rm -it --entrypoint bash docker.io/conanio/gcc9-ubuntu16.04:latest
+
+  # Install dotnet for Ubuntu 16.04
+    wget https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
+
+    sudo apt-get update
+    sudo apt-get install apt-transport-https
+    sudo apt-get install -y dotnet-sdk-6.0
+    sudo apt-get install -y aspnetcore-runtime-6.0
+    sudo apt-get install -y vim
+
+  # Install other dependencies
+      python --version
+      cmake --version
+      pip install  --upgrade pip
+      pip install kthbuild --upgrade
+      pip install conan --upgrade
+      conan user
+      conan config set general.revisions_enabled=0
+
+  # Pre download C-API with Conan
+    conan install c-api/0.27.0@kth/stable -o c-api:shared=True -o c-api:db=full
+      # -o c-api:march_id=ZLm9Pjh
+
+  # Clone repo
+    git clone https://github.com/k-nuth/cs-api.git
+    cd cs-api
+
+
+  # Compile
+    ./build.sh Compile
+
+  # Test
+    pwd
+    find . -name "*kth-c-api*"
+    ./build.sh Test
+
