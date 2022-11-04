@@ -64,7 +64,7 @@ jobs:
         conan config get
         echo "-----------------------------------------------------------"
 
-        conan install c-api/0.27.0@kth/stable -o c-api:shared=True -o c-api:db=full
+        conan install c-api/0.32.0@kth/stable -o c-api:shared=True -o c-api:db=full
       shell: bash
 
     - name: Compile

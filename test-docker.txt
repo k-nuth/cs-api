@@ -42,7 +42,7 @@
     cd test-c-api
     vi conanfile.txt
       [requires]
-      c-api/0.27.0@kth/stable
+      c-api/0.32.0@kth/stable
       [generators]
       cmake
       [options]
@@ -76,7 +76,7 @@
 
 
   # Pre download C-API with Conan
-    conan install c-api/0.27.0@kth/stable -o c-api:shared=True -o c-api:db=full
+    conan install c-api/0.32.0@kth/stable -o c-api:shared=True -o c-api:db=full
       # -o c-api:march_id=ZLm9Pjh
 
   # Clone repo
@@ -127,7 +127,7 @@
     cd test-c-api
     vi conanfile.txt
       [requires]
-      c-api/0.27.0@kth/stable
+      c-api/0.32.0@kth/stable
       [generators]
       cmake
       [options]
@@ -161,7 +161,7 @@
 
 
   # Pre download C-API with Conan
-    conan install c-api/0.27.0@kth/stable -o c-api:shared=True -o c-api:db=full
+    conan install c-api/0.32.0@kth/stable -o c-api:shared=True -o c-api:db=full
       # -o c-api:march_id=ZLm9Pjh
 
   # Clone repo
@@ -219,7 +219,7 @@
     cd test-c-api
     vi conanfile.txt
       [requires]
-      c-api/0.27.0@kth/stable
+      c-api/0.32.0@kth/stable
       [generators]
       cmake
       [options]
@@ -252,7 +252,7 @@
     g++ -Iinclude -Llib -lkth-c-api main.cpp
 
   # Pre download C-API with Conan
-    conan install c-api/0.27.0@kth/stable -o c-api:shared=True -o c-api:db=full
+    conan install c-api/0.32.0@kth/stable -o c-api:shared=True -o c-api:db=full
       # -o c-api:march_id=ZLm9Pjh
 
   # Clone repo
@@ -293,7 +293,7 @@
       conan config set general.revisions_enabled=0
 
   # Pre download C-API with Conan
-    conan install c-api/0.27.0@kth/stable -o c-api:shared=True -o c-api:db=full
+    conan install c-api/0.32.0@kth/stable -o c-api:shared=True -o c-api:db=full
       # -o c-api:march_id=ZLm9Pjh
 
   # Clone repo
