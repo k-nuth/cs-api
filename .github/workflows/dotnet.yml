@@ -48,7 +48,6 @@ jobs:
         conan --version
         pip install conan --upgrade
         conan --version
-        conan user
       shell: bash
 
     - name: Pre-Compile
