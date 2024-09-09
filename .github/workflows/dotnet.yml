@@ -56,8 +56,9 @@ jobs:
         conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config2023.zip
         conan remote add kth https://packages.kth.cash/api
 
-        # conan profile list
-        # conan profile detect
+        conan profile list
+        conan profile detect
+        conan profile list
         # conan profile show default
         # conan profile update settings.compiler.libcxx=libstdc++11 default
         # conan profile show default
