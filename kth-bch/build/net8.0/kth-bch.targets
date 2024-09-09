@@ -1,0 +1,7 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Common.targets"/>
+  <Target Name="CustomScriptTest" AfterTargets="Build">
+    <Message Text="Custom Knuth build step invoked for net8.0 build" />
+    <CallTarget Targets="GetKnuthCAPI" />
+  </Target>
+</Project>
