@@ -3,11 +3,30 @@ name: .NET
 on: [push, pull_request]
 
 jobs:
+  # generate-matrix:
+  #   # needs: execute-linter
+  #   name: Generate Job Matrix
+  #   if: github.ref == 'refs/heads/master'
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     matrix: ${{ steps.set-matrix.outputs.matrix }}
+  #   steps:
+  #     - name: Generate Job Matrix
+  #       id: set-matrix
+  #       env:
+  #         MATRIX: '{"config": [
+  #                         {"name": "Linux x86_64 GCC 14","compiler": "GCC","version": "14","os": "ubuntu-20.04","docker_suffix": "-ubuntu20.04", "os_kind": "linux"},
+  #                         {"name": "macOS - arm64 - apple-clang 15","compiler": "apple-clang","version": "15","os": "macos-14", "os_kind": "macos"}
+  #                         ]}'
+
+  #       run: |
+  #         echo "${MATRIX}"
+  #         echo "matrix=${MATRIX}" >> $GITHUB_OUTPUT
+
 
   generate-matrix:
-    # needs: execute-linter
     name: Generate Job Matrix
-    if: github.ref == 'refs/heads/master'
+    # if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -16,28 +35,21 @@ jobs:
         id: set-matrix
         env:
           MATRIX: '{"config": [
-                          {"name": "Linux x86_64 GCC 14","compiler": "GCC","version": "14","os": "ubuntu-20.04","docker_suffix": "-ubuntu20.04", "os_kind": "linux"},
-                          {"name": "macOS - arm64 - apple-clang 15","compiler": "apple-clang","version": "15","os": "macos-14", "os_kind": "macos"}
+                          {"name": "macOS 14 (ARM) - NodeJS 20","nodejs_version": "20","os": "macos-14-arm64","os_kind": "macos","test": "0"}
                           ]}'
 
         run: |
           echo "${MATRIX}"
           echo "matrix=${MATRIX}" >> $GITHUB_OUTPUT
 
+
   builds:
     needs: generate-matrix
     runs-on: ${{ matrix.config.os }}
-    # runs-on: windows-2022
-    # runs-on: windows-latest
-    # runs-on: windows-2019
-    # runs-on: ubuntu-latest
-    # runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
     name: ${{ matrix.config.name }}
-
-
     steps:
     - uses: actions/checkout@v4
     - name: Fetch history
