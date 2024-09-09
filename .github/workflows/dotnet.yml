@@ -92,7 +92,7 @@ jobs:
         conan profile detect
         conan profile list
 
-
+        conan graph explain --requires=c-api/0.48.0 --update -o c-api/*:shared=True -s compiler.cppstd=20
         conan install --requires=c-api/0.48.0 --update -o c-api/*:shared=True -s compiler.cppstd=20 --build=missing
       shell: bash
 
