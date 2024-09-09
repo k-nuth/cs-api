@@ -53,11 +53,14 @@ jobs:
     - name: Pre-Compile
       run: |
         conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config2023.zip
+        conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config2023.zip
         conan remote add kth https://packages.kth.cash/api
-        conan profile new default --detect
-        conan profile show default
-        conan profile update settings.compiler.libcxx=libstdc++11 default
-        conan profile show default
+
+        # conan profile list
+        # conan profile detect
+        # conan profile show default
+        # conan profile update settings.compiler.libcxx=libstdc++11 default
+        # conan profile show default
 
         conan install --requires=c-api/0.48.0 --update -o c-api/*:shared=True
       shell: bash
