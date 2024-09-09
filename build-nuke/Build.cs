@@ -39,13 +39,11 @@ class Build : NukeBuild
     string knuthVersion = System.IO.File.ReadAllText("./kth/conan/conan_version").Trim();
 
     public void UpdateConan(string pathTarget, string currency, string marchId) {
-        Info($"Channel    {knuthChannel}");
         Info($"Version    {knuthVersion}");
         Info($"Currency   {currency}");
         Info($"MarchId    {marchId}");
 
         var content = System.IO.File.ReadAllText("./kth/build/Common.targets");
-        content = content.Replace("$(KNUTH_CHANNEL)", knuthChannel);
         content = content.Replace("$(KNUTH_VERSION)", knuthVersion);
         content = content.Replace("$(KNUTH_CURRENCY)", currency);
         content = content.Replace("$(KNUTH_MARCH_ID)", marchId);

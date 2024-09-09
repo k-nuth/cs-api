@@ -1,38 +1,71 @@
 name: .NET
 
-# on:
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ master ]
-
 on: [push, pull_request]
 
 jobs:
-  build:
+  # generate-matrix:
+  #   # needs: execute-linter
+  #   name: Generate Job Matrix
+  #   if: github.ref == 'refs/heads/master'
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     matrix: ${{ steps.set-matrix.outputs.matrix }}
+  #   steps:
+  #     - name: Generate Job Matrix
+  #       id: set-matrix
+  #       env:
+  #         MATRIX: '{"config": [
+  #                         {"name": "Linux x86_64 GCC 14","compiler": "GCC","version": "14","os": "ubuntu-20.04","docker_suffix": "-ubuntu20.04", "os_kind": "linux"},
+  #                         {"name": "macOS - arm64 - apple-clang 15","compiler": "apple-clang","version": "15","os": "macos-14", "os_kind": "macos"}
+  #                         ]}'
 
-    # runs-on: windows-2022
-    # runs-on: windows-latest
-    # runs-on: windows-2019
-    # runs-on: ubuntu-latest
-    runs-on: ubuntu-22.04
+  #       run: |
+  #         echo "${MATRIX}"
+  #         echo "matrix=${MATRIX}" >> $GITHUB_OUTPUT
 
 
+  generate-matrix:
+    name: Generate Job Matrix
+    # if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-    - uses: actions/checkout@v2
+      - name: Generate Job Matrix
+        id: set-matrix
+        env:
+          MATRIX: '{"config": [
+                          {"name": "macOS 14 (ARM) - NodeJS 20","nodejs_version": "20","os": "macos-14","os_kind": "macos","test": "0"}
+                          ]}'
+
+        run: |
+          echo "${MATRIX}"
+          echo "matrix=${MATRIX}" >> $GITHUB_OUTPUT
+
+
+  builds:
+    needs: generate-matrix
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
+    name: ${{ matrix.config.name }}
+    steps:
+    - uses: actions/checkout@v4
     - name: Fetch history
       # run: git fetch --prune --unshallow
       run: git fetch --unshallow
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         # dotnet-version: 3.1.x
         # dotnet-version: 5.0.x
-        dotnet-version: 6.0.x
-    - uses: actions/setup-python@v1
+        # dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
+    - uses: actions/setup-python@v5
       with:
-        python-version: "3.8"
+        python-version: "3.12"
 
   # - "python --version"
   # - python -m pip install --upgrade pip
@@ -47,24 +80,20 @@ jobs:
         conan --version
         pip install conan --upgrade
         conan --version
-        conan user
       shell: bash
 
     - name: Pre-Compile
       run: |
-        conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config.zip
-        conan profile new default --detect
-        conan profile show default
-        conan profile update settings.compiler.libcxx=libstdc++11 default
-        conan profile show default
+        conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config2023.zip
+        conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config2023.zip
+        conan remote add kth https://packages.kth.cash/api
 
+        conan profile list
+        conan profile detect
+        conan profile list
 
-        conan config set general.revisions_enabled=1
-        echo "-----------------------------------------------------------"
-        conan config get
-        echo "-----------------------------------------------------------"
-
-        conan install c-api/0.32.0@kth/stable -o c-api:shared=True -o c-api:db=full
+        conan graph explain --requires=c-api/0.48.0 --update -o c-api/*:shared=True -s compiler.cppstd=20
+        conan install --requires=c-api/0.48.0 --update -o c-api/*:shared=True -s compiler.cppstd=20 --build=missing
       shell: bash
 
     - name: Compile
@@ -83,6 +112,7 @@ jobs:
       shell: bash
 
     - name: Push
+      if: ${{ matrix.config.os_kind == 'macos' }}
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         GHA_COMMIT_MSG: ${{ github.event.head_commit.message }}

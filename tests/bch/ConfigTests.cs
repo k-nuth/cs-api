@@ -22,8 +22,7 @@ namespace Knuth.Tests {
             Assert.Equal(500UL, config.Chain.MinimumOutputSatoshis);
             Assert.Equal(24U, config.Chain.NotifyLimitHours);
             Assert.Equal(256U, config.Chain.ReorganizationLimit);
-            // Assert.True(config.Chain.Checkpoints.Count >= 64);
-            Assert.Equal(64, config.Chain.Checkpoints.Count);
+            Assert.Equal(79, config.Chain.Checkpoints.Count);
             Assert.Equal(0UL, config.Chain.Checkpoints[0].Height);
             Assert.Equal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", Binary.ByteArrayToHexString(config.Chain.Checkpoints[0].Hash));
             Assert.True(config.Chain.FixCheckpoints);
@@ -47,17 +46,20 @@ namespace Knuth.Tests {
             Assert.True(config.Chain.BchMersenne);
             Assert.True(config.Chain.BchFermat);
             Assert.True(config.Chain.BchEuler);
-            // Assert.False(config.Chain.BchGauss);
-            Assert.Equal(1652616000UL, config.Chain.GaussActivationTime);
-            Assert.Equal(1684152000UL, config.Chain.DescartesActivationTime);
+            Assert.True(config.Chain.BchGauss);
+            Assert.True(config.Chain.BchDescartes);
+            Assert.True(config.Chain.BchLobachevski);
+            // Assert.False(config.Chain.BchGalois);
+            // Assert.False(config.Chain.BchLeibniz);
+
+            Assert.Equal(1747310400UL, config.Chain.GaloisActivationTime);
+            Assert.Equal(1778846400UL, config.Chain.LeibnizActivationTime);
             Assert.Equal(2UL * 24 * 60 * 60, config.Chain.AsertHalfLife); //two days
             // ------------------------------------------------------------------------------------
             Assert.Equal("blockchain", config.Database.Directory);
-            Assert.False(config.Database.FlushWrites);
-            Assert.Equal((ushort)50, config.Database.FileGrowthRate);
-            Assert.Equal(0U, config.Database.IndexStartHeight);
+            Assert.Equal(Config.DbMode.Normal, config.Database.DbMode);
             Assert.Equal(100U, config.Database.ReorgPoolLimit);
-            Assert.Equal(600UL * 1024 * 1024 * 1024, config.Database.DbMaxSize);
+            Assert.Equal(200UL * 1024 * 1024 * 1024, config.Database.DbMaxSize);
             Assert.True(config.Database.SafeMode);
             Assert.Equal(0U, config.Database.CacheCapacity);
             // ------------------------------------------------------------------------------------
@@ -84,8 +86,8 @@ namespace Knuth.Tests {
             Assert.Equal("hosts.cache", config.Network.HostsFile);
             // Assert.Equal(config.Network.Self.Ip, "0.0.0.0");
             Assert.Equal(0U, config.Network.Self.Port);
-            Assert.Equal(0, config.Network.Blacklist.Count);
-            Assert.Equal(0, config.Network.Peers.Count);
+            Assert.Empty(config.Network.Blacklist);
+            Assert.Empty(config.Network.Peers);
             Assert.Equal(6, config.Network.Seeds.Count);
             Assert.Equal("", config.Network.Seeds[0].Scheme);
             Assert.Equal("seed.flowee.cash", config.Network.Seeds[0].Host);
@@ -101,7 +103,7 @@ namespace Knuth.Tests {
             Assert.Equal(0U, config.Network.StatisticsServer.Port);
             Assert.False(config.Network.Verbose);
             Assert.True(config.Network.UseIpV6);
-            Assert.Equal(1, config.Network.UserAgentBlacklist.Count);
+            Assert.Single(config.Network.UserAgentBlacklist);
             Assert.Equal("/Bitcoin SV:", config.Network.UserAgentBlacklist[0]);
             // ------------------------------------------------------------------------------------
             Assert.Equal(0U, config.Node.SyncPeers);
@@ -123,7 +125,6 @@ namespace Knuth.Tests {
             Assert.Equal(24U, config.Chain.NotifyLimitHours);
             Assert.Equal(256U, config.Chain.ReorganizationLimit);
             Assert.Equal(18, config.Chain.Checkpoints.Count);
-            // Assert.True(config.Chain.Checkpoints.Count >= 18);
             Assert.Equal(0UL, config.Chain.Checkpoints[0].Height);
             Assert.Equal("000000001dd410c49a788668ce26751718cc797474d3152a5fc073dd44fd9f7b", Binary.ByteArrayToHexString(config.Chain.Checkpoints[0].Hash));
             Assert.True(config.Chain.FixCheckpoints);
@@ -147,15 +148,15 @@ namespace Knuth.Tests {
             Assert.True(config.Chain.BchMersenne);
             Assert.True(config.Chain.BchFermat);
             Assert.True(config.Chain.BchEuler);
-            // Assert.False(config.Chain.BchGauss);
-            Assert.Equal(1652616000UL, config.Chain.GaussActivationTime);
-            Assert.Equal(1684152000UL, config.Chain.DescartesActivationTime);
+            Assert.True(config.Chain.BchGauss);
+            Assert.True(config.Chain.BchDescartes);
+            Assert.True(config.Chain.BchLobachevski);
+            Assert.Equal(1747310400UL, config.Chain.GaloisActivationTime);
+            Assert.Equal(1778846400UL, config.Chain.LeibnizActivationTime);
             Assert.Equal(60UL * 60, config.Chain.AsertHalfLife); //one hour
             // ------------------------------------------------------------------------------------
             Assert.Equal("blockchain", config.Database.Directory);
-            Assert.False(config.Database.FlushWrites);
-            Assert.Equal((ushort)50, config.Database.FileGrowthRate);
-            Assert.Equal(0U, config.Database.IndexStartHeight);
+            Assert.Equal(Config.DbMode.Normal, config.Database.DbMode);
             Assert.Equal(100U, config.Database.ReorgPoolLimit);
             Assert.Equal(20UL * 1024 * 1024 * 1024, config.Database.DbMaxSize);
             Assert.True(config.Database.SafeMode);
@@ -184,8 +185,8 @@ namespace Knuth.Tests {
             Assert.Equal("hosts.cache", config.Network.HostsFile);
             // Assert.Equal(config.Network.Self.Ip, "0.0.0.0");
             Assert.Equal(0U, config.Network.Self.Port);
-            Assert.Equal(0, config.Network.Blacklist.Count);
-            Assert.Equal(0, config.Network.Peers.Count);
+            Assert.Empty(config.Network.Blacklist);
+            Assert.Empty(config.Network.Peers);
             Assert.Equal(3, config.Network.Seeds.Count);
             Assert.Equal("", config.Network.Seeds[0].Scheme);
             Assert.Equal("testnet4-seed-bch.bitcoinforks.org", config.Network.Seeds[0].Host);
@@ -201,7 +202,7 @@ namespace Knuth.Tests {
             Assert.Equal(0U, config.Network.StatisticsServer.Port);
             Assert.False(config.Network.Verbose);
             Assert.True(config.Network.UseIpV6);
-            Assert.Equal(1, config.Network.UserAgentBlacklist.Count);
+            Assert.Single(config.Network.UserAgentBlacklist);
             Assert.Equal("/Bitcoin SV:", config.Network.UserAgentBlacklist[0]);
             // ------------------------------------------------------------------------------------
             Assert.Equal(0U, config.Node.SyncPeers);

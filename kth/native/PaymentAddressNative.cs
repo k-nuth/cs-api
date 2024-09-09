@@ -21,10 +21,10 @@ namespace Knuth.Native
         );
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr kth_wallet_payment_address_encoded(IntPtr payment_address);
+        public static extern IntPtr kth_wallet_payment_address_encoded_legacy(IntPtr payment_address);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
-        public static extern IntPtr kth_wallet_payment_address_encoded_cashaddr(IntPtr payment_address);
+        public static extern IntPtr kth_wallet_payment_address_encoded_cashaddr(IntPtr payment_address, int /*bool*/ token_aware);
 
         [DllImport(Constants.KTH_C_LIBRARY)]
         public static extern void kth_wallet_payment_address_destruct(IntPtr payment_address);

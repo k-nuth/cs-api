@@ -9,7 +9,8 @@ namespace Knuth.Tests {
     public class NodeFixture : IDisposable {
         public NodeFixture() {
             var config = Knuth.Config.Settings.GetDefault(NetworkType.Mainnet);
-            config.Database.DbMaxSize = 2 * 1024 * 1024;    // 2MiB
+            config.Database.DbMaxSize = 2 * 1024 * 1024;   // 2MiB
+            config.Database.DbMode = Config.DbMode.FullIndexed;
             Node = new Node(config, true);
             var res = Node.LaunchAsync(StartModules.JustChain).GetAwaiter().GetResult();
             if (res != ErrorCode.Success) {

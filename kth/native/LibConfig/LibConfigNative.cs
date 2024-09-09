@@ -15,10 +15,10 @@ namespace Knuth.Native.LibConfig
         public IntPtr microarchitecture_id;
         public int currency;
         public bool mempool;
-        public int db_mode;
         public bool db_readonly;
         public bool debug_mode;
     }
+
     public static class LibConfigNative
     {
         [DllImport(Constants.KTH_C_LIBRARY)]
