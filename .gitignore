@@ -99,3 +99,17 @@ tests/tempo
 .nuke/
 console/blockchain-170/internal_db/data.mdb
 console/blockchain-170/internal_db/lock.mdb
+tests/bch/direct_deploy/
+tests/bch/conanbuild.sh
+tests/bch/conanrunenv-release-x86_64.sh
+tests/bch/conanrun.sh
+tests/bch/conanbuildenv-release-x86_64.sh
+tests/bch/deactivate_conanbuild.sh
+tests/bch/deactivate_conanrun.sh
+console/conanbuild.sh
+console/conanbuildenv-release-x86_64.sh
+console/conanrun.sh
+console/conanrunenv-release-x86_64.sh
+console/deactivate_conanbuild.sh
+console/deactivate_conanrun.sh
+console/direct_deploy/

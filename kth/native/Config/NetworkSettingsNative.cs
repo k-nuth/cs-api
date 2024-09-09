@@ -32,7 +32,7 @@ namespace Knuth.Native.Config
         public string hosts_file;
         public Authority self;
         public UInt64 blacklist_count;
-        public IntPtr blacklists;
+        public IntPtr blacklist;
         public UInt64 peer_count;
         public IntPtr peers;
         public UInt64 seed_count;

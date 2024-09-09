@@ -22,7 +22,7 @@
 
   <PropertyGroup>
     <LibImport>libkth-c-api_$(VersionString)</LibImport>
-    <LibSourceName>$(LibNamePrefix)kth-c-api$(LibExtension)</LibSourceName>
+    <LibSourceName>$(LibNamePrefix)c-api$(LibExtension)</LibSourceName>
     <LibDestinationName>libkth-c-api_$(VersionString)$(LibExtension)</LibDestinationName>
     <LibDestinationName2>libkth-c-api$(LibExtension)</LibDestinationName2>
   </PropertyGroup>
@@ -31,6 +31,7 @@
     <PropertyGroup>
       <LibDestinationPath>$(OutDir)$(LibDestinationName)</LibDestinationPath>
       <LibDestinationPath2>$(OutDir)$(LibDestinationName2)</LibDestinationPath2>
+      <LibSourcePath>$(ProjectDir)direct_deploy/c-api/lib/$(LibSourceName)</LibSourcePath>
     </PropertyGroup>
 
     <PropertyGroup Condition=" ! Exists('$(LibDestinationPath)') ">
@@ -40,36 +41,49 @@
         <HaveToExecConan>False</HaveToExecConan>
     </PropertyGroup>
 
-    <Message Text="Operating System:    $(OS)"/>
-    <Message Text="HaveToExecConan:     $(HaveToExecConan)"/>
-    <Message Text="VersionString:       $(VersionString)"/>
-    <Message Text="LibNamePrefix:       $(LibNamePrefix)"/>
-    <Message Text="LibExtension:        $(LibExtension)"/>
-    <Message Text="ConanSettings:       $(ConanSettings)"/>
-    <Message Text="LibImport:           $(LibImport)"/>
-    <Message Text="LibSourceName:       $(LibSourceName)"/>
-    <Message Text="LibDestinationName:  $(LibDestinationName)"/>
-    <Message Text="LibDestinationPath:  $(LibDestinationPath)"/>
-    <Message Text="LibDestinationPath2: $(LibDestinationPath2)"/>
-    <Message Text="Knuth Channel:       $(KNUTH_CHANNEL)"/>
-    <Message Text="Knuth Version:       $(KNUTH_VERSION)"/>
-    <Message Text="Knuth Currency:      $(KNUTH_CURRENCY)"/>
-    <Message Text="Knuth March ID:      $(KNUTH_MARCH_ID)"/>
+    <PropertyGroup Condition=" ! Exists('direct_deploy') ">
+      <DirectDeployDirExists>False</DirectDeployDirExists>
+    </PropertyGroup>
+    <PropertyGroup Condition="Exists('direct_deploy') ">
+        <DirectDeployDirExists>True</DirectDeployDirExists>
+    </PropertyGroup>
 
-    <Exec Command="conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config.zip"
+    <!-- TODO: the following messages are not shown in the output, how to solve? -->
+    <Message Text="Operating System:    $(OS)" Importance="high"/>
+    <Message Text="OutDir:              $(OutDir)" Importance="high"/>
+    <Message Text="HaveToExecConan:     $(HaveToExecConan)" Importance="high"/>
+    <Message Text="VersionString:       $(VersionString)" Importance="high"/>
+    <Message Text="LibNamePrefix:       $(LibNamePrefix)" Importance="high"/>
+    <Message Text="LibExtension:        $(LibExtension)" Importance="high"/>
+    <Message Text="ConanSettings:       $(ConanSettings)" Importance="high"/>
+    <Message Text="LibImport:           $(LibImport)" Importance="high"/>
+    <Message Text="ProjectDir:          $(ProjectDir)" Importance="high"/>
+    <Message Text="LibSourceName:       $(LibSourceName)" Importance="high"/>
+    <Message Text="LibSourcePath:       $(LibSourcePath)" Importance="high"/>
+    <Message Text="LibDestinationName:  $(LibDestinationName)" Importance="high"/>
+    <Message Text="LibDestinationName2: $(LibDestinationName2)" Importance="high"/>
+    <Message Text="LibDestinationPath:  $(LibDestinationPath)" Importance="high"/>
+    <Message Text="LibDestinationPath2: $(LibDestinationPath2)" Importance="high"/>
+    <Message Text="Knuth Version:       $(KNUTH_VERSION)" Importance="high"/>
+    <Message Text="Knuth Currency:      $(KNUTH_CURRENCY)" Importance="high"/>
+    <Message Text="Knuth March ID:      $(KNUTH_MARCH_ID)" Importance="high"/>
+    <Message Text="DirectDeployDirExists: $(DirectDeployDirExists)" Importance="high"/>
+
+
+    <Exec Command="conan config install https://github.com/k-nuth/ci-utils/raw/master/conan/config2023.zip"
         ContinueOnError="WarnAndContinue"
         Condition="'$(HaveToExecConan)'=='True'" />
 
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/$(KNUTH_VERSION)@kth/$(KNUTH_CHANNEL);[generators];cmake;[options];c-api:shared=True;c-api:currency=$(KNUTH_CURRENCY);c-api:db=full;c-api:march_id=$(KNUTH_MARCH_ID);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[requires];c-api/$(KNUTH_VERSION);[options];c-api/*:shared=True;c-api/*:currency=$(KNUTH_CURRENCY);c-api/*:march_id=$(KNUTH_MARCH_ID);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true" Condition="'$(HaveToExecConan)'=='True'"/>
 
-    <Exec Command="conan install . --install-folder=. $(ConanSettings) --update --build=missing"
+    <Exec Command="conan install . --deployer=direct_deploy --deployer-folder=. $(ConanSettings) --update --build=missing"
         Condition=" '$(OS)' != 'Windows_NT' And '$(HaveToExecConan)'=='True' " />
     <Exec Command="conan install . --install-folder=. -s compiler=&quot;Visual Studio&quot; -s compiler.version=17 --update --build=missing"
         Condition=" '$(OS)' == 'Windows_NT' And '$(HaveToExecConan)'=='True' "/>
 
-    <Copy SourceFiles="$(LibSourceName)" DestinationFiles="$(LibDestinationPath)" Condition="'$(HaveToExecConan)'=='True'"/>
-    <Copy SourceFiles="$(LibSourceName)" DestinationFiles="$(LibDestinationPath2)" Condition="'$(HaveToExecConan)'=='True'"/>
+    <Copy SourceFiles="$(LibSourcePath)" DestinationFiles="$(LibDestinationPath)" Condition="'$(HaveToExecConan)'=='True'"/>
+    <Copy SourceFiles="$(LibSourcePath)" DestinationFiles="$(LibDestinationPath2)" Condition="'$(HaveToExecConan)'=='True'"/>
   </Target>
 </Project>

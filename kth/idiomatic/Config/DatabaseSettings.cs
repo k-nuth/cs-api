@@ -15,9 +15,7 @@ namespace Knuth.Config
         }
 
         public string Directory { get; set; }
-        public bool FlushWrites { get; set; }
-        public UInt16 FileGrowthRate { get; set; }
-        public UInt32 IndexStartHeight { get; set; }
+        public DbMode DbMode { get; set; }
         public UInt32 ReorgPoolLimit { get; set; }
         public UInt64 DbMaxSize { get; set; }
         public bool SafeMode { get; set; }
@@ -26,9 +24,7 @@ namespace Knuth.Config
         public Knuth.Native.Config.DatabaseSettings ToNative() {
             var native = new Knuth.Native.Config.DatabaseSettings();
             native.directory = this.Directory;
-            native.flush_writes = this.FlushWrites;
-            native.file_growth_rate = this.FileGrowthRate;
-            native.index_start_height = this.IndexStartHeight;
+            native.db_mode = (int)this.DbMode;
             native.reorg_pool_limit = this.ReorgPoolLimit;
             native.db_max_size = this.DbMaxSize;
             native.safe_mode = this.SafeMode;
@@ -39,9 +35,7 @@ namespace Knuth.Config
         public static DatabaseSettings FromNative(Knuth.Native.Config.DatabaseSettings native) {
             var res = new DatabaseSettings();
             res.Directory = native.directory;
-            res.FlushWrites = native.flush_writes;
-            res.FileGrowthRate = native.file_growth_rate;
-            res.IndexStartHeight = native.index_start_height;
+            res.DbMode = (DbMode)native.db_mode;
             res.ReorgPoolLimit = native.reorg_pool_limit;
             res.DbMaxSize = native.db_max_size;
             res.SafeMode = native.safe_mode;

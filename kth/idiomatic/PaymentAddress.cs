@@ -45,25 +45,21 @@ namespace Knuth
         public byte Version => PaymentAddressNative.kth_wallet_payment_address_version(nativeInstance_);
 
         /// <summary>
-        /// Human readable representation.
+        /// Human readable representation in legacy BTC format.
         /// </summary>
-        public string Encoded {
-            get {
-                using (var addressString = new NativeString(PaymentAddressNative.kth_wallet_payment_address_encoded(nativeInstance_))) {
-                    return addressString.ToString();
-                }
+        public string EncodeLegacy() {
+            using (var addressString = new NativeString(PaymentAddressNative.kth_wallet_payment_address_encoded_legacy(nativeInstance_))) {
+                return addressString.ToString();
             }
         }
 
 #if KTH_CS_CURRENCY_BCH
         /// <summary>
-        /// Human readable representation.
+        /// Human readable representation in CashAddr format.
         /// </summary>
-        public string EncodedCashAddr {
-            get {
-                using (var addressString = new NativeString(PaymentAddressNative.kth_wallet_payment_address_encoded_cashaddr(nativeInstance_))) {
-                    return addressString.ToString();
-                }
+        public string EncodeCashAddr(bool tokenAware) {
+            using (var addressString = new NativeString(PaymentAddressNative.kth_wallet_payment_address_encoded_cashaddr(nativeInstance_, tokenAware ? 1 : 0))) {
+                return addressString.ToString();
             }
         }
 
@@ -74,7 +70,7 @@ namespace Knuth
         /// </summary>
         /// <param name="includePrefix"> If and only if true, include cashaddr prefix (bchtest/bitcoincash) </param>
         public string ToCashAddr(bool includePrefix) {
-            return SharpCashAddr.Converter.LegacyAddrToCashAddr(Encoded, includePrefix, out bool isP2PKH, out bool isMainnet);
+            return SharpCashAddr.Converter.LegacyAddrToCashAddr(EncodeLegacy(), includePrefix, out bool isP2PKH, out bool isMainnet);
         }
 
         /// <summary>

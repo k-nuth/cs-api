@@ -15,12 +15,6 @@ namespace Knuth
             Binlog = 2,
         }
 
-        public enum DbMode {
-            Legacy = 0,
-            Pruned = 1,
-            Normal = 2,
-            FullIndexed = 3
-        }
 
         public struct Settings {
             public LogLibrary LogLibrary;
@@ -29,7 +23,6 @@ namespace Knuth
             public string MicroarchitectureId;
             public CurrencyType Currency;
             public bool Mempool;
-            public DbMode DbMode;
             public bool DbReadonly;
             public bool DebugMode;
         }
@@ -43,7 +36,6 @@ namespace Knuth
                 MicroarchitectureId = Marshal.PtrToStringAnsi(native.microarchitecture_id),
                 Currency = (CurrencyType)native.currency,
                 Mempool = native.mempool,
-                DbMode = (DbMode)native.db_mode,
                 DbReadonly = native.db_readonly,
                 DebugMode = native.debug_mode
             };
