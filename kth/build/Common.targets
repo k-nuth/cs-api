@@ -75,7 +75,7 @@
         Condition="'$(HaveToExecConan)'=='True'" />
 
     <WriteLinesToFile
-      File="conanfile.txt" Lines="[requires];c-api/$(KNUTH_VERSION);[options];c-api/*:shared=True;c-api/*:currency=$(KNUTH_CURRENCY);c-api/*:march_id=$(KNUTH_MARCH_ID);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
+      File="conanfile.txt" Lines="[settings];compiler.cppstd=20;[requires];c-api/$(KNUTH_VERSION);[options];c-api/*:shared=True;c-api/*:currency=$(KNUTH_CURRENCY);c-api/*:march_id=$(KNUTH_MARCH_ID);[imports];bin, *.dll    -> .;lib, *.so    -> .;lib, *.dylib    -> ."
       Overwrite="true" Condition="'$(HaveToExecConan)'=='True'"/>
 
     <Exec Command="conan install . --deployer=direct_deploy --deployer-folder=. $(ConanSettings) --update --build=missing"
