@@ -7,17 +7,17 @@
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
     <LibNamePrefix></LibNamePrefix>
     <LibExtension>.dll</LibExtension>
-    <ConanSettings>-s compiler.cppstd=20</ConanSettings>
+    <ConanSettings>-s compiler.cppstd=23</ConanSettings>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
     <LibNamePrefix>lib</LibNamePrefix>
     <LibExtension>.so</LibExtension>
-    <ConanSettings>-s compiler.cppstd=20 -s compiler.libcxx=libstdc++11</ConanSettings>
+    <ConanSettings>-s compiler.cppstd=23 -s compiler.libcxx=libstdc++11</ConanSettings>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
     <LibNamePrefix>lib</LibNamePrefix>
     <LibExtension>.dylib</LibExtension>
-    <ConanSettings>-s compiler.cppstd=20</ConanSettings>
+    <ConanSettings>-s compiler.cppstd=23</ConanSettings>
   </PropertyGroup>
 
   <PropertyGroup>
